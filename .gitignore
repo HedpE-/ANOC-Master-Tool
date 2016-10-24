@@ -1,6 +1,4 @@
-appCore/obj/Debug/appCore.BrowserView.resources
-appCore/obj/Debug/appCore.csproj.FileListAbsolute.txt
-appCore/obj/Debug/appCore.csproj.GenerateResource.Cache
-appCore/obj/Debug/appCore.csprojResolveAssemblyReference.cache
-appCore/obj/Debug/appCore.Logs.UI.LogBrowser.resources
-appCore/obj/Debug/appCore.Logs.UI.LogEditor.resources
+appCore/obj/
+appCore/bin/
+Launcher/obj/
+Launcher/bin/
