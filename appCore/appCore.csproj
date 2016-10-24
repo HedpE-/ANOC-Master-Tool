@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <Import Project="..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.props')" />
+  <Import Project="..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.props')" />
+  <PropertyGroup>
+    <ProjectGuid>{C006A9F6-C3BF-466E-9EC2-8D429A661FD8}</ProjectGuid>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <RootNamespace>appCore</RootNamespace>
+    <AssemblyName>appCore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Excel">
+      <HintPath>Extensions\Excel.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GMap.NET.Core">
+      <HintPath>GMap.NET\Lib\GMap.NET.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsForms">
+      <HintPath>GMap.NET\Lib\GMap.NET.WindowsForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>Extensions\HtmlAgilityPack.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>Extensions\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>Extensions\log4net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Microsoft.mshtml" />
+    <Reference Include="Microsoft.Office.Interop.Excel" />
+    <Reference Include="Microsoft.Office.Interop.Outlook" />
+    <Reference Include="RestSharp">
+      <HintPath>Extensions\RestSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Transitions">
+      <HintPath>..\..\Transitions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BrowserView.cs" />
+    <Compile Include="DB\Databases.cs" />
+    <Compile Include="DB\ShiftsFile.cs" />
+    <Compile Include="Logs\ILog.cs" />
+    <Compile Include="Logs\LogsCollection.cs" />
+    <Compile Include="Logs\UI\LogBrowser.cs" />
+    <Compile Include="Logs\UI\LogBrowser.Designer.cs">
+      <DependentUpon>LogBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Logs\UI\LogEditor.cs" />
+    <Compile Include="Logs\UI\LogEditor.Designer.cs">
+      <DependentUpon>LogEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Logs\UI\LogEditor2.cs" />
+    <Compile Include="Logs\UI\LogEditor2.Designer.cs">
+      <DependentUpon>LogEditor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Netcool\Alarm.cs" />
+    <Compile Include="Netcool\Parser.cs" />
+    <Compile Include="Netcool\netcool_parser.cs" />
+    <Compile Include="Netcool\OutageParser.cs" />
+    <Compile Include="Netcool\outage_parser.cs" />
+    <Compile Include="NotesForm.cs" />
+    <Compile Include="NotesForm.Designer.cs">
+      <DependentUpon>NotesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\GlobalProperties.cs" />
+    <Compile Include="Settings\SettingsFile.cs" />
+    <Compile Include="Settings\UI\SettingsForm.cs" />
+    <Compile Include="Settings\UI\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\CurrentUser.cs" />
+    <Compile Include="Settings\UserFolder.cs" />
+    <Compile Include="Shifts\ScrollPanelMessageFilter.cs" />
+    <Compile Include="Shifts\ShiftsPanel.cs" />
+    <Compile Include="Shifts\WholeShiftsPanel.cs" />
+    <Compile Include="SiteFinder\Finder.cs" />
+    <Compile Include="SiteFinder\siteDetails.cs" />
+    <Compile Include="SiteFinder\siteDetails.Designer.cs">
+      <DependentUpon>siteDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SiteFinder\UI\siteDetails2.cs" />
+    <Compile Include="SiteFinder\UI\siteDetails2.Designer.cs">
+      <DependentUpon>siteDetails2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs" />
+    <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
+      <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Template.cs" />
+    <Compile Include="Templates\Types\FailedCRQ.cs" />
+    <Compile Include="Templates\Types\Outage.cs" />
+    <Compile Include="Templates\Types\TroubleShoot.cs" />
+    <Compile Include="Templates\Types\TX.cs" />
+    <Compile Include="Templates\Types\Update.cs" />
+    <Compile Include="Templates\UI\OutageControls.cs" />
+    <Compile Include="Templates\UI\TXControls.cs" />
+    <Compile Include="Templates\UI\UpdateControls.cs" />
+    <Compile Include="Templates\UI\FailedCRQControls.cs" />
+    <Compile Include="Templates\UI\SendBCP.cs" />
+    <Compile Include="Templates\UI\SendBCP.Designer.cs">
+      <DependentUpon>SendBCP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\UI\TasksForm.cs" />
+    <Compile Include="Templates\UI\TasksForm.Designer.cs">
+      <DependentUpon>TasksForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\UI\TroubleshootControls.cs" />
+    <Compile Include="Toolbox\coordConvert.cs" />
+    <Compile Include="Toolbox\CSVParser.cs" />
+    <Compile Include="Toolbox\EmbeddedAssembly.cs" />
+    <Compile Include="Toolbox\ScrollableMessageBox.cs" />
+    <Compile Include="Toolbox\ScrollableMessageBox.Designer.cs">
+      <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Toolbox\Tools.cs" />
+    <Compile Include="SiteFinder\Cell.cs" />
+    <Compile Include="SiteFinder\Site.cs" />
+    <Compile Include="SiteFinder\Vendors.cs" />
+    <Compile Include="UI\AMTMenuStrip.cs" />
+    <Compile Include="UI\AMTRichTextBox.cs" />
+    <Compile Include="UI\AMTToolStripMenuItem.cs" />
+    <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
+    <Compile Include="UI\FlexibleMessageBox.cs" />
+    <Compile Include="UI\GraphicsExtension.cs" />
+    <Compile Include="UI\LargeTextForm.cs" />
+    <Compile Include="UI\Loading.cs" />
+    <Compile Include="UI\Loading.Designer.cs">
+      <DependentUpon>Loading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SplashForm.cs" />
+    <Compile Include="UI\SplashForm.Designer.cs">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\trayIcon.cs" />
+    <Compile Include="Web\AMTBrowser.cs" />
+    <Compile Include="Web\CookieContainerExtension.cs" />
+    <Compile Include="Web\OIConnection.cs" />
+    <Compile Include="Web\SimpleHttpServer\HttpBuilder.cs" />
+    <Compile Include="Web\SimpleHttpServer\HttpProcessor.cs" />
+    <Compile Include="Web\SimpleHttpServer\HttpServer.cs" />
+    <Compile Include="Web\SimpleHttpServer\Models\HttpRequest.cs" />
+    <Compile Include="Web\SimpleHttpServer\Models\HttpResponse.cs" />
+    <Compile Include="Web\SimpleHttpServer\Models\Route.cs" />
+    <Compile Include="Web\SimpleHttpServer\RouteHandlers\FileSystemRouteHandler.cs" />
+    <Compile Include="Web\Tools\HtmlRemover.cs" />
+    <Compile Include="Web\UI\AuthForm.cs" />
+    <Compile Include="Web\UI\AuthForm.Designer.cs">
+      <DependentUpon>AuthForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Web\UI\BrowserView.cs" />
+    <Compile Include="Web\UI\BrowserView.Designer.cs">
+      <DependentUpon>BrowserView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Web\UriItem.cs" />
+    <Compile Include="GMap.NET\Interfaces\IPosition.cs" />
+    <Compile Include="GMap.NET\Interfaces\IPositionTime.cs" />
+    <Compile Include="GMap.NET\Interfaces\ITime.cs" />
+    <Compile Include="GMap.NET\Lib\GmapMarkerWithLabel.cs" />
+    <Compile Include="MainForm.cs" />
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GMap.NET\Types\LLPoint.cs" />
+    <Compile Include="GMap.NET\Types\Point.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BrowserView.resx">
+      <DependentUpon>BrowserView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logs\UI\LogBrowser.resx">
+      <DependentUpon>LogBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logs\UI\LogEditor.resx">
+      <DependentUpon>LogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Logs\UI\LogEditor2.resx">
+      <DependentUpon>LogEditor2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NotesForm.resx">
+      <DependentUpon>NotesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\UI\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SiteFinder\siteDetails.resx">
+      <DependentUpon>siteDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SiteFinder\UI\OiSiteTablesForm.resx">
+      <DependentUpon>OiSiteTablesForm.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SiteFinder\UI\siteDetails2.resx">
+      <DependentUpon>siteDetails2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Templates\UI\SendBCP.resx">
+      <DependentUpon>SendBCP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Templates\UI\TasksForm.resx">
+      <DependentUpon>TasksForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Toolbox\ScrollableMessageBox.resx">
+      <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Loading.resx">
+      <DependentUpon>Loading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Web\UI\AuthForm.resx">
+      <DependentUpon>AuthForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Web\UI\BrowserView.resx">
+      <DependentUpon>BrowserView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GMap.NET\Interfaces" />
+    <Folder Include="GMap.NET" />
+    <Folder Include="GMap.NET\Lib" />
+    <Folder Include="GMap.NET\Types" />
+    <Folder Include="Extensions" />
+    <Folder Include="Logs\UI" />
+    <Folder Include="Netcool" />
+    <Folder Include="DB" />
+    <Folder Include="UI" />
+    <Folder Include="Settings" />
+    <Folder Include="Settings\UI" />
+    <Folder Include="SiteFinder\UI" />
+    <Folder Include="Templates\Types" />
+    <Folder Include="Templates\UI" />
+    <Folder Include="Toolbox" />
+    <Folder Include="Shifts" />
+    <Folder Include="Templates" />
+    <Folder Include="Logs" />
+    <Folder Include="Web" />
+    <Folder Include="SiteFinder" />
+    <Folder Include="Web\Tools" />
+    <Folder Include="Web\SimpleHttpServer" />
+    <Folder Include="Web\SimpleHttpServer\Models" />
+    <Folder Include="Web\SimpleHttpServer\Resources" />
+    <Folder Include="Web\SimpleHttpServer\Resources\Pages" />
+    <Folder Include="Web\SimpleHttpServer\RouteHandlers" />
+    <Folder Include="Web\UI" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.Core.dll" />
+    <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.WindowsForms.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Extensions\RestSharp.dll" />
+    <EmbeddedResource Include="Extensions\Transitions.dll" />
+    <EmbeddedResource Include="Extensions\Excel.dll" />
+    <EmbeddedResource Include="Extensions\ICSharpCode.SharpZipLib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Extensions\log4net.dll" />
+    <EmbeddedResource Include="Extensions\HtmlAgilityPack.dll" />
+    <None Include="Web\SimpleHttpServer\Resources\Pages\404.html" />
+    <None Include="Web\SimpleHttpServer\Resources\Pages\500.html" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />
+  <Import Project="..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets')" />
+  <Import Project="..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.targets')" />
+  <Import Project="..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.targets')" />
+</Project>
