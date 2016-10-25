@@ -18,14 +18,14 @@ namespace appCore.UI
 	/// </summary>
 	public class AMTMenuStrip : MenuStrip
 	{
-		public ToolStripMenuItem MainMenuToolStripMenuItem = new ToolStripMenuItem();
+		public ToolStripMenuItem MainMenu = new ToolStripMenuItem();
 		
 		public ToolStripMenuItem INCsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem CRQsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem BookInsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem ActiveAlarmsButton = new ToolStripMenuItem();
 		
-		ToolStripMenuItem refreshToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem Refresh = new ToolStripMenuItem();
 		
 		public EventHandler OiButtonsOnClickDelegate {
 			get { return null; }
@@ -40,7 +40,7 @@ namespace appCore.UI
 		public EventHandler RefreshButtonOnClickDelegate {
 			get { return null; }
 			set {
-				refreshToolStripMenuItem.Click += value;
+				Refresh.Click += value;
 			}
 		}
 		
@@ -57,7 +57,7 @@ namespace appCore.UI
 			Items.Add(CRQsButton);
 			Items.Add(BookInsButton);
 			Items.Add(ActiveAlarmsButton);
-			Items.Add(refreshToolStripMenuItem);
+			Items.Add(Refresh);
 		}
 		
 //		void showRightClickContext(object sender, MouseEventArgs e) {
@@ -206,7 +206,7 @@ namespace appCore.UI
 						ActiveAlarmsButton.Text = string.Empty;
 						BookInsButton.Enabled = false;
 						BookInsButton.Text = string.Empty;
-						refreshToolStripMenuItem.Enabled = false;
+						Refresh.Enabled = false;
 					}
 				}
 				else {
@@ -239,7 +239,7 @@ namespace appCore.UI
 			// thisMenuStrip
 			// 
 			Renderer = new AMTToolStripSystemRenderer();
-			Items.Add(MainMenuToolStripMenuItem);
+			Items.Add(MainMenu);
 			GripMargin = new Padding(0, 0, 0, 0);
 			Padding = new Padding(0, 0, 0, 0);
 			Name = "AMTMenuStrip";
@@ -247,21 +247,21 @@ namespace appCore.UI
 			// 
 			// MainMenuToolStripMenuItem
 			// 
-			MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem";
-			MainMenuToolStripMenuItem.Text = "|||";
-			MainMenuToolStripMenuItem.TextAlign = ContentAlignment.TopCenter;
+			MainMenu.Name = "MainMenu";
+			MainMenu.Text = "|||";
+			MainMenu.TextAlign = ContentAlignment.MiddleCenter;
 //			MainMenuToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).ShowImageMargin = false;
-			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).ShowCheckMargin = false;
-			MainMenuToolStripMenuItem.Size = new Size(24, Height);
+			((ToolStripDropDownMenu) MainMenu.DropDown).ShowImageMargin = false;
+			((ToolStripDropDownMenu) MainMenu.DropDown).ShowCheckMargin = false;
+			MainMenu.Size = new Size(24, Height);
 			// 
-			// refreshToolStripMenuItem
+			// Refresh
 			// 
-			refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-			refreshToolStripMenuItem.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
-			refreshToolStripMenuItem.TextAlign = ContentAlignment.TopCenter;
-			refreshToolStripMenuItem.AutoSize = false;
-			refreshToolStripMenuItem.Size = new Size(24, Height);
+			Refresh.Name = "Refresh";
+			Refresh.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
+			Refresh.TextAlign = ContentAlignment.TopCenter;
+			Refresh.AutoSize = false;
+			Refresh.Size = new Size(24, Height);
 			// 
 			// ActiveAlarmsButton
 			// 

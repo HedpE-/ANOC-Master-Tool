@@ -21,18 +21,18 @@ namespace appCore.UI
 		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
 		{
 			if(!e.Item.Enabled) {
-				if(e.Item.Name.Contains("refresh")) {
+				if(!e.Item.Name.Contains("Refresh")) {
+					Color prevColor = e.TextColor;
+					e.TextFont = new Font("Segoe UI", 7F);
+					e.TextColor = prevColor;
+					base.OnRenderItemText(e);
+				}
+				else {
 //					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
 //					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
 //					                         (int) ( Resources.refresh.Width * factor ),
 //					                         (int) ( Resources.refresh.Height * factor ) );
 //					e.Graphics.DrawImage(Resources.refresh, rect);
-				}
-				else {
-					Color prevColor = e.TextColor;
-					e.TextFont = new Font("Segoe UI", 7F);
-					e.TextColor = prevColor;
-					base.OnRenderItemText(e);
 				}
 			}
 			else {
@@ -51,20 +51,20 @@ namespace appCore.UI
 			}
 		}
 
-//		protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
-//		{
-//			if(e.ToolStrip.GetType() != typeof(AMTMenuStrip))
-//				base.OnRenderToolStripBorder(e); // render border on items that are not of type AMTMenuStrip
-		////			else {
-		////				// skip render border
-		////				e.Graphics.FillRectangle(Brushes.Black, e.ConnectedArea);
-		////				base.OnRenderToolStripBorder(e);
-		////			}
-//		}
+		protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+		{
+			if(e.ToolStrip.GetType() != typeof(AMTMenuStrip))
+				base.OnRenderToolStripBorder(e); // render border on items that are not of type AMTMenuStrip
+//			else {
+//				// skip render border
+//				e.Graphics.FillRectangle(Brushes.Black, e.ConnectedArea);
+//				base.OnRenderToolStripBorder(e);
+//			}
+		}
 		
 		protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e) {
 			if(!e.Item.Name.Contains("ToolStripMenuItem")) {
-				if(e.Item.Name.Contains("refresh")) {
+				if(e.Item.Name.Contains("Refresh")) {
 					if(e.Item.Enabled)
 						base.OnRenderMenuItemBackground(e);
 				}

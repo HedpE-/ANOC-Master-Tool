@@ -129,7 +129,7 @@ namespace appCore.Templates.UI
 					MTXAddressButton.Enabled = false;
 					TroubleshootTextBox.Height = 183;
 					
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+					MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
 					                                                          	generateTemplateToolStripMenuItem,
 					                                                          	copyToNewTemplateToolStripMenuItem});
 				}
@@ -156,14 +156,14 @@ namespace appCore.Templates.UI
 					MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
 					MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
 					
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(generateTemplateToolStripMenuItem);
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add("-");
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(generateTaskToolStripMenuItem);
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(sendBCPToolStripMenuItem);
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add("-");
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(SiteDetailsToolStripMenuItem);
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add("-");
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(clearToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(generateTaskToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
 				Size = new Size(TroubleshootTextBox.Right + PaddingLeftRight, TroubleshootTextBox.Bottom + PaddingTopBottom);
 			}
@@ -779,8 +779,8 @@ namespace appCore.Templates.UI
 
 		void SendBCPForm(object sender, EventArgs e) {
 			// TODO: SendBCPForm
-//			SendBCP bcp = new SendBCP(textBox2.Text,buildTST());
-//			bcp.ShowDialog();
+			SendBCP bcp = new SendBCP(currentTemplate.SiteId, currentTemplate.fullLog);
+			bcp.ShowDialog();
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {

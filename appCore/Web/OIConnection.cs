@@ -204,8 +204,6 @@ namespace appCore.Web
 		/// <param name="cell">Cell number</param>
 		public string requestPhpOutput(string phpFile, string site, string cell)
 		{
-			// FIXME: requestPhpOutput for power company
-			// index.php&easting=&northing=&site_single=76261&cell_id=&lac_id=&location=&range=
 			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
 			request.AddParameter("easting", string.Empty);
