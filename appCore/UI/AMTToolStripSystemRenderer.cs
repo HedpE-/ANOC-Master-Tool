@@ -36,18 +36,18 @@ namespace appCore.UI
 				}
 			}
 			else {
-				if(!e.Item.Name.Contains("refresh")) {
+				if(e.Item.Name.Contains("Button")) {
 					e.TextFont = e.Text.StartsWith("Click") ? new Font("Segoe UI", 7F) : new Font("Segoe UI", 9F);
 //					base.OnRenderItemText(e);
 				}
-				else {
+//				else {
 //					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
 //					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
 //					                         (int) ( Resources.refresh.Width * factor ),
 //					                         (int) ( Resources.refresh.Height * factor ) );
 //					e.Graphics.DrawImage(Resources.refresh, rect);
-				}
-					base.OnRenderItemText(e);
+//				}
+				base.OnRenderItemText(e);
 			}
 		}
 
@@ -63,16 +63,18 @@ namespace appCore.UI
 //		}
 		
 		protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e) {
-			if(e.Item.Name.Contains("refresh")) {
-				if(e.Item.Enabled)
-					base.OnRenderMenuItemBackground(e);
-			}
-			else {
-				if (!e.Item.Selected)
-					base.OnRenderMenuItemBackground(e);
-				else {
-					if (!string.IsNullOrEmpty(e.Item.Text) && e.Item.Enabled) {
+			if(!e.Item.Name.Contains("ToolStripMenuItem")) {
+				if(e.Item.Name.Contains("refresh")) {
+					if(e.Item.Enabled)
 						base.OnRenderMenuItemBackground(e);
+				}
+				else {
+					if (!e.Item.Selected)
+						base.OnRenderMenuItemBackground(e);
+					else {
+						if (!string.IsNullOrEmpty(e.Item.Text) && e.Item.Enabled) {
+							base.OnRenderMenuItemBackground(e);
+						}
 					}
 				}
 			}

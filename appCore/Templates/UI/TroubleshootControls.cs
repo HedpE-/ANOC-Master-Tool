@@ -64,16 +64,9 @@ namespace appCore.Templates.UI
 		Label INCLabel = new Label();
 		Label PowerCompanyLabel = new Label();
 		Label RegionLabel = new Label();
-		
-		AMTMenuStrip MainMenu = new AMTMenuStrip();
-		
-//		MenuStrip MainMenuStrip = new MenuStrip();
-//		ToolStripMenuItem MainMenuToolStripMenuItem = new ToolStripMenuItem();
-//		ToolStripMenuItem INCsButton = new ToolStripMenuItem();
-//		ToolStripMenuItem CRQsButton = new ToolStripMenuItem();
-//		ToolStripMenuItem BookInsButton = new ToolStripMenuItem();
-//		ToolStripMenuItem ActiveAlarmsButton = new ToolStripMenuItem();
-		ToolStripMenuItem SiteDetailsButton = new ToolStripMenuItem();
+		MainMenu main = new MainMenu();
+		AMTMenuStrip MainMenu = new AMTMenuStrip(0, 25);
+		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTaskToolStripMenuItem = new ToolStripMenuItem();
@@ -135,6 +128,7 @@ namespace appCore.Templates.UI
 					TroubleshootTextBox.ReadOnly = true;
 					MTXAddressButton.Enabled = false;
 					TroubleshootTextBox.Height = 183;
+					
 					MainMenu.MainMenuToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
 					                                                          	generateTemplateToolStripMenuItem,
 					                                                          	copyToNewTemplateToolStripMenuItem});
@@ -142,7 +136,6 @@ namespace appCore.Templates.UI
 				else {
 					InitializeComponent();
 					FullSiteOutageCheckBox.CheckedChanged += FullSiteOutageCheckedChanged;
-//					SiteDetailsButton.Click += SiteDetailsButtonClick;
 					COOS2GNumericUpDown.ValueChanged += NumericUpDownValueChanged;
 					COOS3GNumericUpDown.ValueChanged += NumericUpDownValueChanged;
 					COOS4GNumericUpDown.ValueChanged += NumericUpDownValueChanged;
@@ -168,7 +161,7 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(generateTaskToolStripMenuItem);
 					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(sendBCPToolStripMenuItem);
 					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add("-");
-					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(SiteDetailsButton);
+					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(SiteDetailsToolStripMenuItem);
 					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add("-");
 					MainMenu.MainMenuToolStripMenuItem.DropDownItems.Add(clearToolStripMenuItem);
 				}
@@ -406,10 +399,6 @@ namespace appCore.Templates.UI
 				COOSCheckBox.Checked = false;
 //				sw.Stop();
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				
-//				if(currentSite.INCs != null || currentSite.CRQs != null || currentSite.ActiveAlarms != null || currentSite.BookIns != null) {
-//					INCsButton.Enabled = currentSite.incs
-//				}
 			}
 		}
 
@@ -725,7 +714,7 @@ namespace appCore.Templates.UI
 			COOSCheckBox.Checked = false;
 			PerformanceIssueCheckBox.Checked = false;
 			IntermittentIssueCheckBox.Checked = false;
-			SiteDetailsButton.Enabled = false;
+			SiteDetailsToolStripMenuItem.Enabled = false;
 			generateTemplateToolStripMenuItem.Enabled = false;
 			generateTaskToolStripMenuItem.Enabled = false;
 			sendBCPToolStripMenuItem.Enabled = false;
@@ -739,6 +728,7 @@ namespace appCore.Templates.UI
 //			TabControl tb2 = (TabControl)MainForm.Controls["tabControl2"];
 //			tb1.SelectTab(1);
 //			tb2.SelectTab(4);
+			// TODO: LoadTemplateFromLog
 		}
 
 		void GenerateTaskNotes(object sender, EventArgs e)
@@ -788,6 +778,7 @@ namespace appCore.Templates.UI
 		}
 
 		void SendBCPForm(object sender, EventArgs e) {
+			// TODO: SendBCPForm
 //			SendBCP bcp = new SendBCP(textBox2.Text,buildTST());
 //			bcp.ShowDialog();
 		}
@@ -1095,56 +1086,14 @@ namespace appCore.Templates.UI
 			// MainMenu
 			// 
 			MainMenu.Location = new Point(paddingLeftRight, 0);
-			MainMenu.Size = new Size(35, 24);
-//			MainMenu.Renderer = new AMTToolStripSystemRenderer();
-//			//
-//			// MainMenuToolStripMenuItem
-//			// 
-//			MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem";
-//			MainMenuToolStripMenuItem.Text = "|||";
-//			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).ShowImageMargin = false;
-//			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).ShowCheckMargin = false;
-			////			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).AutoSize = false;
-			////			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).Width = 100;
-//			// 
-//			// ActiveAlarmsButton
-//			// 
-//			ActiveAlarmsButton.AutoSize = false;
-//			ActiveAlarmsButton.Size = new Size(120, 24);
-//			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
-//			ActiveAlarmsButton.Text = "Alarms";
-//			ActiveAlarmsButton.Click += LoadDisplayOiDataTable;
-//			// 
-//			// BookInsButton
-//			// 
-//			BookInsButton.AutoSize = false;
-//			BookInsButton.Size = new Size(120, 24);
-//			BookInsButton.Name = "BookInsButton";
-//			BookInsButton.Text = "BookIns";
-//			BookInsButton.Click += LoadDisplayOiDataTable;
-//			// 
-//			// CRQsButton
-//			// 
-//			CRQsButton.AutoSize = false;
-//			CRQsButton.Size = new Size(120, 24);
-//			CRQsButton.Name = "CRQsButton";
-//			CRQsButton.Text = "CRQs";
-//			CRQsButton.Click += LoadDisplayOiDataTable;
-//			// 
-//			// INCsButton
-//			// 
-//			INCsButton.AutoSize = false;
-//			INCsButton.Size = new Size(120, 24);
-//			INCsButton.Name = "INCsButton";
-//			INCsButton.Text = "INCs";
-//			INCsButton.Click += LoadDisplayOiDataTable;
 			// 
-			// SiteDetailsButton
+			// SiteDetailsToolStripMenuItem
 			// 
-//			SiteDetailsButton.Enabled = false;
-			SiteDetailsButton.Name = "SiteDetailsButton";
-			SiteDetailsButton.Text = "Site Details";
-			SiteDetailsButton.Click += SiteDetailsButtonClick;
+//			SiteDetailsToolStripMenuItem.Enabled = false;
+			SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
+			SiteDetailsToolStripMenuItem.Text = "Site Details";
+			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+			SiteDetailsToolStripMenuItem.Click += SiteDetailsButtonClick;
 			// 
 			// generateTemplateToolStripMenuItem
 			// 

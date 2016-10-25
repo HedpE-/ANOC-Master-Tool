@@ -44,8 +44,11 @@ namespace appCore.UI
 			}
 		}
 		
-		public AMTMenuStrip() {
-			Renderer = new AMTToolStripSystemRenderer();
+		public AMTMenuStrip(int width = 0, int height = 0) {
+			if(width != 0)
+				Width = width;
+			if(height != 0)
+				Height = height;
 			InitializeComponent();
 		}
 		
@@ -55,11 +58,6 @@ namespace appCore.UI
 			Items.Add(BookInsButton);
 			Items.Add(ActiveAlarmsButton);
 			Items.Add(refreshToolStripMenuItem);
-//			context.Items.Add(refreshToolStripMenuItem);
-//			INCsButton.SecondaryContextMenu = context;
-//			CRQsButton.SecondaryContextMenu = context;
-//			BookInsButton.SecondaryContextMenu = context;
-//			ActiveAlarmsButton.SecondaryContextMenu = context;
 		}
 		
 //		void showRightClickContext(object sender, MouseEventArgs e) {
@@ -240,6 +238,7 @@ namespace appCore.UI
 			// 
 			// thisMenuStrip
 			// 
+			Renderer = new AMTToolStripSystemRenderer();
 			Items.Add(MainMenuToolStripMenuItem);
 			GripMargin = new Padding(0, 0, 0, 0);
 			Padding = new Padding(0, 0, 0, 0);
@@ -250,54 +249,58 @@ namespace appCore.UI
 			// 
 			MainMenuToolStripMenuItem.Name = "MainMenuToolStripMenuItem";
 			MainMenuToolStripMenuItem.Text = "|||";
-			MainMenuToolStripMenuItem.TextAlign = ContentAlignment.MiddleCenter;
-			MainMenuToolStripMenuItem.Font = new Font("Arial Unicode MS", 9F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+			MainMenuToolStripMenuItem.TextAlign = ContentAlignment.TopCenter;
+//			MainMenuToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).ShowImageMargin = false;
 			((ToolStripDropDownMenu) MainMenuToolStripMenuItem.DropDown).ShowCheckMargin = false;
+			MainMenuToolStripMenuItem.Size = new Size(24, Height);
 			// 
 			// refreshToolStripMenuItem
 			// 
 			refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
 			refreshToolStripMenuItem.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
-			refreshToolStripMenuItem.TextAlign = ContentAlignment.MiddleCenter;
+			refreshToolStripMenuItem.TextAlign = ContentAlignment.TopCenter;
 			refreshToolStripMenuItem.AutoSize = false;
-			refreshToolStripMenuItem.Size = new Size(24, 24);
-			refreshToolStripMenuItem.Font = new Font("Arial Unicode MS", 12F);
+			refreshToolStripMenuItem.Size = new Size(24, Height);
 			// 
 			// ActiveAlarmsButton
 			// 
 			ActiveAlarmsButton.AutoSize = false;
-			ActiveAlarmsButton.Size = new Size(114, 24);
+			ActiveAlarmsButton.Size = new Size(114, Height);
 			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
 			ActiveAlarmsButton.Text = "Alarms";
 			ActiveAlarmsButton.TextAlign = ContentAlignment.MiddleCenter;
+//			ActiveAlarmsButton.Font = new Font("Segoe UI", 9F);
 //			ActiveAlarmsButton.MouseDown += showRightClickContext;
 			// 
 			// BookInsButton
 			// 
 			BookInsButton.AutoSize = false;
-			BookInsButton.Size = new Size(114, 24);
+			BookInsButton.Size = new Size(114, Height);
 			BookInsButton.Name = "BookInsButton";
 			BookInsButton.Text = "BookIns";
 			BookInsButton.TextAlign = ContentAlignment.MiddleCenter;
+//			BookInsButton.Font = new Font("Segoe UI", 9F);
 //			BookInsButton.MouseDown += showRightClickContext;
 			// 
 			// CRQsButton
 			// 
 			CRQsButton.AutoSize = false;
-			CRQsButton.Size = new Size(114, 24);
+			CRQsButton.Size = new Size(114, Height);
 			CRQsButton.Name = "CRQsButton";
 			CRQsButton.Text = "CRQs";
 			CRQsButton.TextAlign = ContentAlignment.MiddleCenter;
+//			refreshToolStripMenuItem.Font = new Font("Segoe UI", 9F);
 //			CRQsButton.MouseDown += showRightClickContext;
 			// 
 			// INCsButton
 			// 
 			INCsButton.AutoSize = false;
-			INCsButton.Size = new Size(114, 24);
+			INCsButton.Size = new Size(114, Height);
 			INCsButton.Name = "INCsButton";
 			INCsButton.Text = "INCs";
 			INCsButton.TextAlign = ContentAlignment.MiddleCenter;
+//			INCsButton.Font = new Font("Segoe UI", 9F);
 //			INCsButton.MouseDown += showRightClickContext;
 		}
 	}

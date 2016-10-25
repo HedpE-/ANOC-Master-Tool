@@ -103,9 +103,8 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="Transitions">
-      <HintPath>..\..\Transitions.dll</HintPath>
+      <HintPath>Extensions\Transitions.dll</HintPath>
       <Private>False</Private>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -191,7 +190,6 @@
     <Compile Include="SiteFinder\Vendors.cs" />
     <Compile Include="UI\AMTMenuStrip.cs" />
     <Compile Include="UI\AMTRichTextBox.cs" />
-    <Compile Include="UI\AMTToolStripMenuItem.cs" />
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\GraphicsExtension.cs" />
