@@ -219,7 +219,7 @@ namespace appCore.Templates.UI
 				clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text); // FIXME: ?? TSTChanged
 			}
 			
-//			if(sendBCPToolStripMenuItem.Enabled) { // FIXME: if(sendBCPToolStripMenuItem.Enabled add else to re-enable option
+//			if(sendBCPToolStripMenuItem.Enabled) {
 //				if(sender is TextBox || sender is AMTRichTextBox) {
 //					TextBoxBase tb = (TextBoxBase)sender;
 //					switch(tb.Name) {
@@ -778,7 +778,6 @@ namespace appCore.Templates.UI
 		}
 
 		void SendBCPForm(object sender, EventArgs e) {
-			// TODO: Test SendBCPForm
 			SendBCP bcp = new SendBCP(currentTemplate.SiteId, currentTemplate.fullLog);
 			bcp.ShowDialog();
 		}

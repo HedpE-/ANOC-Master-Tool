@@ -178,7 +178,7 @@ namespace appCore.Settings
 		}
 		
 		public static void UpdateLocalDBFilesCopy() {
-			// TODO: UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to minimize share outage impact
+			// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
 			UpdateDBFiles();
 			UpdateShiftsFile();
 		}
