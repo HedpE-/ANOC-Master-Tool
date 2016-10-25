@@ -125,7 +125,7 @@ namespace appCore.UI
 		void MultiLineAddressFix(object sender, KeyEventArgs e)
 		{
 			if (e.Control && e.KeyCode == Keys.V) {
-				string clpbrd = (string)Clipboard.GetData("Text");
+				string clpbrd = Clipboard.GetData("Text").ToString();
 				if (clpbrd.Contains("\r\n")) {
 					string[] strTofind = { "\r\n" };
 					string[] temp = clpbrd.Split(strTofind, StringSplitOptions.None);

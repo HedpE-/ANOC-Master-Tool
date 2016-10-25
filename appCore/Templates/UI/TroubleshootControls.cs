@@ -130,8 +130,8 @@ namespace appCore.Templates.UI
 					TroubleshootTextBox.Height = 183;
 					
 					MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
-					                                                          	generateTemplateToolStripMenuItem,
-					                                                          	copyToNewTemplateToolStripMenuItem});
+					                                         	generateTemplateToolStripMenuItem,
+					                                         	copyToNewTemplateToolStripMenuItem});
 				}
 				else {
 					InitializeComponent();
@@ -778,8 +778,12 @@ namespace appCore.Templates.UI
 		}
 
 		void SendBCPForm(object sender, EventArgs e) {
-			SendBCP bcp = new SendBCP(currentTemplate.SiteId, currentTemplate.fullLog);
-			bcp.ShowDialog();
+			if(currentTemplate == prevTemp) {
+				SendBCP bcp = new SendBCP(ref currentTemplate);
+				bcp.ShowDialog();
+			}
+			else
+				FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {

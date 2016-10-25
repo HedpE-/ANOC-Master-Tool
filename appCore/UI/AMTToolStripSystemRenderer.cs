@@ -29,25 +29,16 @@ namespace appCore.UI
 						base.OnRenderItemText(e);
 					}
 //					else {
-//	//					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
-//	//					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
-//	//					                         (int) ( Resources.refresh.Width * factor ),
-//	//					                         (int) ( Resources.refresh.Height * factor ) );
-//	//					e.Graphics.DrawImage(Resources.refresh, rect);
+//						double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
+//						var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
+//						                         (int) ( Resources.refresh.Width * factor ),
+//						                         (int) ( Resources.refresh.Height * factor ) );
+//						e.Graphics.DrawImage(Resources.refresh, rect);
 //					}
 				}
 				else {
-					if(e.Item.Name.Contains("Button")) {
+					if(e.Item.Name.Contains("Button") && !e.Item.Name.Contains("Refresh"))
 						e.TextFont = e.Text.StartsWith("Click") ? new Font("Segoe UI", 7F) : new Font("Segoe UI", 9F);
-//					base.OnRenderItemText(e);
-					}
-//				else {
-//					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
-//					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
-//					                         (int) ( Resources.refresh.Width * factor ),
-//					                         (int) ( Resources.refresh.Height * factor ) );
-//					e.Graphics.DrawImage(Resources.refresh, rect);
-//				}
 					base.OnRenderItemText(e);
 				}
 			}
@@ -87,7 +78,7 @@ namespace appCore.UI
 		}
 		
 //		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e) {
-//			if(!e.Item.Name.Contains("refresh"))
+//			if(!e.Item.Name.Contains("Refresh"))
 //				base.OnRenderItemText(e);
 //		}
 		

@@ -25,7 +25,7 @@ namespace appCore.UI
 		public ToolStripMenuItem BookInsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem ActiveAlarmsButton = new ToolStripMenuItem();
 		
-		ToolStripMenuItem Refresh = new ToolStripMenuItem();
+		ToolStripMenuItem RefreshButton = new ToolStripMenuItem();
 		
 		public EventHandler OiButtonsOnClickDelegate {
 			get { return null; }
@@ -40,7 +40,7 @@ namespace appCore.UI
 		public EventHandler RefreshButtonOnClickDelegate {
 			get { return null; }
 			set {
-				Refresh.Click += value;
+				RefreshButton.Click += value;
 			}
 		}
 		
@@ -57,7 +57,7 @@ namespace appCore.UI
 			Items.Add(CRQsButton);
 			Items.Add(BookInsButton);
 			Items.Add(ActiveAlarmsButton);
-			Items.Add(Refresh);
+			Items.Add(RefreshButton);
 		}
 		
 //		void showRightClickContext(object sender, MouseEventArgs e) {
@@ -98,103 +98,89 @@ namespace appCore.UI
 			foreach (ToolStripMenuItem tsmi in Items) {
 				if(tsmi.Name.Contains("Button")) {
 					if(currentSite != null) {
-						switch(tsmi.Name) {
-							case "INCsButton":
-								if((currentSite.INCs != null)) {
-									if(currentSite.INCs.Rows.Count > 0) {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkGreen;
-										tsmi.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
+						if(currentSite.Exists) {
+							switch(tsmi.Name) {
+								case "INCsButton":
+									if((currentSite.INCs != null)) {
+										if(currentSite.INCs.Rows.Count > 0) {
+											tsmi.Enabled = true;
+											tsmi.ForeColor = Color.DarkGreen;
+											tsmi.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
+										}
+										else {
+											tsmi.Enabled = false;
+											tsmi.Text = "No INC history";
+										}
 									}
 									else {
-										tsmi.Enabled = false;
-										tsmi.Text = "No INC history";
-									}
-								}
-								else {
-									if(currentSite.Exists) {
 										tsmi.Enabled = true;
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load INCs";
 									}
+									break;
+								case "CRQsButton":
+									if(currentSite.CRQs != null) {
+										if(currentSite.CRQs.Rows.Count > 0) {
+											tsmi.Enabled = true;
+											tsmi.ForeColor = Color.DarkGreen;
+											tsmi.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
+										}
+										else {
+											tsmi.Enabled = false;
+											tsmi.Text = "No CRQ history";
+										}
+									}
 									else {
-										tsmi.Enabled = false;
-										tsmi.Text = string.Empty;
-									}
-								}
-								break;
-							case "CRQsButton":
-								if(currentSite.CRQs != null) {
-									if(currentSite.CRQs.Rows.Count > 0) {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkGreen;
-										tsmi.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
-									}
-									else {
-										tsmi.Enabled = false;
-										tsmi.Text = "No CRQ history";
-									}
-								}
-								else {
-									if(currentSite.Exists) {
 										tsmi.Enabled = true;
 										tsmi.ForeColor = Color.DarkRed;
-										tsmi.Text = "Click to load CRQ history";
+										tsmi.Text = "Click to load CRQs";
+									}
+									break;
+								case "BookInsButton":
+									if(currentSite.BookIns != null) {
+										if(currentSite.BookIns.Rows.Count > 0) {
+											tsmi.Enabled = true;
+											tsmi.ForeColor = Color.DarkGreen;
+											tsmi.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
+										}
+										else {
+											tsmi.Enabled = false;
+											tsmi.Text = "No Book In history";
+										}
 									}
 									else {
-										tsmi.Enabled = false;
-										tsmi.Text = string.Empty;
-									}
-								}
-								break;
-							case "BookInsButton":
-								if(currentSite.BookIns != null) {
-									if(currentSite.BookIns.Rows.Count > 0) {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkGreen;
-										tsmi.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
-									}
-									else {
-										tsmi.Enabled = false;
-										tsmi.Text = "No Book In history";
-									}
-								}
-								else {
-									if(currentSite.Exists) {
 										tsmi.Enabled = true;
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load Book Ins";
 									}
+									break;
+								case "ActiveAlarmsButton":
+									if(currentSite.ActiveAlarms != null) {
+										if(currentSite.ActiveAlarms.Rows.Count > 0) {
+											tsmi.Enabled = true;
+											tsmi.ForeColor = Color.DarkGreen;
+											tsmi.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
+										}
+										else {
+											tsmi.Enabled = false;
+											tsmi.Text = "No alarms to display";
+										}
+									}
 									else {
-										tsmi.Enabled = false;
-										tsmi.Text = string.Empty;
-									}
-								}
-								break;
-							case "ActiveAlarmsButton":
-								if(currentSite.ActiveAlarms != null) {
-									if(currentSite.ActiveAlarms.Rows.Count > 0) {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkGreen;
-										tsmi.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
-									}
-									else {
-										tsmi.Enabled = false;
-										tsmi.Text = "No alarms to display";
-									}
-								}
-								else {
-									if(currentSite.Exists) {
 										tsmi.Enabled = true;
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load alarms";
 									}
-									else {
-										tsmi.Enabled = false;
-										tsmi.Text = string.Empty;
-									}
-								}
-								break;
+									break;
+								case "RefreshButton":
+									tsmi.Enabled = true;
+									tsmi.Text = '\u21bb'.ToString();
+									break;
+							}
+						}
+						else {
+							tsmi.Enabled = false;
+							tsmi.Text = string.Empty;
 						}
 					}
 					else {
@@ -206,12 +192,14 @@ namespace appCore.UI
 						ActiveAlarmsButton.Text = string.Empty;
 						BookInsButton.Enabled = false;
 						BookInsButton.Text = string.Empty;
-						Refresh.Enabled = false;
+						RefreshButton.Enabled = false;
 					}
 				}
 				else {
-					if(tsmi.Name.Contains("refresh"))
-						tsmi.Enabled = siteFound;
+					if(tsmi.Name.Contains("Refresh")) {
+						tsmi.Enabled = false;
+						tsmi.Text = string.Empty;
+					}
 					else {
 						foreach (object ctr in tsmi.DropDownItems) {
 							if(ctr.GetType().ToString() != "System.Windows.Forms.ToolStripSeparator") {
@@ -250,18 +238,19 @@ namespace appCore.UI
 			MainMenu.Name = "MainMenu";
 			MainMenu.Text = "|||";
 			MainMenu.TextAlign = ContentAlignment.MiddleCenter;
-//			MainMenuToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+//			MainMenu.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowImageMargin = false;
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowCheckMargin = false;
 			MainMenu.Size = new Size(24, Height);
 			// 
 			// Refresh
 			// 
-			Refresh.Name = "Refresh";
-			Refresh.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
-			Refresh.TextAlign = ContentAlignment.TopCenter;
-			Refresh.AutoSize = false;
-			Refresh.Size = new Size(24, Height);
+			RefreshButton.Name = "RefreshButton";
+			RefreshButton.Font = new Font("Arial Unicode MS", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
+			RefreshButton.TextAlign = ContentAlignment.TopCenter;
+			RefreshButton.AutoSize = false;
+			RefreshButton.Size = new Size(24, Height);
 			// 
 			// ActiveAlarmsButton
 			// 

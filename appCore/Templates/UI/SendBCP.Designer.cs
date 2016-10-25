@@ -23,7 +23,7 @@ namespace appCore.Templates.UI
 		private System.Windows.Forms.TextBox textBox3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.RichTextBox textBox4;
+		private appCore.UI.AMTRichTextBox textBox4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.RadioButton radioButton1;
@@ -62,7 +62,7 @@ namespace appCore.Templates.UI
 			this.textBox3 = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
-			this.textBox4 = new System.Windows.Forms.RichTextBox();
+			this.textBox4 = new appCore.UI.AMTRichTextBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
@@ -163,7 +163,6 @@ namespace appCore.Templates.UI
 			this.textBox4.TabIndex = 9;
 			this.textBox4.Text = "";
 			this.textBox4.TextChanged += new System.EventHandler(this.TextBox4TextChanged);
-			this.textBox4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RichTextBox_CtrlVFix);
 			// 
 			// label5
 			// 

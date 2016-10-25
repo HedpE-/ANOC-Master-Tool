@@ -187,7 +187,7 @@ namespace appCore.SiteFinder
 		public Site(DataRowView site, DataView cells) {
 			_site = site;
 			_cells = cells;
-			if(_site != null) {
+			if(Exists) {
 				try { SITE = _site[_site.Row.Table.Columns.IndexOf("SITE")].ToString(); } catch (Exception) { }
 				try { JVCO_ID = _site[_site.Row.Table.Columns.IndexOf("JVCO_ID")].ToString(); } catch (Exception) { }
 				try { GSM900 = _site[_site.Row.Table.Columns.IndexOf("GSM900")].ToString(); } catch (Exception) { }
@@ -276,7 +276,7 @@ namespace appCore.SiteFinder
 		/// </summary>
 		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "PWR"</param>
 		public void requestOIData(string dataToRequest) {
-			if(_site != null) {
+			if(Exists) {
 				HttpStatusCode status = HttpStatusCode.NotFound;
 				if(Web.OIConnection.Connection == null)
 					status = Web.OIConnection.EstablishConnection();
