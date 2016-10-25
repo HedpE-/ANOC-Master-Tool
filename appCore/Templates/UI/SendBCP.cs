@@ -21,7 +21,7 @@ namespace appCore.Templates.UI
 		public SendBCP(string site, string template)
 		{
 			InitializeComponent();
-			
+			// TODO: ReWork SendBCP class
 			comboBox1.SelectedIndex = 0;
 			textBox2.Text = site;
 			textBox4.Text = template;

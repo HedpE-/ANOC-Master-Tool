@@ -216,90 +216,90 @@ namespace appCore.Templates.UI
 					PowerCompanyTextBox.Text = string.Empty;
 					RegionTextBox.Text = string.Empty;
 				}
-				clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text);
+				clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text); // FIXME: ?? TSTChanged
 			}
 			
-			if(sendBCPToolStripMenuItem.Enabled) {
-				if(sender is TextBox || sender is AMTRichTextBox) {
-					TextBoxBase tb = (TextBoxBase)sender;
-					switch(tb.Name) {
-						case "INCTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.INC;
-							break;
-						case "TefSiteTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.TefSiteId;
-							break;
-						case "AddressTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.SiteAddress;
-							break;
-						case "CCTRefTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.CCTReference;
-							break;
-						case "RelatedINC_CRQTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.RelatedINC_CRQ;
-							break;
-						case "ActiveAlarmsTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.ActiveAlarms;
-							break;
-						case "AlarmHistoryTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.AlarmHistory;
-							break;
-						case "TroubleshootTextBox":
-							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.Troubleshoot;
-							break;
-					}
-				}
-				else if(sender is CheckBox) {
-					CheckBox chkb = (CheckBox)sender;
-					switch(chkb.Name) {
-						case "OtherSitesImpactedCheckBox":
-							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.OtherSitesImpacted;
-							break;
-						case "COOSCheckBox":
-							if(COOS2GNumericUpDown.Value != prevTemp.COOS2G) {
-								sendBCPToolStripMenuItem.Enabled = false;
-								break;
-							}
-							if(COOS3GNumericUpDown.Value != prevTemp.COOS3G) {
-								sendBCPToolStripMenuItem.Enabled = false;
-								break;
-							}
-							if(COOS4GNumericUpDown.Value != prevTemp.COOS4G) {
-								sendBCPToolStripMenuItem.Enabled = false;
-								break;
-							}
-							break;
-						case "FullSiteOutageCheckBox":
-							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.FullSiteOutage;
-							break;
-						case "IntermittentIssueCheckBox":
-							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.IntermittentIssue;
-							break;
-						case "PerformanceIssueCheckBox":
-							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.PerformanceIssue;
-							break;
-					}
-				}
-				else if(sender is ComboBox) {
-					ComboBox cmbb = (ComboBox)sender;
-					if(cmbb.Text != prevTemp.SiteOwner)
-						sendBCPToolStripMenuItem.Enabled = false;
-				}
-				else if(sender is NumericUpDown) {
-					NumericUpDown nud = (NumericUpDown)sender;
-					switch(nud.Name) {
-						case "COOS2GNumericUpDown":
-							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS2G;
-							break;
-						case "COOS3GNumericUpDown":
-							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS3G;
-							break;
-						case "COOS4GNumericUpDown":
-							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS4G;
-							break;
-					}
-				}
-			}
+//			if(sendBCPToolStripMenuItem.Enabled) { // FIXME: if(sendBCPToolStripMenuItem.Enabled add else to re-enable option
+//				if(sender is TextBox || sender is AMTRichTextBox) {
+//					TextBoxBase tb = (TextBoxBase)sender;
+//					switch(tb.Name) {
+//						case "INCTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.INC;
+//							break;
+//						case "TefSiteTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.TefSiteId;
+//							break;
+//						case "AddressTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.SiteAddress;
+//							break;
+//						case "CCTRefTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.CCTReference;
+//							break;
+//						case "RelatedINC_CRQTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.RelatedINC_CRQ;
+//							break;
+//						case "ActiveAlarmsTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.ActiveAlarms;
+//							break;
+//						case "AlarmHistoryTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.AlarmHistory;
+//							break;
+//						case "TroubleshootTextBox":
+//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.Troubleshoot;
+//							break;
+//					}
+//				}
+//				else if(sender is CheckBox) {
+//					CheckBox chkb = (CheckBox)sender;
+//					switch(chkb.Name) {
+//						case "OtherSitesImpactedCheckBox":
+//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.OtherSitesImpacted;
+//							break;
+//						case "COOSCheckBox":
+//							if(COOS2GNumericUpDown.Value != prevTemp.COOS2G) {
+//								sendBCPToolStripMenuItem.Enabled = false;
+//								break;
+//							}
+//							if(COOS3GNumericUpDown.Value != prevTemp.COOS3G) {
+//								sendBCPToolStripMenuItem.Enabled = false;
+//								break;
+//							}
+//							if(COOS4GNumericUpDown.Value != prevTemp.COOS4G) {
+//								sendBCPToolStripMenuItem.Enabled = false;
+//								break;
+//							}
+//							break;
+//						case "FullSiteOutageCheckBox":
+//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.FullSiteOutage;
+//							break;
+//						case "IntermittentIssueCheckBox":
+//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.IntermittentIssue;
+//							break;
+//						case "PerformanceIssueCheckBox":
+//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.PerformanceIssue;
+//							break;
+//					}
+//				}
+//				else if(sender is ComboBox) {
+//					ComboBox cmbb = (ComboBox)sender;
+//					if(cmbb.Text != prevTemp.SiteOwner)
+//						sendBCPToolStripMenuItem.Enabled = false;
+//				}
+//				else if(sender is NumericUpDown) {
+//					NumericUpDown nud = (NumericUpDown)sender;
+//					switch(nud.Name) {
+//						case "COOS2GNumericUpDown":
+//							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS2G;
+//							break;
+//						case "COOS3GNumericUpDown":
+//							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS3G;
+//							break;
+//						case "COOS4GNumericUpDown":
+//							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS4G;
+//							break;
+//					}
+//				}
+//			}
 		}
 
 		void siteFinder_Toggle(bool toggle, bool siteFound) {
@@ -778,7 +778,7 @@ namespace appCore.Templates.UI
 		}
 
 		void SendBCPForm(object sender, EventArgs e) {
-			// TODO: SendBCPForm
+			// TODO: Test SendBCPForm
 			SendBCP bcp = new SendBCP(currentTemplate.SiteId, currentTemplate.fullLog);
 			bcp.ShowDialog();
 		}
@@ -899,6 +899,9 @@ namespace appCore.Templates.UI
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
 			if(UiMode == Template.UIenum.Template) {
+				if(!sendBCPToolStripMenuItem.Enabled)
+					sendBCPToolStripMenuItem.Enabled = true;
+				
 				// Store this template for future warning on no changes
 				prevTemp = currentTemplate;
 				
@@ -1089,10 +1092,9 @@ namespace appCore.Templates.UI
 			// 
 			// SiteDetailsToolStripMenuItem
 			// 
-//			SiteDetailsToolStripMenuItem.Enabled = false;
 			SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
 			SiteDetailsToolStripMenuItem.Text = "Site Details";
-			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+//			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			SiteDetailsToolStripMenuItem.Click += SiteDetailsButtonClick;
 			// 
 			// generateTemplateToolStripMenuItem

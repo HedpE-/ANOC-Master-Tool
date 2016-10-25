@@ -9,6 +9,7 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Threading;
 
 namespace appCore.UI
 {
@@ -18,28 +19,28 @@ namespace appCore.UI
 	/// </summary>
 	public class AMTToolStripSystemRenderer : ToolStripSystemRenderer
 	{
-		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
-		{
-			if(!e.Item.Enabled) {
-				if(!e.Item.Name.Contains("Refresh")) {
-					Color prevColor = e.TextColor;
-					e.TextFont = new Font("Segoe UI", 7F);
-					e.TextColor = prevColor;
-					base.OnRenderItemText(e);
+		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e) {
+			if(e.Item.OwnerItem == null) {
+				if(!e.Item.Enabled) {
+					if(!e.Item.Name.Contains("Refresh")) {
+						Color prevColor = e.TextColor;
+						e.TextFont = new Font("Segoe UI", 7F);
+						e.TextColor = prevColor;
+						base.OnRenderItemText(e);
+					}
+//					else {
+//	//					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
+//	//					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
+//	//					                         (int) ( Resources.refresh.Width * factor ),
+//	//					                         (int) ( Resources.refresh.Height * factor ) );
+//	//					e.Graphics.DrawImage(Resources.refresh, rect);
+//					}
 				}
 				else {
-//					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
-//					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
-//					                         (int) ( Resources.refresh.Width * factor ),
-//					                         (int) ( Resources.refresh.Height * factor ) );
-//					e.Graphics.DrawImage(Resources.refresh, rect);
-				}
-			}
-			else {
-				if(e.Item.Name.Contains("Button")) {
-					e.TextFont = e.Text.StartsWith("Click") ? new Font("Segoe UI", 7F) : new Font("Segoe UI", 9F);
+					if(e.Item.Name.Contains("Button")) {
+						e.TextFont = e.Text.StartsWith("Click") ? new Font("Segoe UI", 7F) : new Font("Segoe UI", 9F);
 //					base.OnRenderItemText(e);
-				}
+					}
 //				else {
 //					double factor = (double) e.Item.Bounds.Height / Resources.refresh.Height;
 //					var rect = new Rectangle( e.Item.Bounds.X, e.Item.Bounds.Y,
@@ -47,8 +48,11 @@ namespace appCore.UI
 //					                         (int) ( Resources.refresh.Height * factor ) );
 //					e.Graphics.DrawImage(Resources.refresh, rect);
 //				}
-				base.OnRenderItemText(e);
+					base.OnRenderItemText(e);
+				}
 			}
+			else
+				base.OnRenderItemText(e);
 		}
 
 		protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
@@ -63,7 +67,7 @@ namespace appCore.UI
 		}
 		
 		protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e) {
-			if(!e.Item.Name.Contains("ToolStripMenuItem")) {
+			if(e.Item.OwnerItem == null) { //Name.Contains("ToolStripMenuItem")) {
 				if(e.Item.Name.Contains("Refresh")) {
 					if(e.Item.Enabled)
 						base.OnRenderMenuItemBackground(e);
@@ -78,6 +82,8 @@ namespace appCore.UI
 					}
 				}
 			}
+			else
+				base.OnRenderMenuItemBackground(e);
 		}
 		
 //		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e) {
