@@ -462,15 +462,11 @@ namespace appCore.Toolbox
 		/// </summary>
 		/// <param name="html">HTML returned from OI</param>
 		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits"</param>
-		public static DataTable ConvertHtmlTabletoDataTable(string html, string tableName) {
-//			if(tableName == "table_visits") {
-//				html = html.Substring(html.IndexOf("<table"));
-//				html = html.Substring(0, html.IndexOf("</table>") + 8);
-//			}
-			
+		public static DataTable ConvertHtmlTabletoDataTable(string html, string tableName) {			
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
+			dt.TableName = tableName;
 			string csv = string.Empty;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)

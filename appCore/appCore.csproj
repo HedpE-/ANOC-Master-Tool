@@ -177,7 +177,6 @@
       <DependentUpon>TasksForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Templates\UI\TroubleshootControls.cs" />
-    <Compile Include="Toolbox\DataTableExtension.cs" />
     <Compile Include="Toolbox\coordConvert.cs" />
     <Compile Include="Toolbox\CSVParser.cs" />
     <Compile Include="Toolbox\EmbeddedAssembly.cs" />

@@ -475,4 +475,12 @@ namespace appCore.SiteFinder
 			}
 		}
 	}
+	// TODO: SiteExtension class
+//	public static class SiteExtension {
+//		public static DataTable NotClosed(this DataTable toFilter) {
+//			if(toFilter.TableName == "table_inc")
+//				return toFilter.Where(s => s.Bearer == "2G" && s.Noc.Contains("ANOC")).ToList();
+//			return null;
+//		}
+//	}
 }
