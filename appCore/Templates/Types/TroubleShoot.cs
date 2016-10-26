@@ -187,7 +187,6 @@ namespace appCore.Templates.Types
 					}
 					currentINCs = string.IsNullOrWhiteSpace(complete) ? " N/A" : complete;
 				}
-				ind++;
 			}
 			
 			complete = string.Empty;
