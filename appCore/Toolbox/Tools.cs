@@ -391,8 +391,6 @@ namespace appCore.Toolbox
 		{
 			// http://www.codeproject.com/Articles/528178/Load-DLL-From-Embedded-Resource
 			
-			EmbeddedAssembly.Load("appCore.GMap.NET.Lib.GMap.NET.Core.dll", "GMap.NET.WindowsForms.dll");
-			EmbeddedAssembly.Load("appCore.GMap.NET.Lib.GMap.NET.WindowsForms.dll", "GMap.NET.Core.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.Transitions.dll", "Transitions.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.RestSharp.dll", "RestSharp.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.Excel.dll", "Excel.dll");
