@@ -18,9 +18,7 @@ namespace appCore.Netcool
 	/// Class to parse alarms from netcool for the remedy template
 	/// </summary>
 	public class netcool_parser
-	{
-		// TODO: Rework netcool parser
-		
+	{		
 		DataTable parserTable = new DataTable(); // "Excel Sheet"
 		
 		public string parse(string toparse)

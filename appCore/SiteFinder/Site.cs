@@ -383,9 +383,6 @@ namespace appCore.SiteFinder
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No open or incidents"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
-//				parsedResponse = Tools.ConvertHtmlTabletoCSV(response, "table_inc");
-//			if(parsedResponse.StartsWith("Site,Incident Ref,Summary,"))
-//				dt = Tools.GetDataTableFromCsv(parsedResponse, true);
 			return dt;
 		}
 		
@@ -401,9 +398,6 @@ namespace appCore.SiteFinder
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No changes in past 90 days"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
-//				parsedResponse = Tools.ConvertHtmlTabletoCSV(response, "table_crq");
-//			if(parsedResponse.StartsWith("Site,Change Ref,Summary,"))
-//				dt = Tools.GetDataTableFromCsv(parsedResponse, true);
 			return dt;
 		}
 		
@@ -419,9 +413,6 @@ namespace appCore.SiteFinder
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No alarms reported"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
-//				parsedResponse = Tools.ConvertHtmlTabletoCSV(response, "table_alarms");
-//			if(parsedResponse.StartsWith("Site,Severity,Group,"))
-//				dt = Tools.GetDataTableFromCsv(parsedResponse, true);
 			return dt;
 		}
 		
@@ -437,9 +428,6 @@ namespace appCore.SiteFinder
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No site visits"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
-//				parsedResponse = Tools.ConvertHtmlTabletoCSV(response, "table_visits");
-//			if(parsedResponse.StartsWith("Site,Visit,Company,"))
-//				dt = Tools.GetDataTableFromCsv(parsedResponse, true);
 			return dt;
 		}
 		
@@ -476,11 +464,9 @@ namespace appCore.SiteFinder
 		}
 	}
 	// TODO: SiteExtension class
-//	public static class SiteExtension {
-//		public static DataTable NotClosed(this DataTable toFilter) {
-//			if(toFilter.TableName == "table_inc")
-//				return toFilter.Where(s => s.Bearer == "2G" && s.Noc.Contains("ANOC")).ToList();
-//			return null;
-//		}
-//	}
+	public static class SiteExtension {
+		public static DataRow[] NotClosed(this DataTable toFilter) {
+			return toFilter.TableName == "table_inc" ? toFilter.Select("Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'") : null;
+		}
+	}
 }

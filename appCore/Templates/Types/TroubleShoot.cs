@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Data;
 using System.Windows.Forms;
 using System.Linq;
 
@@ -56,6 +57,7 @@ namespace appCore.Templates.Types
 		public string Troubleshoot { get { return troubleshoot; } protected set { troubleshoot = value; } }
 		string bcpForm = string.Empty;
 		public string BcpForm { get { return bcpForm; } protected set { bcpForm = value; } }
+		string currentINCs;
 		
 		public TroubleShoot() {
 			LogType = "Troubleshoot";
@@ -158,19 +160,37 @@ namespace appCore.Templates.Types
 				COOS4G = Convert.ToInt16(COOSvalues[5]);
 			}
 			int ind = 7;
-			if(log[ind].StartsWith("Full")) {
-				FullSiteOutage = log[ind].Substring("Full Site Outage: ".Length) != "No";
-				ind++;
-			}
-			PerformanceIssue = log[ind].Substring("Performance Issue: ".Length) != "No";
-			ind++;
-			IntermittentIssue = log[ind].Substring("Intermittent Issue: ".Length) != "No";
-			ind++;
+			if(log[ind].StartsWith("Full"))
+				FullSiteOutage = log[ind++].Substring("Full Site Outage: ".Length) != "No";
+			PerformanceIssue = log[ind++].Substring("Performance Issue: ".Length) != "No";
+			IntermittentIssue = log[ind++].Substring("Intermittent Issue: ".Length) != "No";
 			CCTReference = log[ind].Substring("CCT Reference: ".Length) == "None" ? string.Empty : log[ind].Substring("CCT Reference: ".Length);
 			ind++;
-			RelatedINC_CRQ = log[ind].Substring("Related INC/CRQ: ".Length) == "None" ? string.Empty : log[ind].Substring("Related INC/CRQ: ".Length);
 			
 			string complete = string.Empty;
+			if(log[ind].StartsWith("Related"))
+				RelatedINC_CRQ = log[ind++].Substring("Related INC/CRQ: ".Length) == "None" ? string.Empty : log[ind].Substring("Related INC/CRQ: ".Length);
+			else {
+				if(log[++ind].Substring("Currently open INCs:".Length) == " N/A")
+					currentINCs = string.Empty;
+				else {
+					complete = Environment.NewLine;
+					for (ind++; ind < log.Length - 4; ind++) {
+						if (log[ind] == "") {
+							if (log[ind+1] == "Active Alarms:") {
+								ind++;
+								break;
+							}
+						}
+						else
+							complete += log[ind] + Environment.NewLine;
+					}
+					currentINCs = string.IsNullOrWhiteSpace(complete) ? " N/A" : complete;
+				}
+				ind++;
+			}
+			
+			complete = string.Empty;
 			ind = Array.IndexOf(log, "Active Alarms:");
 			for (ind++; ind < log.Length - 4; ind++) {
 				if (log[ind] == "") {
@@ -253,7 +273,11 @@ namespace appCore.Templates.Types
 			template += IntermittentIssue ? "YES" : "No";
 			template += Environment.NewLine;
 			template += "CCT Reference: " + CCTReference + Environment.NewLine;
-			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
+//			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
+			
+			template += Environment.NewLine;
+			template += "Currently open INCs:" + getCurrentINCs(true) + Environment.NewLine; // TODO: Pancho request: display Currently open INCs
+			
 			template += "Active Alarms:" + Environment.NewLine + ActiveAlarms + Environment.NewLine + Environment.NewLine;
 			template += "Alarm History:" + Environment.NewLine + AlarmHistory + Environment.NewLine + Environment.NewLine;
 			template += "Troubleshoot:" + Environment.NewLine + Troubleshoot;
@@ -261,6 +285,27 @@ namespace appCore.Templates.Types
 			
 			return template;
 		}
+		
+		string getCurrentINCs(bool update = false) {
+			if(string.IsNullOrEmpty(currentINCs) || update) {
+				currentINCs = string.Empty;
+				if(MainForm.TroubleshootUI.currentSite != null) {
+					if(MainForm.TroubleshootUI.currentSite.INCs == null)
+						MainForm.TroubleshootUI.currentSite.requestOIData("INC");
+					if(MainForm.TroubleshootUI.currentSite.INCs != null) {
+						currentINCs += Environment.NewLine;
+						DataRow[] filteredINCs = MainForm.TroubleshootUI.currentSite.INCs.Select("Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'");
+						foreach (DataRow row in filteredINCs)
+							currentINCs += row["Incident Ref"] + " - " + row["Summary"] + " - " + row["Submit Date"] + Environment.NewLine;
+					}
+				}
+			}
+			else
+				if(string.IsNullOrEmpty(currentINCs))
+					currentINCs	= " N/A" + Environment.NewLine;
+			return currentINCs;
+		}
+		
 		
 		public override string ToString()
 		{

@@ -19,12 +19,13 @@ namespace appCore.SiteFinder.UI
 	/// </summary>
 	public partial class OiSiteTablesForm : Form
 	{
-		DataTable DataTable;
+		DataTable Datatable;
+		string filter = "all";
 		public string DataType { get; private set; }
 		
 		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow)
 		{
-			DataTable = inputDataTable;
+			Datatable = inputDataTable;
 			InitializeComponent();
 			switch(dataToShow) {
 				case "INC":
@@ -52,14 +53,27 @@ namespace appCore.SiteFinder.UI
 			listView1.SuspendLayout();
 			listView1.Items.Clear();
 			listView1.View = View.Details;
-			foreach(DataColumn col in DataTable.Columns)
+			foreach(DataColumn col in Datatable.Columns)
 				listView1.Columns.Add(col.ColumnName);
-			foreach (DataRow row in DataTable.Rows)
+			foreach (DataRow row in Datatable.Rows)
 				listView1.Items.Add(new ListViewItem(row.ItemArray.Cast<string>().ToArray()));
 			foreach (ColumnHeader col in listView1.Columns)
 				col.Width = -2;
 			
 			listView1.ResumeLayout();
+		}
+		
+		void Button1Click(object sender, EventArgs e) {
+			if(Datatable.TableName == "table_inc") {
+				if(filter == "all") {
+					DataRow[] filteredRows = Datatable.Select("Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'");
+					filter = "filtered";
+				}
+				else {
+					populateListView();
+					filter = "all";
+				}
+			}
 		}
 	}
 }
