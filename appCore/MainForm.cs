@@ -721,7 +721,7 @@ namespace appCore
 //			trayIc = tray;
 //			tray.Dispose();
 			
-			Toolbox.Tools.EmbeddedAssembliesInit();
+			Tools.EmbeddedAssembliesInit();
 			
 			SplashForm.UpdateLabelText("Getting network access");
 			
@@ -735,6 +735,12 @@ namespace appCore
 			
 			SplashForm.UpdateLabelText("Setting User Settings");
 			
+			logFile.Initialize();
+			
+			SplashForm.UpdateLabelText("Loading UI");
+			
+			InitializeComponent();
+			
 			string img = SettingsFile.BackgroundImage;
 			
 			if (img != "Default") {
@@ -744,11 +750,6 @@ namespace appCore
 					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
 			}
 			
-			logFile.Initialize();
-			
-			SplashForm.UpdateLabelText("Loading UI");
-			
-			InitializeComponent();
 			tabPage1.Controls.Add(SiteDetailsPictureBox);
 			// 
 			// pictureBox5

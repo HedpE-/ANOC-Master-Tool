@@ -129,7 +129,8 @@ namespace appCore.Settings
 			if(prevFolder != null) {
 				if(prevFolder.Exists) {
 					bool isPrevFallbackFolder = prevFolder.FullName == GlobalProperties.FallbackRootDir.FullName;
-					if(Directory.Exists(prevFolder.FullName + "\\" + CurrentUser.userName)) {
+					DirectoryInfo prevUsernameFolder = new DirectoryInfo(prevFolder.FullName + "\\" + CurrentUser.userName);
+					if(prevUsernameFolder.Exists) {
 						DialogResult res;
 						res = FlexibleMessageBox.Show("Previous User Folder exists. Do you want to copy all contents to the new Folder?","Copy Contents",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 						if(res == DialogResult.Yes) {
@@ -140,29 +141,38 @@ namespace appCore.Settings
 							                        "\\ before continuing.",
 							                        "LAST WARNING!",MessageBoxButtons.OK,MessageBoxIcon.Stop);
 							
-							DirectoryInfo prevUsernameFolder = new DirectoryInfo(prevFolder.FullName + "\\" + CurrentUser.userName);
 							prevUsernameFolder.CopyTo(newFolder.FullName + "\\" + CurrentUser.userName);
-							prevUsernameFolder.Delete(true);
+							
+							if(!newFolder.FullName.Contains(prevUsernameFolder.FullName))
+								prevUsernameFolder.Delete(true);
+							else {
+								DirectoryInfo[] subDirs = prevUsernameFolder.GetDirectories();
+								foreach (DirectoryInfo dir in subDirs)
+									if(!dir.FullName.Contains(prevUsernameFolder.FullName))
+										dir.Delete(true);
+
+							}
 							
 							FileInfo[] newSubFiles = prevFolder.GetFiles();
-							foreach (FileInfo file in newSubFiles)
-								file.CopyTo(newFolder.FullName + "\\" + file.Name, true);
+							foreach (FileInfo file in newSubFiles) {
+								if(!file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
+									file.CopyTo(newFolder.FullName + "\\" + file.Name, true);
+							}
 							
 							newFolder = new DirectoryInfo(newFolder.FullName);
 						}
-						else
-							Directory.Delete(prevFolder.FullName + "\\" + CurrentUser.userName, true);
 					}
 					
 					prevFolder = new DirectoryInfo(prevFolder.FullName);
 					if(!isPrevFallbackFolder) {
-						if(Directory.Exists(prevFolder.FullName + @"\UserSettings")) {
-							Directory.Delete(prevFolder.FullName + @"\UserSettings", true);
-							prevFolder = new DirectoryInfo(prevFolder.FullName);
-						}
+						DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
+						if(prevSettingsFolder.Exists) 
+							prevSettingsFolder.Delete(true);
+						prevFolder = new DirectoryInfo(prevFolder.FullName);
+					}
+					else
 						if(prevFolder.GetDirectories().Length < 1)
 							prevFolder.Delete(true);
-					}
 				}
 			}
 			userFolder = newFolder;
@@ -176,13 +186,13 @@ namespace appCore.Settings
 			SettingsFile.UserFolderPath = userFolder;
 			UpdateLocalDBFilesCopy();
 		}
-		
+
 		public static void UpdateLocalDBFilesCopy() {
 			// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
 			UpdateDBFiles();
 			UpdateShiftsFile();
 		}
-		
+
 		static void UpdateDBFiles() {
 			if(GlobalProperties.shareAccess) {
 				FileInfo source_allsites = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv");
@@ -240,11 +250,11 @@ namespace appCore.Settings
 //						cellDetailsTable = buildCellsTable();
 //			}
 		}
-		
+
 		public static FileInfo getDBFile(string file) {
 			return hasDBFile(file) ? userFolder.GetFiles(file)[0] : null;
 		}
-		
+
 		public static bool hasDBFile(string file) {
 			try {
 				return userFolder.GetFiles(file).Length > 0;
@@ -252,29 +262,9 @@ namespace appCore.Settings
 			catch (Exception) { }
 			return false;
 		}
-		
+
 		static void UpdateShiftsFile() {
 			FileInfo currentShiftsFile = getDBFile("shift*.xlsx");
-//				FileInfo currentShiftsFile = null;
-//				FileInfo[] currentShiftsFiles = getDBFile("shift*.xlsx");
-//				if(currentShiftsFiles.Length > 0) {
-//					if(currentShiftsFiles.Length == 1)
-//						currentShiftsFile = currentShiftsFiles[0];
-//					else {
-//						foreach (FileInfo file in currentShiftsFiles) {
-//							if(currentShiftsFile != null) {
-//								if(file.LastWriteTime > currentShiftsFile.LastWriteTime && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
-//									currentShiftsFile.Delete();
-//									currentShiftsFile = file;
-//								}
-//								else
-//									file.Delete();
-//							}
-//							else
-//								currentShiftsFile = file;
-//						}
-//					}
-//				}
 			
 			if(GlobalProperties.shareAccess) {
 				FileInfo[] shiftsFiles = GlobalProperties.ShiftsDefaultLocation.GetFiles("shift*.xlsx");
@@ -292,11 +282,12 @@ namespace appCore.Settings
 							}
 						}
 					}
+					
 					if(newestFile != null) {
 						if(currentShiftsFile != null) {
 							if(newestFile.LastWriteTime > currentShiftsFile.LastWriteTime) {
 								currentShiftsFile.Delete();
-								newestFile.CopyTo(userFolder.FullName + "\\" + newestFile.Name);
+								newestFile.CopyTo(userFolder.FullName + "\\" + newestFile.Name, true);
 							}
 						}
 						else
@@ -307,7 +298,7 @@ namespace appCore.Settings
 			else
 				Databases.shiftsFile = new ShiftsFile();
 		}
-		
+
 		public static FileInfo ReadyAMTFailedCRQTempFile() {
 			FileInfo path = new FileInfo(UserFolder.FullName + @"\AMTmailTemplate.msg");
 			
@@ -316,14 +307,14 @@ namespace appCore.Settings
 			File.WriteAllBytes(path.FullName, Resources.AMTmailTemplate);
 			return path;
 		}
-		
+
 		public static void ReleaseAMTFailedCRQTempFile() {
 			FileInfo path = new FileInfo(UserFolder.FullName + @"\AMTmailTemplate.msg");
 			if (path.Exists)
 				path.Delete();
 		}
 	}
-	
+
 	public static class DirectoryInfoExtensions
 	{
 		public static void CopyTo(this DirectoryInfo source, string targetString)

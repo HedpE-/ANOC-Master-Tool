@@ -122,7 +122,7 @@ namespace appCore.Templates.UI
 					SiteOwnerComboBox.Enabled = false;
 					TefSiteTextBox.ReadOnly = true;
 					CCTRefTextBox.ReadOnly = true;
-					RelatedINC_CRQTextBox.ReadOnly = true;
+					RelatedINC_CRQTextBox.Visible = false;
 					ActiveAlarmsTextBox.ReadOnly = true;
 					AlarmHistoryTextBox.ReadOnly = true;
 					TroubleshootTextBox.ReadOnly = true;
@@ -664,11 +664,13 @@ namespace appCore.Templates.UI
 				listView1.Columns.Add("MTX").Width = -2;
 				listView1.Columns.Add("Address").Width = -2;
 				
-				string[] strTofind = { "\r\n" };
-				string[] mtxs = Resources.MTX.Split(strTofind, StringSplitOptions.None);
+//				string[] strTofind = { "\r\n" };
+//				string mtx = Resources.MTX;
+//				string[] mtxs = mtx.Split(strTofind, StringSplitOptions.None);
+				string[] mtxs = Resources.MTX.Split('\n');
 				
 				foreach (string str in mtxs) {
-					string [] parsed = str.Replace("\\t","\t").Split('\t');
+					string [] parsed = str.Replace("\r", string.Empty).Replace("\\t","\t").Split('\t');
 					listView1.Items.Add(new ListViewItem(new string[]{parsed[0],parsed[1],parsed[2]}));
 				}
 				form.ShowDialog();
@@ -723,12 +725,12 @@ namespace appCore.Templates.UI
 		}
 		
 		void LoadTemplateFromLog(object sender, EventArgs e) {
+			// TODO: LoadTemplateFromLog
 //			MainForm.FillTemplateFromLog(currentTemplate);
 //			TabControl tb1 = (TabControl)MainForm.Controls["tabControl1"];
 //			TabControl tb2 = (TabControl)MainForm.Controls["tabControl2"];
 //			tb1.SelectTab(1);
 //			tb2.SelectTab(4);
-			// TODO: LoadTemplateFromLog
 		}
 
 		void GenerateTaskNotes(object sender, EventArgs e)
@@ -824,12 +826,14 @@ namespace appCore.Templates.UI
 				}
 			}
 			
+			if(currentTemplate != null)
+				currentTemplate = null;
 			currentTemplate = new TroubleShoot(Controls);
 			
 			if(UiMode == Template.UIenum.Template) {
 				// No changes since the last template warning
 				string errmsg = "";
-				if(currentTemplate.fullLog != prevTemp.fullLog) {
+				if(currentTemplate.ToString() != prevTemp.ToString()) {
 					if (INCTextBox.Text == prevTemp.INC) {
 						errmsg = "         - INC\n";
 					}
@@ -867,9 +871,9 @@ namespace appCore.Templates.UI
 					if (IntermittentIssueCheckBox.Checked && IntermittentIssueCheckBox.Checked == prevTemp.IntermittentIssue) {
 						errmsg += "         - Intermittent issue\n";
 					}
-					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
-						errmsg += "         - Related INC/CRQ\n";
-					}
+//					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
+//						errmsg += "         - Related INC/CRQ\n";
+//					}
 					if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms) {
 						errmsg += "         - Active Alarms\n";
 					}

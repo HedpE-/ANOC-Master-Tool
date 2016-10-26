@@ -117,6 +117,7 @@ namespace appCore.Templates.Types
 //				Signature = CurrentUser.fullName[1] + " " + CurrentUser.fullName[0] + Environment.NewLine + CurrentUser.department + Environment.NewLine + "ANOC Number: +44 163 569 206";
 //				Signature += CurrentUser.department == "1st Line RAN Support" ? "7" : "9";
 //			} catch (Exception) { }
+			fullLog = generateFullLog();
 			LogType = "Troubleshoot";
 		}
 		
@@ -171,7 +172,7 @@ namespace appCore.Templates.Types
 			if(log[ind].StartsWith("Related"))
 				RelatedINC_CRQ = log[ind++].Substring("Related INC/CRQ: ".Length) == "None" ? string.Empty : log[ind].Substring("Related INC/CRQ: ".Length);
 			else {
-				if(log[++ind].Substring("Currently open INCs:".Length) == " N/A")
+				if(log[++ind].Substring("Currently open INCs:".Length) == " None")
 					currentINCs = string.Empty;
 				else {
 					complete = Environment.NewLine;
@@ -185,7 +186,7 @@ namespace appCore.Templates.Types
 						else
 							complete += log[ind] + Environment.NewLine;
 					}
-					currentINCs = string.IsNullOrWhiteSpace(complete) ? " N/A" : complete;
+					currentINCs = string.IsNullOrWhiteSpace(complete) ? " None" : complete;
 				}
 			}
 			
@@ -275,7 +276,7 @@ namespace appCore.Templates.Types
 //			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
 			
 			template += Environment.NewLine;
-			template += "Currently open INCs:" + getCurrentINCs(true) + Environment.NewLine; // TODO: Pancho request: display Currently open INCs
+			template += "Currently open INCs:" + getCurrentINCs(true) + Environment.NewLine; // FIXME: [Test]Pancho request: display Currently open INCs
 			
 			template += "Active Alarms:" + Environment.NewLine + ActiveAlarms + Environment.NewLine + Environment.NewLine;
 			template += "Alarm History:" + Environment.NewLine + AlarmHistory + Environment.NewLine + Environment.NewLine;
@@ -286,7 +287,7 @@ namespace appCore.Templates.Types
 		}
 		
 		string getCurrentINCs(bool update = false) {
-			if(string.IsNullOrEmpty(currentINCs) || update) {
+			if(string.IsNullOrWhiteSpace(currentINCs) || update) {
 				currentINCs = string.Empty;
 				if(MainForm.TroubleshootUI.currentSite != null) {
 					if(MainForm.TroubleshootUI.currentSite.INCs == null)
@@ -299,13 +300,11 @@ namespace appCore.Templates.Types
 					}
 				}
 			}
-			else
-				if(string.IsNullOrEmpty(currentINCs))
-					currentINCs	= " N/A" + Environment.NewLine;
+			if(string.IsNullOrWhiteSpace(currentINCs))
+				currentINCs	= " None" + Environment.NewLine;
 			return currentINCs;
 		}
-		
-		
+				
 		public override string ToString()
 		{
 			if(string.IsNullOrEmpty(fullLog))

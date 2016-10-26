@@ -196,20 +196,20 @@ namespace appCore.DB
 			catch(ThreadAbortException) { }
 		}
 		
-		public static void RefreshDBFiles(string files) {
-			if(files == "all" || files.Contains("all_sites")) {
-				all_sites = new FileInfo(all_sites.FullName);
-				siteDetailsTable = all_sites.Exists ? Tools.GetDataTableFromCsv(all_sites, true) : buildSitesTable();
-			}
-			
-			if(files == "all" || files.Contains("all_cells")) {
-				all_cells = new FileInfo(all_cells.FullName);
-				cellDetailsTable = all_cells.Exists ? Tools.GetDataTableFromCsv(all_cells, true) : buildCellsTable();
-			}
-			
-			if(files == "all" || files.Contains("shifts"))
-				shiftsFile = new ShiftsFile();
-		}
+//		public static void RefreshDBFiles(string files) {
+//			if(files == "all" || files.Contains("all_sites")) {
+//				all_sites = new FileInfo(all_sites.FullName);
+//				siteDetailsTable = all_sites.Exists ? Tools.GetDataTableFromCsv(all_sites, true) : buildSitesTable();
+//			}
+//			
+//			if(files == "all" || files.Contains("all_cells")) {
+//				all_cells = new FileInfo(all_cells.FullName);
+//				cellDetailsTable = all_cells.Exists ? Tools.GetDataTableFromCsv(all_cells, true) : buildCellsTable();
+//			}
+//			
+//			if(files == "all" || files.Contains("shifts"))
+//				shiftsFile = new ShiftsFile();
+//		}
 		
 		static DataTable buildSitesTable() {
 			DataTable dt = new DataTable();

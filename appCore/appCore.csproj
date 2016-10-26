@@ -200,6 +200,7 @@
     </Compile>
     <Compile Include="UI\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="UI\SplashForm.cs" />
     <Compile Include="UI\SplashForm.Designer.cs">
@@ -283,7 +284,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SplashForm.resx">
       <DependentUpon>SplashForm.cs</DependentUpon>
@@ -337,6 +338,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Extensions\log4net.dll" />
     <EmbeddedResource Include="Extensions\HtmlAgilityPack.dll" />
+    <None Include="Toolbox\OneAgentSiteMgr.lnk" />
     <None Include="Web\SimpleHttpServer\Resources\Pages\404.html" />
     <None Include="Web\SimpleHttpServer\Resources\Pages\500.html" />
   </ItemGroup>

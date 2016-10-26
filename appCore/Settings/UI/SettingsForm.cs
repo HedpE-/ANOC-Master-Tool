@@ -70,7 +70,7 @@ namespace appCore.Settings.UI
 			                           		this.Close();
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Toolbox.Tools.darkenBackgroundForm(action, true, this);
 		}
 		
 		void Button3Click(object sender, EventArgs e)

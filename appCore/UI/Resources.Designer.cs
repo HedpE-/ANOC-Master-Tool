@@ -182,17 +182,18 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 6.9 01/08/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 6.9 11/08/2016 #######
 		///
 		///- Did a HUGE rework on the way AMT authenticates on SiteLopedia
 		///- Previous bugs on OI logon page disappear as it&apos;s never displayed, instead, logon is made silently.
 		///- Added a read only Address bar to easily keep track of the current address
 		///- A lot more changes are planned for the Browser module
+		///- Failed CRQ fixed
+		///- Fixed bug on Shifts Panel when clicking on a day
 		///
 		///####### ANOC Master Tool 6.8 01/08/2016 #######
 		///
-		///--------------------- Fully reworked SHIFTS CALENDAR ---------------------
-		///- Now the calendar is hidden, i [rest of string was truncated]&quot;;.
+		///--------------------- Fully reworked SHIFTS CA [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
@@ -228,7 +229,8 @@ namespace appCore.UI {
 		///Vdf NOC\t00441635682025
 		///Change Management\t00441635674999\tSiteShutdowns@vodafone.com
 		///
-		///HNOC 4G Huawei\t [rest of string was truncated]&quot;;.
+		///HNOC 4G Huawei\t00441635673122
+		///EN [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Contacts_1 {
 			get {
@@ -283,7 +285,7 @@ namespace appCore.UI {
 		///Cardiff\tXCF\tLinks Business Park, Fortran Road, St.Mellons, CF3 0LT
 		///Carlisle\tXCE\tKings Drive, Kingmoor Park South, Kingstown, Carlisle, CA6 4RD
 		///Crawley\tXCY\tCrawley Vector II, Newton Road, Manor Royal Estate, Crawley, RH10 9TT
-		///Croydon\tXCN\tUnit 9, Peterwood Park, Peterwoo [rest of string was truncated]&quot;;.
+		///Croydon\tXCN\tUnit 9, Peterwood Park, Peterwood Way, [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string MTX {
 			get {
@@ -388,7 +390,7 @@ namespace appCore.UI {
 		///Sites 6200 - 6499 are the O2/Vodafone highlands and Islands project.\par
 		///The Sites were designated either O2 or Vodafone lead. Whoever is the lead owner is responsible for cabin infrastructure, external to BTS AC/DC power and transmission.\par
 		///\par
-		///Site 6200-6320 are [rest of string was truncated]&quot;;.
+		///Site 6200-6320 are Vodaf [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Useful_Info {
 			get {
