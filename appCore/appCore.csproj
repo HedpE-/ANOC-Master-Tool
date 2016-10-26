@@ -338,7 +338,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Extensions\log4net.dll" />
     <EmbeddedResource Include="Extensions\HtmlAgilityPack.dll" />
-    <None Include="Toolbox\OneAgentSiteMgr.lnk" />
     <None Include="Web\SimpleHttpServer\Resources\Pages\404.html" />
     <None Include="Web\SimpleHttpServer\Resources\Pages\500.html" />
   </ItemGroup>
