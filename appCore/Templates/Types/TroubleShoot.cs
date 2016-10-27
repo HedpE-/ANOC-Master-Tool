@@ -57,7 +57,8 @@ namespace appCore.Templates.Types
 		public string Troubleshoot { get { return troubleshoot; } protected set { troubleshoot = value; } }
 		string bcpForm = string.Empty;
 		public string BcpForm { get { return bcpForm; } protected set { bcpForm = value; } }
-		string currentINCs;
+		string OngoingINCs;
+		string OngoingCRQs;
 		
 		public TroubleShoot() {
 			LogType = "Troubleshoot";
@@ -172,8 +173,25 @@ namespace appCore.Templates.Types
 			if(log[ind].StartsWith("Related"))
 				RelatedINC_CRQ = log[ind++].Substring("Related INC/CRQ: ".Length) == "None" ? string.Empty : log[ind].Substring("Related INC/CRQ: ".Length);
 			else {
-				if(log[++ind].Substring("Currently open INCs:".Length) == " None")
-					currentINCs = string.Empty;
+				if(log[++ind].Substring("Ongoing INCs:".Length) == " None")
+					OngoingINCs = log[ind++].Substring("Ongoing INCs:".Length);
+				else {
+					complete = Environment.NewLine;
+					for (ind++; ind < log.Length - 4; ind++) {
+						if (log[ind] == "") {
+							if (log[ind+1] == "Ongoing CRQs:") {
+								ind++;
+								break;
+							}
+						}
+						else
+							complete += log[ind] + Environment.NewLine;
+					}
+					OngoingINCs = string.IsNullOrWhiteSpace(complete) ? " None" : complete;
+				}
+				
+				if(log[++ind].Substring("Ongoing CRQs:".Length) == " None")
+					OngoingCRQs = log[ind++].Substring("Ongoing CRQs:".Length);
 				else {
 					complete = Environment.NewLine;
 					for (ind++; ind < log.Length - 4; ind++) {
@@ -186,7 +204,7 @@ namespace appCore.Templates.Types
 						else
 							complete += log[ind] + Environment.NewLine;
 					}
-					currentINCs = string.IsNullOrWhiteSpace(complete) ? " None" : complete;
+					OngoingCRQs = string.IsNullOrWhiteSpace(complete) ? " None" : complete;
 				}
 			}
 			
@@ -276,7 +294,8 @@ namespace appCore.Templates.Types
 //			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
 			
 			template += Environment.NewLine;
-			template += "Currently open INCs:" + getCurrentINCs(true) + Environment.NewLine; // FIXME: [Test]Pancho request: display Currently open INCs
+			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine; // FIXME: [Test]Pancho request: display Ongoing INCs
+			template += "Ongoing CRQs:" + getCurrentCases("CRQ", true) + Environment.NewLine; // FIXME: [Test]Pancho request: display Ongoing CRQs
 			
 			template += "Active Alarms:" + Environment.NewLine + ActiveAlarms + Environment.NewLine + Environment.NewLine;
 			template += "Alarm History:" + Environment.NewLine + AlarmHistory + Environment.NewLine + Environment.NewLine;
@@ -285,26 +304,43 @@ namespace appCore.Templates.Types
 			
 			return template;
 		}
-		
-		string getCurrentINCs(bool update = false) {
-			if(string.IsNullOrWhiteSpace(currentINCs) || update) {
-				currentINCs = string.Empty;
+		/// <summary>
+		/// Gets INC's or CRQ's from site class
+		/// </summary>
+		/// <param name="type">"INC", "CRQ"</param>
+		/// <param name="update">Forces data update</param>
+		/// <returns></returns>
+		string getCurrentCases(string type, bool update = false) {
+			string temp = string.Empty;
+			temp = type == "INC" ? OngoingINCs : OngoingCRQs;
+			if(string.IsNullOrWhiteSpace(temp) || update) {
+				temp = string.Empty;
 				if(MainForm.TroubleshootUI.currentSite != null) {
-					if(MainForm.TroubleshootUI.currentSite.INCs == null)
-						MainForm.TroubleshootUI.currentSite.requestOIData("INC");
-					if(MainForm.TroubleshootUI.currentSite.INCs != null) {
-						currentINCs += Environment.NewLine;
-						DataRow[] filteredINCs = MainForm.TroubleshootUI.currentSite.INCs.Select("Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'");
-						foreach (DataRow row in filteredINCs)
-							currentINCs += row["Incident Ref"] + " - " + row["Summary"] + " - " + row["Submit Date"] + Environment.NewLine;
+					DataTable cases;
+					cases = type == "INC" ? MainForm.TroubleshootUI.currentSite.INCs : MainForm.TroubleshootUI.currentSite.CRQs;
+					if(cases == null) {
+						MainForm.TroubleshootUI.currentSite.requestOIData(type);
+						cases = type == "INC" ? MainForm.TroubleshootUI.currentSite.INCs : MainForm.TroubleshootUI.currentSite.CRQs;
+					}
+					if(cases != null) {
+						temp += Environment.NewLine;
+						string query;
+						query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+							"Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + DateTime.Now.ToString("dd/mm/yyyy") +"#";
+						DataRow[] filteredCases = cases.Select(query);
+						foreach (DataRow row in filteredCases) {
+							string rowString = type == "INC" ? row["Incident Ref"] + " - " + row["Summary"] + " - " + row["Submit Date"] + Environment.NewLine :
+								row["Change Ref"] + " - " + row["Summary"] + " - " + row["Scheduled Start"] + " - " + row["Scheduled End"] + Environment.NewLine;
+							temp += rowString;
+						}
 					}
 				}
 			}
-			if(string.IsNullOrWhiteSpace(currentINCs))
-				currentINCs	= " None" + Environment.NewLine;
-			return currentINCs;
+			if(string.IsNullOrWhiteSpace(OngoingINCs))
+				temp = " None" + Environment.NewLine;
+			return temp;
 		}
-				
+		
 		public override string ToString()
 		{
 			if(string.IsNullOrEmpty(fullLog))

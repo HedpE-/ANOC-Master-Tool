@@ -4,8 +4,8 @@ namespace appCore.Toolbox
 	using System.Collections.Generic;
 	using System.Data;
 	using System.Diagnostics;
-	using System.DirectoryServices;
-	using System.DirectoryServices.AccountManagement;
+//	using System.DirectoryServices;
+//	using System.DirectoryServices.AccountManagement;
 	using System.Drawing;
 	using System.Drawing.Drawing2D;
 	using System.Globalization;
@@ -13,7 +13,7 @@ namespace appCore.Toolbox
 	using System.Linq;
 	using System.Reflection;
 	using System.Text;
-	using System.Threading;
+//	using System.Threading;
 	using System.Windows.Forms;
 //	using Excel;
 //	using msExcel = Microsoft.Office.Interop.Excel;
@@ -391,6 +391,8 @@ namespace appCore.Toolbox
 		{
 			// http://www.codeproject.com/Articles/528178/Load-DLL-From-Embedded-Resource
 			
+			EmbeddedAssembly.Load("appCore.GMap.NET.Lib.GMap.NET.Core.dll", "GMap.NET.Core.dll");
+			EmbeddedAssembly.Load("appCore.GMap.NET.Lib.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.Transitions.dll", "Transitions.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.RestSharp.dll", "RestSharp.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.Excel.dll", "Excel.dll");
@@ -460,7 +462,7 @@ namespace appCore.Toolbox
 		/// </summary>
 		/// <param name="html">HTML returned from OI</param>
 		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits"</param>
-		public static DataTable ConvertHtmlTabletoDataTable(string html, string tableName) {			
+		public static DataTable ConvertHtmlTabletoDataTable(string html, string tableName) {
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
@@ -472,7 +474,11 @@ namespace appCore.Toolbox
 			string test2;
 //			if(tableName != "table_visits") {
 			foreach (HtmlNode th in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("th")) {
-				dt.Columns.Add(th.InnerText);
+				test = th.InnerText;
+				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site")
+					dt.Columns.Add(th.InnerText, typeof(DateTime));
+				else
+					dt.Columns.Add(th.InnerText);
 			}
 			
 			// Build DataTable
@@ -493,7 +499,11 @@ namespace appCore.Toolbox
 				if(tableRow.Count > 0) {
 					DataRow dataRow = dt.NewRow();
 					for(int c = 0;c < tableRow.Count;c++) {
-						dataRow[c] = tableRow[c];
+						if(dt.Columns[c].DataType == typeof(DateTime))
+							if(!string.IsNullOrWhiteSpace(tableRow[c]))
+								dataRow[c] = Convert.ToDateTime(tableRow[c]);
+						else
+							dataRow[c] = tableRow[c];
 					}
 					dt.Rows.Add(dataRow);
 				}
