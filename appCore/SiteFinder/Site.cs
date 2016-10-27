@@ -319,8 +319,12 @@ namespace appCore.SiteFinder
 									table_inc = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_inc.txt")[0];
 								}
 								catch (Exception) {	}
-								if(table_inc != null)
+								if(table_inc != null) {
 									INCs = FetchINCs(table_inc);
+									DataView dv = INCs.DefaultView;
+									dv.Sort = "Incident Ref desc";
+									INCs = dv.ToTable();
+								}
 							}
 							
 							if(dataToRequest.Contains("CRQ") || dataToRequest.Contains("AllSite")) {
@@ -329,8 +333,12 @@ namespace appCore.SiteFinder
 									table_crq = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_crq.txt")[0];
 								}
 								catch (Exception) { }
-								if(table_crq != null)
+								if(table_crq != null) {
 									CRQs = FetchCRQs(table_crq);
+									DataView dv = CRQs.DefaultView;
+									dv.Sort = "Scheduled Start desc";
+									CRQs = dv.ToTable();
+								}
 							}
 							
 							if(dataToRequest.Contains("Alarms")) {
@@ -339,8 +347,12 @@ namespace appCore.SiteFinder
 									table_alarms = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_alarms.txt")[0];
 								}
 								catch (Exception) { }
-								if(table_alarms != null)
+								if(table_alarms != null) {
 									ActiveAlarms = FetchActiveAlarms(table_alarms);
+									DataView dv = ActiveAlarms.DefaultView;
+									dv.Sort = "Date/Time desc";
+									ActiveAlarms = dv.ToTable();
+								}
 							}
 							
 							if(dataToRequest.Contains("Bookins")) {
@@ -349,8 +361,14 @@ namespace appCore.SiteFinder
 									table_visits = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_visits.txt")[0];
 								}
 								catch (Exception) { }
-								if(table_visits != null)
-									BookIns = FetchBookIns(table_visits);
+								if(table_visits != null) {
+									this.BookIns = FetchBookIns(table_visits);
+//									BookIns = FetchBookIns(table_visits);
+									DataView dv = this.BookIns.DefaultView;
+//									DataView dv = BookIns.DefaultView;
+									dv.Sort = "Visit desc";
+									DataTable BookIns = dv.ToTable();
+								}
 							}
 						}
 					}

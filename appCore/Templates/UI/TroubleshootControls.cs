@@ -1128,7 +1128,7 @@ namespace appCore.Templates.UI
 			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
 			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
-			// copyToNewTemplateToolStripMenuItem
+			// sendBCPToolStripMenuItem
 			// 
 			sendBCPToolStripMenuItem.Name = "sendBCPToolStripMenuItem";
 			sendBCPToolStripMenuItem.Text = "Send BCP Form";

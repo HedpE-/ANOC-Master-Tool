@@ -2195,6 +2195,7 @@ namespace appCore
 			// 
 			// vxcbvToolStripMenuItem
 			// 
+			this.vxcbvToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.vxcbvToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.vxcbvToolStripMenuItem.Name = "vxcbvToolStripMenuItem";
 			this.vxcbvToolStripMenuItem.Size = new System.Drawing.Size(55, 21);
@@ -2205,7 +2206,7 @@ namespace appCore
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(192, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(183, 26);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -2213,20 +2214,20 @@ namespace appCore
 			this.toolStripMenuItem3,
 			this.toolStripMenuItem2});
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 22);
 			this.toolStripMenuItem1.Text = "Change background...";
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(179, 22);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItem3.Text = "Default background";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.ToolStripMenuItem3Click);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
 			// 

@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
@@ -53,10 +54,23 @@ namespace appCore.SiteFinder.UI
 			listView1.SuspendLayout();
 			listView1.Items.Clear();
 			listView1.View = View.Details;
-			foreach(DataColumn col in Datatable.Columns)
+			foreach(DataColumn col in Datatable.Columns) {
 				listView1.Columns.Add(col.ColumnName);
-			foreach (DataRow row in Datatable.Rows)
-				listView1.Items.Add(new ListViewItem(row.ItemArray.Cast<string>().ToArray()));
+			}
+			
+			foreach (DataRow row in Datatable.Rows) {
+				List<string> rowList = new List<string>();
+				for(int c = 0;c < Datatable.Columns.Count;c++) {
+					if(Datatable.Columns[c].DataType == typeof(DateTime)) {
+						if (!(row[c] is DBNull))
+							rowList.Add(Convert.ToDateTime(row[c]).ToString("dd-MM-yyyy HH:mm"));
+						continue;
+					}
+					rowList.Add(row[c].ToString());
+				}
+				listView1.Items.Add(new ListViewItem(rowList.ToArray()));
+			}
+			
 			foreach (ColumnHeader col in listView1.Columns)
 				col.Width = -2;
 			

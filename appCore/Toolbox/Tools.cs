@@ -474,7 +474,6 @@ namespace appCore.Toolbox
 			string test2;
 //			if(tableName != "table_visits") {
 			foreach (HtmlNode th in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("th")) {
-				test = th.InnerText;
 				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else
@@ -499,9 +498,10 @@ namespace appCore.Toolbox
 				if(tableRow.Count > 0) {
 					DataRow dataRow = dt.NewRow();
 					for(int c = 0;c < tableRow.Count;c++) {
-						if(dt.Columns[c].DataType == typeof(DateTime))
+						if(dt.Columns[c].DataType == typeof(DateTime)) {
 							if(!string.IsNullOrWhiteSpace(tableRow[c]))
 								dataRow[c] = Convert.ToDateTime(tableRow[c]);
+						}
 						else
 							dataRow[c] = tableRow[c];
 					}
