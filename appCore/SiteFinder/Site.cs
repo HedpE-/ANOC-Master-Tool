@@ -268,6 +268,8 @@ namespace appCore.SiteFinder
 				MapMarker.ToolTip.Stroke = new Pen(Color.Red);
 				MapMarker.ToolTip.Offset.X -= 15;
 				MapMarker.ToolTipText = Id;
+				
+				UpdateLockedCells();
 			}
 		}
 		
@@ -453,6 +455,58 @@ namespace appCore.SiteFinder
 			return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 		}
 		
+		string getOiCellsLockedState() {
+			string response = Web.OIConnection.Connection.requestPhpOutput("index", Id, string.Empty);
+			
+			HtmlDocument doc = new HtmlDocument();
+			doc.Load(new StringReader(response));
+			
+			int cellNameColumn = 0;
+			int lockedStateColumn = 0;
+			HtmlNode cellsTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").Descendants("table").First();
+			IEnumerable<HtmlNode> CTNdescendants = cellsTableNode.Descendants("th");
+			for(int c = 0;c < CTNdescendants.Count();c++) {
+				string test = CTNdescendants.ElementAt(c).Name;
+				string test2 = CTNdescendants.ElementAt(c).InnerHtml;
+				int test3 = CTNdescendants.Count();
+				if(CTNdescendants.ElementAt(c).Name == "th") {
+					if(CTNdescendants.ElementAt(c).InnerText == ("Cell Name"))
+						cellNameColumn = c;
+					else {
+						if(CTNdescendants.ElementAt(c).InnerHtml.Contains("fa fa-lock"))
+							lockedStateColumn = c;
+					}
+					if(cellNameColumn > 0 && lockedStateColumn > 0)
+						break;
+				}
+			}
+			
+			// Content of a locked cell
+			// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
+			
+			string[] strTofind = { "<br>" };
+			return cellsTableNode.Descendants("td").ElementAt(lockedStateColumn).InnerHtml.Replace("<br>",";");
+		}
+		
+		public void UpdateLockedCells() {
+			if(Exists) {
+				HttpStatusCode status = HttpStatusCode.NotFound;
+				if(Web.OIConnection.Connection == null)
+					status = Web.OIConnection.EstablishConnection();
+				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
+				if(statusCode == HttpStatusCode.OK)
+					getOiCellsLockedState();
+				
+				foreach (Cell cell in Cells) {
+					
+				}
+			}
+		}
+		
+		public void LockUnlockCells() {
+//			string response = Web.OIConnection.Connection.requestPhpOutput("enterlock", Id, cellsList, ManRef, comments, false);
+		}
+		
 		Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
@@ -468,6 +522,7 @@ namespace appCore.SiteFinder
 			}
 		}
 	}
+	
 	// TODO: SiteExtension class
 	public static class SiteExtension {
 		public static DataRow[] NotClosed(this DataTable toFilter) {

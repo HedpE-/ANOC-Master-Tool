@@ -17,8 +17,6 @@ namespace appCore.SiteFinder
 	/// <summary>
 	/// Description of Cell.
 	/// </summary>
-//	[Serializable]
-//	public class Cell : CellObjectBase
 	public class Cell
 	{
 		string SITE = string.Empty;
@@ -50,7 +48,8 @@ namespace appCore.SiteFinder
 		string NOC = string.Empty;
 		public string Noc { get { return NOC; } }
 		public string WBTS_BCF { get; private set; }
-		string LOCKED = string.Empty;
+		bool LOCKED;
+		public bool Locked { get { return LOCKED; } }
 		string IP_2G_I = string.Empty;
 		public string InnerIP2G { get { return IP_2G_I; } }
 		string IP_2G_E = string.Empty;
@@ -92,7 +91,7 @@ namespace appCore.SiteFinder
 			try { NTQ = _cell[_cell.Row.Table.Columns.IndexOf("NTQ")].ToString(); } catch (Exception) { }
 			try { NOC = _cell[_cell.Row.Table.Columns.IndexOf("NOC")].ToString(); } catch (Exception) { }
 			try { WBTS_BCF = _cell[_cell.Row.Table.Columns.IndexOf("WBTS_BCF")].ToString(); } catch (Exception) { }
-			try { LOCKED = _cell[_cell.Row.Table.Columns.IndexOf("LOCKED")].ToString(); } catch (Exception) { }
+//			try { LOCKED = _cell[_cell.Row.Table.Columns.IndexOf("LOCKED")].ToString(); } catch (Exception) { }
 			try { IP_2G_I = _cell[_cell.Row.Table.Columns.IndexOf("IP_2G_I")].ToString(); } catch (Exception) { }
 			try { IP_2G_E = _cell[_cell.Row.Table.Columns.IndexOf("IP_2G_E")].ToString(); } catch (Exception) { }
 			try { IP_3G_I = _cell[_cell.Row.Table.Columns.IndexOf("IP_3G_I")].ToString(); } catch (Exception) { }

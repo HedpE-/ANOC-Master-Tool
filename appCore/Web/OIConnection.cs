@@ -220,6 +220,29 @@ namespace appCore.Web
 			return response.Content;
 		}
 		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"enterlock"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="cell">Cell number</param>
+		public string requestPhpOutput(string phpFile, string site, List<string> cellsList, string INC_CRQ_Ref, string comments, bool toggle)
+		{
+			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
+			foreach(string cell in cellsList)
+				request.AddParameter("checkbox" + cell, toggle ? "on" : "off");
+			
+			request.AddParameter("ManRef", INC_CRQ_Ref);
+			request.AddParameter("Comment", comments);
+			request.AddParameter("Site", site);
+			request.AddHeader("Content-Type", "application/html");
+			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+			IRestResponse response = client.Execute(request);
+			
+			return response.Content;
+		}
+		
 		
 //			                        	I use the system.windows.forms.webbrowser and
 //

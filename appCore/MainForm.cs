@@ -780,7 +780,8 @@ namespace appCore
 			TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
 			TicketCountLabel.Click += TicketCountLabelClick;
 			
-			if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName != "Caramelos" || CurrentUser.userName == "SANTOSS2") {
+			// UNDONE: Developer specific action
+			if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos" || CurrentUser.userName == "SANTOSS2") {
 				Button butt2 = new Button();
 				butt2.Name = "butt2";
 				butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
@@ -789,11 +790,19 @@ namespace appCore
 				butt2.Click += buttClick;
 				tabPage1.Controls.Add(butt2);
 				
-				Button butt = new Button();
-				butt.Name = "butt";
-				butt.Location = new Point(5, butt2.Top - butt.Height - 5);
-				butt.Click += buttClick;
-				tabPage1.Controls.Add(butt);
+//				Button butt = new Button();
+//				butt.Name = "butt";
+//				butt.Location = new Point(5, butt2.Top - butt.Height - 5);
+//				butt.Click += buttClick;
+//				tabPage1.Controls.Add(butt);
+				if(CurrentUser.userName == "GONCARJ3") {
+					OutageUI.Location = new Point(1, 2);
+					tabPage17.Controls.Add(OutageUI);
+				}
+			}
+			if(CurrentUser.userName != "GONCARJ3" && CurrentUser.userName != "Caramelos") {
+				tabControl1.TabPages.Remove(tabPage17); // new outage reports
+				tabControl3.TabPages.Remove(tabPage14); // Alcatel scripts tab
 			}
 			
 			TroubleshootUI.Location = new Point(1, 2);
@@ -804,8 +813,6 @@ namespace appCore
 			tabPage6.Controls.Add(UpdateUI);
 			TXUI.Location = new Point(1, 2);
 			tabPage9.Controls.Add(TXUI);
-			OutageUI.Location = new Point(1, 2);
-			tabPage17.Controls.Add(OutageUI);
 			
 			SplashForm.UpdateLabelText("Loading Databases");
 			
@@ -813,68 +820,6 @@ namespace appCore
 			
 			GlobalProperties.siteFinder_mainswitch = false;
 			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
-			
-//			FileInfo[] shiftsFiles = null;
-//			string shiftsFile = string.Empty;
-//			bool showPanel = true;
-			
-//			if(showPanel) {
-//				if(GlobalProperties.shareAccess) {
-//					DirectoryInfo ShiftsDir = new DirectoryInfo(GlobalProperties.ShareRootDir.FullName + @"\ANOC Master Tool\Shifts");
-//					shiftsFiles = ShiftsDir.GetFiles("shift*.xlsx");
-//					if(shiftsFiles.Length == 0)
-//						shiftsFiles = UserFolder.GetFiles("shift*.xlsx");
-//				}
-//				else
-//					shiftsFiles = UserFolder.GetFiles("shift*.xlsx");
-//
-//				if(shiftsFiles.Length > 0) {
-//					if(shiftsFiles.Length == 1)
-//						shiftsFile = shiftsFiles[0].FullName;
-//					else {
-//						DateTime newestDate = Convert.ToDateTime("01/01/1900 00:00:00");
-//						foreach (FileInfo file in shiftsFiles) {
-//							if(file.LastWriteTime > newestDate && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
-//								newestDate = file.LastWriteTime;
-//								shiftsFile = file.FullName;
-//							}
-//						}
-//					}
-//					if(GlobalProperties.shareAccess && CurrentUser.userName == "GONCARJ3") {
-//						FileInfo officialShiftsDoc = Databases.ShiftsDoc;
-//						FileInfo copyShiftsDoc = new FileInfo(shiftsFile);
-//						if(Databases.ShiftsDoc.LastWriteTime > copyShiftsDoc.LastWriteTime) {
-//							string oldDir = copyShiftsDoc.DirectoryName + @"\Old";
-			////							if(File.Exists(oldDir + "\\" + copyShiftsDoc.Name))
-			////								File.Delete(oldDir + "\\" + copyShiftsDoc.Name);
-//							copyShiftsDoc.MoveTo(oldDir + "\\" + copyShiftsDoc.Name);
-//							shiftsFile = officialShiftsDoc.CopyTo(copyShiftsDoc.Directory.Parent.FullName + "\\" + officialShiftsDoc.Name).FullName;
-//							trayIcon.showBalloon("Shifts file updated", officialShiftsDoc.Name);
-//						}
-//					}
-//					else {
-//						if(Tools.GetUserDetails("Username") == "Caramelos") {
-//							FileInfo officialShiftsDoc = new FileInfo(ShiftsDoc);
-//							FileInfo copyShiftsDoc = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ANOC Master Tool\\Shift 2016_July.xlsx");
-//							if(copyShiftsDoc.Exists) {
-//								if(officialShiftsDoc.LastWriteTime > copyShiftsDoc.LastWriteTime) {
-//									string oldDir = copyShiftsDoc.DirectoryName + @"\Old\";
-//									if(File.Exists(oldDir + copyShiftsDoc.Name))
-//										File.Delete(oldDir + copyShiftsDoc.Name);
-//									copyShiftsDoc.MoveTo(oldDir + copyShiftsDoc.Name);
-//									shiftsFile = officialShiftsDoc.CopyTo(copyShiftsDoc.Directory.Parent.FullName + "\\" + officialShiftsDoc.Name).FullName;
-//								}
-//							}
-//							else
-//								shiftsFile = officialShiftsDoc.CopyTo(copyShiftsDoc.DirectoryName + "\\" + officialShiftsDoc.Name).FullName;
-//						}
-//					}
-//				}
-//				else {
-//					showPanel = false;
-//					pictureBox6.Visible = false;
-//					goto noPanel;
-//				}
 			
 			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations"))) {
 				foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + Toolbox.Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Toolbox.Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'");
@@ -937,13 +882,7 @@ namespace appCore
 			trayIcon.toggleShareAccess();
 			
 			toolTipDeploy();
-			
-			// UNDONE: Hide unfinished work
-			if(CurrentUser.userName != "GONCARJ3" && CurrentUser.userName != "Caramelos") {
-				tabControl1.TabPages.Remove(tabPage17); // new outage reports
-				tabControl3.TabPages.Remove(tabPage14); // Alcatel scripts tab
-			}
-			
+						
 			richTextBox9.Height = 206;
 			richTextBox9.Width = 499;
 			richTextBox9.Left = 6;

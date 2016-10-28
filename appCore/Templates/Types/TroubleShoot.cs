@@ -295,8 +295,8 @@ namespace appCore.Templates.Types
 //			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
 			
 			template += Environment.NewLine;
-			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine; // FIXME: [Test]Pancho request: display Ongoing INCs
-			template += "Ongoing CRQs:" + getCurrentCases("CRQ", true) + Environment.NewLine; // FIXME: [Test]Pancho request: display Ongoing CRQs
+			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine;
+			template += "Ongoing CRQs:" + getCurrentCases("CRQ", true) + Environment.NewLine;
 			
 			template += "Active Alarms:" + Environment.NewLine + ActiveAlarms + Environment.NewLine + Environment.NewLine;
 			template += "Alarm History:" + Environment.NewLine + AlarmHistory + Environment.NewLine + Environment.NewLine;
@@ -324,34 +324,35 @@ namespace appCore.Templates.Types
 						cases = type == "INC" ? MainForm.TroubleshootUI.currentSite.INCs : MainForm.TroubleshootUI.currentSite.CRQs;
 					}
 					if(cases != null) {
-						temp += Environment.NewLine;
-						string query = 1.ToString();
-						query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-							"Status NOT LIKE 'Closed'"; // AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
-						List<DataRow> filteredCases = cases.Select(query).ToList();
-						if(type == "CRQ" && filteredCases.Count > 0) { // TODO: getCurrentCases test with OngoingCRQs.Count > 0
-							for(int c = 0;c < filteredCases.Count;c++) {
-								DataRow row = filteredCases[c];
-								if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-									if(!(DateTime.Now >= Convert.ToDateTime(row["Scheduled Start"]) && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
-										filteredCases.RemoveAt(c);
-										c--;
+						if(cases.Rows.Count > 0) {
+							temp += Environment.NewLine;
+							string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+								"Status NOT LIKE 'Closed'"; // AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+							List<DataRow> filteredCases = cases.Select(query).ToList();
+							if(type == "CRQ" && filteredCases.Count > 0) { // TODO: getCurrentCases test with OngoingCRQs.Count > 0
+								for(int c = 0;c < filteredCases.Count;c++) {
+									DataRow row = filteredCases[c];
+									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
+										if(!(DateTime.Now >= Convert.ToDateTime(row["Scheduled Start"]) && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+											filteredCases.RemoveAt(c);
+											c--;
+										}
 									}
 								}
 							}
-						}
-						foreach(DataRow row in filteredCases) {
-							string rowString = string.Empty;
-							if(type == "INC")
-								rowString = row["Incident Ref"] + " - " + row["Summary"] + " - " + ((DateTime)row["Submit Date"]).ToString("dd-MM-yyyy HH:mm") + Environment.NewLine;
-							else {
-								string startDate = string.Empty;
-								string endDate = string.Empty;
-								try { startDate = Convert.ToDateTime(row["Scheduled Start"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
-								try { endDate = Convert.ToDateTime(row["Scheduled End"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
-								rowString = row["Change Ref"] + " - " + row["Summary"] + " - " + startDate + " until " + endDate + Environment.NewLine;
+							foreach(DataRow row in filteredCases) {
+								string rowString = string.Empty;
+								if(type == "INC")
+									rowString = row["Incident Ref"] + " - " + row["Summary"] + " - " + ((DateTime)row["Submit Date"]).ToString("dd-MM-yyyy HH:mm") + Environment.NewLine;
+								else {
+									string startDate = string.Empty;
+									string endDate = string.Empty;
+									try { startDate = Convert.ToDateTime(row["Scheduled Start"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
+									try { endDate = Convert.ToDateTime(row["Scheduled End"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
+									rowString = row["Change Ref"] + " - " + row["Summary"] + " - " + startDate + " until " + endDate + Environment.NewLine;
+								}
+								temp += rowString;
 							}
-							temp += rowString;
 						}
 					}
 				}
