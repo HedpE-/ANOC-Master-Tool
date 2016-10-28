@@ -56,7 +56,6 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.ListView listView3;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -121,7 +120,6 @@ namespace appCore.SiteFinder.UI
 			this.label12 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.label13 = new System.Windows.Forms.Label();
-			this.listView3 = new System.Windows.Forms.ListView();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -584,26 +582,11 @@ namespace appCore.SiteFinder.UI
 			this.label13.Text = "label13";
 			this.label13.Visible = false;
 			// 
-			// listView3
-			// 
-			this.listView3.AutoArrange = false;
-			this.listView3.FullRowSelect = true;
-			this.listView3.GridLines = true;
-			this.listView3.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listView3.Location = new System.Drawing.Point(5, 626);
-			this.listView3.Name = "listView3";
-			this.listView3.Size = new System.Drawing.Size(935, 143);
-			this.listView3.TabIndex = 120;
-			this.listView3.UseCompatibleStateImageBehavior = false;
-			this.listView3.View = System.Windows.Forms.View.Details;
-			this.listView3.Visible = false;
-			// 
 			// siteDetails2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(952, 781);
-			this.Controls.Add(this.listView3);
+			this.ClientSize = new System.Drawing.Size(952, 626);
 			this.Controls.Add(this.label11);
 			this.Controls.Add(this.listView2);
 			this.Controls.Add(this.textBox7);

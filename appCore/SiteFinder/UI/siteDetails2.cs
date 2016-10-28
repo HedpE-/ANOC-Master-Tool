@@ -45,12 +45,6 @@ namespace appCore.SiteFinder.UI
 			myMap = drawGMap("myMap",false);
 			Controls.Add(myMap);
 			Shown += populateSingleForm;
-			if(currentSite.INCs != null) {
-				populateINCs();
-				listView3.Visible = true;
-			}
-			else
-				listView3.Visible = false;
 		}
 		
 		void populateSingleForm(object sender, EventArgs e)
@@ -105,19 +99,19 @@ namespace appCore.SiteFinder.UI
 			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 		}
 		
-		void populateINCs() {
-			listView3.Items.Clear();
-			listView3.SuspendLayout();
-			listView3.View = View.Details;
-			foreach(DataColumn col in currentSite.INCs.Columns)
-				listView3.Columns.Add(col.ColumnName);
-			foreach (DataRow row in currentSite.INCs.Rows)
-				listView3.Items.Add(new ListViewItem(row.ItemArray.Cast<string>().ToArray()));
-			foreach (ColumnHeader col in listView3.Columns)
-				col.Width = -2;
-			
-			listView3.ResumeLayout();
-		}
+//		void populateINCs() {
+//			listView3.Items.Clear();
+//			listView3.SuspendLayout();
+//			listView3.View = View.Details;
+//			foreach(DataColumn col in currentSite.INCs.Columns)
+//				listView3.Columns.Add(col.ColumnName);
+//			foreach (DataRow row in currentSite.INCs.Rows)
+//				listView3.Items.Add(new ListViewItem(row.ItemArray.Cast<string>().ToArray()));
+//			foreach (ColumnHeader col in listView3.Columns)
+//				col.Width = -2;
+//			
+//			listView3.ResumeLayout();
+//		}
 		
 		void initializeListviews() {
 			listView1.View = View.Details;

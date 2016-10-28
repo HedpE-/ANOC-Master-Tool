@@ -376,19 +376,6 @@ namespace appCore.SiteFinder
 			}
 		}
 		
-		public void refreshOiData(object sender) {
-			HttpStatusCode status = HttpStatusCode.NotFound;
-			if(Web.OIConnection.Connection == null)
-				status = Web.OIConnection.EstablishConnection();
-			HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
-			if(statusCode == HttpStatusCode.OK) {
-				INCs = FetchINCs();
-				CRQs = FetchCRQs();
-				ActiveAlarms = FetchActiveAlarms();
-				BookIns = FetchBookIns();
-			}
-		}
-		
 		DataTable FetchINCs(FileSystemInfo table_inc = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;

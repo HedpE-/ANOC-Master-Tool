@@ -986,6 +986,7 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
+						dataToShow = "CRQs";
 						dt = currentSite.CRQs;
 						break;
 					case "BookInsButton":
@@ -1043,7 +1044,7 @@ namespace appCore.Templates.UI
 		}
 		
 		void refreshOiData(object sender, EventArgs e) {
-			currentSite.refreshOiData(sender);
+			currentSite.requestOIData("INCCRQBookinsAlarms");
 			MainMenu.siteFinder_Toggle(true);
 		}
 		

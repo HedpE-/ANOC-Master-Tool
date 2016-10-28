@@ -12,6 +12,7 @@ namespace appCore.Toolbox
 	using System.IO;
 	using System.Linq;
 	using System.Reflection;
+	using System.Security.Cryptography;
 	using System.Text;
 //	using System.Threading;
 	using System.Windows.Forms;
@@ -39,6 +40,34 @@ namespace appCore.Toolbox
 			November,
 			December
 		};
+		// TODO: Implement MD5 Hash check
+		public static string CalculateMD5Hash(FileInfo filename) {
+			MD5 md5 = MD5.Create();
+			FileStream stream = File.OpenRead(filename.FullName);
+			byte[] hash = md5.ComputeHash(stream);
+
+			return convertByteArrayToHex(hash);
+		}
+		
+		public static string CalculateMD5Hash(string input) {
+			// step 1, calculate MD5 hash from input
+
+			MD5 md5 = MD5.Create();
+			byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+			byte[] hash = md5.ComputeHash(inputBytes);
+
+			return convertByteArrayToHex(hash);
+		}
+		
+		public static string convertByteArrayToHex(byte[] hash) {
+			// step 2, convert byte array to hex string
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < hash.Length; i++) {
+				sb.Append(hash[i].ToString("X2"));
+			}
+			return sb.ToString();
+		}
 
 		public static void CreateMailItem(string sendTo, string sendCC, string mailSubject, string mailBody, bool HTML)
 		{

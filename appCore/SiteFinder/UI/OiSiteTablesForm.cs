@@ -29,15 +29,15 @@ namespace appCore.SiteFinder.UI
 			Datatable = inputDataTable;
 			InitializeComponent();
 			switch(dataToShow) {
-				case "INC":
+				case "INCs":
 					this.Name = "INCsOiDataTableForm";
 					DataType = "INCs";
 					break;
-				case "CRQ":
+				case "CRQs":
 					this.Name = "CRQsOiDataTableForm";
 					DataType = "CRQs";
 					break;
-				case "Alarms":
+				case "ActiveAlarms":
 					this.Name = "ActiveAlarmsOiDataTableForm";
 					DataType = "ActiveAlarms";
 					break;
@@ -55,7 +55,7 @@ namespace appCore.SiteFinder.UI
 			listView1.Items.Clear();
 			listView1.View = View.Details;
 			foreach(DataColumn col in Datatable.Columns) {
-				listView1.Columns.Add(col.ColumnName);
+				ColumnHeader column = listView1.Columns.Add(col.ColumnName, col.ColumnName);
 			}
 			
 			foreach (DataRow row in Datatable.Rows) {
@@ -86,6 +86,32 @@ namespace appCore.SiteFinder.UI
 				else {
 					populateListView();
 					filter = "all";
+				}
+			}
+		}
+		
+		void ListView1KeyDown(object sender, KeyEventArgs e) {
+			if(e.Control && e.KeyCode == Keys.C) {
+				if(listView1.SelectedItems.Count > 0) {
+					string columnName = string.Empty;
+					switch(DataType) {
+						case "INCs":
+							columnName = "Incident Ref";
+							break;
+						case "CRQs":
+							columnName = "Change Ref";
+							break;
+						case "BookIns":
+							columnName = "Engineer";
+							break;
+						case "ActiveAlarms":
+							columnName = "Group";
+							break;
+					}
+					try {
+						Clipboard.SetText(listView1.SelectedItems[0].SubItems[listView1.Columns[columnName].Index].Text);
+					}
+					catch(Exception) {}
 				}
 			}
 		}

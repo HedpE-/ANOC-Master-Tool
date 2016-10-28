@@ -238,7 +238,7 @@ namespace appCore.UI
 			MainMenu.Name = "MainMenu";
 			MainMenu.Text = "|||";
 			MainMenu.TextAlign = ContentAlignment.MiddleCenter;
-//			MainMenu.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+//			MainMenu.Font = new Font("Arial Unicode MS", 9F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowImageMargin = false;
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowCheckMargin = false;
 			MainMenu.Size = new Size(24, Height);
@@ -246,7 +246,7 @@ namespace appCore.UI
 			// Refresh
 			// 
 			RefreshButton.Name = "RefreshButton";
-			RefreshButton.Font = new Font("Arial Unicode MS", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+			RefreshButton.Font = new Font("Arial Unicode MS", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
 			RefreshButton.TextAlign = ContentAlignment.TopCenter;
 			RefreshButton.AutoSize = false;
