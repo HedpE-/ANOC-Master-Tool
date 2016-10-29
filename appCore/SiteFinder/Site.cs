@@ -461,7 +461,6 @@ namespace appCore.SiteFinder
 			HtmlDocument doc = new HtmlDocument();
 			doc.Load(new StringReader(response));
 			
-			int cellNameColumn = 0;
 			int lockedStateColumn = 0;
 			HtmlNode cellsTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").Descendants("table").First();
 			IEnumerable<HtmlNode> CTNdescendants = cellsTableNode.Descendants("th");
@@ -470,16 +469,14 @@ namespace appCore.SiteFinder
 				string test2 = CTNdescendants.ElementAt(c).InnerHtml;
 				int test3 = CTNdescendants.Count();
 				if(CTNdescendants.ElementAt(c).Name == "th") {
-					if(CTNdescendants.ElementAt(c).InnerText == ("Cell Name"))
-						cellNameColumn = c;
-					else {
-						if(CTNdescendants.ElementAt(c).InnerHtml.Contains("fa fa-lock"))
-							lockedStateColumn = c;
-					}
-					if(cellNameColumn > 0 && lockedStateColumn > 0)
+					if(CTNdescendants.ElementAt(c).InnerHtml.Contains("fa fa-lock")) {
+						lockedStateColumn = c;
 						break;
+					}
 				}
 			}
+			
+			string checkboxname = string.Empty;
 			
 			// Content of a locked cell
 			// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
@@ -489,7 +486,7 @@ namespace appCore.SiteFinder
 		}
 		
 		public void UpdateLockedCells() {
-			if(Exists) {
+			if(Exists && Cells.Count > 0) {
 				HttpStatusCode status = HttpStatusCode.NotFound;
 				if(Web.OIConnection.Connection == null)
 					status = Web.OIConnection.EstablishConnection();
