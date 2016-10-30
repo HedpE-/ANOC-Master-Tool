@@ -127,10 +127,6 @@
     <Compile Include="Netcool\netcool_parser.cs" />
     <Compile Include="Netcool\OutageParser.cs" />
     <Compile Include="Netcool\outage_parser.cs" />
-    <Compile Include="NotesForm.cs" />
-    <Compile Include="NotesForm.Designer.cs">
-      <DependentUpon>NotesForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Settings\GlobalProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />
     <Compile Include="Settings\UI\SettingsForm.cs" />
@@ -195,6 +191,10 @@
     <Compile Include="UI\Loading.cs" />
     <Compile Include="UI\Loading.Designer.cs">
       <DependentUpon>Loading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\NotesForm.cs" />
+    <Compile Include="UI\NotesForm.Designer.cs">
+      <DependentUpon>NotesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
@@ -281,9 +281,6 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NotesForm.resx">
-      <DependentUpon>NotesForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Settings\UI\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -307,6 +304,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Loading.resx">
       <DependentUpon>Loading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\NotesForm.resx">
+      <DependentUpon>NotesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
