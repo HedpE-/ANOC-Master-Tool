@@ -60,10 +60,6 @@
       <HintPath>GMap.NET\Lib\GMap.NET.WindowsForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>Extensions\HtmlAgilityPack.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Extensions\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
@@ -147,8 +143,9 @@
     <Compile Include="Shifts\ShiftsPanel.cs" />
     <Compile Include="Shifts\WholeShiftsPanel.cs" />
     <Compile Include="SiteFinder\Finder.cs" />
-    <Compile Include="SiteFinder\siteDetails.cs" />
-    <Compile Include="SiteFinder\siteDetails.Designer.cs">
+    <Compile Include="SiteFinder\UI\CellDetailsPictureBox.cs" />
+    <Compile Include="SiteFinder\UI\siteDetails.cs" />
+    <Compile Include="SiteFinder\UI\siteDetails.Designer.cs">
       <DependentUpon>siteDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="SiteFinder\UI\siteDetails2.cs" />
@@ -210,6 +207,42 @@
     <Compile Include="UI\trayIcon.cs" />
     <Compile Include="Web\AMTBrowser.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
+    <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
+    <Compile Include="Web\HtmlAgilityPack\EncodingFoundException.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlAttribute.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlAttributeCollection.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlCmdLine.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlCommentNode.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlConsoleListener.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlDocument.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlDocument.PathMethods.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlDocument.Xpath.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlElementFlag.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlEntity.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlNameTable.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlNode.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlNode.Xpath.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlNodeCollection.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlNodeNavigator.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlNodeType.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlParseError.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlParseErrorCode.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlTextNode.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlWeb.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlWeb.Xpath.cs" />
+    <Compile Include="Web\HtmlAgilityPack\HtmlWebException.cs" />
+    <Compile Include="Web\HtmlAgilityPack\IOLibrary.cs" />
+    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocument.cs" />
+    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
+    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
+    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
+    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
+    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
+    <Compile Include="Web\HtmlAgilityPack\NameValuePair.cs" />
+    <Compile Include="Web\HtmlAgilityPack\NameValuePairList.cs" />
+    <Compile Include="Web\HtmlAgilityPack\Trace.cs" />
+    <Compile Include="Web\HtmlAgilityPack\Trace.FullFramework.cs" />
+    <Compile Include="Web\HtmlAgilityPack\Utilities.cs" />
     <Compile Include="Web\OIConnection.cs" />
     <Compile Include="Web\Tools\HtmlRemover.cs" />
     <Compile Include="Web\UI\AuthForm.cs" />
@@ -254,11 +287,11 @@
     <EmbeddedResource Include="Settings\UI\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SiteFinder\siteDetails.resx">
-      <DependentUpon>siteDetails.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\OiSiteTablesForm.resx">
       <DependentUpon>OiSiteTablesForm.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SiteFinder\UI\siteDetails.resx">
+      <DependentUpon>siteDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\siteDetails2.resx">
       <DependentUpon>siteDetails2.cs</DependentUpon>
@@ -312,6 +345,7 @@
     <Folder Include="Logs" />
     <Folder Include="Web" />
     <Folder Include="SiteFinder" />
+    <Folder Include="Web\HtmlAgilityPack" />
     <Folder Include="Web\Tools" />
     <Folder Include="Web\UI" />
   </ItemGroup>
@@ -323,10 +357,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Extensions\log4net.dll" />
-    <EmbeddedResource Include="Extensions\HtmlAgilityPack.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.Core.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.WindowsForms.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
+    <None Include="Web\HtmlAgilityPack\HtmlAgilityPack.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />

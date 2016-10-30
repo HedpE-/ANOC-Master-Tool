@@ -427,7 +427,7 @@ namespace appCore.Toolbox
 			EmbeddedAssembly.Load("appCore.Extensions.Excel.dll", "Excel.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.log4net.dll", "log4net.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.HtmlAgilityPack.dll", "HtmlAgilityPack.dll");
+//			EmbeddedAssembly.Load("appCore.Extensions.HtmlAgilityPack.dll", "HtmlAgilityPack.dll");
 			
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 		}
@@ -512,9 +512,6 @@ namespace appCore.Toolbox
 				tableRow.Clear();
 				if(tr.Name != "#text") {
 					foreach(var node in tr.ChildNodes) {
-						string test = node.Name;
-						string test2 = node.InnerText;
-						HtmlAttributeCollection att = node.Attributes;
 						if(node.Name != "td") // && node.Name != "th")
 							continue;
 						

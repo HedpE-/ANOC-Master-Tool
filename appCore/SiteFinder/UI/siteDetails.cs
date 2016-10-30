@@ -21,7 +21,7 @@ using GMap.NET.WindowsForms.ToolTips;
 using appCore.DB;
 using appCore.Toolbox;
 
-namespace appCore.SiteFinder
+namespace appCore.SiteFinder.UI
 {
 	/// <summary>
 	/// Description of siteDetails.
@@ -36,42 +36,8 @@ namespace appCore.SiteFinder
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
 		List<GMapMarker> markersList = new List<GMapMarker>();
-		DataRowView cellSite;
-		DataView Cells;
 		string[] sites; // for outages site list
 		byte listView2_EventCount = 1;
-		
-		public siteDetails(DataRowView site, DataView cells)
-		{
-			InitializeComponent();
-			myMap = drawGMap("myMap",false);
-			this.Controls.Add(myMap);
-			cellSite = site;
-			Cells = cells;
-			this.Shown += populateSingleForm;
-		}
-		
-		void populateSingleForm(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	try {
-			                           		myMap.Overlays.Remove(markersOverlay);
-			                           		myMap.Overlays.Remove(selectedSiteOverlay);
-			                           	}
-			                           	catch (Exception) {
-			                           	}
-			                           	initializeListviews();
-			                           	
-			                           	siteDetails_UIMode = "single/readonly";
-			                           	
-			                           	selectedSiteDetailsPopulate(cellSite,Cells);
-			                           	setSiteMarker(cellSite,false);
-			                           	myMap.Overlays.Add(selectedSiteOverlay);
-			                           	myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
-			                           });
-			
-			Toolbox.Tools.darkenBackgroundForm(action,true, this);
-		}
 		
 		public siteDetails(bool outage, string[] outageSites)
 		{

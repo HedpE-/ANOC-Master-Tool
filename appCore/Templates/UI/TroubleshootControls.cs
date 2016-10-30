@@ -16,6 +16,7 @@ using appCore.Settings;
 using appCore.SiteFinder;
 using appCore.Templates.Types;
 using appCore.UI;
+using appCore.SiteFinder.UI;
 
 namespace appCore.Templates.UI
 {
@@ -64,8 +65,8 @@ namespace appCore.Templates.UI
 		Label INCLabel = new Label();
 		Label PowerCompanyLabel = new Label();
 		Label RegionLabel = new Label();
-		MainMenu main = new MainMenu();
-		AMTMenuStrip MainMenu = new AMTMenuStrip(0, 25);
+		
+		AMTMenuStrip MainMenu = new AMTMenuStrip();
 		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
@@ -73,9 +74,12 @@ namespace appCore.Templates.UI
 		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem sendBCPToolStripMenuItem = new ToolStripMenuItem();
 		
+		public static siteDetails2 SiteDetailsUI;
+		
 		public Site currentSite { get; private set; }
 		TroubleShoot currentTemplate;
 		TroubleShoot prevTemp = new TroubleShoot();
+		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
 			get { return paddingLeftRight; }
@@ -345,8 +349,7 @@ namespace appCore.Templates.UI
 		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
 			// TODO: SiteFinder(s) Performance measurement
 
-			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
+			if (Convert.ToInt32(e.KeyChar) == 13) {
 //				Stopwatch sw = new Stopwatch();
 //
 //				sw.Start();
@@ -566,10 +569,12 @@ namespace appCore.Templates.UI
 
 		void SiteDetailsButtonClick(object sender, EventArgs e)
 		{
-			if(MainForm.SiteDetailsUI != null)
-				MainForm.SiteDetailsUI.Dispose();
-			MainForm.SiteDetailsUI = new SiteFinder.UI.siteDetails2(currentSite);
-			MainForm.SiteDetailsUI.Show();
+			if(SiteDetailsUI != null) {
+				SiteDetailsUI.Close();
+				SiteDetailsUI.Dispose();
+			}
+			SiteDetailsUI = new siteDetails2(currentSite);
+			SiteDetailsUI.Show();
 		}
 
 		void TextBoxesTextChanged_LargeTextButtons(object sender, EventArgs e)
@@ -1028,19 +1033,9 @@ namespace appCore.Templates.UI
 						dt = currentSite.ActiveAlarms;
 						break;
 				}
-				SiteFinder.UI.OiSiteTablesForm OiTable = new SiteFinder.UI.OiSiteTablesForm(dt, dataToShow);
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
 				OiTable.Show();
 			}
-//			}
-//			else {
-//				if(e.Button == MouseButtons.Right) {
-//					if(currentSite != null)
-//						if(currentSite.Exists) {
-//						ContextMenu cm = new ContextMenu();
-//						MenuItem mi = new MenuItem("Refresh INC data", refreshOiData);
-//					}
-//				}
-//			}
 		}
 		
 		void refreshOiData(object sender, EventArgs e) {

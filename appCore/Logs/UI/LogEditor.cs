@@ -1125,7 +1125,7 @@ namespace appCore.Logs.UI
 			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			Thread thread = new Thread(() => {
-			                           	SiteFinder.siteDetails sd = new SiteFinder.siteDetails(true,outageSites);
+			                           	SiteFinder.UI.siteDetails sd = new SiteFinder.UI.siteDetails(true,outageSites);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();

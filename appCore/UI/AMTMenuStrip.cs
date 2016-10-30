@@ -44,11 +44,9 @@ namespace appCore.UI
 			}
 		}
 		
-		public AMTMenuStrip(int width = 0, int height = 0) {
-			if(width != 0)
-				Width = width;
-			if(height != 0)
-				Height = height;
+		public AMTMenuStrip(int width = 505, int height = 25) {
+			Width = width;
+			Height = height;
 			InitializeComponent();
 		}
 		
@@ -93,6 +91,9 @@ namespace appCore.UI
 					break;
 				case "Update Template GUI":
 					currentSite = ((Templates.UI.UpdateControls)Parent).currentSite;
+					break;
+				case "siteDetails2":
+					currentSite = ((SiteFinder.UI.siteDetails2)Parent).currentSite;
 					break;
 			}
 			foreach (ToolStripMenuItem tsmi in Items) {
@@ -241,7 +242,7 @@ namespace appCore.UI
 //			MainMenu.Font = new Font("Arial Unicode MS", 9F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowImageMargin = false;
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowCheckMargin = false;
-			MainMenu.Size = new Size(24, Height);
+			MainMenu.Size = new Size((int)(Width / 0.05), Height);
 			// 
 			// Refresh
 			// 
@@ -250,12 +251,12 @@ namespace appCore.UI
 			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
 			RefreshButton.TextAlign = ContentAlignment.TopCenter;
 			RefreshButton.AutoSize = false;
-			RefreshButton.Size = new Size(24, Height);
+			RefreshButton.Size = new Size((int)(Width * 0.05), Height);
 			// 
 			// ActiveAlarmsButton
 			// 
 			ActiveAlarmsButton.AutoSize = false;
-			ActiveAlarmsButton.Size = new Size(114, Height);
+			ActiveAlarmsButton.Size = new Size((int)(Width * 0.225), Height);
 			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
 			ActiveAlarmsButton.Text = "Alarms";
 			ActiveAlarmsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -265,7 +266,7 @@ namespace appCore.UI
 			// BookInsButton
 			// 
 			BookInsButton.AutoSize = false;
-			BookInsButton.Size = new Size(114, Height);
+			BookInsButton.Size = new Size((int)(Width * 0.225), Height);
 			BookInsButton.Name = "BookInsButton";
 			BookInsButton.Text = "BookIns";
 			BookInsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -275,7 +276,7 @@ namespace appCore.UI
 			// CRQsButton
 			// 
 			CRQsButton.AutoSize = false;
-			CRQsButton.Size = new Size(114, Height);
+			CRQsButton.Size = new Size((int)(Width * 0.225), Height);
 			CRQsButton.Name = "CRQsButton";
 			CRQsButton.Text = "CRQs";
 			CRQsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -285,7 +286,7 @@ namespace appCore.UI
 			// INCsButton
 			// 
 			INCsButton.AutoSize = false;
-			INCsButton.Size = new Size(114, Height);
+			INCsButton.Size = new Size((int)(Width * 0.225), Height);
 			INCsButton.Name = "INCsButton";
 			INCsButton.Text = "INCs";
 			INCsButton.TextAlign = ContentAlignment.MiddleCenter;

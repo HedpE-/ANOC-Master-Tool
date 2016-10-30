@@ -461,32 +461,25 @@ namespace appCore.SiteFinder
 			HtmlDocument doc = new HtmlDocument();
 			doc.Load(new StringReader(response));
 			
-			int lockedStateColumn = 0;
-			HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").Descendants("table").First();
-			List<HtmlNode> cellsTableNodes = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").Descendants("table").ToList();
-			IEnumerable<HtmlNode> cellsTableDescendants = cellsTableNodes.First().Descendants("th");
-			int descendantsCount = cellsTableDescendants.Count();
-			for(int c = 0;c < descendantsCount;c++) {
-				if(cellsTableNodes.ElementAt(c).Name == "th") {
-					if(cellsTableNodes.ElementAt(c).InnerHtml.Contains("fa fa-lock")) {
-						lockedStateColumn = c;
-						break;
-					}
-				}
-			}
+//			int lockedStateColumn = 0;
+			HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
+//			IEnumerable<HtmlNode> cellsTableNodes = div_cells.Descendants("table");
+//			IEnumerable<HtmlNode> cellsTableDescendants = cellsTableNodes.First().Descendants("th");
+//			int descendantsCount = cellsTableDescendants.Count();
+//			for(int c = 0;c < descendantsCount;c++) {
+//				if(cellsTableNodes.ElementAt(c).Name == "th") {
+//					if(cellsTableNodes.ElementAt(c).InnerHtml.Contains("fa fa-lock")) {
+//						lockedStateColumn = c;
+//						break;
+//					}
+//				}
+//			}
 			
 			foreach (Cell cell in Cells) {
-				string checkBoxNodeHtml = cellsTableNodes.Find(x => x.Name == "input" && x.InnerHtml.Contains("checkbox" + cell.Name)).InnerHtml;
-				checkBoxNodeHtml = checkBoxNodeHtml.Substring(checkBoxNodeHtml.IndexOf("checked"));
-				                                              
-				
-				cell.Locked = true;
+				HtmlNode checkBoxNode = div_cells.DescendantNodes().ToList().Find(x => x.Name == cell.Name); // && x.InnerHtml.Contains("checkbox" + cell.Name));
+				cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
 			}
 			
-//			string test = cellsTableNodes.ElementAt(lockedStateColumn).Name;
-//			string test2 = cellsTableNodes.ElementAt(lockedStateColumn).InnerHtml;
-//			int test3 = cellsTableNodes.Count();
-//			
 //			List<Cell> cellsFilter = Cells.Filter(Cell.Filters.VF_2G);
 //			if(cellsFilter.Count > 0) {
 //				IEnumerable<HtmlNode> cells2GTableRows = cellsTableNodes.First().Descendants("tr");
@@ -503,7 +496,6 @@ namespace appCore.SiteFinder
 			// Content of a locked cell
 			// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
 			
-			string[] strTofind = { "<br>" };
 			return response;
 		}
 		

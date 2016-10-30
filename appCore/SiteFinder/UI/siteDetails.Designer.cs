@@ -6,7 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-namespace appCore.SiteFinder
+namespace appCore.SiteFinder.UI
 {
 	partial class siteDetails
 	{

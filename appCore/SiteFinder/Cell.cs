@@ -49,7 +49,7 @@ namespace appCore.SiteFinder
 		public string Noc { get { return NOC; } }
 		public string WBTS_BCF { get; private set; }
 		bool LOCKED;
-		public bool Locked { get { return LOCKED; } set { } }
+		public bool Locked { get { return LOCKED; } set { LOCKED = value; } }
 		string IP_2G_I = string.Empty;
 		public string InnerIP2G { get { return IP_2G_I; } }
 		string IP_2G_E = string.Empty;
@@ -101,6 +101,14 @@ namespace appCore.SiteFinder
 			try { VENDOR_2G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
 			try { VENDOR_3G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
 			try { VENDOR_4G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
+		}
+		
+		void Lock() {
+			
+		}
+		
+		void Unlock() {
+			
 		}
 		
 		Site.Vendors getVendor(string strVendor) {

@@ -151,17 +151,7 @@ namespace appCore
 		private System.Windows.Forms.TextBox textBox51;
 		private System.Windows.Forms.Label label67;
 		private System.Windows.Forms.TextBox textBox52;
-		private System.Windows.Forms.Label label_TotalCells;
-		private System.Windows.Forms.Label label_Total_4GCells;
-		private System.Windows.Forms.Label label_Total_3GCells;
-		private System.Windows.Forms.Label label_Total_2GCells;
-		private System.Windows.Forms.Label label_TF_4GCells;
-		private System.Windows.Forms.Label label_TF_3GCells;
-		private System.Windows.Forms.Label label_TF_2GCells;
-		private System.Windows.Forms.Label label_VF_4GCells;
-		private System.Windows.Forms.Label label_VF_3GCells;
-		private System.Windows.Forms.Label label_VF_2GCells;
-		private System.Windows.Forms.PictureBox pictureBox7;
+		private appCore.SiteFinder.UI.CellDetailsPictureBox pictureBox7;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.ColumnHeader columnHeader3;
@@ -283,17 +273,6 @@ namespace appCore
 			this.textBox51 = new System.Windows.Forms.TextBox();
 			this.label67 = new System.Windows.Forms.Label();
 			this.textBox52 = new System.Windows.Forms.TextBox();
-			this.label_TotalCells = new System.Windows.Forms.Label();
-			this.label_Total_4GCells = new System.Windows.Forms.Label();
-			this.label_Total_3GCells = new System.Windows.Forms.Label();
-			this.label_Total_2GCells = new System.Windows.Forms.Label();
-			this.label_TF_4GCells = new System.Windows.Forms.Label();
-			this.label_TF_3GCells = new System.Windows.Forms.Label();
-			this.label_TF_2GCells = new System.Windows.Forms.Label();
-			this.label_VF_4GCells = new System.Windows.Forms.Label();
-			this.label_VF_3GCells = new System.Windows.Forms.Label();
-			this.label_VF_2GCells = new System.Windows.Forms.Label();
-			this.pictureBox7 = new System.Windows.Forms.PictureBox();
 			this.label65 = new System.Windows.Forms.Label();
 			this.listView2 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
@@ -356,6 +335,7 @@ namespace appCore
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.pictureBox7 = new appCore.SiteFinder.UI.CellDetailsPictureBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
@@ -373,7 +353,6 @@ namespace appCore
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabPage13.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.tabPage4.SuspendLayout();
@@ -382,6 +361,7 @@ namespace appCore
 			this.tabPage17.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -1354,16 +1334,6 @@ namespace appCore
 			this.tabPage13.Controls.Add(this.textBox51);
 			this.tabPage13.Controls.Add(this.label67);
 			this.tabPage13.Controls.Add(this.textBox52);
-			this.tabPage13.Controls.Add(this.label_TotalCells);
-			this.tabPage13.Controls.Add(this.label_Total_4GCells);
-			this.tabPage13.Controls.Add(this.label_Total_3GCells);
-			this.tabPage13.Controls.Add(this.label_Total_2GCells);
-			this.tabPage13.Controls.Add(this.label_TF_4GCells);
-			this.tabPage13.Controls.Add(this.label_TF_3GCells);
-			this.tabPage13.Controls.Add(this.label_TF_2GCells);
-			this.tabPage13.Controls.Add(this.label_VF_4GCells);
-			this.tabPage13.Controls.Add(this.label_VF_3GCells);
-			this.tabPage13.Controls.Add(this.label_VF_2GCells);
 			this.tabPage13.Controls.Add(this.pictureBox7);
 			this.tabPage13.Controls.Add(this.label65);
 			this.tabPage13.Controls.Add(this.listView2);
@@ -1453,136 +1423,6 @@ namespace appCore
 			this.textBox52.ReadOnly = true;
 			this.textBox52.Size = new System.Drawing.Size(194, 20);
 			this.textBox52.TabIndex = 129;
-			// 
-			// label_TotalCells
-			// 
-			this.label_TotalCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_TotalCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_TotalCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_TotalCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_TotalCells.Location = new System.Drawing.Point(424, 81);
-			this.label_TotalCells.Name = "label_TotalCells";
-			this.label_TotalCells.Size = new System.Drawing.Size(34, 21);
-			this.label_TotalCells.TabIndex = 128;
-			this.label_TotalCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_Total_4GCells
-			// 
-			this.label_Total_4GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_Total_4GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_Total_4GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_Total_4GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_Total_4GCells.Location = new System.Drawing.Point(382, 81);
-			this.label_Total_4GCells.Name = "label_Total_4GCells";
-			this.label_Total_4GCells.Size = new System.Drawing.Size(37, 21);
-			this.label_Total_4GCells.TabIndex = 127;
-			this.label_Total_4GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_Total_3GCells
-			// 
-			this.label_Total_3GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_Total_3GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_Total_3GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_Total_3GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_Total_3GCells.Location = new System.Drawing.Point(343, 81);
-			this.label_Total_3GCells.Name = "label_Total_3GCells";
-			this.label_Total_3GCells.Size = new System.Drawing.Size(37, 21);
-			this.label_Total_3GCells.TabIndex = 126;
-			this.label_Total_3GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_Total_2GCells
-			// 
-			this.label_Total_2GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_Total_2GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_Total_2GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_Total_2GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_Total_2GCells.Location = new System.Drawing.Point(303, 81);
-			this.label_Total_2GCells.Name = "label_Total_2GCells";
-			this.label_Total_2GCells.Size = new System.Drawing.Size(38, 21);
-			this.label_Total_2GCells.TabIndex = 125;
-			this.label_Total_2GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_TF_4GCells
-			// 
-			this.label_TF_4GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_TF_4GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_TF_4GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_TF_4GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_TF_4GCells.Location = new System.Drawing.Point(261, 81);
-			this.label_TF_4GCells.Name = "label_TF_4GCells";
-			this.label_TF_4GCells.Size = new System.Drawing.Size(37, 21);
-			this.label_TF_4GCells.TabIndex = 124;
-			this.label_TF_4GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_TF_3GCells
-			// 
-			this.label_TF_3GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_TF_3GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_TF_3GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_TF_3GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_TF_3GCells.Location = new System.Drawing.Point(221, 81);
-			this.label_TF_3GCells.Name = "label_TF_3GCells";
-			this.label_TF_3GCells.Size = new System.Drawing.Size(38, 21);
-			this.label_TF_3GCells.TabIndex = 123;
-			this.label_TF_3GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_TF_2GCells
-			// 
-			this.label_TF_2GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_TF_2GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_TF_2GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_TF_2GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_TF_2GCells.Location = new System.Drawing.Point(182, 81);
-			this.label_TF_2GCells.Name = "label_TF_2GCells";
-			this.label_TF_2GCells.Size = new System.Drawing.Size(37, 21);
-			this.label_TF_2GCells.TabIndex = 122;
-			this.label_TF_2GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_VF_4GCells
-			// 
-			this.label_VF_4GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_VF_4GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_VF_4GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_VF_4GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_VF_4GCells.Location = new System.Drawing.Point(139, 81);
-			this.label_VF_4GCells.Name = "label_VF_4GCells";
-			this.label_VF_4GCells.Size = new System.Drawing.Size(38, 21);
-			this.label_VF_4GCells.TabIndex = 121;
-			this.label_VF_4GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_VF_3GCells
-			// 
-			this.label_VF_3GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_VF_3GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_VF_3GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_VF_3GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_VF_3GCells.Location = new System.Drawing.Point(100, 81);
-			this.label_VF_3GCells.Name = "label_VF_3GCells";
-			this.label_VF_3GCells.Size = new System.Drawing.Size(37, 21);
-			this.label_VF_3GCells.TabIndex = 120;
-			this.label_VF_3GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// label_VF_2GCells
-			// 
-			this.label_VF_2GCells.BackColor = System.Drawing.Color.DimGray;
-			this.label_VF_2GCells.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label_VF_2GCells.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_VF_2GCells.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label_VF_2GCells.Location = new System.Drawing.Point(61, 81);
-			this.label_VF_2GCells.Name = "label_VF_2GCells";
-			this.label_VF_2GCells.Size = new System.Drawing.Size(37, 21);
-			this.label_VF_2GCells.TabIndex = 119;
-			this.label_VF_2GCells.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// pictureBox7
-			// 
-			this.pictureBox7.Image = global::appCore.UI.Resources.Cells_Totals;
-			this.pictureBox7.Location = new System.Drawing.Point(58, 31);
-			this.pictureBox7.Name = "pictureBox7";
-			this.pictureBox7.Size = new System.Drawing.Size(403, 75);
-			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.pictureBox7.TabIndex = 118;
-			this.pictureBox7.TabStop = false;
 			// 
 			// label65
 			// 
@@ -2231,6 +2071,14 @@ namespace appCore
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
 			// 
+			// pictureBox7
+			// 
+			this.pictureBox7.Location = new System.Drawing.Point(58, 31);
+			this.pictureBox7.Name = "pictureBox7";
+			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+			this.pictureBox7.TabIndex = 118;
+			this.pictureBox7.TabStop = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2266,7 +2114,6 @@ namespace appCore
 			this.groupBox5.ResumeLayout(false);
 			this.tabPage13.ResumeLayout(false);
 			this.tabPage13.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
@@ -2278,6 +2125,7 @@ namespace appCore
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.ResumeLayout(false);
 
 		}

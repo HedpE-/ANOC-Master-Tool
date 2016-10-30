@@ -1218,36 +1218,13 @@ namespace appCore
 				                           				textBox51.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("PRIORITY")].ToString();
 				                           				textBox52.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("VF_REGION")].ToString();
 				                           				
-				                           				// Fill Cell Count table
-				                           				
-				                           				label_TotalCells.Text = eScriptCellsGlobal.Count.ToString();
-				                           				
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '2G'";
-				                           				label_Total_2GCells.Text = eScriptCellsGlobal.Count.ToString();
+				                           				pictureBox7.UpdateCells(eScriptCellsGlobal);
 				                           				eScriptCellsGlobal.RowFilter = "BEARER = '2G' AND VENDOR LIKE 'ERIC*'";
 				                           				radioButton6.Enabled |= eScriptCellsGlobal.Count > 0;
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '2G' AND (CELL_NAME NOT LIKE 'T*' AND CELL_NAME NOT LIKE '*W' AND CELL_NAME NOT LIKE '*X' AND CELL_NAME NOT LIKE '*Y')";
-				                           				label_VF_2GCells.Text = eScriptCellsGlobal.Count.ToString();
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '2G' AND (CELL_NAME LIKE 'T*' OR CELL_NAME LIKE '*W' OR CELL_NAME LIKE '*X' OR CELL_NAME LIKE '*Y')";
-				                           				label_TF_2GCells.Text = eScriptCellsGlobal.Count.ToString();
-				                           				
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '3G'";
-				                           				label_Total_3GCells.Text = eScriptCellsGlobal.Count.ToString();
 				                           				eScriptCellsGlobal.RowFilter = "BEARER = '3G' AND VENDOR LIKE 'ERIC*'";
 				                           				radioButton7.Enabled |= eScriptCellsGlobal.Count > 0;
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '3G' AND CELL_NAME NOT LIKE 'T*'";
-				                           				label_VF_3GCells.Text = eScriptCellsGlobal.Count.ToString();
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '3G' AND CELL_NAME LIKE 'T*'";
-				                           				label_TF_3GCells.Text = eScriptCellsGlobal.Count.ToString();
-				                           				
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '4G'";
-				                           				label_Total_4GCells.Text = eScriptCellsGlobal.Count.ToString();
 				                           				eScriptCellsGlobal.RowFilter = "BEARER = '4G' AND VENDOR LIKE 'ERIC*'";
 				                           				radioButton8.Enabled |= eScriptCellsGlobal.Count > 0;
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '4G' AND CELL_NAME NOT LIKE 'T*'";
-				                           				label_VF_4GCells.Text = eScriptCellsGlobal.Count.ToString();
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '4G' AND CELL_NAME LIKE 'T*'";
-				                           				label_TF_4GCells.Text = eScriptCellsGlobal.Count.ToString();
 				                           				
 				                           				eScriptCellsGlobal.RowFilter = string.Empty;
 				                           			}
@@ -3998,7 +3975,7 @@ namespace appCore
 			}
 			
 			Thread thread = new Thread(() => {
-			                           	siteDetails sd = new siteDetails(false,null);
+			                           	siteDetails2 sd = new siteDetails2(false,null);
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
 			                           });
