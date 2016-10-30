@@ -18,6 +18,8 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using appCore.DB;
+using appCore.SiteFinder;
+using appCore.UI;
 
 namespace appCore.SiteFinder.UI
 {
@@ -27,6 +29,74 @@ namespace appCore.SiteFinder.UI
 	public partial class siteDetails2 : Form
 	{
 		string _siteDetails_UIMode = "single/readonly";
+		
+		/// <summary>
+		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
+		/// </summary>
+		public string siteDetails_UIMode {
+			get {
+				return _siteDetails_UIMode;
+			}
+			set {
+				string[] mode = value.Split('/');
+				Controls.Add(MainMenu);
+				MainMenu.InitializeTroubleshootMenu();
+				MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
+				MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+				InitializeToolStripMenuItems();
+				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add("-");
+				MainMenu.MainMenu.DropDownItems.Add(generateTaskToolStripMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add("-");
+				MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add("-");
+				MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
+				MainMenu.siteFinder_Toggle(false, false);
+				switch(mode[0]) {
+					case "single":
+						label11.Visible = false;
+						listView2.Visible = false;
+						checkBox1.Location = new System.Drawing.Point(220, 230);
+						checkBox2.Location = new System.Drawing.Point(258, 230);
+						checkBox3.Location = new System.Drawing.Point(296, 230);
+						listView1.Location = new System.Drawing.Point(5, 247);
+						listView1.Size = new Size(556, 398);
+						label12.Location = new System.Drawing.Point(5, 227);
+						textBox1.ReadOnly = value.Contains("readonly");
+						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
+						break;
+					case "multi":
+						label11.Visible = true;
+						listView2.Visible = true;
+						listView2.Items.Clear();
+						checkBox1.Location = new System.Drawing.Point(220, 355);
+						checkBox2.Location = new System.Drawing.Point(258, 355);
+						checkBox3.Location = new System.Drawing.Point(296, 355);
+						listView1.Location = new System.Drawing.Point(5, 372);
+						listView1.Size = new Size(556, 274);
+						label12.Location = new System.Drawing.Point(5, 352);
+						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
+						textBox1.ReadOnly = !value.Contains("readonly");
+						break;
+					case "outage":
+						listView1.Location = new System.Drawing.Point(5, 372);
+						listView1.Size = new Size(556, 274);
+						listView1.CheckBoxes = true;
+						listView2.Visible = true;
+						listView2.Items.Clear();
+						checkBox1.Location = new System.Drawing.Point(220, 355);
+						checkBox2.Location = new System.Drawing.Point(258, 355);
+						checkBox3.Location = new System.Drawing.Point(296, 355);
+						label11.Visible = true;
+						label12.Location = new System.Drawing.Point(5, 352);
+						bulkSiteSearchMenuItem.Enabled = false;
+						textBox1.ReadOnly = true;
+						break;
+				}
+				_siteDetails_UIMode = value;
+			}
+		}
 		DataView cellsList = null;
 		DataTable foundSites = Databases.siteDetailsTable.Clone();
 		DataTable foundCells = Databases.cellDetailsTable.Clone();
@@ -34,9 +104,16 @@ namespace appCore.SiteFinder.UI
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
 		List<GMapMarker> markersList = new List<GMapMarker>();
-		Site currentSite;
-		List<Site> outageSites; // for outages site list
+		public Site currentSite;
+		List<Site> outageSites = new List<Site>(); // for outages site list
 		byte listView2_EventCount = 1;
+		AMTMenuStrip MainMenu = new AMTMenuStrip(560);
+		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem generateTaskToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem sendBCPToolStripMenuItem = new ToolStripMenuItem();
 		
 		public siteDetails2(Site site)
 		{
@@ -61,7 +138,8 @@ namespace appCore.SiteFinder.UI
 			                           	siteDetails_UIMode = "single/readonly";
 			                           	
 			                           	selectedSiteDetailsPopulate(currentSite);
-			                           	setSiteMarker(currentSite,false);
+			                           	selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
+//			                           	setSiteMarker(currentSite.MapMarker,false);
 			                           	myMap.Overlays.Add(selectedSiteOverlay);
 			                           	myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           });
@@ -109,7 +187,7 @@ namespace appCore.SiteFinder.UI
 //				listView3.Items.Add(new ListViewItem(row.ItemArray.Cast<string>().ToArray()));
 //			foreach (ColumnHeader col in listView3.Columns)
 //				col.Width = -2;
-//			
+//
 //			listView3.ResumeLayout();
 //		}
 		
@@ -123,6 +201,7 @@ namespace appCore.SiteFinder.UI
 			listView1.Columns.Add("OSS ID");
 			listView1.Columns.Add("Vendor");
 			listView1.Columns.Add("NOC");
+			listView1.Columns.Add("Locked").TextAlign = HorizontalAlignment.Center;
 			
 			listView2.View = View.Details;
 			listView2.Columns.Add("Site");
@@ -142,7 +221,7 @@ namespace appCore.SiteFinder.UI
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
 			map.Location = new System.Drawing.Point(567, 6);
-			map.Size = new Size(380, 614);
+			map.Size = new Size(380, 639);
 			map.MapProvider = GoogleHybridMapProvider.Instance;
 			
 			map.Manager.Mode = AccessMode.ServerOnly; //get tiles from server only
@@ -150,6 +229,7 @@ namespace appCore.SiteFinder.UI
 			map.ShowCenter = false;
 			map.MouseWheelZoomEnabled = true;
 			map.MouseWheelZoomType = MouseWheelZoomType.MousePositionAndCenter;
+			map.DragButton = MouseButtons.Left;
 			map.DisableFocusOnMouseEnter = true;
 			map.PolygonsEnabled = false;
 			map.RoutesEnabled = false;
@@ -166,47 +246,23 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void selectedSiteDetailsPopulate(Site site) {
-			if(site.Cells.Any()) {
+			currentSite = site;
+			if(currentSite.Cells.Any()) {
 				
 //				cellsList = cells;
 //				cellsList.Sort = "BEARER Asc, CELL_NAME Asc";
 				
-				textBox1.Text = site.Id;
-				textBox2.Text = site.PowerCompany;
-				textBox3.Text = site.JVCO;
-				textBox4.Text = site.Address.Replace(';',',');
+				textBox1.Text = currentSite.Id;
+				textBox2.Text = currentSite.PowerCompany;
+				textBox3.Text = currentSite.JVCO;
+				textBox4.Text = currentSite.Address.Replace(';',',');
 				TextBox4TextChanged(textBox4,null);
-				textBox5.Text = site.Area;
-				textBox6.Text = site.Region;
-				textBox8.Text = site.HostedBy;
-				textBox7.Text = site.SharedOperatorSiteID == string.Empty ? textBox1.Text : site.SharedOperatorSiteID;
-				textBox9.Text = site.Priority;
-				textBox10.Text = site.SharedOperator;
-				
-				// Fill Cell Count table
-				
-				label_TotalCells.Text = site.Cells.Count().ToString();
-				
-//				cellsList.RowFilter = "BEARER = '2G'";
-				label_Total_2GCells.Text = site.Cells.Filter(Cell.Filters.All_2G).Count().ToString();
-//				cellsList.RowFilter = "BEARER = '2G' AND (CELL_NAME NOT LIKE 'T*' AND CELL_NAME NOT LIKE '*W' AND CELL_NAME NOT LIKE '*X' AND CELL_NAME NOT LIKE '*Y')";
-				label_VF_2GCells.Text = site.Cells.Filter(Cell.Filters.VF_2G).Count().ToString();
-//				cellsList.RowFilter = "BEARER = '2G' AND (CELL_NAME LIKE 'T*' OR CELL_NAME LIKE '*W' OR CELL_NAME LIKE '*X' OR CELL_NAME LIKE '*Y')";
-				label_TF_2GCells.Text = site.Cells.Filter(Cell.Filters.TF_2G).Count().ToString();
-				
-//				cells.RowFilter = "BEARER = '3G'";
-				label_Total_3GCells.Text = site.Cells.Filter(Cell.Filters.All_3G).Count().ToString();
-//				cellsList.RowFilter = "BEARER = '3G' AND CELL_NAME NOT LIKE 'T*'";
-				label_VF_3GCells.Text = site.Cells.Filter(Cell.Filters.VF_3G).Count().ToString();
-//				cellsList.RowFilter = "BEARER = '3G' AND CELL_NAME LIKE 'T*'";
-				label_TF_3GCells.Text = site.Cells.Filter(Cell.Filters.TF_3G).Count().ToString();
-				
-//				cells.RowFilter = "BEARER = '4G'";
-				label_Total_4GCells.Text = site.Cells.Filter(Cell.Filters.All_4G).Count().ToString();
-//				cellsList.RowFilter = "BEARER = '4G' AND CELL_NAME NOT LIKE 'T*'";
-				label_VF_4GCells.Text = site.Cells.Filter(Cell.Filters.VF_4G).Count().ToString();
-//				cellsList.RowFilter = "BEARER = '4G' AND CELL_NAME LIKE 'T*'";
-				label_TF_4GCells.Text = site.Cells.Filter(Cell.Filters.TF_4G).Count().ToString();
+				textBox5.Text = currentSite.Area;
+				textBox6.Text = currentSite.Region;
+				textBox8.Text = currentSite.HostedBy;
+				textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
+				textBox9.Text = currentSite.Priority;
+				textBox10.Text = currentSite.SharedOperator;
 				
 //				cellsList.RowFilter = string.Empty;
 				
@@ -218,41 +274,8 @@ namespace appCore.SiteFinder.UI
 					if(ctr.Name.StartsWith("label_"))
 						ctr.Text = "0";
 				}
-//				label_TotalCells.Text = "0";
-//
-//				label_Total_2GCells.Text = "0";
-//				label_VF_2GCells.Text = "0";
-//				label_TF_2GCells.Text = "0";
-//
-//				label_Total_3GCells.Text = "0";
-//				label_VF_3GCells.Text = "0";
-//				label_TF_3GCells.Text = "0";
-//
-//				label_Total_4GCells.Text = "0";
-//				label_VF_4GCells.Text = "0";
-//				label_TF_4GCells.Text = "0";
 			}
-		}
-		
-		void setSiteMarker(Site site, bool multi) {
-//			double easting = Convert.ToDouble(site[site.Row.Table.Columns.IndexOf("EASTING")].ToString());
-//			double northing = Convert.ToDouble(site[site.Row.Table.Columns.IndexOf("NORTHING")].ToString());
-//			LLPoint llp =  coordConvert.toLat_Long(new GMap.NET.Point { Easting = easting, Northing = northing }, "OSGB36");
-			
-			GMarkerGoogle marker = site.MapMarker;
-//			marker.Tag = site[site.Row.Table.Columns.IndexOf("SITE")].ToString();
-//			marker.ToolTip = new GMapBaloonToolTip(marker);
-//			marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
-//			marker.ToolTip.Fill = new SolidBrush(Color.FromArgb(180, Color.Black));
-//			marker.ToolTip.Font = new Font("Courier New", 9, FontStyle.Bold);
-//			marker.ToolTip.Foreground = new SolidBrush(Color.White);
-//			marker.ToolTip.Stroke = new Pen(Color.Red);
-//			marker.ToolTip.Offset.X -= 15;
-//			marker.ToolTipText = site[site.Row.Table.Columns.IndexOf("SITE")].ToString();
-			if(multi)
-				markersOverlay.Markers.Add(marker);
-			else
-				selectedSiteOverlay.Markers.Add(marker);
+			pictureBox1.UpdateCells(currentSite.Cells);
 		}
 		
 		void GMapKeyDown(object sender, KeyEventArgs e)
@@ -290,12 +313,9 @@ namespace appCore.SiteFinder.UI
 			if(cb.Checked) {
 				string ossID;
 				
-				bool show2G = false;
-				bool show3G = false;
-				bool show4G = false;
-				show2G |= checkBox1.Checked;
-				show3G |= checkBox2.Checked;
-				show4G |= checkBox3.Checked;
+				bool show2G = checkBox1.Checked;
+				bool show3G = checkBox2.Checked;
+				bool show4G = checkBox3.Checked;
 				
 				listView1.Items.Clear();
 				listView1.SuspendLayout();
@@ -329,7 +349,8 @@ namespace appCore.SiteFinder.UI
 							cell.BscRnc_Id,
 							ossID,
 							cell.Vendor.ToString(),
-							cell.Noc
+							cell.Noc,
+							cell.Locked ? "YES" : "No"
 						}));
 				}
 				
@@ -418,7 +439,7 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void Button1Click(object sender, EventArgs e)
+		void bulkSiteSearchMenuItemClick(object sender, EventArgs e)
 		{
 			RichTextBox sitesList_tb = new RichTextBox();
 			Form form = new Form();
@@ -490,7 +511,8 @@ namespace appCore.SiteFinder.UI
 				return;
 			
 			string[] input = sitesList_tb.Text.Split('\n');
-			outageSites.Clear();
+			if(outageSites != null)
+				outageSites.Clear();
 			foreach(string site in input) {
 				currentSite = Finder.getSite(site);
 				outageSites.Add(currentSite);
@@ -513,7 +535,8 @@ namespace appCore.SiteFinder.UI
 					col.Width = -2;
 				listView2.ResumeLayout();
 				
-				setSiteMarker(site,true);
+				markersOverlay.Markers.Add(site.MapMarker);
+//				setSiteMarker(site.MapMarker,true);
 			}
 			
 			foreach (ColumnHeader col in listView2.Columns)
@@ -546,19 +569,25 @@ namespace appCore.SiteFinder.UI
 				                           	catch (Exception) {
 				                           	}
 				                           	
-				                           	Site site = Finder.getSite(tb.Text);
+				                           	currentSite = Finder.getSite(tb.Text);
 				                           	
-				                           	selectedSiteDetailsPopulate(site);
+				                           	selectedSiteDetailsPopulate(currentSite);
 				                           	
-				                           	if(textBox4.Text != "Site not found") {
-				                           		setSiteMarker(site,false);
+//				                           	if(textBox4.Text != "Site not found") {
+				                           	if(currentSite.Exists) {
+				                           		currentSite.requestOIData("INCCRQPWR");
+				                           		selectedSiteDetailsPopulate(currentSite);
+				                           		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
+//				                           		setSiteMarker(site.MapMarker,false);
 				                           		myMap.Overlays.Add(selectedSiteOverlay);
 				                           		myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				                           	}
 				                           	else {
+				                           		selectedSiteDetailsPopulate(currentSite);
 				                           		myMap.SetPositionByKeywords("UK");
 				                           		myMap.Zoom = 6;
 				                           	}
+				                           	MainMenu.siteFinder_Toggle(currentSite.Exists);
 				                           });
 				Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			}
@@ -607,7 +636,8 @@ namespace appCore.SiteFinder.UI
 			                           			siteDetails_UIMode = "single";
 //			                           			DataRowView site = foundSites.DefaultView[0];
 			                           			selectedSiteDetailsPopulate(sitesList[0]);
-			                           			setSiteMarker(sitesList[0],false);
+			                           			selectedSiteOverlay.Markers.Add(sitesList[0].MapMarker);
+//			                           			setSiteMarker(sitesList[0].MapMarker,false);
 			                           			myMap.Overlays.Add(selectedSiteOverlay);
 			                           			myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           		}
@@ -669,61 +699,138 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		/// <summary>
-		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
-		/// </summary>
-		public string siteDetails_UIMode {
-			get {
-				return _siteDetails_UIMode;
-			}
-			set {
-				string[] mode = value.Split('/');
-				switch(mode[0]) {
-					case "single":
-						label11.Visible = false;
-						listView2.Visible = false;
-						checkBox1.Location = new System.Drawing.Point(220, 205);
-						checkBox2.Location = new System.Drawing.Point(258, 205);
-						checkBox3.Location = new System.Drawing.Point(296, 205);
-						listView1.Location = new System.Drawing.Point(5, 222);
-						listView1.Size = new Size(556, 398);
-						label12.Location = new System.Drawing.Point(5, 202);
-						textBox1.ReadOnly = value.Contains("readonly");
-						button1.Visible = !value.Contains("readonly");
-						label13.Visible = !value.Contains("readonly");
+		void LoadDisplayOiDataTable(object sender, EventArgs e) {
+			ToolStripMenuItem tsim = sender as ToolStripMenuItem;
+//			if(e.Button == MouseButtons.Left) {
+			if(currentSite.Exists) {
+				DataTable dt = new DataTable();
+				string dataToShow = string.Empty;
+				switch (tsim.Name) {
+					case "INCsButton":
+						if(currentSite.INCs == null) {
+							currentSite.requestOIData("INC");
+							if(currentSite.INCs != null) {
+								if(currentSite.INCs.Rows.Count > 0) {
+									MainMenu.INCsButton.Enabled = true;
+									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+									MainMenu.INCsButton.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
+								}
+								else {
+									MainMenu.INCsButton.Enabled = false;
+									MainMenu.INCsButton.Text = "No INC history";
+								}
+							}
+							return;
+						}
+						dataToShow = "INCs";
+						dt = currentSite.INCs;
 						break;
-					case "multi":
-						label11.Visible = true;
-						listView2.Visible = true;
-						listView2.Items.Clear();
-						checkBox1.Location = new System.Drawing.Point(220, 330);
-						checkBox2.Location = new System.Drawing.Point(258, 330);
-						checkBox3.Location = new System.Drawing.Point(296, 330);
-						listView1.Location = new System.Drawing.Point(5, 347);
-						listView1.Size = new Size(556, 274);
-						label12.Location = new System.Drawing.Point(5, 327);
-						button1.Visible = !value.Contains("readonly");
-						label13.Visible = !value.Contains("readonly");
-						textBox1.ReadOnly = !value.Contains("readonly");
+					case "CRQsButton":
+						if(currentSite.CRQs == null) {
+							currentSite.requestOIData("CRQ");
+							if(currentSite.CRQs != null) {
+								if(currentSite.CRQs.Rows.Count > 0) {
+									MainMenu.CRQsButton.Enabled = true;
+									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
+								}
+								else {
+									MainMenu.CRQsButton.Enabled = false;
+									MainMenu.CRQsButton.Text = "No CRQ history";
+								}
+							}
+							return;
+						}
+						dataToShow = "CRQs";
+						dt = currentSite.CRQs;
 						break;
-					case "outage":
-						listView1.Location = new System.Drawing.Point(5, 347);
-						listView1.Size = new Size(556, 274);
-						listView1.CheckBoxes = true;
-						listView2.Visible = true;
-						listView2.Items.Clear();
-						checkBox1.Location = new System.Drawing.Point(220, 330);
-						checkBox2.Location = new System.Drawing.Point(258, 330);
-						checkBox3.Location = new System.Drawing.Point(296, 330);
-						label11.Visible = true;
-						label12.Location = new System.Drawing.Point(5, 327);
-						label13.Visible = false;
-						button1.Visible = false;
-						textBox1.ReadOnly = true;
+					case "BookInsButton":
+						if(currentSite.BookIns == null) {
+							currentSite.requestOIData("Bookins");
+							if(currentSite.BookIns != null) {
+								if(currentSite.BookIns.Rows.Count > 0) {
+									MainMenu.BookInsButton.Enabled = true;
+									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
+								}
+								else {
+									MainMenu.BookInsButton.Enabled = false;
+									MainMenu.BookInsButton.Text = "No Book In history";
+								}
+							}
+							return;
+						}
+						dataToShow = "BookIns";
+						dt = currentSite.BookIns;
+						break;
+					case "ActiveAlarmsButton":
+						if(currentSite.ActiveAlarms == null) {
+							currentSite.requestOIData("Alarms");
+							if(currentSite.ActiveAlarms != null) {
+								if(currentSite.ActiveAlarms.Rows.Count > 0) {
+									MainMenu.ActiveAlarmsButton.Enabled = true;
+									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
+								}
+								else {
+									MainMenu.ActiveAlarmsButton.Enabled = false;
+									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+								}
+							}
+							return;
+						}
+						dataToShow = "ActiveAlarms";
+						dt = currentSite.ActiveAlarms;
 						break;
 				}
-				_siteDetails_UIMode = value;
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
+				OiTable.Show();
 			}
+		}
+		
+		void refreshOiData(object sender, EventArgs e) {
+			currentSite.requestOIData("INCCRQBookinsAlarms");
+			MainMenu.siteFinder_Toggle(true);
+		}
+		
+		void InitializeToolStripMenuItems() {
+			// 
+			// bulkSiteSearchMenuItem
+			// 
+			bulkSiteSearchMenuItem.Name = "bulkSiteSearchMenuItem";
+			bulkSiteSearchMenuItem.Text = "Bulk Site Search";
+			bulkSiteSearchMenuItem.Click += bulkSiteSearchMenuItemClick;
+			// 
+			// SiteDetailsToolStripMenuItem
+			// 
+			SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
+			SiteDetailsToolStripMenuItem.Text = "Site Details";
+//			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+//			SiteDetailsToolStripMenuItem.Click += SiteDetailsButtonClick;
+			// 
+			// clearToolStripMenuItem
+			// 
+			clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			clearToolStripMenuItem.Text = "Clear";
+//			clearToolStripMenuItem.Click += ClearCurrentSite;
+			// 
+			// generateTaskToolStripMenuItem
+			// 
+			generateTaskToolStripMenuItem.Name = "generateTaskToolStripMenuItem";
+			generateTaskToolStripMenuItem.Text = "Generate Task notes...";
+//			generateTaskToolStripMenuItem.Click += GenerateTaskNotes;
+			// 
+			// copyToNewTemplateToolStripMenuItem
+			// 
+			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
+			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
+//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
+			// 
+			// sendBCPToolStripMenuItem
+			// 
+			sendBCPToolStripMenuItem.Name = "sendBCPToolStripMenuItem";
+			sendBCPToolStripMenuItem.Text = "Send BCP Form";
+//			sendBCPToolStripMenuItem.Click += SendBCPForm;
 		}
 	}
 }
