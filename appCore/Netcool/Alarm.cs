@@ -47,6 +47,8 @@ namespace appCore.Netcool
 		public string[] Attributes { get { return attributes; } protected set { attributes = value; } }
 		Site siteId;
 		public Site SiteId { get { return siteId; } protected set { siteId = value; } }
+		public bool COOS { get; protected set; }
+		public bool OnM { get; protected set; }
 		
 		string _parsedAlarm = string.Empty;
 		public string ParsedAlarm {
@@ -60,9 +62,7 @@ namespace appCore.Netcool
 		
 		public Alarm(DataRow alarm, DataColumnCollection columns)
 		{
-			int lastoccurIndex = 0;
-
-			lastoccurIndex = columns.Contains("Last Occurrence") ? columns["Last Occurrence"].Ordinal : columns["LastOccurrence"].Ordinal; // Encontrar a posição da column Last Occurence
+			int lastoccurIndex = columns.Contains("Last Occurrence") ? columns["Last Occurrence"].Ordinal : columns["LastOccurrence"].Ordinal; // Encontrar a posição da column Last Occurence
 			int switchIndex = columns["RNC/BSC"].Ordinal; // Encontrar a prosição da column RNC/BSC
 			int locationIndex = columns["Location"].Ordinal; // Encontrar a prosição da column Location
 			int elementIndex = columns["Element"].Ordinal; // Encontrar a prosição da column Element
@@ -93,14 +93,43 @@ namespace appCore.Netcool
 			if(string.IsNullOrEmpty(Element))
 				ResolveCellName();
 
+			checkCoosOrOnM();
+			
 			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+		}
+		
+		void checkCoosOrOnM() {
+			switch (Vendor) {
+				case Site.Vendors.ALU:
+					if(Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable"))
+						COOS = true;
+					break;
+				case Site.Vendors.Ericsson:
+					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable"))
+						COOS = true;
+					else
+						OnM = Summary.Contains("4G: Heartbeat Failure");
+					break;
+				case Site.Vendors.Huawei:
+					if (Summary.Contains("Cell out of Service") || Summary.Contains("Cell Unavailable") || Summary.Contains("Local Cell Unusable"))
+						COOS = true;
+					else
+						OnM = Summary.Contains("eNodeB");
+					break;
+				case Site.Vendors.NSN:
+					if (!(Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE")))
+						COOS = true;
+					else
+						OnM = Summary.Contains("ENODEB: NE O&M"))
+					break;
+			}
 		}
 		
 		string parseSummary(string toParse)
 		{
-
-			toParse = toParse.TrimStart(' ');
-			toParse = toParse.TrimEnd(' ');
+//			toParse = toParse.TrimStart(' ');
+//			toParse = toParse.TrimEnd(' ');
+			toParse = toParse.Trim(' ');
 			
 			if ( toParse.Contains("CELL LOGICAL") )
 			{

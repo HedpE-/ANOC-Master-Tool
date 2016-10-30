@@ -124,8 +124,6 @@
     </Compile>
     <Compile Include="Netcool\Alarm.cs" />
     <Compile Include="Netcool\Parser.cs" />
-    <Compile Include="Netcool\netcool_parser.cs" />
-    <Compile Include="Netcool\OutageParser.cs" />
     <Compile Include="Netcool\outage_parser.cs" />
     <Compile Include="Settings\GlobalProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />

@@ -28,8 +28,7 @@ namespace appCore.SiteFinder.UI
 	/// </summary>
 	public partial class siteDetails2 : Form
 	{
-		string _siteDetails_UIMode = "single/readonly";
-		
+		string _siteDetails_UIMode = "single/readonly";		
 		/// <summary>
 		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
 		/// </summary>
@@ -97,9 +96,9 @@ namespace appCore.SiteFinder.UI
 				_siteDetails_UIMode = value;
 			}
 		}
-		DataView cellsList = null;
-		DataTable foundSites = Databases.siteDetailsTable.Clone();
-		DataTable foundCells = Databases.cellDetailsTable.Clone();
+//		DataView cellsList = null;
+//		DataTable foundSites = Databases.siteDetailsTable.Clone();
+//		DataTable foundCells = Databases.cellDetailsTable.Clone();
 		GMapControl myMap;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
