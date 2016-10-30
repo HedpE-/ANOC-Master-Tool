@@ -499,9 +499,6 @@ namespace appCore.Toolbox
 			string csv = string.Empty;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
-			string test;
-			string test2;
-//			if(tableName != "table_visits") {
 			foreach (HtmlNode th in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("th")) {
 				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
@@ -515,8 +512,9 @@ namespace appCore.Toolbox
 				tableRow.Clear();
 				if(tr.Name != "#text") {
 					foreach(var node in tr.ChildNodes) {
-						test = node.Name;
-						test2 = node.InnerText;
+						string test = node.Name;
+						string test2 = node.InnerText;
+						HtmlAttributeCollection att = node.Attributes;
 						if(node.Name != "td") // && node.Name != "th")
 							continue;
 						

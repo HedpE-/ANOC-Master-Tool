@@ -211,13 +211,6 @@
     <Compile Include="Web\AMTBrowser.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\OIConnection.cs" />
-    <Compile Include="Web\SimpleHttpServer\HttpBuilder.cs" />
-    <Compile Include="Web\SimpleHttpServer\HttpProcessor.cs" />
-    <Compile Include="Web\SimpleHttpServer\HttpServer.cs" />
-    <Compile Include="Web\SimpleHttpServer\Models\HttpRequest.cs" />
-    <Compile Include="Web\SimpleHttpServer\Models\HttpResponse.cs" />
-    <Compile Include="Web\SimpleHttpServer\Models\Route.cs" />
-    <Compile Include="Web\SimpleHttpServer\RouteHandlers\FileSystemRouteHandler.cs" />
     <Compile Include="Web\Tools\HtmlRemover.cs" />
     <Compile Include="Web\UI\AuthForm.cs" />
     <Compile Include="Web\UI\AuthForm.Designer.cs">
@@ -320,11 +313,6 @@
     <Folder Include="Web" />
     <Folder Include="SiteFinder" />
     <Folder Include="Web\Tools" />
-    <Folder Include="Web\SimpleHttpServer" />
-    <Folder Include="Web\SimpleHttpServer\Models" />
-    <Folder Include="Web\SimpleHttpServer\Resources" />
-    <Folder Include="Web\SimpleHttpServer\Resources\Pages" />
-    <Folder Include="Web\SimpleHttpServer\RouteHandlers" />
     <Folder Include="Web\UI" />
   </ItemGroup>
   <ItemGroup>
@@ -339,8 +327,6 @@
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.Core.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.WindowsForms.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
-    <None Include="Web\SimpleHttpServer\Resources\Pages\404.html" />
-    <None Include="Web\SimpleHttpServer\Resources\Pages\500.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />

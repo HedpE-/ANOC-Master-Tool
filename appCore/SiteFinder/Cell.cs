@@ -49,7 +49,7 @@ namespace appCore.SiteFinder
 		public string Noc { get { return NOC; } }
 		public string WBTS_BCF { get; private set; }
 		bool LOCKED;
-		public bool Locked { get { return LOCKED; } }
+		public bool Locked { get { return LOCKED; } set { } }
 		string IP_2G_I = string.Empty;
 		public string InnerIP2G { get { return IP_2G_I; } }
 		string IP_2G_E = string.Empty;
