@@ -49,6 +49,7 @@ namespace appCore.Netcool
 		public Site SiteId { get { return siteId; } protected set { siteId = value; } }
 		public bool COOS { get; protected set; }
 		public bool OnM { get; protected set; }
+		public string Bearer { get; protected set; }
 		
 		string _parsedAlarm = string.Empty;
 		public string ParsedAlarm {
@@ -60,8 +61,7 @@ namespace appCore.Netcool
 			}
 		}
 		
-		public Alarm(DataRow alarm, DataColumnCollection columns)
-		{
+		public Alarm(DataRow alarm, DataColumnCollection columns) {
 			int lastoccurIndex = columns.Contains("Last Occurrence") ? columns["Last Occurrence"].Ordinal : columns["LastOccurrence"].Ordinal; // Encontrar a posição da column Last Occurence
 			int switchIndex = columns["RNC/BSC"].Ordinal; // Encontrar a prosição da column RNC/BSC
 			int locationIndex = columns["Location"].Ordinal; // Encontrar a prosição da column Location
@@ -92,10 +92,46 @@ namespace appCore.Netcool
 			
 			if(string.IsNullOrEmpty(Element))
 				ResolveCellName();
+			
+			Bearer = resolveAlarmBearer();
 
 			checkCoosOrOnM();
 			
 			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+		}
+		
+		public Alarm(Cell cell, bool coos, DateTime alarmTime) {
+			RncBsc = cell.BscRnc_Id;
+			LastOccurrence = alarmTime;
+			Element = cell.Name;
+			COOS = coos;
+			Bearer = cell.Bearer;
+			Site site = Finder.getSite(cell.ParentSite);
+			string temp = site.Id;
+			while(temp.Length < 5)
+				temp = "0" + temp;
+			Location = "RBS" + temp;
+			
+			switch (cell.Bearer) {
+				case "2G":
+					Vendor = cell.Vendor2G;
+					break;
+				case "3G":
+					Vendor = cell.Vendor3G;
+					break;
+				case "4G":
+					Vendor = cell.Vendor4G;
+					break;
+			}
+			
+			County = site.County;
+			Town = site.Town;
+			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+		}
+		
+		void resolveAddressFromCell(Cell cell) {
+			Site site = Finder.getSite(cell.ParentSite);
+			site.Address;
 		}
 		
 		void checkCoosOrOnM() {
@@ -120,9 +156,31 @@ namespace appCore.Netcool
 					if (!(Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE")))
 						COOS = true;
 					else
-						OnM = Summary.Contains("ENODEB: NE O&M"))
+						OnM = Summary.Contains("ENODEB: NE O&M");
 					break;
 			}
+		}
+		
+		string resolveAlarmBearer() {
+			if(!string.IsNullOrEmpty(RncBsc)) {
+				switch(RncBsc.Substring(0)) {
+					case "B":
+						return "2G";
+					case "R":
+						return "3G";
+					case "X":
+						if(Location.StartsWith("V"))
+							return "4G";
+						break;
+				}
+			}
+			else {
+				if(!string.IsNullOrEmpty(Element)) {
+					Cell tempCell = Finder.getCell(Element);
+					return tempCell.Bearer;
+				}
+			}
+			return null;
 		}
 		
 		string parseSummary(string toParse)

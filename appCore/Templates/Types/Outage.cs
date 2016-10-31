@@ -51,61 +51,40 @@ namespace appCore.Templates.Types
 			Sites = sites;
 			foreach (Site site in Sites) {
 				Cells.AddRange(site.Cells);
-				Locations.Add(site.Address);
+				Locations.Add(site.Town);
 //			VFlocationsArrayList.Add(new string[]{address[address.Length - 2].Trim(' '),siteHasVF2G.ToString(),siteHasVF3G.ToString(),siteHasVF4G.ToString()});
 			}
 			LogType = "Outage";
 		}
 		
 		public Outage(Parser alarms) {
-			
-			
-//				parserTable = op.parse(alarms);
-//				VFoutage = op.genReport(parserTable,"VF");
-			////				VFbulkCI = op.bulkCi(sites);
-//				TFoutage = op.genReport(parserTable,"TF");
-			////				TFbulkCI = op.bulkCi(sites);
-			
 			// Get LTE O&M alarms to get all affected cells
 			// Take COOS alarms on the OutageAlarms list
 			// Separate VF & TF cells
 			// Build both reports
 			
+			// Get LTE O&M alarms to get all affected cells
 			
+			
+			// Take COOS alarms on the OutageAlarms list
 			foreach(Alarm alarm in alarms.AlarmsList) {
-				// Filtro alarmes //
-				
-//				switch (alarm.Vendor)
-//				{
-//					case Site.Vendors.ALU:
-//						if(alarm.Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable"))
-//							OutageAlarms.Add(alarm);
-//						break;
-//					case Site.Vendors.Ericsson:
-//						if ((alarm.Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && alarm.Summary.Contains("BCCH")) || alarm.Summary.Contains("UtranCell_ServiceUnavailable") || alarm.Summary.Contains("4G: Heartbeat Failure"))
-//							OutageAlarms.Add(alarm);
-//						break;
-//					case Site.Vendors.Huawei:
-//						if (alarm.Summary.Contains("Cell out of Service") || alarm.Summary.Contains("Cell Unavailable") || alarm.Summary.Contains("Local Cell Unusable") || alarm.Summary.Contains("eNodeB"))
-//							OutageAlarms.Add(alarm);
-//						break;
-//					case Site.Vendors.NSN:
-//						if (!(alarm.Summary.Contains("BCCH MISSING") || alarm.Summary.Contains("CELL FAULTY") || alarm.Summary.Contains("WCDMA CELL OUT OF USE") || alarm.Summary.Contains("ENODEB: NE O&M")))
-//							OutageAlarms.Add(alarm);
-//						break;
-//				}
-				
 				if(alarm.COOS)
 					OutageAlarms.Add(alarm);
 			}
 			
-//			fullLog = generateFullLog();
+			fullLog = generateFullLog();
 			LogType = "Outage";
+			
+//			parserTable = op.parse(alarms);
+//			VFoutage = op.genReport(parserTable,"VF");
+//			VFbulkCI = op.bulkCi(sites);
+//			TFoutage = op.genReport(parserTable,"TF");
+//			TFbulkCI = op.bulkCi(sites);
 		}
 		
-		public Outage(Outage template) {
-			Toolbox.Tools.CopyProperties(this, template);
-//			fullLog = generateFullLog();
+		public Outage(Outage existingOutage) {
+			Toolbox.Tools.CopyProperties(this, existingOutage);
+			fullLog = generateFullLog();
 			LogType = "Outage";
 		}
 		
@@ -115,6 +94,10 @@ namespace appCore.Templates.Types
 			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
 			LogType = "Outage";
+		}
+		
+		string generateFullLog() {
+			
 		}
 		
 		public void LoadOutageReport(string[] log)
