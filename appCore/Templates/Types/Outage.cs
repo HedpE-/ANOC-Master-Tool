@@ -25,11 +25,10 @@ namespace appCore.Templates.Types
 		public string TFoutage;
 		public string VFbulkCI;
 		public string TFbulkCI;
-		public List<string> sitesList; // sites string to get POC designations
-		public List<Site> Sites; // Para o parser guardar os sites para o bulkCI
-		public List<Cell> Cells; // Cells list caught on outage alarms, these can be compared later on Outage Follow Up
-		public List<string> Locations;
-		List<Alarm> OutageAlarms;
+		public List<Site> Sites = new List<Site>(); // Para o parser guardar os sites para o bulkCI
+		public List<Cell> Cells = new List<Cell>(); // Cells list caught on outage alarms, these can be compared later on Outage Follow Up
+		public List<string> Locations = new List<string>();
+		List<Alarm> OutageAlarms = new List<Alarm>();
 		
 //		string siteids = string.Empty;
 //		public string SiteIDs { get { return siteids; } protected set { siteids = value; } }
@@ -63,8 +62,7 @@ namespace appCore.Templates.Types
 			foreach(Alarm alarm in alarms.AlarmsList) {
 				if(alarm.Bearer == "4G") {
 					if(alarm.OnM) {
-						Site site = Finder.getSite(alarm.Element.Replace("RBS",string.Empty));
-						List<Cell> LTEcells = site.Cells.Where(s => s.Bearer == "4G").ToList();
+						List<Cell> LTEcells = alarm.ParentSite.Cells.Where(s => s.Bearer == "4G").ToList();
 						foreach (Cell cell in LTEcells)
 							resolved4gCoosAlarms.Add(new Alarm(cell, true, alarm.LastOccurrence));
 					}
@@ -75,7 +73,7 @@ namespace appCore.Templates.Types
 			}
 			
 			OutageAlarms.AddRange(resolved4gCoosAlarms);
-						
+			
 			// TODO: Separate VF & TF cells
 			// TODO: Build both reports
 			

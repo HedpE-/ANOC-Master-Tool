@@ -45,8 +45,23 @@ namespace appCore.Netcool
 		public string Identifier { get { return identifier; } protected set { identifier = value; } }
 		string[] attributes;
 		public string[] Attributes { get { return attributes; } protected set { attributes = value; } }
-		Site siteId;
-		public Site SiteId { get { return siteId; } protected set { siteId = value; } }
+		public string SiteId {
+			get {
+				string temp = Element.Replace("RBS", string.Empty);
+				while(temp.Substring(0) == "0")
+					temp = temp.Substring(1);
+				return temp;
+			} protected set { }
+		}
+		Site _site = null;
+		public Site ParentSite {
+			get {
+				if(_site == null)
+					_site = Finder.getSite(SiteId);
+				return _site;
+			}
+			protected set { }
+		}
 		public bool COOS { get; protected set; }
 		public bool OnM { get; protected set; }
 		public string Bearer { get; protected set; }
@@ -145,26 +160,26 @@ namespace appCore.Netcool
 					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable"))
 						COOS = true;
 					else
-						OnM = Summary.Contains("4G: Heartbeat Failure");
+						OnM = Summary.Contains("Heartbeat Failure") || Summary.Contains("OML FAULT");
 					break;
 				case Site.Vendors.Huawei:
 					if (Summary.Contains("Cell out of Service") || Summary.Contains("Cell Unavailable") || Summary.Contains("Local Cell Unusable"))
 						COOS = true;
 					else
-						OnM = Summary.Contains("eNodeB");
+						OnM = Summary.Contains("NE Is Disconnected") || Summary.Contains("OML Fault");
 					break;
 				case Site.Vendors.NSN:
 					if (!(Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE")))
 						COOS = true;
 					else
-						OnM = Summary.Contains("ENODEB: NE O&M");
+						OnM = Summary.Contains("NE O&M");
 					break;
 			}
 		}
 		
 		string resolveAlarmBearer() {
 			if(!string.IsNullOrEmpty(RncBsc)) {
-				switch(RncBsc.Substring(0)) {
+				switch(RncBsc.Substring(0, 1)) {
 					case "B":
 						return "2G";
 					case "R":
@@ -293,7 +308,7 @@ namespace appCore.Netcool
 			return toParse;
 		}
 		
-		public bool ResolveCellName() {
+		public void ResolveCellName() {
 			if(string.IsNullOrEmpty(Element)) {
 				switch(Vendor) {
 					case Site.Vendors.Huawei:
@@ -328,12 +343,15 @@ namespace appCore.Netcool
 						elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
 						Element = elementID;
 						break;
+					case Site.Vendors.Ericsson:
+						string EricssonCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
+						Element = Finder.queryAllCellsDB("CELL_ID", EricssonCellId).Name;
+						break;
 				}
-				
-				return true;
 			}
 			
-			return false;
+//			if(string.IsNullOrEmpty(Element))
+//				Element = cell
 		}
 		
 		Site.Vendors getVendor(string strVendor) {
