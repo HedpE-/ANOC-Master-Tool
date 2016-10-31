@@ -162,8 +162,6 @@ namespace appCore
 		private System.Windows.Forms.Button button52;
 		private System.Windows.Forms.Label label68;
 		private System.Windows.Forms.TabPage tabPage17;
-		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem vxcbvToolStripMenuItem;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -187,6 +185,7 @@ namespace appCore
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
@@ -273,6 +272,7 @@ namespace appCore
 			this.textBox51 = new System.Windows.Forms.TextBox();
 			this.label67 = new System.Windows.Forms.Label();
 			this.textBox52 = new System.Windows.Forms.TextBox();
+			this.pictureBox7 = new appCore.SiteFinder.UI.CellDetailsPictureBox();
 			this.label65 = new System.Windows.Forms.Label();
 			this.listView2 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
@@ -329,13 +329,10 @@ namespace appCore
 			this.button5 = new System.Windows.Forms.Button();
 			this.button6 = new System.Windows.Forms.Button();
 			this.tabPage17 = new System.Windows.Forms.TabPage();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.vxcbvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.pictureBox7 = new appCore.SiteFinder.UI.CellDetailsPictureBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
@@ -353,15 +350,13 @@ namespace appCore
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabPage13.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			this.tabControl4.SuspendLayout();
 			this.tabPage5.SuspendLayout();
-			this.tabPage17.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -1424,6 +1419,16 @@ namespace appCore
 			this.textBox52.Size = new System.Drawing.Size(194, 20);
 			this.textBox52.TabIndex = 129;
 			// 
+			// pictureBox7
+			// 
+			this.pictureBox7.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox7.Image")));
+			this.pictureBox7.Location = new System.Drawing.Point(58, 31);
+			this.pictureBox7.Name = "pictureBox7";
+			this.pictureBox7.Size = new System.Drawing.Size(403, 75);
+			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+			this.pictureBox7.TabIndex = 118;
+			this.pictureBox7.TabStop = false;
+			// 
 			// label65
 			// 
 			this.label65.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2013,7 +2018,6 @@ namespace appCore
 			// 
 			// tabPage17
 			// 
-			this.tabPage17.Controls.Add(this.menuStrip1);
 			this.tabPage17.Location = new System.Drawing.Point(4, 22);
 			this.tabPage17.Name = "tabPage17";
 			this.tabPage17.Padding = new System.Windows.Forms.Padding(3);
@@ -2021,25 +2025,6 @@ namespace appCore
 			this.tabPage17.TabIndex = 6;
 			this.tabPage17.Text = "tabPage17";
 			this.tabPage17.UseVisualStyleBackColor = true;
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.vxcbvToolStripMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(3, 3);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(519, 25);
-			this.menuStrip1.TabIndex = 11;
-			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// vxcbvToolStripMenuItem
-			// 
-			this.vxcbvToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.vxcbvToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.vxcbvToolStripMenuItem.Name = "vxcbvToolStripMenuItem";
-			this.vxcbvToolStripMenuItem.Size = new System.Drawing.Size(55, 21);
-			this.vxcbvToolStripMenuItem.Text = "vxcbv";
 			// 
 			// contextMenuStrip1
 			// 
@@ -2070,14 +2055,6 @@ namespace appCore
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
-			// 
-			// pictureBox7
-			// 
-			this.pictureBox7.Location = new System.Drawing.Point(58, 31);
-			this.pictureBox7.Name = "pictureBox7";
-			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.pictureBox7.TabIndex = 118;
-			this.pictureBox7.TabStop = false;
 			// 
 			// MainForm
 			// 
@@ -2114,18 +2091,14 @@ namespace appCore
 			this.groupBox5.ResumeLayout(false);
 			this.tabPage13.ResumeLayout(false);
 			this.tabPage13.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
 			this.tabPage4.ResumeLayout(false);
 			this.tabControl4.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
-			this.tabPage17.ResumeLayout(false);
-			this.tabPage17.PerformLayout();
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
 			this.ResumeLayout(false);
 
 		}

@@ -702,10 +702,11 @@ namespace appCore
 		void buttClick(object sender, EventArgs e) {
 			Button bt = (Button)sender;
 			if(bt.Name == "butt") {
-//				OutagesUI.Dispose();
-//				tabControl1.SelectTab(6);
-//				OutageUI = new OutageControls();
-//				tabPage17.Controls.Add(OutageUI);
+				if(OutageUI != null)
+					OutageUI.Dispose();
+				tabControl1.SelectTab(6);
+				OutageUI = new OutageControls();
+				tabPage17.Controls.Add(OutageUI);
 
 			}
 			else
@@ -790,12 +791,12 @@ namespace appCore
 				butt2.Click += buttClick;
 				tabPage1.Controls.Add(butt2);
 				
-//				Button butt = new Button();
-//				butt.Name = "butt";
-//				butt.Location = new Point(5, butt2.Top - butt.Height - 5);
-//				butt.Click += buttClick;
-//				tabPage1.Controls.Add(butt);
-				if(CurrentUser.userName == "GONCARJ3") {
+				Button butt = new Button();
+				butt.Name = "butt";
+				butt.Location = new Point(5, butt2.Top - butt.Height - 5);
+				butt.Click += buttClick;
+				tabPage1.Controls.Add(butt);
+				if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos") {
 					OutageUI.Location = new Point(1, 2);
 					tabPage17.Controls.Add(OutageUI);
 				}
@@ -882,7 +883,7 @@ namespace appCore
 			trayIcon.toggleShareAccess();
 			
 			toolTipDeploy();
-						
+			
 			richTextBox9.Height = 206;
 			richTextBox9.Width = 499;
 			richTextBox9.Left = 6;
