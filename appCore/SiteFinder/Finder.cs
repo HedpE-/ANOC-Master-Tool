@@ -19,6 +19,31 @@ namespace appCore.SiteFinder
 	/// </summary>
 	public static class Finder
 	{
+		public static Site queryAllSitesDB(string columnName, string pattern) {			
+//			Action action = new Action(delegate {
+			DataView dv = new DataView(Databases.siteDetailsTable);
+			dv.RowFilter = columnName + " = '" + pattern + "'"; // query example = "id = 10"
+			DataRowView dr = null;
+			if(dv.Count == 1)
+				dr = dv[0];
+			
+			bool siteFound = dv.Count > 0;
+			
+			Site site = new Site();
+//			                           });
+//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+			return site;
+		}
+		
+		public static Cell queryAllCellsDB(string columnName, string pattern) {
+			DataView dv = new DataView(Databases.cellDetailsTable);
+			dv.RowFilter = columnName + " = '" + pattern + "'"; // query example = "id = 10"
+			DataRowView dr = null;
+			if(dv.Count == 1)
+				dr = dv[0];
+			return new Cell(dv[0]);
+		}
+		
 		public static Site getSite(string Site)
 		{
 //			Action action = new Action(delegate {

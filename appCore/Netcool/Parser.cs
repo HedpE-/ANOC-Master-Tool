@@ -26,9 +26,10 @@ namespace appCore.Netcool
 		DataTable parsedTable = new DataTable();
 		public List<Alarm> AlarmsList = new List<Alarm>();
 		
-		public Parser(string netcoolAlarms) {
+		public Parser(string netcoolAlarms, bool generateOutput = true) {
 			toParse = netcoolAlarms;
 			ToDataTable();
+			parseAlarms(generateOutput);
 		}
 		
 		void ToDataTable() {
@@ -75,7 +76,7 @@ namespace appCore.Netcool
 			}
 		}
 		
-		public void parseAlarms() {
+		public void parseAlarms(bool generateOutput) {
 			DataColumnCollection columns = parsedTable.Columns;
 			
 			foreach (DataRow row in parsedTable.Rows)
@@ -84,7 +85,8 @@ namespace appCore.Netcool
 				AlarmsList.Add(alarm);
 			}
 			
-			generateParsedOutput();
+			if(generateOutput)
+				generateParsedOutput();
 		}
 		
 		void generateParsedOutput() {

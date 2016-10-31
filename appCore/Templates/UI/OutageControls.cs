@@ -173,7 +173,7 @@ namespace appCore.Templates.UI
 			try {
 				// TODO: Finish revamped outages
 				
-				Parser alarms = new Parser(textBox10.Text);
+				Parser alarms = new Parser(textBox10.Text, false);
 				currentOutage = alarms.GenerateOutage();
 
 				if(!string.IsNullOrEmpty(currentOutage.VFoutage) && !string.IsNullOrEmpty(currentOutage.TFoutage)) {

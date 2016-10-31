@@ -489,7 +489,7 @@ namespace appCore.SiteFinder
 //					if(cells2GTableRowDescendants.ElementAt(0) != "BEARER") {
 //						Cell cell = cellsFilter.Find(x => x.Name == "xy");
 //					}
-//					
+//
 //				}
 //			}
 			

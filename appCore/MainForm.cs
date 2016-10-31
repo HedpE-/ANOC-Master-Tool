@@ -1184,29 +1184,6 @@ namespace appCore
 				                           	
 				                           	Site site = new Site(siteRow, cellsRows);
 				                           	switch (tb.Name) {
-//				                           		case "textBox27":
-//				                           			if(siteRow != null) {
-//				                           				textBox46.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("PRIORITY")].ToString();
-//				                           				textBox47.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("VF_REGION")].ToString();
-//				                           			}
-//				                           			else {
-//				                           				textBox47.Text = "No site found";
-//				                           				textBox46.Text = string.Empty;
-//				                           			}
-//				                           			break;
-//				                           		case "textBox43":
-//				                           			if(siteRow != null) {
-//				                           				textBox45.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("VF_REGION")].ToString();
-//				                           				textBox48.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("PRIORITY")].ToString();
-//				                           				if(siteRow.Row.Table.Columns.IndexOf("POWER_COMPANY") > -1 && siteRow.Row.Table.Columns.IndexOf("POWER_CONTACT") > -1)
-//				                           					textBox49.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("POWER_COMPANY")].ToString() + " +" + siteRow[siteRow.Row.Table.Columns.IndexOf("POWER_CONTACT")].ToString();
-//				                           			}
-//				                           			else {
-//				                           				textBox45.Text = "No site found";
-//				                           				textBox48.Text = string.Empty;
-//				                           				textBox49.Text = string.Empty;
-//				                           			}
-//				                           			break;
 				                           		case "textBox50":
 				                           			if(siteRow != null) {
 				                           				cellsRows.RowFilter = "VENDOR LIKE 'ERIC*'";
@@ -2350,7 +2327,6 @@ namespace appCore
 			                           	}
 			                           	try {
 			                           		Netcool.Parser netcool = new Netcool.Parser(textBox12.Text);
-			                           		netcool.parseAlarms();
 			                           		textBox12.Text = netcool.ToString();
 			                           		
 			                           		textBox12.Select(0,0);
