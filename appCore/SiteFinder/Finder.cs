@@ -22,8 +22,6 @@ namespace appCore.SiteFinder
 		public static Site getSite(string Site)
 		{
 //			Action action = new Action(delegate {
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			DataRowView siteRow = null;
 			DataView cellsRows = null;
 			
@@ -37,6 +35,8 @@ namespace appCore.SiteFinder
 			bool siteFound = siteRow != null;
 			
 			Site site = new Site(siteRow, cellsRows);
+//			                           });
+//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			return site;
 		}
 
@@ -65,7 +65,7 @@ namespace appCore.SiteFinder
 			DataView dv = new DataView(Databases.cellDetailsTable);
 			dv.RowFilter = "CELL_NAME = '" + cell + "'";
 			
-			Cell tempCell = new Cell(dv.Table.Rows[0]);
+			Cell tempCell = new Cell(dv[0]);
 			return tempCell;
 		}
 

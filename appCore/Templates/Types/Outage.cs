@@ -8,8 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Windows.Forms;
+using System.Linq;
 using appCore.Netcool;
 using appCore.SiteFinder;
 using appCore.Settings;
@@ -58,19 +57,27 @@ namespace appCore.Templates.Types
 		}
 		
 		public Outage(Parser alarms) {
-			// Get LTE O&M alarms to get all affected cells
-			// Take COOS alarms on the OutageAlarms list
-			// Separate VF & TF cells
-			// Build both reports
-			
-			// Get LTE O&M alarms to get all affected cells
-			
-			
-			// Take COOS alarms on the OutageAlarms list
+			// FIXME: Get LTE O&M alarms to get all affected cells
+			// FIXME: Take COOS alarms on the OutageAlarms list
+			List<Alarm> resolved4gCoosAlarms = new List<Alarm>();
 			foreach(Alarm alarm in alarms.AlarmsList) {
-				if(alarm.COOS)
-					OutageAlarms.Add(alarm);
+				if(alarm.Bearer == "4G") {
+					if(alarm.OnM) {
+						Site site = Finder.getSite(alarm.Element.Replace("RBS",string.Empty));
+						List<Cell> LTEcells = site.Cells.Where(s => s.Bearer == "4G").ToList();
+						foreach (Cell cell in LTEcells)
+							resolved4gCoosAlarms.Add(new Alarm(cell, true, alarm.LastOccurrence));
+					}
+				}
+				else
+					if(alarm.COOS)
+						OutageAlarms.Add(alarm);
 			}
+			
+			OutageAlarms.AddRange(resolved4gCoosAlarms);
+						
+			// TODO: Separate VF & TF cells
+			// TODO: Build both reports
 			
 			fullLog = generateFullLog();
 			LogType = "Outage";
@@ -97,7 +104,7 @@ namespace appCore.Templates.Types
 		}
 		
 		string generateFullLog() {
-			
+			return string.Empty;
 		}
 		
 		public void LoadOutageReport(string[] log)

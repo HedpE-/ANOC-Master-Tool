@@ -131,10 +131,11 @@ namespace appCore.Netcool
 		
 		void resolveAddressFromCell(Cell cell) {
 			Site site = Finder.getSite(cell.ParentSite);
-			site.Address;
+			County = site.County;
+			Town = site.Town;
 		}
 		
-		void checkCoosOrOnM() {
+		void checkCoosOrOnM() { // FIXME: O&M alarms for proper filtering
 			switch (Vendor) {
 				case Site.Vendors.ALU:
 					if(Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable"))

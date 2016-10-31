@@ -104,11 +104,11 @@ namespace appCore.SiteFinder
 		}
 		
 		void Lock() {
-			
+			// TODO: Cell lock method
 		}
 		
 		void Unlock() {
-			
+			// TODO: Cell unlock method
 		}
 		
 		Site.Vendors getVendor(string strVendor) {
