@@ -47,11 +47,15 @@ namespace appCore.Netcool
 		public string[] Attributes { get { return attributes; } protected set { attributes = value; } }
 		public string SiteId {
 			get {
-				string temp = Element.Replace("RBS", string.Empty);
-				while(temp.Substring(0) == "0")
-					temp = temp.Substring(1);
+				string temp = Element.Contains("RBS") ? Element : Location;
+				if(!string.IsNullOrEmpty(temp)) {
+					temp = temp.Replace("RBS", string.Empty);
+					while(temp.StartsWith("0"))
+						temp = temp.Substring(1);
+				}
 				return temp;
-			} protected set { }
+			}
+			protected set { }
 		}
 		Site _site = null;
 		public Site ParentSite {
@@ -121,8 +125,7 @@ namespace appCore.Netcool
 			Element = cell.Name;
 			COOS = coos;
 			Bearer = cell.Bearer;
-			Site site = Finder.getSite(cell.ParentSite);
-			string temp = site.Id;
+			string temp = SiteId;
 			while(temp.Length < 5)
 				temp = "0" + temp;
 			Location = "RBS" + temp;
@@ -139,22 +142,15 @@ namespace appCore.Netcool
 					break;
 			}
 			
-			County = site.County;
-			Town = site.Town;
+			County = ParentSite.County;
+			Town = ParentSite.Town;
 			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
-		}
-		
-		void resolveAddressFromCell(Cell cell) {
-			Site site = Finder.getSite(cell.ParentSite);
-			County = site.County;
-			Town = site.Town;
 		}
 		
 		void checkCoosOrOnM() { // FIXME: O&M alarms for proper filtering
 			switch (Vendor) {
 				case Site.Vendors.ALU:
-					if(Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable"))
-						COOS = true;
+					COOS = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
 					break;
 				case Site.Vendors.Ericsson:
 					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable"))
@@ -185,7 +181,7 @@ namespace appCore.Netcool
 					case "R":
 						return "3G";
 					case "X":
-						if(Location.StartsWith("V"))
+						if(Element.StartsWith("V"))
 							return "4G";
 						break;
 				}
@@ -313,15 +309,8 @@ namespace appCore.Netcool
 				switch(Vendor) {
 					case Site.Vendors.Huawei:
 						if(Identifier.Contains("Cell Name=")) {
-							string[] temp = Identifier.Split(',');
-							for(int c = 0;c < temp.Length;c++) {
-								if(temp[c].Contains("Cell Name=")) {
-									temp[c] = temp[c].Substring(temp[c].IndexOf("=") + 1);
-//									temp[c] = temp[c].Remove(temp[c].IndexOf(","));
-									Element = temp[c];
-									break;
-								}
-							}
+							string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
+							Element = temp.Substring(0, temp.IndexOf(','));
 						}
 						else
 							Element = Node;
@@ -345,13 +334,13 @@ namespace appCore.Netcool
 						break;
 					case Site.Vendors.Ericsson:
 						string EricssonCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
-						Element = Finder.queryAllCellsDB("CELL_ID", EricssonCellId).Name;
+						List<Cell> results = Finder.queryAllCellsDB("CELL_ID", EricssonCellId);
+						foreach(Cell cell in results)
+							if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
+								Element = cell.Name;
 						break;
 				}
 			}
-			
-//			if(string.IsNullOrEmpty(Element))
-//				Element = cell
 		}
 		
 		Site.Vendors getVendor(string strVendor) {

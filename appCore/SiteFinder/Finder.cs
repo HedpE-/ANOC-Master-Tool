@@ -19,7 +19,7 @@ namespace appCore.SiteFinder
 	/// </summary>
 	public static class Finder
 	{
-		public static Site queryAllSitesDB(string columnName, string pattern) {			
+		public static Site queryAllSitesDB(string columnName, string pattern) {
 //			Action action = new Action(delegate {
 			DataView dv = new DataView(Databases.siteDetailsTable);
 			dv.RowFilter = columnName + " = '" + pattern + "'"; // query example = "id = 10"
@@ -35,13 +35,24 @@ namespace appCore.SiteFinder
 			return site;
 		}
 		
-		public static Cell queryAllCellsDB(string columnName, string pattern) {
+		public static List<Cell> queryAllCellsDB(string columnName, string pattern) {
 			DataView dv = new DataView(Databases.cellDetailsTable);
 			dv.RowFilter = columnName + " = '" + pattern + "'"; // query example = "id = 10"
-			DataRowView dr = null;
-			if(dv.Count == 1)
-				dr = dv[0];
-			return new Cell(dv[0]);
+//			DataRowView dr = null;
+//			if(dv.Count == 1)
+//				dr = dv[0];
+			List<Cell> filtered = new List<Cell>();
+//			DataTable dt = null;
+			if(dv.Count > 0) {
+				DataTable dt = dv.ToTable();
+				//clone the source table
+				//fill the clone with the filtered rows
+				foreach (DataRowView drv in dt.DefaultView) {
+					filtered.Add(new Cell(drv));
+				}
+//				dt = filtered;
+			}
+			return filtered;
 		}
 		
 		public static Site getSite(string Site)
@@ -50,14 +61,15 @@ namespace appCore.SiteFinder
 			DataRowView siteRow = null;
 			DataView cellsRows = null;
 			
+			while(Site.StartsWith("0"))
+				Site = Site.Substring(1);
+			
 			if(!string.IsNullOrEmpty(Site)) {
 				siteRow = findSite(Site);
 				cellsRows = findCells(Site);
 			}
 			else
 				return new Site();
-			
-			bool siteFound = siteRow != null;
 			
 			Site site = new Site(siteRow, cellsRows);
 //			                           });
@@ -115,8 +127,7 @@ namespace appCore.SiteFinder
 			DataView dv = new DataView(Databases.cellDetailsTable);
 			dv.RowFilter = "SITE = '" + site + "'";
 			DataTable dt = null;
-			if (dv.Count > 0)
-			{
+			if (dv.Count > 0) {
 				dt = dv.ToTable();
 				//clone the source table
 				DataTable filtered = dt.Clone();
