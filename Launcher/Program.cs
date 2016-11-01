@@ -41,7 +41,7 @@ namespace Launcher
                 try
                 {
                     dom = Domain.GetComputerDomain();
-                    if (dom.Name != "VF-ROOT")
+                    if (dom.Name != "internal.vodafone.com")
                     {
                         MessageBox.Show("ANOC Master Tool not running in VF computer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Environment.Exit(1);
