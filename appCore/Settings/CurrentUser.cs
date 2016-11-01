@@ -40,7 +40,7 @@ namespace appCore.Settings
         public static void InitializeUserProperties()
         {
             userName = GetUserDetails("Username");
-            fullName = GetUserDetails("Username").Split(' ');
+            fullName = GetUserDetails("Name").Split(' ');
             for (int c = 0; c < fullName.Length; c++)
                 fullName[c] = fullName[c].Replace(",", string.Empty);
             department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
