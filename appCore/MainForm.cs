@@ -931,6 +931,8 @@ namespace appCore
 			
 			DataRow[] sameShiftRows = Toolbox.Tools.getWholeShift(shiftsChosenDate);
 			
+			if(sameShiftRows == null)
+				return;
 			if(sameShiftRows.Length == 0)
 				return;
 			
