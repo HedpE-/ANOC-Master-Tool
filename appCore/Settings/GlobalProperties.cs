@@ -7,18 +7,16 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using System.IO;
-using System.Reflection;
 
 namespace appCore.Settings
 {
-	/// <summary>
-	/// Description of GlobalProperties.
-	/// </summary>
-	public static class GlobalProperties
+    /// <summary>
+    /// Description of GlobalProperties.
+    /// </summary>
+    public static class GlobalProperties
 	{
 		public static CultureInfo culture = new CultureInfo("pt-PT");
 		public static DateTime dt = DateTime.Parse(DateTime.Now.ToString(), culture);

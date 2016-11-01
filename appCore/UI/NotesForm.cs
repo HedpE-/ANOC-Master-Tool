@@ -6,15 +6,14 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 using System.Windows.Forms;
 
 namespace appCore.UI
 {
-	/// <summary>
-	/// Description of NotesForm.
-	/// </summary>
-	public partial class NotesForm : Form
+    /// <summary>
+    /// Description of NotesForm.
+    /// </summary>
+    public partial class NotesForm : Form
 	{
 		public NotesForm()
 		{

@@ -6,14 +6,13 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 
 namespace appCore.SiteFinder
 {
-	/// <summary>
-	/// Description of Vendor.
-	/// </summary>
-	public partial class Site
+    /// <summary>
+    /// Description of Vendor.
+    /// </summary>
+    public partial class Site
 	{
 		public enum Vendors : byte {
 			Ericsson,

@@ -6,12 +6,9 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 using System.Data;
-using System.Diagnostics;
 using System.Threading;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Timers;
 using appCore.Settings;
@@ -20,10 +17,10 @@ using appCore.Web;
 
 namespace appCore.DB
 {
-	/// <summary>
-	/// Description of Databases.
-	/// </summary>
-	public static class Databases
+    /// <summary>
+    /// Description of Databases.
+    /// </summary>
+    public static class Databases
 	{
 		static FileInfo _all_sites;
 		public static FileInfo all_sites {

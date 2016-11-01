@@ -9,22 +9,20 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using appCore.Netcool;
-using appCore.SiteFinder;
 using appCore.Templates.Types;
 using appCore.UI;
 
 namespace appCore.Templates.UI
 {
-	/// <summary>
-	/// Description of OutageControls.
-	/// </summary>
-	public class OutageControls : Panel
+    /// <summary>
+    /// Description of OutageControls.
+    /// </summary>
+    public class OutageControls : Panel
 	{
 		public Button Button_OuterRight = new Button();
 		public Button Button_OuterLeft = new Button();

@@ -11,14 +11,13 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Collections.Generic;
 using appCore.UI;
 //using RoundedRectangles;
 
 namespace appCore.Shifts
 {
-	public class ShiftsPanel : Panel
+    public class ShiftsPanel : Panel
 	{
 		[Flags]
 		public enum Borders

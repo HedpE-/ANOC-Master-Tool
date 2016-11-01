@@ -7,20 +7,17 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using appCore.Templates.Types;
 using appCore.UI;
 
 namespace appCore.Templates.UI
 {
-	/// <summary>
-	/// Description of TXControls.
-	/// </summary>
-	public class TXControls : Panel
+    /// <summary>
+    /// Description of TXControls.
+    /// </summary>
+    public class TXControls : Panel
 	{
 		public Button Button_OuterRight = new Button();
 		public Button Button_OuterLeft = new Button();

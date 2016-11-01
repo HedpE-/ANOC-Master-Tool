@@ -17,16 +17,14 @@ using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
-using appCore.DB;
-using appCore.SiteFinder;
 using appCore.UI;
 
 namespace appCore.SiteFinder.UI
 {
-	/// <summary>
-	/// Description of siteDetails.
-	/// </summary>
-	public partial class siteDetails2 : Form
+    /// <summary>
+    /// Description of siteDetails.
+    /// </summary>
+    public partial class siteDetails2 : Form
 	{
 		string _siteDetails_UIMode = "single/readonly";		
 		/// <summary>

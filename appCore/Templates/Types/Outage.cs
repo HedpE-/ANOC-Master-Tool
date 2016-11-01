@@ -11,15 +11,14 @@ using System.Collections.Generic;
 using System.Linq;
 using appCore.Netcool;
 using appCore.SiteFinder;
-using appCore.Settings;
 
 namespace appCore.Templates.Types
 {
-	/// <summary>
-	/// Description of Outage.
-	/// </summary>
-//	[Serializable]
-	public class Outage : Template
+    /// <summary>
+    /// Description of Outage.
+    /// </summary>
+    //	[Serializable]
+    public class Outage : Template
 	{
 		public string VFoutage;
 		public string TFoutage;

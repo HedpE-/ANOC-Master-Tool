@@ -9,16 +9,14 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Windows.Forms;
-using appCore.SiteFinder;
 
 namespace appCore.SiteFinder.UI
 {
-	/// <summary>
-	/// Description of OiSiteTablesForm.
-	/// </summary>
-	public partial class OiSiteTablesForm : Form
+    /// <summary>
+    /// Description of OiSiteTablesForm.
+    /// </summary>
+    public partial class OiSiteTablesForm : Form
 	{
 		DataTable Datatable;
 		string filter = "all";

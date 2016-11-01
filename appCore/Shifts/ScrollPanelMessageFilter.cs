@@ -8,16 +8,13 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace appCore.Shifts
 {
-	internal class ScrollPanelMessageFilter : IMessageFilter
+    internal class ScrollPanelMessageFilter : IMessageFilter
 	{
 		int WM_MOUSEWHEEL = 0x20A;
 		Panel panel;

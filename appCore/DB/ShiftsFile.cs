@@ -11,17 +11,16 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using msExcel = Microsoft.Office.Interop.Excel;
 using Excel;
 using appCore.Settings;
 using appCore.Toolbox;
 
 namespace appCore.DB
 {
-	/// <summary>
-	/// Description of ShiftsFile.
-	/// </summary>
-	public class ShiftsFile
+    /// <summary>
+    /// Description of ShiftsFile.
+    /// </summary>
+    public class ShiftsFile
 	{
 		FileInfo shiftsFile;
 		

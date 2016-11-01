@@ -6,18 +6,16 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Threading;
 
 namespace appCore.UI
 {
-	/// <summary>
-	/// Description of AMTToolStripSystemRenderer.
-	/// https://msdn.microsoft.com/en-us/library/system.windows.forms.toolstriprenderer(v=vs.110).aspx
-	/// </summary>
-	public class AMTToolStripSystemRenderer : ToolStripSystemRenderer
+    /// <summary>
+    /// Description of AMTToolStripSystemRenderer.
+    /// https://msdn.microsoft.com/en-us/library/system.windows.forms.toolstriprenderer(v=vs.110).aspx
+    /// </summary>
+    public class AMTToolStripSystemRenderer : ToolStripSystemRenderer
 	{
 		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e) {
 			if(e.Item.OwnerItem == null) {

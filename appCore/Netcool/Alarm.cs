@@ -9,15 +9,14 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using appCore.SiteFinder;
 
 namespace appCore.Netcool
 {
-	/// <summary>
-	/// Description of Alarm.
-	/// </summary>
-	public class Alarm
+    /// <summary>
+    /// Description of Alarm.
+    /// </summary>
+    public class Alarm
 	{
 		DateTime lastOccurrence;
 		public DateTime LastOccurrence { get { return lastOccurrence; } protected set { lastOccurrence = value; } }

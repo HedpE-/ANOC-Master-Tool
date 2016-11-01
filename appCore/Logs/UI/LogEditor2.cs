@@ -7,7 +7,6 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.IO;
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections;
@@ -20,10 +19,10 @@ using appCore.Templates.Types;
 
 namespace appCore.Logs.UI
 {
-	/// <summary>
-	/// Description of LogEditor.
-	/// </summary>
-	public sealed partial class LogEditor2 : Form
+    /// <summary>
+    /// Description of LogEditor.
+    /// </summary>
+    public sealed partial class LogEditor2 : Form
 	{
 		public string[] globalLogs;
 		public string GlobalLogType;

@@ -8,7 +8,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,10 +19,10 @@ using appCore.SiteFinder.UI;
 
 namespace appCore.Templates.UI
 {
-	/// <summary>
-	/// Description of TroubleshootControls.
-	/// </summary>
-	public class TroubleshootControls : Panel
+    /// <summary>
+    /// Description of TroubleshootControls.
+    /// </summary>
+    public class TroubleshootControls : Panel
 	{
 		public Button AddressLargeTextButton = new Button();
 		public Button MTXAddressButton = new Button();

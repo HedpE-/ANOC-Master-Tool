@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GMap.NET
+﻿namespace GMap.NET
 {
     public interface IPositionTime : IPosition, ITime
     {

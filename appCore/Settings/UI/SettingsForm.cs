@@ -8,19 +8,17 @@
  */
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using appCore.UI;
 using appCore.DB;
 
 namespace appCore.Settings.UI
 {
-	/// <summary>
-	/// Description of SettingsForm.
-	/// </summary>
-	public partial class SettingsForm : Form
+    /// <summary>
+    /// Description of SettingsForm.
+    /// </summary>
+    public partial class SettingsForm : Form
 	{
 		public bool siteFinder_newSwitch;
 		

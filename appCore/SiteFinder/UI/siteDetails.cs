@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using GMap.NET;
@@ -23,10 +22,10 @@ using appCore.Toolbox;
 
 namespace appCore.SiteFinder.UI
 {
-	/// <summary>
-	/// Description of siteDetails.
-	/// </summary>
-	public partial class siteDetails : Form
+    /// <summary>
+    /// Description of siteDetails.
+    /// </summary>
+    public partial class siteDetails : Form
 	{
 		string _siteDetails_UIMode = "single/readonly";
 		DataView cellsList = null;

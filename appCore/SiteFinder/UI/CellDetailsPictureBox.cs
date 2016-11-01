@@ -6,7 +6,6 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -14,10 +13,10 @@ using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
 {
-	/// <summary>
-	/// Description of CellDetailsPictureBox.
-	/// </summary>
-	public class CellDetailsPictureBox : PictureBox
+    /// <summary>
+    /// Description of CellDetailsPictureBox.
+    /// </summary>
+    public class CellDetailsPictureBox : PictureBox
 	{
 		Label label_VF_2GCells = new Label();
 		Label label_VF_3GCells = new Label();

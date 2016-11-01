@@ -6,15 +6,14 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 using appCore.Templates;
 
 namespace appCore.Logs
 {
-	/// <summary>
-	/// Description of ILog.
-	/// </summary>
-	interface ILog<out T> where T : Template
+    /// <summary>
+    /// Description of ILog.
+    /// </summary>
+    interface ILog<out T> where T : Template
 	{
 	}
 }

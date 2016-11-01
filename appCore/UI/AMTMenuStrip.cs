@@ -9,14 +9,13 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using appCore.UI;
 
 namespace appCore.UI
 {
-	/// <summary>
-	/// Description of AMTMenuStrip.
-	/// </summary>
-	public class AMTMenuStrip : MenuStrip
+    /// <summary>
+    /// Description of AMTMenuStrip.
+    /// </summary>
+    public class AMTMenuStrip : MenuStrip
 	{
 		public ToolStripMenuItem MainMenu = new ToolStripMenuItem();
 		

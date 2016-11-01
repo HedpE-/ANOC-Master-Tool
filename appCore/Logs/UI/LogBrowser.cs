@@ -10,16 +10,14 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 namespace appCore.Logs.UI
 {
-	/// <summary>
-	/// Description of LogBrowser.
-	/// </summary>
-	public partial class LogBrowser : Form
+    /// <summary>
+    /// Description of LogBrowser.
+    /// </summary>
+    public partial class LogBrowser : Form
 	{
 		public string chkrb;
 		MainForm myFormControl1;

@@ -7,17 +7,15 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
-using Outlook = Microsoft.Office.Interop.Outlook;
 using appCore.Templates.Types;
 
 namespace appCore.Templates.UI
 {
-	/// <summary>
-	/// Description of SendBCP.
-	/// </summary>
-	public partial class SendBCP : Form
+    /// <summary>
+    /// Description of SendBCP.
+    /// </summary>
+    public partial class SendBCP : Form
 	{
 		TroubleShoot currentTemplate;
 		
