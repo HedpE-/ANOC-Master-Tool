@@ -114,7 +114,20 @@ namespace appCore
 			}
 		}
 
-		public BrowserView()
+        public IContainer Components
+        {
+            get
+            {
+                return components;
+            }
+
+            set
+            {
+                components = value;
+            }
+        }
+
+        public BrowserView()
 		{
 			this.InitializeComponent();
 			this.OIUsername = Settings.SettingsFile.OIUsername;
@@ -842,7 +855,7 @@ namespace appCore
 
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && this.components != null)
+            if (disposing && this.components != null)
 			{
 				this.components.Dispose();
 			}
