@@ -6,17 +6,15 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using System.Windows.Forms;
 
 namespace appCore.Settings
 {
-	/// <summary>
-	/// Description of CurrentUser.
-	/// </summary>
-	public static class CurrentUser
+    /// <summary>
+    /// Description of CurrentUser.
+    /// </summary>
+    public static class CurrentUser
 	{
 		public static bool hasOICredentials {
 			get;
@@ -36,26 +34,15 @@ namespace appCore.Settings
 		}		
 		
 		public static void InitializeUserProperties() {
-            try
-            {
-                userName = GetUserDetails("Username");
-                fullName = GetUserDetails("Name").Split(' ');
-                for (int c = 0; c < fullName.Length; c++)
-                    fullName[c] = fullName[c].Replace(",", string.Empty);
-                department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
-                UserFolder.ResolveUserFolder();
-                SettingsFile.ResolveSettingsFile();
-                hasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
-                UserFolder.Initialize();
-            }
-            catch (Exception notInVfNw)
-            {
-                MessageBox.Show("ANOC Master Tool is not running in VF Network" + Environment.NewLine + Environment.NewLine + notInVfNw, "Closing");
-            }
-            finally
-            {
-                Environment.Exit(1);
-            }
+            userName = GetUserDetails("Username");
+            fullName = GetUserDetails("Name").Split(' ');
+            for (int c = 0; c < fullName.Length; c++)
+                fullName[c] = fullName[c].Replace(",", string.Empty);
+            department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
+            UserFolder.ResolveUserFolder();
+            SettingsFile.ResolveSettingsFile();
+            hasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
+            UserFolder.Initialize();
 		}
 		
 		/// <summary>

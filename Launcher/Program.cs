@@ -7,19 +7,18 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Reflection;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Launcher
 {
-	/// <summary>
-	/// Class with program entry point.
-	/// </summary>
-	sealed class Program
+    /// <summary>
+    /// Class with program entry point.
+    /// </summary>
+    sealed class Program
 	{
 		static string localPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\";
 		const string remotePath = "\\\\vf-pt\\fs\\ANOC-UK\\ANOC-UK 1st LINE\\1. RAN 1st LINE\\ANOC Master Tool\\";
@@ -33,6 +32,27 @@ namespace Launcher
 		[STAThread]
 		static void Main()
 		{
+            // Check if in VF computer
+            Domain dom;
+            try
+            {
+                dom = Domain.GetComputerDomain();
+                if (dom.Name != "VF-ROOT")
+                {
+                    MessageBox.Show("ANOC Master Tool not running in VF computer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(1);
+                }
+            }
+            catch(Exception ex)
+            {
+                if(ex is ActiveDirectoryObjectNotFoundException)
+                {
+                    MessageBox.Show("ANOC Master Tool not running in VF computer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(1);
+                }
+            }
+            
+            // Continue
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			
