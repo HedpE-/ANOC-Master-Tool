@@ -1547,7 +1547,10 @@ namespace HtmlAgilityPack
 
             return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
 #else
-            return SecurityManager.IsGranted(new RegistryPermission(PermissionState.Unrestricted));
+            var permissionSet = new PermissionSet(PermissionState.Unrestricted);
+            permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
+            return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+            // return SecurityManager.IsGranted(new RegistryPermission(PermissionState.Unrestricted));
 #endif
         }
         /// <summary>
@@ -1563,7 +1566,10 @@ namespace HtmlAgilityPack
 
             return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
 #else
-			return SecurityManager.IsGranted(new DnsPermission(PermissionState.Unrestricted));
+            var permissionSet = new PermissionSet(PermissionState.Unrestricted);
+            permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
+            return permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+            // return SecurityManager.IsGranted(new RegistryPermission(PermissionState.Unrestricted));
 #endif
         }
     }
