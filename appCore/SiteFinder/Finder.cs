@@ -46,7 +46,7 @@ namespace appCore.SiteFinder
 			if(dv.Count > 0) {
 				DataTable dt = dv.ToTable();
 				//clone the source table
-				//fill the clone with the filtered rows
+				//fill the list with the reolved Cell instances from filtered rows
 				foreach (DataRowView drv in dt.DefaultView) {
 					filtered.Add(new Cell(drv));
 				}

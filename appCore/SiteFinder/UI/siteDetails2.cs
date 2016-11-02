@@ -569,6 +569,7 @@ namespace appCore.SiteFinder.UI
 				                           	}
 				                           	
 				                           	currentSite = Finder.getSite(tb.Text);
+				                           	currentSite.UpdateLockedCells();
 				                           	
 				                           	selectedSiteDetailsPopulate(currentSite);
 				                           	

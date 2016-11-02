@@ -709,8 +709,10 @@ namespace appCore
 				tabPage17.Controls.Add(OutageUI);
 
 			}
-			else
-				Databases.UpdateSourceDBFiles();
+			else {
+				Thread t = new Thread(Databases.UpdateSourceDBFiles);
+				t.Start();
+			}
 		}
 		
 		public MainForm(NotifyIcon tray)
@@ -929,7 +931,7 @@ namespace appCore
 			if(string.IsNullOrEmpty(shift))
 				return;
 			
-			DataRow[] sameShiftRows = Toolbox.Tools.getWholeShift(shiftsChosenDate);
+			DataRow[] sameShiftRows = Tools.getWholeShift(shiftsChosenDate);
 			
 			if(sameShiftRows == null)
 				return;

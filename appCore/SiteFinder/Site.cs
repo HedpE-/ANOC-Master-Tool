@@ -268,8 +268,6 @@ namespace appCore.SiteFinder
 				MapMarker.ToolTip.Stroke = new Pen(Color.Red);
 				MapMarker.ToolTip.Offset.X -= 15;
 				MapMarker.ToolTipText = Id;
-				
-				UpdateLockedCells();
 			}
 		}
 		
@@ -461,39 +459,19 @@ namespace appCore.SiteFinder
 			HtmlDocument doc = new HtmlDocument();
 			doc.Load(new StringReader(response));
 			
-//			int lockedStateColumn = 0;
 			HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
-//			IEnumerable<HtmlNode> cellsTableNodes = div_cells.Descendants("table");
-//			IEnumerable<HtmlNode> cellsTableDescendants = cellsTableNodes.First().Descendants("th");
-//			int descendantsCount = cellsTableDescendants.Count();
-//			for(int c = 0;c < descendantsCount;c++) {
-//				if(cellsTableNodes.ElementAt(c).Name == "th") {
-//					if(cellsTableNodes.ElementAt(c).InnerHtml.Contains("fa fa-lock")) {
-//						lockedStateColumn = c;
-//						break;
-//					}
-//				}
-//			}
 			
 			foreach (Cell cell in Cells) {
-				HtmlNode checkBoxNode = div_cells.DescendantNodes().ToList().Find(x => x.Name == cell.Name); // && x.InnerHtml.Contains("checkbox" + cell.Name));
-				cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
+				HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id == "checkbox" + cell.Name); // && x.InnerHtml.Contains("checkbox" + cell.Name));
+				if(checkBoxNode != null) {
+					if(checkBoxNode.InnerHtml.Contains("checked"))
+						cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
+					else
+						cell.Locked = false;
+				}
 			}
 			
-//			List<Cell> cellsFilter = Cells.Filter(Cell.Filters.VF_2G);
-//			if(cellsFilter.Count > 0) {
-//				IEnumerable<HtmlNode> cells2GTableRows = cellsTableNodes.First().Descendants("tr");
-//				int descendants2gCount = cells2GTableRows.Count();
-//				for(int c = 0;c < descendants2gCount;c++) {
-//					IEnumerable<HtmlNode> cells2GTableRowDescendants = cells2GTableRows.ElementAt(c).Descendants("td");
-//					if(cells2GTableRowDescendants.ElementAt(0) != "BEARER") {
-//						Cell cell = cellsFilter.Find(x => x.Name == "xy");
-//					}
-//
-//				}
-//			}
-			
-			// Content of a locked cell
+			// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
 			// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
 			
 			return response;
@@ -507,10 +485,6 @@ namespace appCore.SiteFinder
 				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
 				if(statusCode == HttpStatusCode.OK)
 					getOiCellsLockedState();
-				
-				foreach (Cell cell in Cells) {
-					
-				}
 			}
 		}
 		
