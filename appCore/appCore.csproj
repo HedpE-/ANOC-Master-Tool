@@ -104,49 +104,72 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrowserView.cs" />
+    <Compile Include="BrowserView.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="GMap.NET\WindowsForms\Markers\GmapMarkerWithLabel.cs" />
     <Compile Include="Logs\ILog.cs" />
     <Compile Include="Logs\LogsCollection.cs" />
-    <Compile Include="Logs\UI\LogBrowser.cs" />
+    <Compile Include="Logs\UI\LogBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Logs\UI\LogBrowser.Designer.cs">
       <DependentUpon>LogBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logs\UI\LogEditor.cs" />
+    <Compile Include="Logs\UI\LogEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Logs\UI\LogEditor.Designer.cs">
       <DependentUpon>LogEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logs\UI\LogEditor2.cs" />
+    <Compile Include="Logs\UI\LogEditor2.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Logs\UI\LogEditor2.Designer.cs">
       <DependentUpon>LogEditor2.cs</DependentUpon>
     </Compile>
     <Compile Include="Netcool\Alarm.cs" />
     <Compile Include="Netcool\Parser.cs" />
     <Compile Include="Netcool\outage_parser.cs" />
+    <Compile Include="Permissions\permCheck.cs" />
     <Compile Include="Settings\GlobalProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />
-    <Compile Include="Settings\UI\SettingsForm.cs" />
+    <Compile Include="Settings\UI\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Settings\UI\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings\CurrentUser.cs" />
     <Compile Include="Settings\UserFolder.cs" />
     <Compile Include="Shifts\ScrollPanelMessageFilter.cs" />
-    <Compile Include="Shifts\ShiftsPanel.cs" />
-    <Compile Include="Shifts\WholeShiftsPanel.cs" />
+    <Compile Include="Shifts\ShiftsPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Shifts\WholeShiftsPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SiteFinder\Finder.cs" />
-    <Compile Include="SiteFinder\UI\CellDetailsPictureBox.cs" />
-    <Compile Include="SiteFinder\UI\siteDetails.cs" />
+    <Compile Include="SiteFinder\UI\CellDetailsPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SiteFinder\UI\siteDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SiteFinder\UI\siteDetails.Designer.cs">
       <DependentUpon>siteDetails.cs</DependentUpon>
     </Compile>
-    <Compile Include="SiteFinder\UI\siteDetails2.cs" />
+    <Compile Include="SiteFinder\UI\siteDetails2.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SiteFinder\UI\siteDetails2.Designer.cs">
       <DependentUpon>siteDetails2.cs</DependentUpon>
     </Compile>
-    <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs" />
+    <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
     </Compile>
@@ -156,23 +179,39 @@
     <Compile Include="Templates\Types\TroubleShoot.cs" />
     <Compile Include="Templates\Types\TX.cs" />
     <Compile Include="Templates\Types\Update.cs" />
-    <Compile Include="Templates\UI\OutageControls.cs" />
-    <Compile Include="Templates\UI\TXControls.cs" />
-    <Compile Include="Templates\UI\UpdateControls.cs" />
-    <Compile Include="Templates\UI\FailedCRQControls.cs" />
-    <Compile Include="Templates\UI\SendBCP.cs" />
+    <Compile Include="Templates\UI\OutageControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Templates\UI\TXControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Templates\UI\UpdateControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Templates\UI\FailedCRQControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Templates\UI\SendBCP.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Templates\UI\SendBCP.Designer.cs">
       <DependentUpon>SendBCP.cs</DependentUpon>
     </Compile>
-    <Compile Include="Templates\UI\TasksForm.cs" />
+    <Compile Include="Templates\UI\TasksForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Templates\UI\TasksForm.Designer.cs">
       <DependentUpon>TasksForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Templates\UI\TroubleshootControls.cs" />
+    <Compile Include="Templates\UI\TroubleshootControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Toolbox\coordConvert.cs" />
     <Compile Include="Toolbox\CSVParser.cs" />
     <Compile Include="Toolbox\EmbeddedAssembly.cs" />
-    <Compile Include="Toolbox\ScrollableMessageBox.cs" />
+    <Compile Include="Toolbox\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Toolbox\ScrollableMessageBox.Designer.cs">
       <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
     </Compile>
@@ -180,17 +219,27 @@
     <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />
     <Compile Include="SiteFinder\Vendors.cs" />
-    <Compile Include="UI\AMTMenuStrip.cs" />
-    <Compile Include="UI\AMTRichTextBox.cs" />
+    <Compile Include="UI\AMTMenuStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\AMTRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\GraphicsExtension.cs" />
-    <Compile Include="UI\LargeTextForm.cs" />
-    <Compile Include="UI\Loading.cs" />
+    <Compile Include="UI\LargeTextForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Loading.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\Loading.Designer.cs">
       <DependentUpon>Loading.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\NotesForm.cs" />
+    <Compile Include="UI\NotesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\NotesForm.Designer.cs">
       <DependentUpon>NotesForm.cs</DependentUpon>
     </Compile>
@@ -198,12 +247,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="UI\SplashForm.cs" />
+    <Compile Include="UI\SplashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\SplashForm.Designer.cs">
       <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\trayIcon.cs" />
-    <Compile Include="Web\AMTBrowser.cs" />
+    <Compile Include="Web\AMTBrowser.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
     <Compile Include="Web\HtmlAgilityPack\EncodingFoundException.cs" />
@@ -243,11 +296,15 @@
     <Compile Include="Web\HtmlAgilityPack\Utilities.cs" />
     <Compile Include="Web\OIConnection.cs" />
     <Compile Include="Web\Tools\HtmlRemover.cs" />
-    <Compile Include="Web\UI\AuthForm.cs" />
+    <Compile Include="Web\UI\AuthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Web\UI\AuthForm.Designer.cs">
       <DependentUpon>AuthForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Web\UI\BrowserView.cs" />
+    <Compile Include="Web\UI\BrowserView.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Web\UI\BrowserView.Designer.cs">
       <DependentUpon>BrowserView.cs</DependentUpon>
     </Compile>
@@ -255,7 +312,9 @@
     <Compile Include="GMap.NET\Interfaces\IPosition.cs" />
     <Compile Include="GMap.NET\Interfaces\IPositionTime.cs" />
     <Compile Include="GMap.NET\Interfaces\ITime.cs" />
-    <Compile Include="MainForm.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
@@ -321,31 +380,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GMap.NET\Interfaces" />
-    <Folder Include="GMap.NET" />
-    <Folder Include="GMap.NET\Lib" />
-    <Folder Include="GMap.NET\WindowsForms" />
-    <Folder Include="GMap.NET\Types" />
-    <Folder Include="Extensions" />
-    <Folder Include="GMap.NET\WindowsForms\Markers" />
-    <Folder Include="Logs\UI" />
-    <Folder Include="Netcool" />
-    <Folder Include="DB" />
-    <Folder Include="UI" />
-    <Folder Include="Settings" />
-    <Folder Include="Settings\UI" />
-    <Folder Include="SiteFinder\UI" />
-    <Folder Include="Templates\Types" />
-    <Folder Include="Templates\UI" />
-    <Folder Include="Toolbox" />
-    <Folder Include="Shifts" />
-    <Folder Include="Templates" />
-    <Folder Include="Logs" />
-    <Folder Include="Web" />
-    <Folder Include="SiteFinder" />
-    <Folder Include="Web\HtmlAgilityPack" />
-    <Folder Include="Web\Tools" />
-    <Folder Include="Web\UI" />
+    <EmbeddedResource Include="Permissions\permissions.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Extensions\RestSharp.dll" />

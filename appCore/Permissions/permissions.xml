@@ -1,0 +1,16 @@
+<AMTPERM>
+  <users>
+    <user name="Rui Gonçalves" username="Caramelos" permission_id="1" />
+    <user name="Rui Gonçalves" username="goncarj3" permission_id="1" />
+    <user name="Hugo Gonçalves" username="Hugo Gonçalves" permission_id="1" />
+    <user name="Hugo Gonçalves" username="gonalvhf" permission_id="1" />
+  </users>
+  <permissions>
+    <permission name="No permission" permission_id="0" />
+    <permission name="root" permission_id="1" />
+    <permission name="Manager" permission_id="2" />
+    <permission name="Shiftleader" permission_id="3" />
+    <permission name="1st Line" permission_id="4" />
+    <permission name="2nd Line" permission_id="5" />
+  </permissions>
+</AMTPERM>
