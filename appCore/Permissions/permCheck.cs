@@ -38,6 +38,18 @@ namespace appCore.permChecker
             return retrievePermFromXml(GetUserDetails("Username"));
         }
 
+        public string getPermName(int permissionId)
+        {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(permFile);
+            foreach (XmlNode node in xmlDoc.ChildNodes[0].ChildNodes[1])
+            {
+                if (node.Attributes["permission_id"].Value == permissionId.ToString())
+                    return node.Attributes["name"].Value;
+            }
+            return "No permission";
+        }
+
         public int currMaxUser()
         {
             return maxUsers;
@@ -49,11 +61,12 @@ namespace appCore.permChecker
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(permFile);
             int count = 0;
-            foreach (XmlNode xmlNode in xmlDoc.DocumentElement.ChildNodes[0].ChildNodes[0])
+            foreach (XmlNode xmlNode in xmlDoc.ChildNodes[0].ChildNodes[0])
             {
                 users[count, 0] = xmlNode.Attributes["name"].Value;
                 users[count, 1] = xmlNode.Attributes["username"].Value;
                 users[count, 2] = xmlNode.Attributes["permission_id"].Value;
+                count++;
             }
 
             return users;
