@@ -462,9 +462,9 @@ namespace appCore.SiteFinder
 			HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
 			
 			foreach (Cell cell in Cells) {
-				HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id == "checkbox" + cell.Name); // && x.InnerHtml.Contains("checkbox" + cell.Name));
+				HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id == "checkbox" + cell.Name);
 				if(checkBoxNode != null) {
-					if(checkBoxNode.InnerHtml.Contains("checked"))
+					if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))
 						cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
 					else
 						cell.Locked = false;
