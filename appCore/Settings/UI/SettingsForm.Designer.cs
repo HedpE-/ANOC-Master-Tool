@@ -89,7 +89,7 @@ namespace appCore.Settings.UI
             this.label10 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AgentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label9 = new System.Windows.Forms.Label();
@@ -458,7 +458,7 @@ namespace appCore.Settings.UI
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Name,
+            this.AgentName,
             this.Username,
             this.Permission});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -471,10 +471,10 @@ namespace appCore.Settings.UI
             // 
             // Name
             // 
-            this.Name.HeaderText = "Name";
-            this.Name.Name = "Name";
-            this.Name.ReadOnly = true;
-            this.Name.Width = 150;
+            this.AgentName.HeaderText = "Name";
+            this.AgentName.Name = "Name";
+            this.AgentName.ReadOnly = true;
+            this.AgentName.Width = 150;
             // 
             // Username
             // 
@@ -605,7 +605,7 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button6;
-        private new System.Windows.Forms.DataGridViewTextBoxColumn Name;
+        private new System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Username;
         private System.Windows.Forms.DataGridViewTextBoxColumn Permission;
         private System.Windows.Forms.GroupBox groupBox2;
