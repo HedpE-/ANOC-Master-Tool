@@ -22,7 +22,7 @@ namespace appCore.Settings.UI
     public partial class SettingsForm : Form
     {
         public bool siteFinder_newSwitch;
-
+        private permCheck permCheck = new permCheck();
         public SettingsForm(bool siteFinder_mainswitch)
         {
             //
@@ -30,7 +30,6 @@ namespace appCore.Settings.UI
             //
             InitializeComponent();
             // Permission check for user administration
-            var permCheck = new permCheck();
             switch (permCheck.getUserPerm())
             {
                 case 1: case 2: case 3: userAdminTab.Enabled = true; userAdminPanel.Visible = true; noPermPanel.Visible = true; break;
@@ -130,7 +129,27 @@ namespace appCore.Settings.UI
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            var users = permCheck.getUsers();
+            for (int a = 0; a < permCheck.currMaxUser(); a++)
+            {
+                if (users[a, 0] != null)
+                {
+                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
+                    dataGridView1.Rows.Add(newRow);
+                }
+            }
+        }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int perm = 0;
+            switch (comboBox2.Text)
+            {
+                case "Shiftleader": perm = 3; break;
+                case "1st Line": perm = 4; break;
+                case "2nd Line": perm = 5; break;
+            }
+            permCheck.addUser(textBox2.Text, textBox3.Text, perm.ToString());
         }
     }
 }

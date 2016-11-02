@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -26,19 +28,54 @@ namespace appCore.permChecker
     /// </summary>
     class permCheck
     {
+        static string localPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\";
+        // Permissions.xml location
+        static string permFile = localPath + "\\Permissions\\permissions.xml";
+        const int maxUsers = 200;
+
         public int getUserPerm()
         {
             return retrievePermFromXml(GetUserDetails("Username"));
         }
 
+        public int currMaxUser()
+        {
+            return maxUsers;
+        }
+
+        public string[,] getUsers()
+        {
+            string[,] users = new string[maxUsers, 3];
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(permFile);
+            int count = 0;
+            foreach (XmlNode xmlNode in xmlDoc.DocumentElement.ChildNodes[0].ChildNodes[0])
+            {
+                users[count, 0] = xmlNode.Attributes["name"].Value;
+                users[count, 1] = xmlNode.Attributes["username"].Value;
+                users[count, 2] = xmlNode.Attributes["permission_id"].Value;
+            }
+
+            return users;
+        }
+
+        public void addUser(string Name, string Username, string permission)
+        {
+            var xmlDoc = new XmlDocument();
+            // Load XML from internal resources
+            xmlDoc.Load(permFile);
+            var newUser = xmlDoc.ChildNodes[0].ChildNodes[0].ChildNodes[0];
+            newUser.Attributes["name"].Value = Name;
+            newUser.Attributes["username"].Value = Username;
+            newUser.Attributes["permission_id"].Value = permission;
+            xmlDoc.ChildNodes[0].ChildNodes[0].AppendChild(newUser);
+            xmlDoc.Save(permFile);
+        }
+
         private int retrievePermFromXml(string user)
         {
-            XmlDocument xmlDoc = new XmlDocument();
-
-            // Load XML from internal resources
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "appCore.Permissions.permissions.xml";
-            xmlDoc.Load(assembly.GetManifestResourceStream(resourceName));
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(permFile);
             // Search for current user
             foreach (XmlNode xmlNode in xmlDoc.DocumentElement.ChildNodes[0])
             {
