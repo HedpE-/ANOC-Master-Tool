@@ -28,7 +28,7 @@ namespace appCore.permChecker
     /// </summary>
     class permCheck
     {
-        static string localPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\";
+        static string localPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
         // Permissions.xml location
         static string permFile = localPath + "\\Permissions\\permissions.xml";
         const int maxUsers = 200;
@@ -79,7 +79,7 @@ namespace appCore.permChecker
             // Search for current user
             foreach (XmlNode xmlNode in xmlDoc.DocumentElement.ChildNodes[0])
             {
-                if (xmlNode.Attributes["username"].Value == user)
+            	if (xmlNode.Attributes["username"].Value.Equals(user, StringComparison.InvariantCultureIgnoreCase))
                 {
                     int perm = 0;
                     if (Int32.TryParse(xmlNode.Attributes["permission_id"].Value, out perm))
