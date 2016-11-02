@@ -13,10 +13,10 @@ using appCore.SiteFinder;
 
 namespace appCore.Netcool
 {
-    /// <summary>
-    /// Description of Alarm.
-    /// </summary>
-    public class Alarm
+	/// <summary>
+	/// Description of Alarm.
+	/// </summary>
+	public class Alarm
 	{
 		DateTime lastOccurrence;
 		public DateTime LastOccurrence { get { return lastOccurrence; } protected set { lastOccurrence = value; } }
@@ -44,26 +44,34 @@ namespace appCore.Netcool
 		public string Identifier { get { return identifier; } protected set { identifier = value; } }
 		string[] attributes;
 		public string[] Attributes { get { return attributes; } protected set { attributes = value; } }
-		public string SiteId {
+		string siteid;
+		public string SiteID {
 			get {
-				string temp = Element.Contains("RBS") ? Element : Location;
-				if(!string.IsNullOrEmpty(temp)) {
-					temp = temp.Replace("RBS", string.Empty);
-					while(temp.StartsWith("0"))
-						temp = temp.Substring(1);
+				if(string.IsNullOrEmpty(siteid)) {
+					siteid = Element.Contains("RBS") ? Element : Location;
+					if(!string.IsNullOrEmpty(siteid)) {
+						siteid = siteid.Replace("RBS", string.Empty);
+						while(siteid.StartsWith("0"))
+							siteid = siteid.Substring(1);
+					}
 				}
-				return temp;
+				
+				return siteid;
 			}
-			protected set { }
+			protected set {
+				siteid = value;
+			}
 		}
 		Site _site = null;
 		public Site ParentSite {
 			get {
 				if(_site == null)
-					_site = Finder.getSite(SiteId);
+					_site = Finder.getSite(SiteID);
 				return _site;
 			}
-			protected set { }
+			protected set {
+				_site = value;
+			}
 		}
 		public bool COOS { get; protected set; }
 		public bool OnM { get; protected set; }
@@ -124,22 +132,23 @@ namespace appCore.Netcool
 			Element = cell.Name;
 			COOS = coos;
 			Bearer = cell.Bearer;
-			string temp = SiteId;
+			string temp = cell.ParentSite;
 			while(temp.Length < 5)
 				temp = "0" + temp;
 			Location = "RBS" + temp;
 			
-			switch (cell.Bearer) {
-				case "2G":
-					Vendor = cell.Vendor2G;
-					break;
-				case "3G":
-					Vendor = cell.Vendor3G;
-					break;
-				case "4G":
-					Vendor = cell.Vendor4G;
-					break;
-			}
+			Vendor = cell.Vendor;
+//			switch (cell.Bearer) {
+//				case "2G":
+//					Vendor = cell.Vendor2G;
+//					break;
+//				case "3G":
+//					Vendor = cell.Vendor3G;
+//					break;
+//				case "4G":
+//					Vendor = cell.Vendor4G;
+//					break;
+//			}
 			
 			County = ParentSite.County;
 			Town = ParentSite.Town;

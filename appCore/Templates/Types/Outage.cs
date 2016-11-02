@@ -55,7 +55,7 @@ namespace appCore.Templates.Types
 		}
 		
 		public Outage(Parser alarms) {
-			// FIXME: Get LTE O&M alarms to get all affected cells
+			// Get LTE O&M alarms to get all affected cells
 			// FIXME: Take COOS alarms on the OutageAlarms list
 			List<Alarm> resolved4gCoosAlarms = new List<Alarm>();
 			foreach(Alarm alarm in alarms.AlarmsList) {
