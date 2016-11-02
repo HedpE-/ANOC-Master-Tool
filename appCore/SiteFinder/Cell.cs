@@ -39,17 +39,25 @@ namespace appCore.SiteFinder
 		public string Name { get { return CELL_NAME; } }
 		string BEARER = string.Empty;
 		public string Bearer { get { return BEARER; } }
-		string COOS = string.Empty;
-		string SO_EXCLUSION = string.Empty;
-		string WHITE_LIST = string.Empty;
-		public string WhiteList { get { return WHITE_LIST; } }
-		string NTQ = string.Empty;
-		public string NoticeToQuit { get { return NTQ; } }
+//		string COOS = string.Empty;
+//		string SO_EXCLUSION = string.Empty;
+//		string WHITE_LIST = string.Empty;
+//		public string WhiteList { get { return WHITE_LIST; } }
+//		string NTQ = string.Empty;
+//		public string NoticeToQuit { get { return NTQ; } }
 		string NOC = string.Empty;
 		public string Noc { get { return NOC; } }
 		public string WBTS_BCF { get; private set; }
-		bool LOCKED;
-		public bool Locked { get { return LOCKED; } set { LOCKED = value; } }
+		string celloperator;
+		public string Operator {
+			get {
+				if(string.IsNullOrEmpty(celloperator))
+					celloperator = Name.StartsWith("T") || Name.EndsWith("X") || Name.EndsWith("X") || Name.EndsWith("X") ? "TEF" : "VF";
+				return celloperator;
+			}
+			private set { celloperator = value;}
+		}
+		public bool Locked { get; set; }
 		string IP_2G_I = string.Empty;
 		public string InnerIP2G { get { return IP_2G_I; } }
 		string IP_2G_E = string.Empty;
@@ -62,12 +70,12 @@ namespace appCore.SiteFinder
 		public string InnerIP4G { get { return IP_4G_I; } }
 		string IP_4G_E = string.Empty;
 		public string OuterIP4G { get { return IP_4G_E; } }
-		Site.Vendors VENDOR_2G = Site.Vendors.None;
-		public Site.Vendors Vendor2G { get { return VENDOR_2G; } }
-		Site.Vendors VENDOR_3G = Site.Vendors.None;
-		public Site.Vendors Vendor3G { get { return VENDOR_3G; } }
-		Site.Vendors VENDOR_4G = Site.Vendors.None;
-		public Site.Vendors Vendor4G { get { return VENDOR_4G; } }
+//		Site.Vendors VENDOR_2G = Site.Vendors.None;
+//		public Site.Vendors Vendor2G { get { return VENDOR_2G; } }
+//		Site.Vendors VENDOR_3G = Site.Vendors.None;
+//		public Site.Vendors Vendor3G { get { return VENDOR_3G; } }
+//		Site.Vendors VENDOR_4G = Site.Vendors.None;
+//		public Site.Vendors Vendor4G { get { return VENDOR_4G; } }
 		
 		protected DataRowView _cell;
 		
@@ -85,10 +93,10 @@ namespace appCore.SiteFinder
 			try { TF_SITENO = _cell[_cell.Row.Table.Columns.IndexOf("TF_SITENO")].ToString(); } catch (Exception) { }
 			try { CELL_NAME = _cell[_cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString(); } catch (Exception) { }
 			try { BEARER = _cell[_cell.Row.Table.Columns.IndexOf("BEARER")].ToString(); } catch (Exception) { }
-			try { COOS = _cell[_cell.Row.Table.Columns.IndexOf("COOS")].ToString(); } catch (Exception) { }
-			try { SO_EXCLUSION = _cell[_cell.Row.Table.Columns.IndexOf("SO_EXCLUSION")].ToString(); } catch (Exception) { }
-			try { WHITE_LIST = _cell[_cell.Row.Table.Columns.IndexOf("WHITE_LIST")].ToString(); } catch (Exception) { }
-			try { NTQ = _cell[_cell.Row.Table.Columns.IndexOf("NTQ")].ToString(); } catch (Exception) { }
+//			try { COOS = _cell[_cell.Row.Table.Columns.IndexOf("COOS")].ToString(); } catch (Exception) { }
+//			try { SO_EXCLUSION = _cell[_cell.Row.Table.Columns.IndexOf("SO_EXCLUSION")].ToString(); } catch (Exception) { }
+//			try { WHITE_LIST = _cell[_cell.Row.Table.Columns.IndexOf("WHITE_LIST")].ToString(); } catch (Exception) { }
+//			try { NTQ = _cell[_cell.Row.Table.Columns.IndexOf("NTQ")].ToString(); } catch (Exception) { }
 			try { NOC = _cell[_cell.Row.Table.Columns.IndexOf("NOC")].ToString(); } catch (Exception) { }
 			try { WBTS_BCF = _cell[_cell.Row.Table.Columns.IndexOf("WBTS_BCF")].ToString(); } catch (Exception) { }
 //			try { LOCKED = _cell[_cell.Row.Table.Columns.IndexOf("LOCKED")].ToString(); } catch (Exception) { }
@@ -98,9 +106,9 @@ namespace appCore.SiteFinder
 			try { IP_3G_E = _cell[_cell.Row.Table.Columns.IndexOf("IP_3G_E")].ToString(); } catch (Exception) { }
 			try { IP_4G_I = _cell[_cell.Row.Table.Columns.IndexOf("IP_4G_I")].ToString(); } catch (Exception) { }
 			try { IP_4G_E = _cell[_cell.Row.Table.Columns.IndexOf("IP_4G_E")].ToString(); } catch (Exception) { }
-			try { VENDOR_2G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
-			try { VENDOR_3G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
-			try { VENDOR_4G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
+//			try { VENDOR_2G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
+//			try { VENDOR_3G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
+//			try { VENDOR_4G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
 		}
 		
 		void Lock() {
@@ -146,21 +154,21 @@ public static class CellExtension {
 			case Cell.Filters.All_2G:
 				return toFilter.Where(s => s.Bearer == "2G" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.VF_2G:
-				return toFilter.Where(s => s.Bearer == "2G" && (!s.Name.StartsWith("T") && !s.Name.EndsWith("W") && !s.Name.EndsWith("X") && !s.Name.EndsWith("Y")) && s.Noc.Contains("ANOC")).ToList();
+				return toFilter.Where(s => s.Bearer == "2G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.TF_2G:
-				return toFilter.Where(s => s.Bearer == "2G" && (s.Name.StartsWith("T") || s.Name.EndsWith("W") || s.Name.EndsWith("X") || s.Name.EndsWith("Y")) && s.Noc.Contains("ANOC")).ToList();
+				return toFilter.Where(s => s.Bearer == "2G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.All_3G:
 				return toFilter.Where(s => s.Bearer == "3G" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.VF_3G:
-				return toFilter.Where(s => s.Bearer == "3G" && !s.Name.StartsWith("T") && s.Noc.Contains("ANOC")).ToList();
+				return toFilter.Where(s => s.Bearer == "3G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.TF_3G:
-				return toFilter.Where(s => s.Bearer == "3G" && s.Name.StartsWith("T") && s.Noc.Contains("ANOC")).ToList();
+				return toFilter.Where(s => s.Bearer == "3G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.All_4G:
 				return toFilter.Where(s => s.Bearer == "4G" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.VF_4G:
-				return toFilter.Where(s => s.Bearer == "4G" && !s.Name.StartsWith("T") && s.Noc.Contains("ANOC")).ToList();
+				return toFilter.Where(s => s.Bearer == "4G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.TF_4G:
-				return toFilter.Where(s => s.Bearer == "4G" && s.Name.StartsWith("T") && s.Noc.Contains("ANOC")).ToList();
+				return toFilter.Where(s => s.Bearer == "4G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
 		}
 		return null;
 	}

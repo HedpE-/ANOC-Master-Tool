@@ -173,7 +173,7 @@ namespace appCore.Netcool
 						OnM = Summary.Contains("NE Is Disconnected") || Summary.Contains("OML Fault");
 					break;
 				case Site.Vendors.NSN:
-					if (!(Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE")))
+					if (Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE"))
 						COOS = true;
 					else
 						OnM = Summary.Contains("NE O&M");
