@@ -121,7 +121,8 @@ namespace appCore.UI
 		public void Populate() {
 			// Add menu items to shortcut menu.
 			Documents = new MenuItem("ANOC Documents");
-			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start("excel.exe", '"' + Databases.shiftsFile.FullName + '"'));
+			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start("Excel"));
+//			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start("excel.exe", '"' + Databases.shiftsFile.FullName + '"'));
 			Documents.MenuItems.Add("ANOC Contacts", (s, e) => Process.Start("excel.exe", '"' + TeamContactsDoc.FullName + '"'));
 			Documents.MenuItems.Add("-");
 			Documents.MenuItems.Add("Useful Contacts", (s, e) => Process.Start("excel.exe", '"' + VFcontactsDoc.FullName + '"'));

@@ -67,7 +67,7 @@ namespace appCore.Settings
 		
 		public static void CheckShareAccess() {
 			if(!IsDirectoryWritable(ShareRootDir.FullName)) {
-				MainForm.trayIcon.showBalloon("Network share access denied","Access to the network share denied or you're outside Vodafone's network, Settings file will be created on the following path:" + Environment.NewLine + Environment.NewLine + Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ANOC Master Tool\\UserSettings\\");
+				MainForm.trayIcon.showBalloon("Network share access denied","Access to the network share was denied! Your settings file will be created on the following path:" + Environment.NewLine + Environment.NewLine + Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ANOC Master Tool\\UserSettings\\");
 				shareAccess = false;
 			}
 		}

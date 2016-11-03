@@ -43,10 +43,10 @@ namespace appCore.SiteFinder.UI
 				InitializeToolStripMenuItems();
 				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add("-");
+				MainMenu.MainMenu.DropDownItems.Add(viewSiteInOiToolStripMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add("-");
 				MainMenu.MainMenu.DropDownItems.Add(generateTaskToolStripMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add("-");
 				MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				MainMenu.siteFinder_Toggle(false, false);
@@ -105,7 +105,7 @@ namespace appCore.SiteFinder.UI
 		List<Site> outageSites = new List<Site>(); // for outages site list
 		byte listView2_EventCount = 1;
 		AMTMenuStrip MainMenu = new AMTMenuStrip(560);
-		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTaskToolStripMenuItem = new ToolStripMenuItem();
@@ -781,6 +781,19 @@ namespace appCore.SiteFinder.UI
 						dt = currentSite.ActiveAlarms;
 						break;
 				}
+				
+				var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
+				Form openForm = null;
+				
+				foreach (Form frm in fc)
+				{
+					if(frm.Name.Contains(dataToShow)) {
+						openForm = frm;
+						break;
+					}
+				}
+				if(openForm != null)
+					openForm.Close();
 				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
 				OiTable.Show();
 			}
@@ -791,6 +804,10 @@ namespace appCore.SiteFinder.UI
 			MainMenu.siteFinder_Toggle(true);
 		}
 		
+		void ViewSiteInOiButtonClick(object sender, EventArgs e) {
+			
+		}
+				
 		void InitializeToolStripMenuItems() {
 			// 
 			// bulkSiteSearchMenuItem
@@ -799,12 +816,12 @@ namespace appCore.SiteFinder.UI
 			bulkSiteSearchMenuItem.Text = "Bulk Site Search";
 			bulkSiteSearchMenuItem.Click += bulkSiteSearchMenuItemClick;
 			// 
-			// SiteDetailsToolStripMenuItem
+			// viewSiteInOiToolStripMenuItem
 			// 
-			SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
-			SiteDetailsToolStripMenuItem.Text = "Site Details";
-//			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-//			SiteDetailsToolStripMenuItem.Click += SiteDetailsButtonClick;
+			viewSiteInOiToolStripMenuItem.Name = "viewSiteInOiToolStripMenuItem";
+			viewSiteInOiToolStripMenuItem.Text = "View on SiteLopedia";
+//			viewSiteInOiToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+			viewSiteInOiToolStripMenuItem.Click += ViewSiteInOiButtonClick;
 			// 
 			// clearToolStripMenuItem
 			// 
