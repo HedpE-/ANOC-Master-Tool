@@ -605,7 +605,7 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button6;
-        private new System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Username;
         private System.Windows.Forms.DataGridViewTextBoxColumn Permission;
         private System.Windows.Forms.GroupBox groupBox2;

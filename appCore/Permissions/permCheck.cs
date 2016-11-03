@@ -30,7 +30,9 @@ namespace appCore.permChecker
     {
         static string localPath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
         // Permissions.xml location
-        static string permFile = localPath + "\\Permissions\\permissions.xml";
+        // HACK: Change location to local file while debugging
+        // static string permFile = localPath + "\\Permissions\\permissions.xml";
+        static string permFile = "\\\\vf-pt\\fs\\ANOC-UK\\ANOC-UK 1st LINE\\1. RAN 1st LINE\\ANOC Master Tool\\data\\Permissions\\permissions.xml";
         const int maxUsers = 200;
 
         public int getUserPerm()
@@ -75,13 +77,25 @@ namespace appCore.permChecker
         public void addUser(string Name, string Username, string permission)
         {
             var xmlDoc = new XmlDocument();
-            // Load XML from internal resources
             xmlDoc.Load(permFile);
             var newUser = xmlDoc.ChildNodes[0].ChildNodes[0].ChildNodes[0];
             newUser.Attributes["name"].Value = Name;
             newUser.Attributes["username"].Value = Username;
             newUser.Attributes["permission_id"].Value = permission;
             xmlDoc.ChildNodes[0].ChildNodes[0].AppendChild(newUser);
+            xmlDoc.Save(permFile);
+        }
+        
+        public void modUser(string Username, int modType, string newVal)
+        {
+        	var xmlDoc = new XmlDocument();
+        	xmlDoc.Load(permFile);
+        	switch(modType)
+        	{
+        			case 0: xmlDoc.SelectSingleNode("/AMTPERM/users/user[@username='" + Username + "']").Attributes["username"].Value = newVal; break; // Mod user name
+        			case 1: xmlDoc.SelectSingleNode("/AMTPERM/users/user[@username='" + Username + "']").Attributes["name"].Value = newVal; break; // Mod Name
+        			case 2: xmlDoc.SelectSingleNode("/AMTPERM/users/user[@username='" + Username + "']").Attributes["permission_id"].Value = newVal; break; // Mod Permission
+        	}
             xmlDoc.Save(permFile);
         }
 

@@ -21,6 +21,7 @@ namespace appCore.Settings.UI
     /// </summary>
     public partial class SettingsForm : Form
     {
+    	private int rowIndex = 0;
         public bool siteFinder_newSwitch;
         private permCheck permCheck = new permCheck();
         public SettingsForm(bool siteFinder_mainswitch)
@@ -183,6 +184,7 @@ namespace appCore.Settings.UI
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+        	rowIndex = e.RowIndex;
             var row = dataGridView1.Rows[e.RowIndex];
             if (!row.Cells[2].Value.ToString().Equals("root", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -208,9 +210,24 @@ namespace appCore.Settings.UI
         private void button7_Click(object sender, EventArgs e)
         {
             //Mod user in xml
-            //..
-            //..
-            //..
+            var row = dataGridView1.Rows[rowIndex];
+            if(!textBox4.Text.Equals(row.Cells[0].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
+            	permCheck.modUser(row.Cells[1].Value.ToString(),1,textBox4.Text);
+            if(!textBox5.Text.Equals(row.Cells[1].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
+            	permCheck.modUser(row.Cells[1].Value.ToString(),0,textBox5.Text);    
+            if(!comboBox3.Text.Equals(row.Cells[2].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
+            {
+                switch (comboBox3.Text ?? string.Empty)
+                {
+                    case "No permission": permCheck.modUser(row.Cells[1].Value.ToString(),2,"0"); break;
+                    case "root": permCheck.modUser(row.Cells[1].Value.ToString(),2,"1"); break;
+                    case "Manager": permCheck.modUser(row.Cells[1].Value.ToString(),2,"2"); break;
+                    case "Shiftleader": permCheck.modUser(row.Cells[1].Value.ToString(),2,"3"); break;
+                    case "1st Line": permCheck.modUser(row.Cells[1].Value.ToString(),2,"4"); break;
+                    case "2nd Line": permCheck.modUser(row.Cells[1].Value.ToString(),2,"5"); break;
+                    default: permCheck.modUser(row.Cells[1].Value.ToString(),2,"0"); break;
+                }
+            }            
             dataGridView1.Rows.Clear();
             dataGridView1.Refresh();
             var users = permCheck.getUsers();
