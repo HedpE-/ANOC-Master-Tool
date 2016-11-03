@@ -19,10 +19,10 @@ using appCore.SiteFinder.UI;
 
 namespace appCore.Templates.UI
 {
-    /// <summary>
-    /// Description of TroubleshootControls.
-    /// </summary>
-    public class TroubleshootControls : Panel
+	/// <summary>
+	/// Description of TroubleshootControls.
+	/// </summary>
+	public class TroubleshootControls : Panel
 	{
 		public Button AddressLargeTextButton = new Button();
 		public Button MTXAddressButton = new Button();
@@ -1032,6 +1032,19 @@ namespace appCore.Templates.UI
 						dt = currentSite.ActiveAlarms;
 						break;
 				}
+				
+				var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
+				Form openForm = null;
+				
+				foreach (Form frm in fc)
+				{
+					if(frm.Name.Contains(dataToShow)) {
+						openForm = frm;
+						break;
+					}
+				}
+				if(openForm != null)
+					openForm.Close();
 				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
 				OiTable.Show();
 			}
