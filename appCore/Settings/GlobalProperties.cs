@@ -13,10 +13,10 @@ using System.IO;
 
 namespace appCore.Settings
 {
-    /// <summary>
-    /// Description of GlobalProperties.
-    /// </summary>
-    public static class GlobalProperties
+	/// <summary>
+	/// Description of GlobalProperties.
+	/// </summary>
+	public static class GlobalProperties
 	{
 		public static CultureInfo culture = new CultureInfo("pt-PT");
 		public static DateTime dt = DateTime.Parse(DateTime.Now.ToString(), culture);
@@ -25,6 +25,8 @@ namespace appCore.Settings
 		
 		public static readonly DirectoryInfo ShiftsDefaultLocation = new DirectoryInfo(GlobalProperties.ShareRootDir.Parent.FullName + @"\Shifts");
 		public static readonly DirectoryInfo DBFilesDefaultLocation = new DirectoryInfo(GlobalProperties.ShareRootDir.FullName + @"\ANOC Master Tool");
+		
+		public static string OfficePath = string.Empty;
 		
 		public static bool autoUpdateDbFiles = false;
 		
@@ -94,6 +96,18 @@ namespace appCore.Settings
 				return false;
 			}
 			return networkAccess;
+		}
+		
+		public static void resolveOfficePath() {
+			Thread thread = new Thread(() => {
+			                           	Type officeType = Type.GetTypeFromProgID("Excel.Application");
+			                           	dynamic xlApp = Activator.CreateInstance(officeType);
+			                           	xlApp.Visible = false;
+			                           	OfficePath = xlApp.Path;
+			                           	xlApp.Quit();
+			                           });
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 	}
 }

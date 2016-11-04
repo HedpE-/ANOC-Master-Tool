@@ -718,6 +718,7 @@ namespace appCore
 		public MainForm(NotifyIcon tray)
 		{
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+			GlobalProperties.resolveOfficePath();
 			
 			SplashForm.ShowSplashScreen();
 			trayIcon = new TrayIcon(tray);

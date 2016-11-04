@@ -121,12 +121,11 @@ namespace appCore.UI
 		public void Populate() {
 			// Add menu items to shortcut menu.
 			Documents = new MenuItem("ANOC Documents");
-			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start("Excel"));
-//			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start("excel.exe", '"' + Databases.shiftsFile.FullName + '"'));
-			Documents.MenuItems.Add("ANOC Contacts", (s, e) => Process.Start("excel.exe", '"' + TeamContactsDoc.FullName + '"'));
+			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start(GlobalProperties.OfficePath + "\\excel.exe", '"' + Databases.shiftsFile.FullName + '"'));
+			Documents.MenuItems.Add("ANOC Contacts", (s, e) => Process.Start(GlobalProperties.OfficePath + "\\excel.exe", '"' + TeamContactsDoc.FullName + '"'));
 			Documents.MenuItems.Add("-");
-			Documents.MenuItems.Add("Useful Contacts", (s, e) => Process.Start("excel.exe", '"' + VFcontactsDoc.FullName + '"'));
-			Documents.MenuItems.Add("Processes", (s, e) => Process.Start("winword.exe", '"' + ProcessesDoc.FullName + '"'));
+			Documents.MenuItems.Add("Useful Contacts", (s, e) => Process.Start(GlobalProperties.OfficePath + "\\excel.exe", '"' + VFcontactsDoc.FullName + '"'));
+			Documents.MenuItems.Add("Processes", (s, e) => Process.Start(GlobalProperties.OfficePath + "\\winword.exe", '"' + ProcessesDoc.FullName + '"'));
 			
 			Links = new MenuItem("Links");
 			Links.MenuItems.Add("ST Internal Citrix", (s, e) => Process.Start("https://st.internal.vodafone.co.uk/"));
@@ -147,7 +146,6 @@ namespace appCore.UI
 			                                                 	new MenuItem("Notes", (s, e) => MainForm.openNotes()),
 			                                                 	new MenuItem("Log Browser", (s, e) => MainForm.openLogBrowser()),
 			                                                 	new MenuItem("Site Finder", (s, e) => MainForm.openSiteFinder()),
-//			                                                 	new MenuItem("Site Finder", (s, e) => info.Invoke(instance, new object[] { null, null } )),
 //
 			                                                 	new MenuItem("-"),
 			                                                 	new MenuItem("Check for Updates..."),
