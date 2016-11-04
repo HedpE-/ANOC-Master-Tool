@@ -21,12 +21,12 @@ using appCore.UI;
 
 namespace appCore.SiteFinder.UI
 {
-    /// <summary>
-    /// Description of siteDetails.
-    /// </summary>
-    public partial class siteDetails2 : Form
+	/// <summary>
+	/// Description of siteDetails.
+	/// </summary>
+	public partial class siteDetails2 : Form
 	{
-		string _siteDetails_UIMode = "single/readonly";		
+		string _siteDetails_UIMode = "single/readonly";
 		/// <summary>
 		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
 		/// </summary>
@@ -512,7 +512,8 @@ namespace appCore.SiteFinder.UI
 				outageSites.Clear();
 			foreach(string site in input) {
 				currentSite = Finder.getSite(site);
-				outageSites.Add(currentSite);
+				if(currentSite.Exists)
+					outageSites.Add(currentSite);
 			}
 			siteFinder(outageSites);
 		}
@@ -807,7 +808,7 @@ namespace appCore.SiteFinder.UI
 		void ViewSiteInOiButtonClick(object sender, EventArgs e) {
 			
 		}
-				
+		
 		void InitializeToolStripMenuItems() {
 			// 
 			// bulkSiteSearchMenuItem
