@@ -4,5 +4,9 @@ Launcher/obj/
 Launcher/bin/
 /.vs/ANOC Master Tool/v14/
 /.vs/
+/bin/
+/bin/Debug/
+/obj/
+/obj/Debug/
 
 
