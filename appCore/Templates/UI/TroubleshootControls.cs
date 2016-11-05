@@ -145,13 +145,8 @@ namespace appCore.Templates.UI
 					COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
 					COOS3GLabel.DoubleClick += COOSLabelDoubleClick;
 					COOS4GLabel.DoubleClick += COOSLabelDoubleClick;
-//					IntermittentIssueCheckBox.CheckedChanged += TSTChanged;
-//					PerformanceIssueCheckBox.CheckedChanged += TSTChanged;
-//					CCTRefTextBox.TextChanged += TSTChanged;
-//					TefSiteTextBox.TextChanged += TSTChanged;
 					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
-//					INCTextBox.TextChanged += TSTChanged;
 					INCTextBox.KeyPress += INCTextBoxKeyPress;
 					TroubleshootTextBox.Height = 203;
 					
@@ -183,8 +178,6 @@ namespace appCore.Templates.UI
 		{
 			UiMode = uimode;
 			currentTemplate = template;
-//			if(GlobalProperties.siteFinder_mainswitch)
-//				siteFinder_Toggle(false, false);
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
 			if(UiMode == Template.UIenum.Template)
@@ -206,7 +199,6 @@ namespace appCore.Templates.UI
 			ActiveAlarmsTextBox.Text = currentTemplate.ActiveAlarms;
 			AlarmHistoryTextBox.Text = currentTemplate.AlarmHistory;
 			TroubleshootTextBox.Text = currentTemplate.Troubleshoot;
-//			Dispose();
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
@@ -349,8 +341,6 @@ namespace appCore.Templates.UI
 					nupd.Visible = false;
 				}
 			}
-//			if(UiMode == Template.UIenum.Template)
-//				TSTChanged(sender, null);
 		}
 		
 		void NumericUpDownValueChanged(object sender, EventArgs e)
@@ -368,7 +358,6 @@ namespace appCore.Templates.UI
 			if(nupdMaxed == nupdTotal)
 				if(!FullSiteOutageCheckBox.Checked)
 					FullSiteOutageCheckBox.Checked = true;
-//			TSTChanged(sender, e);
 		}
 
 		void COOSLabelDoubleClick(object sender, EventArgs e)
@@ -408,7 +397,6 @@ namespace appCore.Templates.UI
 				TefSiteTextBox.Text = string.Empty;
 				TefSiteLabel.Visible = false;
 			}
-//			TSTChanged(sender, null);
 		}
 
 		void OtherSitesImpactedCheckedChanged(object sender, EventArgs e)
@@ -443,7 +431,6 @@ namespace appCore.Templates.UI
 					lbl.Text = c + "G cells(" + max + ")";
 				}
 			}
-//			TSTChanged(sender,e);
 		}
 		
 		void FullSiteOutageCheckedChanged(object sender, EventArgs e) {
@@ -470,7 +457,6 @@ namespace appCore.Templates.UI
 					}
 				}
 			}
-//			TSTChanged(sender,e);
 		}
 
 		void SiteDetailsButtonClick(object sender, EventArgs e)
@@ -575,9 +561,6 @@ namespace appCore.Templates.UI
 				listView1.Columns.Add("MTX").Width = -2;
 				listView1.Columns.Add("Address").Width = -2;
 				
-//				string[] strTofind = { "\r\n" };
-//				string mtx = Resources.MTX;
-//				string[] mtxs = mtx.Split(strTofind, StringSplitOptions.None);
 				string[] mtxs = Resources.MTX.Split('\n');
 				
 				foreach (string str in mtxs) {
@@ -830,10 +813,8 @@ namespace appCore.Templates.UI
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {
 				INCTextBox.KeyPress -= INCTextBoxKeyPress;
-//				INCTextBox.KeyPress += TSTChanged;
 				OtherSitesImpactedCheckBox.CheckedChanged -= OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged -= FullSiteOutageCheckedChanged;
-//				FullSiteOutageCheckBox.CheckedChanged += TSTChanged;
 				COOS2GLabel.DoubleClick -= COOSLabelDoubleClick;
 				COOS3GLabel.DoubleClick -= COOSLabelDoubleClick;
 				COOS4GLabel.DoubleClick -= COOSLabelDoubleClick;
@@ -841,10 +822,8 @@ namespace appCore.Templates.UI
 			}
 			else {
 				INCTextBox.KeyPress += INCTextBoxKeyPress;
-//				INCTextBox.KeyPress -= TSTChanged;
 				OtherSitesImpactedCheckBox.CheckedChanged += OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged += FullSiteOutageCheckedChanged;
-//				FullSiteOutageCheckBox.CheckedChanged -= TSTChanged;
 				COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
 				COOS3GLabel.DoubleClick += COOSLabelDoubleClick;
 				COOS4GLabel.DoubleClick += COOSLabelDoubleClick;
@@ -1144,7 +1123,6 @@ namespace appCore.Templates.UI
 			AddressTextBox.Size = new Size(157, 40);
 			AddressTextBox.TabIndex = 78;
 			AddressTextBox.Text = "";
-//			AddressTextBox.TextChanged += TSTChanged;
 			AddressTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// AddressLargeTextButton
@@ -1370,7 +1348,6 @@ namespace appCore.Templates.UI
 			RelatedINC_CRQTextBox.Name = "RelatedINC_CRQTextBox";
 			RelatedINC_CRQTextBox.Size = new Size(143, 20);
 			RelatedINC_CRQTextBox.TabIndex = 15;
-//			RelatedINC_CRQTextBox.TextChanged += TSTChanged;
 			// 
 			// ActiveAlarmsLabel
 			// 
