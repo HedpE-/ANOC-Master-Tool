@@ -3445,8 +3445,9 @@ namespace appCore
 			Action action = new Action(delegate {
 			                           	ans = MessageBox.Show("Are you sure you want to quit ANOC Master Tool?","Quitting",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 			if(ans == DialogResult.Yes) {
+				UserFolder.ClearTempFolder();
 				FormCollection fc = Application.OpenForms;
 				foreach (Form frm in fc)
 				{

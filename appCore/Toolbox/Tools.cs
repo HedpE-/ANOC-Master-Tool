@@ -108,7 +108,7 @@ namespace appCore.Toolbox
 				item.Body = mailBody;
 			item.Display(false);
 			
-			UserFolder.ReleaseAMTFailedCRQTempFile(); // delete Outlook email template file on userfolder
+			UserFolder.ClearTempFolder(); // delete Outlook email template file on userfolder
 		}
 
 		public static string CompleteINC_CRQ_TAS(string num, string prefix)

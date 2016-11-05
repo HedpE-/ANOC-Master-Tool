@@ -166,7 +166,7 @@ namespace appCore.Settings
 					prevFolder = new DirectoryInfo(prevFolder.FullName);
 					if(!isPrevFallbackFolder) {
 						DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
-						if(prevSettingsFolder.Exists) 
+						if(prevSettingsFolder.Exists)
 							prevSettingsFolder.Delete(true);
 						prevFolder = new DirectoryInfo(prevFolder.FullName);
 					}
@@ -298,20 +298,30 @@ namespace appCore.Settings
 			else
 				Databases.shiftsFile = new ShiftsFile();
 		}
+		
+		public static void CreateTempFolder() {
+			if(!TempFolder.Exists) {
+				TempFolder.Create();
+				UserFolder.TempFolder = new DirectoryInfo(TempFolder.FullName);
+			}
+		}
+		
+		public static void ClearTempFolder() {
+			if(TempFolder.Exists) {
+				TempFolder.Delete(true);
+				UserFolder.TempFolder = new DirectoryInfo(TempFolder.FullName);
+			}
+		}
 
 		public static FileInfo ReadyAMTFailedCRQTempFile() {
-			FileInfo path = new FileInfo(UserFolder.FullName + @"\AMTmailTemplate.msg");
+			CreateTempFolder();
+			FileInfo path = new FileInfo(TempFolder.FullName + @"\AMTmailTemplate.msg");
 			
 			if (path.Exists)
 				path.Delete();
+			
 			File.WriteAllBytes(path.FullName, Resources.AMTmailTemplate);
 			return path;
-		}
-
-		public static void ReleaseAMTFailedCRQTempFile() {
-			FileInfo path = new FileInfo(UserFolder.FullName + @"\AMTmailTemplate.msg");
-			if (path.Exists)
-				path.Delete();
 		}
 	}
 
