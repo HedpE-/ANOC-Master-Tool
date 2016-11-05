@@ -72,7 +72,16 @@ namespace appCore.DB
 
         List<DataTable> importShiftsTable()
         {
-            FileStream stream = shiftsFile.Open(FileMode.Open, FileAccess.Read);
+        	FileStream stream = null;
+        	try {
+            	stream = shiftsFile.Open(FileMode.Open, FileAccess.Read);
+        	}
+        	catch (Exception) {
+        		if(!UserFolder.TempFolder.Exists)
+        			UserFolder.TempFolder.Create();
+        		FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder.FullName + "\\" + shiftsFile.Name, true);
+            	stream = tempShiftsFile.Open(FileMode.Open, FileAccess.Read);
+        	}
             IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
             DataSet ds = excelReader.AsDataSet();
             DataTable dtTable = ds.Tables[0];
