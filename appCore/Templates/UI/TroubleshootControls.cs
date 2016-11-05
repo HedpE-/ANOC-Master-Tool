@@ -145,13 +145,13 @@ namespace appCore.Templates.UI
 					COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
 					COOS3GLabel.DoubleClick += COOSLabelDoubleClick;
 					COOS4GLabel.DoubleClick += COOSLabelDoubleClick;
-					IntermittentIssueCheckBox.CheckedChanged += TSTChanged;
-					PerformanceIssueCheckBox.CheckedChanged += TSTChanged;
-					CCTRefTextBox.TextChanged += TSTChanged;
-					TefSiteTextBox.TextChanged += TSTChanged;
-					SiteIdTextBox.TextChanged += TSTChanged;
+//					IntermittentIssueCheckBox.CheckedChanged += TSTChanged;
+//					PerformanceIssueCheckBox.CheckedChanged += TSTChanged;
+//					CCTRefTextBox.TextChanged += TSTChanged;
+//					TefSiteTextBox.TextChanged += TSTChanged;
+					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
-					INCTextBox.TextChanged += TSTChanged;
+//					INCTextBox.TextChanged += TSTChanged;
 					INCTextBox.KeyPress += INCTextBoxKeyPress;
 					TroubleshootTextBox.Height = 203;
 					
@@ -209,100 +209,13 @@ namespace appCore.Templates.UI
 //			Dispose();
 		}
 
-		void TSTChanged(object sender, EventArgs e)
+		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
-			if(sender.GetType().ToString() == "System.Windows.Forms.TextBox") {
-				TextBoxBase tb = sender as TextBoxBase;
-				if(tb.Name == SiteIdTextBox.Name) {
-					currentSite = null;
-					siteFinder_Toggle(false, false);
-					PowerCompanyTextBox.Text = string.Empty;
-					RegionTextBox.Text = string.Empty;
-				}
-				clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text); // FIXME: ?? TSTChanged
-			}
-			
-//			if(sendBCPToolStripMenuItem.Enabled) {
-//				if(sender is TextBox || sender is AMTRichTextBox) {
-//					TextBoxBase tb = (TextBoxBase)sender;
-//					switch(tb.Name) {
-//						case "INCTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.INC;
-//							break;
-//						case "TefSiteTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.TefSiteId;
-//							break;
-//						case "AddressTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.SiteAddress;
-//							break;
-//						case "CCTRefTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.CCTReference;
-//							break;
-//						case "RelatedINC_CRQTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.RelatedINC_CRQ;
-//							break;
-//						case "ActiveAlarmsTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.ActiveAlarms;
-//							break;
-//						case "AlarmHistoryTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.AlarmHistory;
-//							break;
-//						case "TroubleshootTextBox":
-//							sendBCPToolStripMenuItem.Enabled = tb.Text == prevTemp.Troubleshoot;
-//							break;
-//					}
-//				}
-//				else if(sender is CheckBox) {
-//					CheckBox chkb = (CheckBox)sender;
-//					switch(chkb.Name) {
-//						case "OtherSitesImpactedCheckBox":
-//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.OtherSitesImpacted;
-//							break;
-//						case "COOSCheckBox":
-//							if(COOS2GNumericUpDown.Value != prevTemp.COOS2G) {
-//								sendBCPToolStripMenuItem.Enabled = false;
-//								break;
-//							}
-//							if(COOS3GNumericUpDown.Value != prevTemp.COOS3G) {
-//								sendBCPToolStripMenuItem.Enabled = false;
-//								break;
-//							}
-//							if(COOS4GNumericUpDown.Value != prevTemp.COOS4G) {
-//								sendBCPToolStripMenuItem.Enabled = false;
-//								break;
-//							}
-//							break;
-//						case "FullSiteOutageCheckBox":
-//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.FullSiteOutage;
-//							break;
-//						case "IntermittentIssueCheckBox":
-//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.IntermittentIssue;
-//							break;
-//						case "PerformanceIssueCheckBox":
-//							sendBCPToolStripMenuItem.Enabled = chkb.Checked == prevTemp.PerformanceIssue;
-//							break;
-//					}
-//				}
-//				else if(sender is ComboBox) {
-//					ComboBox cmbb = (ComboBox)sender;
-//					if(cmbb.Text != prevTemp.SiteOwner)
-//						sendBCPToolStripMenuItem.Enabled = false;
-//				}
-//				else if(sender is NumericUpDown) {
-//					NumericUpDown nud = (NumericUpDown)sender;
-//					switch(nud.Name) {
-//						case "COOS2GNumericUpDown":
-//							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS2G;
-//							break;
-//						case "COOS3GNumericUpDown":
-//							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS3G;
-//							break;
-//						case "COOS4GNumericUpDown":
-//							sendBCPToolStripMenuItem.Enabled &= nud.Value == prevTemp.COOS4G;
-//							break;
-//					}
-//				}
-//			}
+			currentSite = null;
+			siteFinder_Toggle(false, false);
+			PowerCompanyTextBox.Text = string.Empty;
+			RegionTextBox.Text = string.Empty;
+			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
 		void siteFinder_Toggle(bool toggle, bool siteFound) {
@@ -324,14 +237,7 @@ namespace appCore.Templates.UI
 						break;
 					case "System.Windows.Forms.NumericUpDown":
 						NumericUpDown nup = ctrl as NumericUpDown;
-						if(toggle) {
-							if(nup.Maximum < 999 || !siteFound)
-								nup.Enabled = true;
-							else
-								nup.Enabled = false;
-						}
-						else
-							nup.Enabled = toggle;
+						nup.Enabled = toggle ? nup.Maximum < 999 || !siteFound : toggle;
 						break;
 					case "System.Windows.Forms.CheckBox":
 						CheckBox chb = ctrl as CheckBox;
@@ -424,26 +330,27 @@ namespace appCore.Templates.UI
 		void COOSCheckedChanged(object sender, EventArgs e)
 		{
 			if (COOSCheckBox.Checked) {
+				for(int c = 2;c<5;c++) {
+					NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+					Label lbl = (Label)Controls["COOS" + c + "GLabel"];
+					lbl.Visible = true;
+					nupd.Visible = true;
+					nupd.Enabled = nupd.Maximum < 999;
+				}
 				FullSiteOutageCheckBox.Visible = true;
-				COOS2GNumericUpDown.Visible = true;
-				COOS3GNumericUpDown.Visible = true;
-				COOS4GNumericUpDown.Visible = true;
-				COOS2GLabel.Visible = true;
-				COOS3GLabel.Visible = true;
-				COOS4GLabel.Visible = true;
 			}
 			else {
 				FullSiteOutageCheckBox.Visible = false;
 				FullSiteOutageCheckBox.Checked = false;
-				COOS2GNumericUpDown.Visible = false;
-				COOS3GNumericUpDown.Visible = false;
-				COOS4GNumericUpDown.Visible = false;
-				COOS2GLabel.Visible = false;
-				COOS3GLabel.Visible = false;
-				COOS4GLabel.Visible = false;
+				for(int c = 2;c<5;c++) {
+					NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+					Label lbl = (Label)Controls["COOS" + c + "GLabel"];
+					lbl.Visible = false;
+					nupd.Visible = false;
+				}
 			}
-			if(UiMode == Template.UIenum.Template)
-				TSTChanged(sender, null);
+//			if(UiMode == Template.UIenum.Template)
+//				TSTChanged(sender, null);
 		}
 		
 		void NumericUpDownValueChanged(object sender, EventArgs e)
@@ -461,7 +368,7 @@ namespace appCore.Templates.UI
 			if(nupdMaxed == nupdTotal)
 				if(!FullSiteOutageCheckBox.Checked)
 					FullSiteOutageCheckBox.Checked = true;
-			TSTChanged(sender, e);
+//			TSTChanged(sender, e);
 		}
 
 		void COOSLabelDoubleClick(object sender, EventArgs e)
@@ -501,7 +408,7 @@ namespace appCore.Templates.UI
 				TefSiteTextBox.Text = string.Empty;
 				TefSiteLabel.Visible = false;
 			}
-			TSTChanged(sender, null);
+//			TSTChanged(sender, null);
 		}
 
 		void OtherSitesImpactedCheckedChanged(object sender, EventArgs e)
@@ -536,7 +443,7 @@ namespace appCore.Templates.UI
 					lbl.Text = c + "G cells(" + max + ")";
 				}
 			}
-			TSTChanged(sender,e);
+//			TSTChanged(sender,e);
 		}
 		
 		void FullSiteOutageCheckedChanged(object sender, EventArgs e) {
@@ -563,7 +470,7 @@ namespace appCore.Templates.UI
 					}
 				}
 			}
-			TSTChanged(sender,e);
+//			TSTChanged(sender,e);
 		}
 
 		void SiteDetailsButtonClick(object sender, EventArgs e)
@@ -923,10 +830,10 @@ namespace appCore.Templates.UI
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {
 				INCTextBox.KeyPress -= INCTextBoxKeyPress;
-				INCTextBox.KeyPress += TSTChanged;
+//				INCTextBox.KeyPress += TSTChanged;
 				OtherSitesImpactedCheckBox.CheckedChanged -= OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged -= FullSiteOutageCheckedChanged;
-				FullSiteOutageCheckBox.CheckedChanged += TSTChanged;
+//				FullSiteOutageCheckBox.CheckedChanged += TSTChanged;
 				COOS2GLabel.DoubleClick -= COOSLabelDoubleClick;
 				COOS3GLabel.DoubleClick -= COOSLabelDoubleClick;
 				COOS4GLabel.DoubleClick -= COOSLabelDoubleClick;
@@ -934,10 +841,10 @@ namespace appCore.Templates.UI
 			}
 			else {
 				INCTextBox.KeyPress += INCTextBoxKeyPress;
-				INCTextBox.KeyPress -= TSTChanged;
+//				INCTextBox.KeyPress -= TSTChanged;
 				OtherSitesImpactedCheckBox.CheckedChanged += OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged += FullSiteOutageCheckedChanged;
-				FullSiteOutageCheckBox.CheckedChanged -= TSTChanged;
+//				FullSiteOutageCheckBox.CheckedChanged -= TSTChanged;
 				COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
 				COOS3GLabel.DoubleClick += COOSLabelDoubleClick;
 				COOS4GLabel.DoubleClick += COOSLabelDoubleClick;
@@ -1237,7 +1144,7 @@ namespace appCore.Templates.UI
 			AddressTextBox.Size = new Size(157, 40);
 			AddressTextBox.TabIndex = 78;
 			AddressTextBox.Text = "";
-			AddressTextBox.TextChanged += TSTChanged;
+//			AddressTextBox.TextChanged += TSTChanged;
 			AddressTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// AddressLargeTextButton
@@ -1463,7 +1370,7 @@ namespace appCore.Templates.UI
 			RelatedINC_CRQTextBox.Name = "RelatedINC_CRQTextBox";
 			RelatedINC_CRQTextBox.Size = new Size(143, 20);
 			RelatedINC_CRQTextBox.TabIndex = 15;
-			RelatedINC_CRQTextBox.TextChanged += TSTChanged;
+//			RelatedINC_CRQTextBox.TextChanged += TSTChanged;
 			// 
 			// ActiveAlarmsLabel
 			// 
