@@ -113,6 +113,8 @@ namespace appCore.SiteFinder
 		
 		void Lock() {
 			// TODO: Cell lock method
+			string OiCheckboxName = "checkbox" + Name;
+			
 		}
 		
 		void Unlock() {

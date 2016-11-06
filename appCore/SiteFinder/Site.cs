@@ -26,7 +26,6 @@ namespace appCore.SiteFinder
 	/// <summary>
 	/// Description of Site.
 	/// </summary>
-//	[Serializable]
 	public partial class Site
 	{
 		public bool Exists { get { return _site != null; } private set { } }

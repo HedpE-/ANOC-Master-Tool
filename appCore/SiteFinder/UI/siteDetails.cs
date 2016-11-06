@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Net;
+using System.Linq;
 using System.Windows.Forms;
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -22,10 +23,10 @@ using appCore.Toolbox;
 
 namespace appCore.SiteFinder.UI
 {
-    /// <summary>
-    /// Description of siteDetails.
-    /// </summary>
-    public partial class siteDetails : Form
+	/// <summary>
+	/// Description of siteDetails.
+	/// </summary>
+	public partial class siteDetails : Form
 	{
 		string _siteDetails_UIMode = "single/readonly";
 		DataView cellsList = null;
@@ -37,6 +38,7 @@ namespace appCore.SiteFinder.UI
 		List<GMapMarker> markersList = new List<GMapMarker>();
 		string[] sites; // for outages site list
 		byte listView2_EventCount = 1;
+		Site currentSite;
 		
 		public siteDetails(bool outage, string[] outageSites)
 		{
@@ -102,6 +104,7 @@ namespace appCore.SiteFinder.UI
 			
 			map.Manager.Mode = AccessMode.ServerOnly; //get tiles from server only
 			map.CanDragMap = true;
+			map.DragButton = MouseButtons.Left;
 			map.ShowCenter = false;
 			map.MouseWheelZoomEnabled = true;
 			map.MouseWheelZoomType = MouseWheelZoomType.MousePositionAndCenter;
@@ -118,6 +121,68 @@ namespace appCore.SiteFinder.UI
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
 			return map;
+		}
+		
+		void selectedSiteDetailsPopulate(Site site) {
+			currentSite = site;
+			if(currentSite.Exists) {
+				currentSite.requestOIData("INCCRQPWR");
+				if(currentSite.Cells.Any()) {
+					
+//				cellsList = cells;
+//				cellsList.Sort = "BEARER Asc, CELL_NAME Asc";
+					
+					textBox1.Text = currentSite.Id;
+					textBox2.Text = currentSite.PowerCompany;
+					textBox3.Text = currentSite.JVCO;
+					textBox4.Text = currentSite.Address.Replace(';',',');
+					TextBox4TextChanged(textBox4,null);
+					textBox5.Text = currentSite.Area;
+					textBox6.Text = currentSite.Region;
+					textBox8.Text = currentSite.HostedBy;
+					textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
+					textBox9.Text = currentSite.Priority;
+					textBox10.Text = currentSite.SharedOperator;
+					
+//				cellsList.RowFilter = string.Empty;
+					
+					listboxFilter_Changed(checkBox1, null);
+				}
+				else {
+					textBox4.Text = "Site not found";
+					foreach(Control ctr in Controls) {
+						if(ctr.Name.StartsWith("label_"))
+							ctr.Text = "0";
+					}
+				}
+				
+				// Fill Cell Count table
+				
+				label_TotalCells.Text = currentSite.Cells.Count.ToString();
+				
+//				cellsList.RowFilter = "BEARER = '2G'";
+				label_Total_2GCells.Text = currentSite.Cells.Filter(Cell.Filters.All_2G).Count.ToString();
+//				cellsList.RowFilter = "BEARER = '2G' AND (CELL_NAME NOT LIKE 'T*' AND CELL_NAME NOT LIKE '*W' AND CELL_NAME NOT LIKE '*X' AND CELL_NAME NOT LIKE '*Y')";
+				label_VF_2GCells.Text = currentSite.Cells.Filter(Cell.Filters.VF_2G).Count.ToString();
+//				cellsList.RowFilter = "BEARER = '2G' AND (CELL_NAME LIKE 'T*' OR CELL_NAME LIKE '*W' OR CELL_NAME LIKE '*X' OR CELL_NAME LIKE '*Y')";
+				label_TF_2GCells.Text = currentSite.Cells.Filter(Cell.Filters.TF_2G).Count.ToString();
+				
+//				cells.RowFilter = "BEARER = '3G'";
+				label_Total_3GCells.Text = currentSite.Cells.Filter(Cell.Filters.All_3G).Count.ToString();
+//				cellsList.RowFilter = "BEARER = '3G' AND CELL_NAME NOT LIKE 'T*'";
+				label_VF_3GCells.Text = currentSite.Cells.Filter(Cell.Filters.VF_3G).Count.ToString();
+//				cellsList.RowFilter = "BEARER = '3G' AND CELL_NAME LIKE 'T*'";
+				label_TF_3GCells.Text = currentSite.Cells.Filter(Cell.Filters.TF_3G).Count.ToString();
+				
+//				cells.RowFilter = "BEARER = '4G'";
+				label_Total_4GCells.Text = currentSite.Cells.Filter(Cell.Filters.All_4G).Count.ToString();
+//				cellsList.RowFilter = "BEARER = '4G' AND CELL_NAME NOT LIKE 'T*'";
+				label_VF_4GCells.Text = currentSite.Cells.Filter(Cell.Filters.VF_4G).Count.ToString();
+//				cellsList.RowFilter = "BEARER = '4G' AND CELL_NAME LIKE 'T*'";
+				label_TF_4GCells.Text = currentSite.Cells.Filter(Cell.Filters.TF_4G).Count.ToString();
+				
+				cellsList.RowFilter = string.Empty;
+			}
 		}
 		
 		void selectedSiteDetailsPopulate(DataRowView site, DataView cells) {
@@ -180,15 +245,15 @@ namespace appCore.SiteFinder.UI
 						ctr.Text = "0";
 				}
 //				label_TotalCells.Text = "0";
-//				
+//
 //				label_Total_2GCells.Text = "0";
 //				label_VF_2GCells.Text = "0";
 //				label_TF_2GCells.Text = "0";
-//				
+//
 //				label_Total_3GCells.Text = "0";
 //				label_VF_3GCells.Text = "0";
 //				label_TF_3GCells.Text = "0";
-//				
+//
 //				label_Total_4GCells.Text = "0";
 //				label_VF_4GCells.Text = "0";
 //				label_TF_4GCells.Text = "0";

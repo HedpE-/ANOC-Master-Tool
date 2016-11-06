@@ -515,6 +515,7 @@ namespace appCore.Templates.UI
 			UpdateTextBox.Size = new Size(510, 253);
 			UpdateTextBox.TabIndex = 3;
 			UpdateTextBox.Text = "";
+			UpdateTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// UpdateLargeTextButton
 			// 
@@ -545,6 +546,7 @@ namespace appCore.Templates.UI
 			NextActionsTextBox.Size = new Size(510, 235);
 			NextActionsTextBox.TabIndex = 5;
 			NextActionsTextBox.Text = "";
+			NextActionsTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// NextActionsLargeTextButton
 			// 

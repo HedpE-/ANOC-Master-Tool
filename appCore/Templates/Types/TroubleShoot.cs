@@ -329,7 +329,7 @@ namespace appCore.Templates.Types
 							string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
 								"Status NOT LIKE 'Closed'"; // AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
 							List<DataRow> filteredCases = cases.Select(query).ToList();
-							if(type == "CRQ" && filteredCases.Count > 0) { // TODO: getCurrentCases test with OngoingCRQs.Count > 0
+							if(type == "CRQ" && filteredCases.Count > 0) {
 								for(int c = 0;c < filteredCases.Count;c++) {
 									DataRow row = filteredCases[c];
 									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
