@@ -3958,7 +3958,7 @@ namespace appCore
 			}
 			
 			Thread thread = new Thread(() => {
-			                           	siteDetails2 sd = new siteDetails2(false,null);
+			                           	siteDetails2 sd = new siteDetails2();
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
 			                           });

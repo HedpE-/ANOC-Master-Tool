@@ -44,8 +44,8 @@ namespace appCore.SiteFinder.UI
 				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add("-");
 				MainMenu.MainMenu.DropDownItems.Add(viewSiteInOiToolStripMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(generateTaskToolStripMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add("-");
 				MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
@@ -62,6 +62,7 @@ namespace appCore.SiteFinder.UI
 						label12.Location = new System.Drawing.Point(5, 227);
 						textBox1.ReadOnly = value.Contains("readonly");
 						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
+						LockUnlockCellsButton.Visible = !value.Contains("readonly");
 						break;
 					case "multi":
 						label11.Visible = true;
@@ -108,7 +109,7 @@ namespace appCore.SiteFinder.UI
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem generateTaskToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem lockUnlockCellsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem sendBCPToolStripMenuItem = new ToolStripMenuItem();
 		
@@ -158,6 +159,15 @@ namespace appCore.SiteFinder.UI
 			this.Shown += populateBulkForm;
 		}
 		
+		public siteDetails2()
+		{
+			InitializeComponent();
+			myMap = drawGMap("myMap",true);
+			this.Controls.Add(myMap);
+			siteDetails_UIMode = "single";
+			this.Shown += populateBulkForm;
+		}
+		
 		void populateBulkForm(object sender, EventArgs e)
 		{
 			// TODO: Multi select sites and show only their markers
@@ -173,20 +183,6 @@ namespace appCore.SiteFinder.UI
 			
 			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 		}
-		
-//		void populateINCs() {
-//			listView3.Items.Clear();
-//			listView3.SuspendLayout();
-//			listView3.View = View.Details;
-//			foreach(DataColumn col in currentSite.INCs.Columns)
-//				listView3.Columns.Add(col.ColumnName);
-//			foreach (DataRow row in currentSite.INCs.Rows)
-//				listView3.Items.Add(new ListViewItem(row.ItemArray.Cast<string>().ToArray()));
-//			foreach (ColumnHeader col in listView3.Columns)
-//				col.Width = -2;
-//
-//			listView3.ResumeLayout();
-//		}
 		
 		void initializeListviews() {
 			listView1.View = View.Details;
@@ -809,6 +805,10 @@ namespace appCore.SiteFinder.UI
 			
 		}
 		
+		void LockUnlockCells(object sender, EventArgs e) {
+			
+		}
+		
 		void InitializeToolStripMenuItems() {
 			// 
 			// bulkSiteSearchMenuItem
@@ -832,9 +832,9 @@ namespace appCore.SiteFinder.UI
 			// 
 			// generateTaskToolStripMenuItem
 			// 
-			generateTaskToolStripMenuItem.Name = "generateTaskToolStripMenuItem";
-			generateTaskToolStripMenuItem.Text = "Generate Task notes...";
-//			generateTaskToolStripMenuItem.Click += GenerateTaskNotes;
+			lockUnlockCellsToolStripMenuItem.Name = "lockUnlockCellsToolStripMenuItem";
+			lockUnlockCellsToolStripMenuItem.Text = "Lock/Unlock Cells...";
+			lockUnlockCellsToolStripMenuItem.Click += LockUnlockCells;
 			// 
 			// copyToNewTemplateToolStripMenuItem
 			// 
