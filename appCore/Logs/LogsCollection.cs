@@ -49,7 +49,7 @@ namespace appCore.Logs
 			private set { }
 		}
 		
-//		bool currentLogsCollection;
+		bool OverwriteLog;
 		System.Timers.Timer timer;
 		public DateTime logFileDate = DateTime.Now;
 		string logSeparator = getLogSeparator();
@@ -312,14 +312,25 @@ namespace appCore.Logs
 			}
 		}
 
-		public void HandleLog(T n) {
+		public void HandleLog(T n, bool overwrite = false) {
 			CheckLogFileIntegrity();
+			OverwriteLog = overwrite;
 			int existingLogIndex = CheckLogExists(n);
 			if(existingLogIndex == -1)
 				WriteLog(n);
 			else
 				UpdateLogFile(n, existingLogIndex);
 		}
+
+//		public void HandleLog(T n, string bcpForm) {
+//			CheckLogFileIntegrity();
+//			int existingLogIndex = CheckLogExists(n);
+//			AddBcpToLog(bcpForm, CheckLogExists(n));
+//			if(existingLogIndex == -1)
+//				UpdateLogFile(n);
+//			else
+//				UpdateLogFile(n, existingLogIndex);
+//		}
 
 		void WriteLog(T n) {
 //			FileInfo fi = new FileInfo(@"c:\MyTest.txt");

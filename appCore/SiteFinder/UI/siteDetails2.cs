@@ -41,14 +41,6 @@ namespace appCore.SiteFinder.UI
 				MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
 				MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
 				InitializeToolStripMenuItems();
-				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(viewSiteInOiToolStripMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				MainMenu.siteFinder_Toggle(false, false);
 				switch(mode[0]) {
 					case "single":
@@ -62,7 +54,16 @@ namespace appCore.SiteFinder.UI
 						label12.Location = new System.Drawing.Point(5, 227);
 						textBox1.ReadOnly = value.Contains("readonly");
 						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
-						LockUnlockCellsButton.Visible = !value.Contains("readonly");
+						if(!value.Contains("readonly")) {
+							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
+							MainMenu.MainMenu.DropDownItems.Add("-");
+//							MainMenu.MainMenu.DropDownItems.Add(viewSiteInOiToolStripMenuItem);
+							MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
+//							MainMenu.MainMenu.DropDownItems.Add("-");
+//							MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
+//							MainMenu.MainMenu.DropDownItems.Add("-");
+//							MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
+						}
 						break;
 					case "multi":
 						label11.Visible = true;
@@ -165,6 +166,7 @@ namespace appCore.SiteFinder.UI
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
 			siteDetails_UIMode = "single";
+			lockUnlockCellsToolStripMenuItem.Enabled = false;
 			this.Shown += populateBulkForm;
 		}
 		
@@ -240,11 +242,7 @@ namespace appCore.SiteFinder.UI
 		
 		void selectedSiteDetailsPopulate(Site site) {
 			currentSite = site;
-			if(currentSite.Cells.Any()) {
-				
-//				cellsList = cells;
-//				cellsList.Sort = "BEARER Asc, CELL_NAME Asc";
-				
+			if(currentSite.Exists) {				
 				textBox1.Text = currentSite.Id;
 				textBox2.Text = currentSite.PowerCompany;
 				textBox3.Text = currentSite.JVCO;
@@ -256,8 +254,7 @@ namespace appCore.SiteFinder.UI
 				textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
 				textBox9.Text = currentSite.Priority;
 				textBox10.Text = currentSite.SharedOperator;
-				
-//				cellsList.RowFilter = string.Empty;
+				lockUnlockCellsToolStripMenuItem.Enabled = true;
 				
 				listboxFilter_Changed(checkBox1, null);
 			}
@@ -267,6 +264,7 @@ namespace appCore.SiteFinder.UI
 					if(ctr.Name.StartsWith("label_"))
 						ctr.Text = "0";
 				}
+				lockUnlockCellsToolStripMenuItem.Enabled = false;
 			}
 			pictureBox1.UpdateCells(currentSite.Cells);
 		}

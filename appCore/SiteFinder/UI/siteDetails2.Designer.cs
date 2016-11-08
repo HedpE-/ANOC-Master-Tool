@@ -43,7 +43,6 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.ListView listView2;
 		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.Button LockUnlockCellsButton;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -96,7 +95,6 @@ namespace appCore.SiteFinder.UI
 			this.label11 = new System.Windows.Forms.Label();
 			this.listView2 = new System.Windows.Forms.ListView();
 			this.label12 = new System.Windows.Forms.Label();
-			this.LockUnlockCellsButton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -401,23 +399,11 @@ namespace appCore.SiteFinder.UI
 			this.label12.Text = "Cell Information";
 			this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// LockUnlockCellsButton
-			// 
-			this.LockUnlockCellsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LockUnlockCellsButton.Location = new System.Drawing.Point(493, 141);
-			this.LockUnlockCellsButton.Name = "LockUnlockCellsButton";
-			this.LockUnlockCellsButton.Size = new System.Drawing.Size(68, 75);
-			this.LockUnlockCellsButton.TabIndex = 118;
-			this.LockUnlockCellsButton.Text = "Lock Unlock Cells";
-			this.LockUnlockCellsButton.UseVisualStyleBackColor = true;
-			this.LockUnlockCellsButton.Visible = false;
-			// 
 			// siteDetails2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(952, 651);
-			this.Controls.Add(this.LockUnlockCellsButton);
 			this.Controls.Add(this.label11);
 			this.Controls.Add(this.listView2);
 			this.Controls.Add(this.textBox7);

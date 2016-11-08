@@ -182,25 +182,26 @@ namespace appCore.Netcool
 		}
 		
 		string resolveAlarmBearer() {
+			string bearer = string.Empty;
 			if(!string.IsNullOrEmpty(RncBsc)) {
 				switch(RncBsc.Substring(0, 1)) {
 					case "B":
-						return "2G";
+						bearer = "2G";
+						break;
 					case "R":
-						return "3G";
-					case "X":
+						bearer = "3G";
+						break;
+					default:
 						if(Element.StartsWith("V"))
-							return "4G";
+							bearer = "4G";
 						break;
 				}
 			}
-			else {
-				if(!string.IsNullOrEmpty(Element)) {
-					Cell tempCell = Finder.getCell(Element);
-					return tempCell.Bearer;
-				}
-			}
-			return null;
+			else
+				if(!string.IsNullOrEmpty(Element))
+					bearer = !Element.StartsWith("V") ? Finder.getCell(Element).Bearer : "4G";
+			
+			return bearer;
 		}
 		
 		string parseSummary(string toParse)

@@ -677,6 +677,10 @@ namespace appCore.Templates.UI
 			if(currentTemplate == prevTemp) {
 				SendBCP bcp = new SendBCP(ref currentTemplate);
 				bcp.ShowDialog();
+				
+				currentTemplate.AddBcpLog(bcp.mailBody);
+				
+				MainForm.logFile.HandleLog(currentTemplate, true);
 			}
 			else
 				FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
