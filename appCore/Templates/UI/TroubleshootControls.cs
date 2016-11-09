@@ -678,7 +678,7 @@ namespace appCore.Templates.UI
 				SendBCP bcp = new SendBCP(ref currentTemplate);
 				bcp.ShowDialog();
 				
-				currentTemplate.AddBcpLog(bcp.mailBody);
+//				currentTemplate.AddBcpLog(bcp.mailBody);
 				
 				MainForm.logFile.HandleLog(currentTemplate, true);
 			}

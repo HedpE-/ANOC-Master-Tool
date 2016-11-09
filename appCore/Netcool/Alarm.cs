@@ -119,7 +119,7 @@ namespace appCore.Netcool
 			if(string.IsNullOrEmpty(Element))
 				ResolveCellName();
 			
-			Bearer = resolveAlarmBearer();
+			try { Bearer = resolveAlarmBearer(); } catch {}
 
 			checkCoosOrOnM();
 			
@@ -138,17 +138,6 @@ namespace appCore.Netcool
 			Location = "RBS" + temp;
 			
 			Vendor = cell.Vendor;
-//			switch (cell.Bearer) {
-//				case "2G":
-//					Vendor = cell.Vendor2G;
-//					break;
-//				case "3G":
-//					Vendor = cell.Vendor3G;
-//					break;
-//				case "4G":
-//					Vendor = cell.Vendor4G;
-//					break;
-//			}
 			
 			County = ParentSite.County;
 			Town = ParentSite.Town;
