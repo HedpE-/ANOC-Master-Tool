@@ -265,6 +265,10 @@ namespace appCore.Templates.Types
 			fullLog = string.Join("\r\n", log.Where((val, idx) => idx != 0).ToArray());
 		}
 		
+		public void AddBcpLog(string BcpForm) {
+			
+		}
+		
 		string generateFullLog() {
 			string template = "INC: " + INC + Environment.NewLine;
 			template += "Site ID: " + SiteId + Environment.NewLine;

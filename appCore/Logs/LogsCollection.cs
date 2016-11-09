@@ -49,7 +49,7 @@ namespace appCore.Logs
 			private set { }
 		}
 		
-		bool OverwriteLog;
+		bool ForceOverwriteLog;
 		System.Timers.Timer timer;
 		public DateTime logFileDate = DateTime.Now;
 		string logSeparator = getLogSeparator();
@@ -284,14 +284,16 @@ namespace appCore.Logs
 				case "Troubleshoot": case "Failed CRQ": case "Update":
 					T existingLog = (T)List[existingLogIndex];
 					if (n.fullLog != existingLog.fullLog) {
-//						Toolbox.ScrollableMessageBox msgBox = new Toolbox.ScrollableMessageBox();
-//						Action action = new Action(delegate {
-//						msgBox.StartPosition = FormStartPosition.CenterParent;
-//						msgBox.Show(existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, "Overwrite existing log?",false);
-						DialogResult res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        //						Toolbox.ScrollableMessageBox msgBox = new Toolbox.ScrollableMessageBox();
+                        //						Action action = new Action(delegate {
+                        //						msgBox.StartPosition = FormStartPosition.CenterParent;
+                        //						msgBox.Show(existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, "Overwrite existing log?",false);
+                        DialogResult res = DialogResult.No;
+                        if (!ForceOverwriteLog)
+						    res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 //						                           });
 //						Toolbox.Tools.darkenBackgroundForm(action,false,this);
-						if (res == DialogResult.Yes) {
+						if (res == DialogResult.Yes || ForceOverwriteLog) {
 							RemoveLog(existingLogIndex);
 							WriteLog(n);
 						}
@@ -314,7 +316,7 @@ namespace appCore.Logs
 
 		public void HandleLog(T n, bool overwrite = false) {
 			CheckLogFileIntegrity();
-			OverwriteLog = overwrite;
+			ForceOverwriteLog = overwrite;
 			int existingLogIndex = CheckLogExists(n);
 			if(existingLogIndex == -1)
 				WriteLog(n);
@@ -381,6 +383,9 @@ namespace appCore.Logs
 							logtype += " Template";
 						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + logtype);
 						sw.WriteLine(n.fullLog);
+//						if(logtype == "Troubleshoot") {
+//							TroubleShoot temp = (TroubleShoot)n;
+//						}
 						sw.Write(logSeparator);
 					}
 				}
