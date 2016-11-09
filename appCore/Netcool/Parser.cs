@@ -81,8 +81,11 @@ namespace appCore.Netcool
 			
 			foreach (DataRow row in parsedTable.Rows)
 			{
-				Alarm alarm = new Alarm(row, columns);
-				AlarmsList.Add(alarm);
+				try {
+					Alarm alarm = new Alarm(row, columns);
+					AlarmsList.Add(alarm);
+				}
+				catch {	}
 			}
 			
 			if(generateOutput)
