@@ -69,6 +69,11 @@ namespace appCore.Settings.UI
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.button4 = new System.Windows.Forms.Button();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.button3 = new System.Windows.Forms.Button();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.userAdminTab = new System.Windows.Forms.TabPage();
 			this.noPermPanel = new System.Windows.Forms.Panel();
 			this.userAdminPanel = new System.Windows.Forms.Panel();
@@ -89,24 +94,19 @@ namespace appCore.Settings.UI
 			this.label10 = new System.Windows.Forms.Label();
 			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
-			this.AgentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.label9 = new System.Windows.Forms.Label();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.button3 = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.userAdminTab.SuspendLayout();
 			this.noPermPanel.SuspendLayout();
 			this.userAdminPanel.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// textBox1
@@ -173,7 +173,7 @@ namespace appCore.Settings.UI
 			this.tabPage1.Controls.Add(this.button1);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage1.Size = new System.Drawing.Size(506, 291);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
@@ -247,11 +247,67 @@ namespace appCore.Settings.UI
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.Button4Click);
 			// 
+			// tabPage2
+			// 
+			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage2.Controls.Add(this.button3);
+			this.tabPage2.Controls.Add(this.label4);
+			this.tabPage2.Controls.Add(this.label3);
+			this.tabPage2.Controls.Add(this.label2);
+			this.tabPage2.Cursor = System.Windows.Forms.Cursors.Arrow;
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(873, 291);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "About";
+			// 
+			// button3
+			// 
+			this.button3.AutoSize = true;
+			this.button3.Location = new System.Drawing.Point(164, 244);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(195, 39);
+			this.button3.TabIndex = 1;
+			this.button3.Text = "View changelog";
+			this.button3.UseVisualStyleBackColor = true;
+			this.button3.Click += new System.EventHandler(this.Button3Click);
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(15, 102);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(76, 13);
+			this.label4.TabIndex = 2;
+			this.label4.Text = "Release date: ";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(15, 79);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(48, 13);
+			this.label3.TabIndex = 1;
+			this.label3.Text = "Version: ";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.BackColor = System.Drawing.Color.Transparent;
+			this.label2.Font = new System.Drawing.Font("Pristina", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(80, 6);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(349, 63);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "ANOC Master Tool";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// userAdminTab
 			// 
 			this.userAdminTab.Controls.Add(this.noPermPanel);
 			this.userAdminTab.Location = new System.Drawing.Point(4, 22);
-			this.userAdminTab.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.userAdminTab.Margin = new System.Windows.Forms.Padding(1);
 			this.userAdminTab.Name = "userAdminTab";
 			this.userAdminTab.Size = new System.Drawing.Size(506, 291);
 			this.userAdminTab.TabIndex = 2;
@@ -264,7 +320,7 @@ namespace appCore.Settings.UI
 			this.noPermPanel.Controls.Add(this.label9);
 			this.noPermPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.noPermPanel.Location = new System.Drawing.Point(0, 0);
-			this.noPermPanel.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.noPermPanel.Margin = new System.Windows.Forms.Padding(1);
 			this.noPermPanel.Name = "noPermPanel";
 			this.noPermPanel.Size = new System.Drawing.Size(506, 291);
 			this.noPermPanel.TabIndex = 0;
@@ -277,7 +333,7 @@ namespace appCore.Settings.UI
 			this.userAdminPanel.Controls.Add(this.dataGridView1);
 			this.userAdminPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.userAdminPanel.Location = new System.Drawing.Point(0, 0);
-			this.userAdminPanel.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.userAdminPanel.Margin = new System.Windows.Forms.Padding(1);
 			this.userAdminPanel.Name = "userAdminPanel";
 			this.userAdminPanel.Size = new System.Drawing.Size(506, 291);
 			this.userAdminPanel.TabIndex = 1;
@@ -294,9 +350,9 @@ namespace appCore.Settings.UI
 			this.groupBox2.Controls.Add(this.textBox5);
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Right;
 			this.groupBox2.Location = new System.Drawing.Point(227, 142);
-			this.groupBox2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.groupBox2.Margin = new System.Windows.Forms.Padding(1);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Padding = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.groupBox2.Padding = new System.Windows.Forms.Padding(1);
 			this.groupBox2.Size = new System.Drawing.Size(279, 149);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
@@ -305,7 +361,7 @@ namespace appCore.Settings.UI
 			// button7
 			// 
 			this.button7.Location = new System.Drawing.Point(210, 22);
-			this.button7.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.button7.Margin = new System.Windows.Forms.Padding(1);
 			this.button7.Name = "button7";
 			this.button7.Size = new System.Drawing.Size(51, 64);
 			this.button7.TabIndex = 13;
@@ -320,7 +376,7 @@ namespace appCore.Settings.UI
 			"1st Line",
 			"2nd Line"});
 			this.comboBox3.Location = new System.Drawing.Point(68, 70);
-			this.comboBox3.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.comboBox3.Margin = new System.Windows.Forms.Padding(1);
 			this.comboBox3.Name = "comboBox3";
 			this.comboBox3.Size = new System.Drawing.Size(138, 21);
 			this.comboBox3.TabIndex = 12;
@@ -328,7 +384,7 @@ namespace appCore.Settings.UI
 			// textBox4
 			// 
 			this.textBox4.Location = new System.Drawing.Point(68, 22);
-			this.textBox4.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.textBox4.Margin = new System.Windows.Forms.Padding(1);
 			this.textBox4.Name = "textBox4";
 			this.textBox4.Size = new System.Drawing.Size(138, 20);
 			this.textBox4.TabIndex = 11;
@@ -366,7 +422,7 @@ namespace appCore.Settings.UI
 			// textBox5
 			// 
 			this.textBox5.Location = new System.Drawing.Point(68, 45);
-			this.textBox5.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.textBox5.Margin = new System.Windows.Forms.Padding(1);
 			this.textBox5.Name = "textBox5";
 			this.textBox5.Size = new System.Drawing.Size(138, 20);
 			this.textBox5.TabIndex = 7;
@@ -382,9 +438,9 @@ namespace appCore.Settings.UI
 			this.groupBox1.Controls.Add(this.textBox2);
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
 			this.groupBox1.Location = new System.Drawing.Point(0, 142);
-			this.groupBox1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.groupBox1.Margin = new System.Windows.Forms.Padding(1);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Padding = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.groupBox1.Padding = new System.Windows.Forms.Padding(1);
 			this.groupBox1.Size = new System.Drawing.Size(275, 149);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
@@ -393,7 +449,7 @@ namespace appCore.Settings.UI
 			// button6
 			// 
 			this.button6.Location = new System.Drawing.Point(210, 21);
-			this.button6.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.button6.Margin = new System.Windows.Forms.Padding(1);
 			this.button6.Name = "button6";
 			this.button6.Size = new System.Drawing.Size(51, 64);
 			this.button6.TabIndex = 6;
@@ -408,7 +464,7 @@ namespace appCore.Settings.UI
 			"1st Line",
 			"2nd Line"});
 			this.comboBox2.Location = new System.Drawing.Point(72, 68);
-			this.comboBox2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.comboBox2.Margin = new System.Windows.Forms.Padding(1);
 			this.comboBox2.Name = "comboBox2";
 			this.comboBox2.Size = new System.Drawing.Size(138, 21);
 			this.comboBox2.TabIndex = 5;
@@ -416,7 +472,7 @@ namespace appCore.Settings.UI
 			// textBox3
 			// 
 			this.textBox3.Location = new System.Drawing.Point(72, 45);
-			this.textBox3.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.textBox3.Margin = new System.Windows.Forms.Padding(1);
 			this.textBox3.Name = "textBox3";
 			this.textBox3.Size = new System.Drawing.Size(138, 20);
 			this.textBox3.TabIndex = 4;
@@ -454,7 +510,7 @@ namespace appCore.Settings.UI
 			// textBox2
 			// 
 			this.textBox2.Location = new System.Drawing.Point(72, 21);
-			this.textBox2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.textBox2.Margin = new System.Windows.Forms.Padding(1);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.Size = new System.Drawing.Size(138, 20);
 			this.textBox2.TabIndex = 0;
@@ -463,23 +519,23 @@ namespace appCore.Settings.UI
 			// 
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-			this.AgentName,
+			this.Name,
 			this.Username,
 			this.Permission});
 			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-			this.dataGridView1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+			this.dataGridView1.Margin = new System.Windows.Forms.Padding(1);
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.RowTemplate.Height = 37;
 			this.dataGridView1.Size = new System.Drawing.Size(506, 142);
 			this.dataGridView1.TabIndex = 0;
 			// 
-			// AgentName
+			// Name
 			// 
-			this.AgentName.HeaderText = "Name";
-			this.AgentName.Name = "Name";
-			this.AgentName.ReadOnly = true;
-			this.AgentName.Width = 150;
+			this.Name.HeaderText = "Name";
+			this.Name.Name = "Name";
+			this.Name.ReadOnly = true;
+			this.Name.Width = 150;
 			// 
 			// Username
 			// 
@@ -505,62 +561,6 @@ namespace appCore.Settings.UI
 			this.label9.TabIndex = 0;
 			this.label9.Text = "User not authorized";
 			// 
-			// tabPage2
-			// 
-			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage2.Controls.Add(this.button3);
-			this.tabPage2.Controls.Add(this.label4);
-			this.tabPage2.Controls.Add(this.label3);
-			this.tabPage2.Controls.Add(this.label2);
-			this.tabPage2.Cursor = System.Windows.Forms.Cursors.Arrow;
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-			this.tabPage2.Size = new System.Drawing.Size(556, 363);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "About";
-			// 
-			// button3
-			// 
-			this.button3.AutoSize = true;
-			this.button3.Location = new System.Drawing.Point(388, 128);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(195, 39);
-			this.button3.TabIndex = 1;
-			this.button3.Text = "View changelog";
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.Button3Click);
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(15, 102);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(76, 13);
-			this.label4.TabIndex = 2;
-			this.label4.Text = "Release date: ";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(15, 79);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(48, 13);
-			this.label3.TabIndex = 1;
-			this.label3.Text = "Version: ";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.BackColor = System.Drawing.Color.Transparent;
-			this.label2.Font = new System.Drawing.Font("Pristina", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(132, 3);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(349, 63);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "ANOC Master Tool";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
 			// SettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -576,6 +576,8 @@ namespace appCore.Settings.UI
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
+			this.tabPage2.ResumeLayout(false);
+			this.tabPage2.PerformLayout();
 			this.userAdminTab.ResumeLayout(false);
 			this.noPermPanel.ResumeLayout(false);
 			this.noPermPanel.PerformLayout();
@@ -585,8 +587,6 @@ namespace appCore.Settings.UI
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-			this.tabPage2.ResumeLayout(false);
-			this.tabPage2.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -615,5 +615,6 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Name;
     }
 }
