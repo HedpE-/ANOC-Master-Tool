@@ -15964,7 +15964,7 @@ ZE - LTE2100 Macro</value>
 - A lot of speed ups, the most significant are the loading times, database queries and alarms parsing
 - Now the UserFolder is used as a "cache", this means all the db files, including all_cells, all_sites and shifts file will be there and updated periodically. This prevents breakdowns when the ANOK-UK shared folder is inaccessible.
 
-                                        DO NOT REMOVE ANY OF THESE FILES FROM YOUR USERFOLDER WHILE THE TOOL IS EXECUTING!!!!
+DO NOT REMOVE ANY OF THESE FILES FROM YOUR USERFOLDER WHILE THE TOOL IS EXECUTING!!!!
 Or else you'll have to restart it xD
 
 You may however change your UserFolder location from the settings menu.
