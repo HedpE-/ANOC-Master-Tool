@@ -21,21 +21,18 @@ namespace appCore.Settings.UI
     /// </summary>
     public partial class SettingsForm : Form
     {
-    	private int rowIndex = 0;
+//    	int rowIndex = 0;
         public bool siteFinder_newSwitch;
-        private permCheck permCheck = new permCheck();
+//        permCheck permCheck = new permCheck();
         public SettingsForm(bool siteFinder_mainswitch)
         {
-            //
-            // The InitializeComponent() call is required for Windows Forms designer support.
-            //
             InitializeComponent();
             // Permission check for user administration
-            switch (permCheck.getUserPerm())
-            {
-                case 1: case 2: case 3: userAdminTab.Enabled = true; userAdminPanel.Visible = true; noPermPanel.Visible = true; break;
-                default: userAdminTab.Enabled = false; userAdminPanel.Visible = false; noPermPanel.Visible = true; break;
-            }
+//            switch (permCheck.getUserPerm())
+//            {
+//                case 1: case 2: case 3: userAdminTab.Enabled = true; userAdminPanel.Visible = true; noPermPanel.Visible = true; break;
+//                default: userAdminTab.Enabled = false; userAdminPanel.Visible = false; noPermPanel.Visible = true; break;
+//            }
 
 
             // get appCore.dll file path
@@ -57,6 +54,12 @@ namespace appCore.Settings.UI
             else label6.Text = SettingsFile.OIUsername;
 
             comboBox1.Text = siteFinder_mainswitch ? "Enabled" : "Disabled";
+            
+//            tabControl1.Controls.Add(userAdminTab);
+//			this.Load += new System.EventHandler(this.SettingsForm_Load);
+//			this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+//			this.button6.Click += new System.EventHandler(this.button6_Click);
+//			this.button7.Click += new System.EventHandler(this.button7_Click);
         }
 
         void Button1Click(object sender, EventArgs e)
@@ -128,126 +131,126 @@ namespace appCore.Settings.UI
             Toolbox.Tools.darkenBackgroundForm(action, true, this);
         }
 
-        private void SettingsForm_Load(object sender, EventArgs e)
-        {
-            var users = permCheck.getUsers();
-            for (int a = 0; a < permCheck.currMaxUser(); a++)
-            {
-                if (users[a, 0] != null)
-                {
-                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
-                    switch (newRow[2])
-                    {
-                        case "o": newRow[2] = permCheck.getPermName(0); break;
-                        case "1": newRow[2] = permCheck.getPermName(1); break;
-                        case "2": newRow[2] = permCheck.getPermName(2); break;
-                        case "3": newRow[2] = permCheck.getPermName(3); break;
-                        case "4": newRow[2] = permCheck.getPermName(4); break;
-                        case "5": newRow[2] = permCheck.getPermName(5); break;
-                    }
-                    dataGridView1.Rows.Add(newRow);
-                }
-            }
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            int perm = 0;
-            switch (comboBox2.Text)
-            {
-                case "Shiftleader": perm = 3; break;
-                case "1st Line": perm = 4; break;
-                case "2nd Line": perm = 5; break;
-            }
-            permCheck.addUser(textBox2.Text, textBox3.Text, perm.ToString());
-            dataGridView1.Rows.Clear();
-            dataGridView1.Refresh();
-            var users = permCheck.getUsers();
-            for (int a = 0; a < permCheck.currMaxUser(); a++)
-            {
-                if (users[a, 0] != null)
-                {
-                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
-                    switch (newRow[2])
-                    {
-                        case "o": newRow[2] = permCheck.getPermName(0); break;
-                        case "1": newRow[2] = permCheck.getPermName(1); break;
-                        case "2": newRow[2] = permCheck.getPermName(2); break;
-                        case "3": newRow[2] = permCheck.getPermName(3); break;
-                        case "4": newRow[2] = permCheck.getPermName(4); break;
-                        case "5": newRow[2] = permCheck.getPermName(5); break;
-                    }
-                    dataGridView1.Rows.Add(newRow);
-                }
-            }
-        }
-
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-        	rowIndex = e.RowIndex;
-            var row = dataGridView1.Rows[e.RowIndex];
-            if (!row.Cells[2].Value.ToString().Equals("root", StringComparison.InvariantCultureIgnoreCase))
-            {
-                textBox4.Text = row.Cells[0].Value.ToString() ?? string.Empty;
-                textBox5.Text = row.Cells[1].Value.ToString() ?? string.Empty;
-                switch (row.Cells[2].Value.ToString() ?? string.Empty)
-                {
-                    case "No permission": comboBox3.Text = permCheck.getPermName(0); break;
-                    case "root": comboBox3.Text = permCheck.getPermName(1); break;
-                    case "Manager": comboBox3.Text = permCheck.getPermName(2); break;
-                    case "Shiftleader": comboBox3.Text = permCheck.getPermName(3); break;
-                    case "1st Line": comboBox3.Text = permCheck.getPermName(4); break;
-                    case "2nd Line": comboBox3.Text = permCheck.getPermName(5); break;
-                    default: comboBox3.Text = "No permission"; break;
-                }
-            }
-            else
-            {
-                MessageBox.Show("root user cannot be modified", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            //Mod user in xml
-            var row = dataGridView1.Rows[rowIndex];
-            if(!textBox4.Text.Equals(row.Cells[0].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
-            	permCheck.modUser(row.Cells[1].Value.ToString(),1,textBox4.Text);
-            if(!textBox5.Text.Equals(row.Cells[1].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
-            	permCheck.modUser(row.Cells[1].Value.ToString(),0,textBox5.Text);    
-            if(!comboBox3.Text.Equals(row.Cells[2].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
-            {
-                switch (comboBox3.Text ?? string.Empty)
-                {
-                    case "No permission": permCheck.modUser(row.Cells[1].Value.ToString(),2,"0"); break;
-                    case "root": permCheck.modUser(row.Cells[1].Value.ToString(),2,"1"); break;
-                    case "Manager": permCheck.modUser(row.Cells[1].Value.ToString(),2,"2"); break;
-                    case "Shiftleader": permCheck.modUser(row.Cells[1].Value.ToString(),2,"3"); break;
-                    case "1st Line": permCheck.modUser(row.Cells[1].Value.ToString(),2,"4"); break;
-                    case "2nd Line": permCheck.modUser(row.Cells[1].Value.ToString(),2,"5"); break;
-                    default: permCheck.modUser(row.Cells[1].Value.ToString(),2,"0"); break;
-                }
-            }            
-            dataGridView1.Rows.Clear();
-            dataGridView1.Refresh();
-            var users = permCheck.getUsers();
-            for (int a = 0; a < permCheck.currMaxUser(); a++)
-            {
-                if (users[a, 0] != null)
-                {
-                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
-                    switch (newRow[2])
-                    {
-                        case "o": newRow[2] = permCheck.getPermName(0); break;
-                        case "1": newRow[2] = permCheck.getPermName(1); break;
-                        case "2": newRow[2] = permCheck.getPermName(2); break;
-                        case "3": newRow[2] = permCheck.getPermName(3); break;
-                        case "4": newRow[2] = permCheck.getPermName(4); break;
-                        case "5": newRow[2] = permCheck.getPermName(5); break;
-                    }
-                    dataGridView1.Rows.Add(newRow);
-                }
-            }
-        }
+//        void SettingsForm_Load(object sender, EventArgs e)
+//        {
+//            var users = permCheck.getUsers();
+//            for (int a = 0; a < permCheck.currMaxUser(); a++)
+//            {
+//                if (users[a, 0] != null)
+//                {
+//                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
+//                    switch (newRow[2])
+//                    {
+//                        case "o": newRow[2] = permCheck.getPermName(0); break;
+//                        case "1": newRow[2] = permCheck.getPermName(1); break;
+//                        case "2": newRow[2] = permCheck.getPermName(2); break;
+//                        case "3": newRow[2] = permCheck.getPermName(3); break;
+//                        case "4": newRow[2] = permCheck.getPermName(4); break;
+//                        case "5": newRow[2] = permCheck.getPermName(5); break;
+//                    }
+//                    dataGridView1.Rows.Add(newRow);
+//                }
+//            }
+//        }
+//
+//        private void button6_Click(object sender, EventArgs e)
+//        {
+//            int perm = 0;
+//            switch (comboBox2.Text)
+//            {
+//                case "Shiftleader": perm = 3; break;
+//                case "1st Line": perm = 4; break;
+//                case "2nd Line": perm = 5; break;
+//            }
+//            permCheck.addUser(textBox2.Text, textBox3.Text, perm.ToString());
+//            dataGridView1.Rows.Clear();
+//            dataGridView1.Refresh();
+//            var users = permCheck.getUsers();
+//            for (int a = 0; a < permCheck.currMaxUser(); a++)
+//            {
+//                if (users[a, 0] != null)
+//                {
+//                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
+//                    switch (newRow[2])
+//                    {
+//                        case "o": newRow[2] = permCheck.getPermName(0); break;
+//                        case "1": newRow[2] = permCheck.getPermName(1); break;
+//                        case "2": newRow[2] = permCheck.getPermName(2); break;
+//                        case "3": newRow[2] = permCheck.getPermName(3); break;
+//                        case "4": newRow[2] = permCheck.getPermName(4); break;
+//                        case "5": newRow[2] = permCheck.getPermName(5); break;
+//                    }
+//                    dataGridView1.Rows.Add(newRow);
+//                }
+//            }
+//        }
+//
+//        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+//        {
+//        	rowIndex = e.RowIndex;
+//            var row = dataGridView1.Rows[e.RowIndex];
+//            if (!row.Cells[2].Value.ToString().Equals("root", StringComparison.InvariantCultureIgnoreCase))
+//            {
+//                textBox4.Text = row.Cells[0].Value.ToString() ?? string.Empty;
+//                textBox5.Text = row.Cells[1].Value.ToString() ?? string.Empty;
+//                switch (row.Cells[2].Value.ToString() ?? string.Empty)
+//                {
+//                    case "No permission": comboBox3.Text = permCheck.getPermName(0); break;
+//                    case "root": comboBox3.Text = permCheck.getPermName(1); break;
+//                    case "Manager": comboBox3.Text = permCheck.getPermName(2); break;
+//                    case "Shiftleader": comboBox3.Text = permCheck.getPermName(3); break;
+//                    case "1st Line": comboBox3.Text = permCheck.getPermName(4); break;
+//                    case "2nd Line": comboBox3.Text = permCheck.getPermName(5); break;
+//                    default: comboBox3.Text = "No permission"; break;
+//                }
+//            }
+//            else
+//            {
+//                MessageBox.Show("root user cannot be modified", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+//            }
+//        }
+//
+//        private void button7_Click(object sender, EventArgs e)
+//        {
+//            //Mod user in xml
+//            var row = dataGridView1.Rows[rowIndex];
+//            if(!textBox4.Text.Equals(row.Cells[0].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
+//            	permCheck.modUser(row.Cells[1].Value.ToString(),1,textBox4.Text);
+//            if(!textBox5.Text.Equals(row.Cells[1].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
+//            	permCheck.modUser(row.Cells[1].Value.ToString(),0,textBox5.Text);    
+//            if(!comboBox3.Text.Equals(row.Cells[2].Value.ToString(),StringComparison.InvariantCultureIgnoreCase))
+//            {
+//                switch (comboBox3.Text ?? string.Empty)
+//                {
+//                    case "No permission": permCheck.modUser(row.Cells[1].Value.ToString(),2,"0"); break;
+//                    case "root": permCheck.modUser(row.Cells[1].Value.ToString(),2,"1"); break;
+//                    case "Manager": permCheck.modUser(row.Cells[1].Value.ToString(),2,"2"); break;
+//                    case "Shiftleader": permCheck.modUser(row.Cells[1].Value.ToString(),2,"3"); break;
+//                    case "1st Line": permCheck.modUser(row.Cells[1].Value.ToString(),2,"4"); break;
+//                    case "2nd Line": permCheck.modUser(row.Cells[1].Value.ToString(),2,"5"); break;
+//                    default: permCheck.modUser(row.Cells[1].Value.ToString(),2,"0"); break;
+//                }
+//            }            
+//            dataGridView1.Rows.Clear();
+//            dataGridView1.Refresh();
+//            var users = permCheck.getUsers();
+//            for (int a = 0; a < permCheck.currMaxUser(); a++)
+//            {
+//                if (users[a, 0] != null)
+//                {
+//                    string[] newRow = new string[] { users[a, 0], users[a, 1], users[a, 2] };
+//                    switch (newRow[2])
+//                    {
+//                        case "o": newRow[2] = permCheck.getPermName(0); break;
+//                        case "1": newRow[2] = permCheck.getPermName(1); break;
+//                        case "2": newRow[2] = permCheck.getPermName(2); break;
+//                        case "3": newRow[2] = permCheck.getPermName(3); break;
+//                        case "4": newRow[2] = permCheck.getPermName(4); break;
+//                        case "5": newRow[2] = permCheck.getPermName(5); break;
+//                    }
+//                    dataGridView1.Rows.Add(newRow);
+//                }
+//            }
+//        }
     }
 }
