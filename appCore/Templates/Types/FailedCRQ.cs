@@ -169,9 +169,8 @@ namespace appCore.Templates.Types
 				if (log[c].Substring("Time to fix the fault: ".Length) == "None provided")
 					ContractorToFixFault_Date = new DateTime(1753, 1, 1);
 				else {
-					string[] temp3 = log[c].Substring("Time to fix the fault: ".Length).Split(':');
 					// FIXME: Time or Date to fix the fault?
-					ContractorToFixFault_Date = new DateTime(1753, 1, 1, Convert.ToInt32(temp3[0]), Convert.ToInt32(temp3[1]), Convert.ToInt32(temp3[2]), 0);
+					try { ContractorToFixFault_Date = Convert.ToDateTime(log[c].Substring("Time to fix the fault: ".Length)); } catch {}
 				}
 			}
 			c++;

@@ -825,7 +825,7 @@ namespace appCore
 			GlobalProperties.siteFinder_mainswitch = false;
 			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
 			
-			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations"))) {
+			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
 				foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'");
 				
 				if(foundRows.Length < 1) {
@@ -876,7 +876,8 @@ namespace appCore
 				
 				tabPage1.Controls.Add(shiftsPanel);
 			}
-//			}
+			else
+				pictureBox6.Visible = false;
 			noPanel:;
 			
 			// TODO: get sites list from alarms
@@ -3969,6 +3970,7 @@ namespace appCore
 		
 		public static void toggleShiftsPanel() {
 			// FIXME: UI glitch on shiftsPanel objects
+			// FIXME: If shiftFile doesn't exist and share access is denied, app crashes
 			if(shiftsPanel.Location.Y == 0) {
 				if(wholeShiftsPanel.Parent != null) {
 					wholeShiftsPanel.Dispose();
