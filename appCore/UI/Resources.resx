@@ -15955,14 +15955,26 @@ Z - TACS
 ZE - LTE2100 Macro</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha 1 10/11/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha1 10/11/2016 #######
 
 - This is basically a WHOLE new app
-- A lot of improvements, fixes, most bugs should be gone, some new bugs are expected xD please be patient and help me improve as you identify them
-- The old AMT Browser is almost deprecated but still present, it will possibly be made unnavailable in the final v7 release
+- A lot of improvements, fixes, most old bugs should be gone, some new bugs are expected xD please be patient and help me improve as you identify them
+- Although there are some major improvements on the way AMT Browser authenticates users, it is almost deprecated but still present, it will possibly be made unavailable in the final v7 release as the Site Finder evolves.
+- The previous issues with the map not showing should now be solved as the API now connects through the correct VF proxy.
 - A lot of speed ups, the most significant are the loading times, database queries and alarms parsing
-- Now the UserFolder is used as a "cache", this means all the db files, including all_cells, all_sites and shifts file will be there and updated periodically. This prevents breakdowns when the ANOK-UK shared folder is inaccessible. PLEASE DO NOT REMOVE ANY OF THESE FILES FROM YOUR USERFOLDER WHILE THE TOOL EXECUTING!!!! You may however change your UserFolder location from the settings menu.
+- Now the UserFolder is used as a "cache", this means all the db files, including all_cells, all_sites and shifts file will be there and updated periodically. This prevents breakdowns when the ANOK-UK shared folder is inaccessible.
 
+                                        DO NOT REMOVE ANY OF THESE FILES FROM YOUR USERFOLDER WHILE THE TOOL IS EXECUTING!!!!
+Or else you'll have to restart it xD
+
+You may however change your UserFolder location from the settings menu.
+
+- There were some slight changes on the templates, all standardized with the LogViewer
+- Troubleshoot Template "Related INC/CRQ" is still there for reference and task generation interactivity but, it will no longer be shown on the template, replaced by "Ongoing INCs" and "Ongoing CRQs", as requested by the Pedro Pancho. These new fields are used for reference to guarantee that no duplicate INC's are raised.
+- Now, all the INC's, CRQ's, Book Ins and Alarms info are made available on the Troubleshoot Template and the Site Finder through the new Menu Bar, which replaces the old buttons.
+- For these new features to work, you need to insert your SiteLopedia credentials on the Settings option. They will also be asked every time access to OI is denied due to invalid credentials.
+
+- Enjoy the new features!
 
 ####### ANOC Master Tool 6.9 11/08/2016 #######
 

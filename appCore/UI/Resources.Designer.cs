@@ -182,13 +182,12 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha 1 10/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha1 10/11/2016 #######
 		///
 		///- This is basically a WHOLE new app
-		///- A lot of improvements, fixes, most bugs should be gone, some new bugs are expected xD please be patient and help me improve as you identify them
-		///- The old AMT Browser is almost deprecated but still present, it will possibly be made unnavailable in the final v7 release
-		///- A lot of speed ups, the most significant are the loading times, database queries and alarms parsing
-		///- Now the UserFolder is used as a &quot;cache&quot; [rest of string was truncated]&quot;;.
+		///- A lot of improvements, fixes, most old bugs should be gone, some new bugs are expected xD please be patient and help me improve as you identify them
+		///- Although there are some major improvements on the way AMT Browser authenticates users, it is almost deprecated but still present, it will possibly be made unavailable in the final v7 release as the Site Finder evolves.
+		///- The previous issues with the map not showi [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
