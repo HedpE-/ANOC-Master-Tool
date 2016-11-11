@@ -878,6 +878,7 @@ namespace appCore
 			}
 			else
 				pictureBox6.Visible = false;
+			
 			noPanel:;
 			
 			// TODO: get sites list from alarms

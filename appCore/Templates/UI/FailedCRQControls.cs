@@ -877,7 +877,7 @@ namespace appCore.Templates.UI
 			ContractorToFixFault_PhoneNumberTextBox.Location = new Point(334, 16);
 			ContractorToFixFault_PhoneNumberTextBox.MaxLength = 999999;
 			ContractorToFixFault_PhoneNumberTextBox.Name = "ContractorToFixFault_PhoneNumberTextBox";
-			ContractorToFixFault_PhoneNumberTextBox.Size = new Size(160, 20);
+			ContractorToFixFault_PhoneNumberTextBox.Size = new Size(168, 20);
 			ContractorToFixFault_PhoneNumberTextBox.TabIndex = 15;
 			// 
 			// ContractorToFixFault_WillReturnCheckBox

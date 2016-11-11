@@ -179,13 +179,19 @@ namespace appCore.Templates.Types
 			if(log[c].Length > "Observations:".Length)
 				complete = log[c++].Substring("Troubleshooting done with FE on site to recover affected cells: ".Length);
 			else {
-				if (c < log.Length) {
+				if (c < log.Length - 4) {
 					complete += log[++c];
-					for (c++; c < log.Length; c++)
+					for (c++; c < log.Length - 4; c++)
 						complete += Environment.NewLine + log[c];
 				}
 				Observations = complete;
 			}
+			
+//			for(c++; c < log.Length; c++) {
+//				Signature += log[c];
+//				if(c != log.Length - 1)
+//					Signature += Environment.NewLine;
+//			}
 			fullLog = string.Join("\r\n", log.Where((val, idx) => idx != 0).ToArray());
 		}
 		
