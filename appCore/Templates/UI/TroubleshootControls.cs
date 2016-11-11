@@ -77,7 +77,7 @@ namespace appCore.Templates.UI
 		
 		public Site currentSite { get; private set; }
 		TroubleShoot currentTemplate;
-		TroubleShoot prevTemp = new TroubleShoot();
+		TroubleShoot prevTemp;
 		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
@@ -674,16 +674,18 @@ namespace appCore.Templates.UI
 		}
 
 		void SendBCPForm(object sender, EventArgs e) {
-			if(currentTemplate == prevTemp) {
-				SendBCP bcp = new SendBCP(ref currentTemplate);
-				bcp.ShowDialog();
-				
+			if(prevTemp != null) {
+				if(currentTemplate == prevTemp) {
+					SendBCP bcp = new SendBCP(ref currentTemplate);
+					bcp.ShowDialog();
+					
 //				currentTemplate.AddBcpLog(bcp.mailBody);
-				
-				MainForm.logFile.HandleLog(currentTemplate, true);
+					
+					MainForm.logFile.HandleLog(currentTemplate, true);
+				}
+				else
+					FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
-			else
-				FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
@@ -728,7 +730,7 @@ namespace appCore.Templates.UI
 				currentTemplate = null;
 			currentTemplate = new TroubleShoot(Controls);
 			
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UIenum.Template && prevTemp != null) {
 				// No changes since the last template warning
 				string errmsg = "";
 				if(currentTemplate.ToString() != prevTemp.ToString()) {
@@ -747,26 +749,26 @@ namespace appCore.Templates.UI
 					if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == prevTemp.CCTReference) {
 						errmsg += "         - CCT reference\n";
 					}
-					if (OtherSitesImpactedCheckBox.Checked && OtherSitesImpactedCheckBox.Checked == prevTemp.OtherSitesImpacted){
+					if (OtherSitesImpactedCheckBox.Checked && prevTemp.OtherSitesImpacted){
 						errmsg += "         - Other sites impacted\n";
 					}
 					if (COOSCheckBox.Checked) {
-						if (COOS2GNumericUpDown.Value == prevTemp.COOS2G){
+						if (COOS2GNumericUpDown.Value > 0 && COOS2GNumericUpDown.Value == prevTemp.COOS2G){
 							errmsg += "         - 2G COOS count\n";
 						}
-						if (COOS3GNumericUpDown.Value == prevTemp.COOS3G) {
+						if (COOS3GNumericUpDown.Value > 0 && COOS3GNumericUpDown.Value == prevTemp.COOS3G) {
 							errmsg += "         - 3G COOS count\n";
 						}
-						if (COOS4GNumericUpDown.Value == prevTemp.COOS4G) {
+						if (COOS4GNumericUpDown.Value > 0 && COOS4GNumericUpDown.Value == prevTemp.COOS4G) {
 							errmsg += "         - 4G COOS count\n";
 						}
-						if(FullSiteOutageCheckBox.Checked && FullSiteOutageCheckBox.Checked == prevTemp.FullSiteOutage)
+						if(FullSiteOutageCheckBox.Checked && prevTemp.FullSiteOutage)
 							errmsg += "         - Full Site Outage flag\n";
 					}
-					if (PerformanceIssueCheckBox.Checked && PerformanceIssueCheckBox.Checked == prevTemp.PerformanceIssue) {
+					if (PerformanceIssueCheckBox.Checked && prevTemp.PerformanceIssue) {
 						errmsg += "         - Performance issue\n";
 					}
-					if (IntermittentIssueCheckBox.Checked && IntermittentIssueCheckBox.Checked == prevTemp.IntermittentIssue) {
+					if (IntermittentIssueCheckBox.Checked && prevTemp.IntermittentIssue) {
 						errmsg += "         - Intermittent issue\n";
 					}
 //					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
@@ -778,7 +780,7 @@ namespace appCore.Templates.UI
 					if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory) {
 						errmsg += "         - Alarm History\n";
 					}
-					if (TroubleshootTextBox.Text == prevTemp.Troubleshoot) {
+					if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.Troubleshoot) {
 						errmsg += "         - Troubleshoot\n";
 					}
 					if (errmsg != "") {
