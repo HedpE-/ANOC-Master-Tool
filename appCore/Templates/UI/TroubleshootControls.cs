@@ -819,6 +819,8 @@ namespace appCore.Templates.UI
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {
 				INCTextBox.KeyPress -= INCTextBoxKeyPress;
+				SiteIdTextBox.TextChanged -= SiteIdTextBoxTextChanged;
+				SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
 				OtherSitesImpactedCheckBox.CheckedChanged -= OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged -= FullSiteOutageCheckedChanged;
 				COOS2GLabel.DoubleClick -= COOSLabelDoubleClick;
@@ -828,6 +830,8 @@ namespace appCore.Templates.UI
 			}
 			else {
 				INCTextBox.KeyPress += INCTextBoxKeyPress;
+				SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
+				SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 				OtherSitesImpactedCheckBox.CheckedChanged += OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged += FullSiteOutageCheckedChanged;
 				COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
