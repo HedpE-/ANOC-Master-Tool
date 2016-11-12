@@ -60,26 +60,8 @@ namespace appCore.Web
 			OIPassword = Settings.SettingsFile.OIPassword;
 			if(Connection == null)
 				Connection = new OIConnection();
-			if(string.IsNullOrEmpty(OIUsername)) {
-				UI.AuthForm auth = new UI.AuthForm("OI");
-				auth.StartPosition = FormStartPosition.CenterParent;
-				auth.ShowDialog();
-				
-				if(!string.IsNullOrEmpty(auth.Username)) {
-					DialogResult ans = new DialogResult();
-					if(auth.Username != OIUsername) {
-						OIUsername = auth.Username;
-						ans = MessageBox.Show("Stored OI Credentials: " +  OIUsername + Environment.NewLine + Environment.NewLine + "You entered different credentials, do you want to overwrite the stored information?","OI credentials",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-						if(ans == DialogResult.Yes)
-							Settings.SettingsFile.OIUsername = OIUsername;
-					}
-					if(auth.Password != OIPassword) {
-						OIPassword = auth.Password;
-						if(ans == DialogResult.Yes)
-							Settings.SettingsFile.OIPassword = OIPassword;
-					}
-				}
-			}
+			if(string.IsNullOrEmpty(OIUsername))
+				RequestOiCredentials();
 			HttpStatusCode status = Connection.CheckAvailability();
 			return status;
 		}
@@ -132,7 +114,7 @@ namespace appCore.Web
 			response = client.Execute(request);
 			
 			if((int)response.StatusCode == 200)
-					LoggedOn = response.Content.Contains(@"<div class=""logged_in"">");
+				LoggedOn = response.Content.Contains(@"<div class=""logged_in"">");
 			else {
 				DialogResult res = appCore.UI.FlexibleMessageBox.Show("Invalid OI credentials, do you want to change?","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
 				if(res == DialogResult.Yes) {
@@ -249,6 +231,30 @@ namespace appCore.Web
 			IRestResponse response = client.Execute(request);
 			
 			return response.Content;
+		}
+		
+		static void RequestOiCredentials() {
+			UI.AuthForm auth = new UI.AuthForm("OI");
+			auth.StartPosition = FormStartPosition.CenterParent;
+			auth.ShowDialog();
+			
+			if(!string.IsNullOrEmpty(auth.Username)) {
+				DialogResult ans = new DialogResult();
+				if(auth.Username != OIUsername) {
+					OIUsername = auth.Username;
+					ans = MessageBox.Show("Stored OI Credentials: " +  OIUsername + Environment.NewLine + Environment.NewLine + "You entered different credentials, do you want to overwrite the stored information?","OI credentials",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+					if(ans == DialogResult.Yes)
+						Settings.SettingsFile.OIUsername = OIUsername;
+				}
+				if(auth.Password != OIPassword) {
+					OIPassword = auth.Password;
+					if(ans == DialogResult.Yes)
+						Settings.SettingsFile.OIPassword = OIPassword;
+				}
+			}
+		}
+		
+		public static void WrongCredentials() {
 		}
 		
 		

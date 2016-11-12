@@ -17,10 +17,10 @@ using appCore.Web;
 
 namespace appCore.DB
 {
-    /// <summary>
-    /// Description of Databases.
-    /// </summary>
-    public static class Databases
+	/// <summary>
+	/// Description of Databases.
+	/// </summary>
+	public static class Databases
 	{
 		static FileInfo _all_sites;
 		public static FileInfo all_sites {
@@ -29,14 +29,14 @@ namespace appCore.DB
 				return _all_sites;
 			}
 			private set
-            {
-                if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
-                {
-                    bool sameFile = value.FullName == _all_sites.FullName && value.Length == _all_sites.Length;
-                    _all_sites = value;
-                    if (!sameFile || siteDetailsTable == null)
-                        siteDetailsTable = _all_sites.Exists ? Tools.GetDataTableFromCsv(_all_sites, true) : buildSitesTable();
-                }
+			{
+				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
+				{
+					bool sameFile = value.FullName == _all_sites.FullName && value.Length == _all_sites.Length;
+					_all_sites = value;
+					if (!sameFile || siteDetailsTable == null)
+						siteDetailsTable = _all_sites.Exists ? Tools.GetDataTableFromCsv(_all_sites, true) : buildSitesTable();
+				}
 			}
 		}
 		
@@ -47,13 +47,13 @@ namespace appCore.DB
 				return _all_cells;
 			}
 			private set {
-                if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
-                {
-                    bool sameFile = value.FullName == _all_cells.FullName && value.Length == _all_cells.Length;
-                    _all_cells = value;
-                    if (!sameFile || cellDetailsTable == null)
-                        cellDetailsTable = _all_cells.Exists ? Tools.GetDataTableFromCsv(_all_cells, true) : buildSitesTable();
-                }
+				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
+				{
+					bool sameFile = value.FullName == _all_cells.FullName && value.Length == _all_cells.Length;
+					_all_cells = value;
+					if (!sameFile || cellDetailsTable == null)
+						cellDetailsTable = _all_cells.Exists ? Tools.GetDataTableFromCsv(_all_cells, true) : buildSitesTable();
+				}
 			}
 		}
 		
@@ -87,7 +87,9 @@ namespace appCore.DB
 			if(OIConnection.Connection == null)
 				status = OIConnection.EstablishConnection();
 			HttpStatusCode statusCode = OIConnection.Connection.Logon();
-			if(statusCode == HttpStatusCode.OK) {
+			if(!OIConnection.Connection.LoggedOn)
+				
+				if(statusCode == HttpStatusCode.OK) {
 				string response = OIConnection.Connection.requestPhpOutput("allsites");
 				if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
 					if(GlobalProperties.shareAccess) {
@@ -205,12 +207,12 @@ namespace appCore.DB
 //				all_sites = new FileInfo(all_sites.FullName);
 //				siteDetailsTable = all_sites.Exists ? Tools.GetDataTableFromCsv(all_sites, true) : buildSitesTable();
 //			}
-//			
+//
 //			if(files == "all" || files.Contains("all_cells")) {
 //				all_cells = new FileInfo(all_cells.FullName);
 //				cellDetailsTable = all_cells.Exists ? Tools.GetDataTableFromCsv(all_cells, true) : buildCellsTable();
 //			}
-//			
+//
 //			if(files == "all" || files.Contains("shifts"))
 //				shiftsFile = new ShiftsFile();
 //		}

@@ -73,7 +73,7 @@ namespace appCore.SiteFinder
 		string POWER_CONTACT = string.Empty;
 		public string PowerCompany {
 			get {
-				return POWER_COMPANY + " " + POWER_CONTACT;
+				return (POWER_COMPANY + " " + POWER_CONTACT).Trim();
 			}
 			private set {
 				string[] temp = value.Split(';');

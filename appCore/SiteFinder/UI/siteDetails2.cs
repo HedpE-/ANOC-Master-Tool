@@ -210,8 +210,10 @@ namespace appCore.SiteFinder.UI
 			// TODO: implement weather layer if possible with GMaps
 			GMapProvider.TimeoutMs = 20*1000;
 			
-			GMapProvider.WebProxy = WebRequest.GetSystemWebProxy();
-			GMapProvider.Credential = CredentialCache.DefaultNetworkCredentials;
+			WebProxy VfProxy = new WebProxy("http://10.74.51.1:80/",true);
+			VfProxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+			
+			GMapProvider.WebProxy = VfProxy;
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;

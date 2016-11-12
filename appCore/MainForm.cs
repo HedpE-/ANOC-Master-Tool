@@ -1131,7 +1131,7 @@ namespace appCore
 		void shiftsPanel_refreshClick(object sender, EventArgs e)
 		{
 			Thread t = new Thread(() => {
-			                      	shiftsBodySnap = Toolbox.Tools.loadShifts(shiftsBodySnap, shiftsChosenDate);
+			                      	shiftsBodySnap = Tools.loadShifts(shiftsBodySnap, shiftsChosenDate);
 			                      	shiftsPanel.Invalidate(true);
 			                      });
 			t.Start();
