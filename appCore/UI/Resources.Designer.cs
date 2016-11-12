@@ -163,7 +163,8 @@ namespace appCore.UI {
 		///W - UMTS2100 Macro
 		///X - Paknet
 		///Z - TACS
-		///ZE - LTE2100 Macro.
+		///ZE - LTE2100 Macro
+		///ZK - LTE2100 Pico.
 		/// </summary>
 		internal static string Cells_Prefix {
 			get {

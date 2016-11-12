@@ -28,6 +28,7 @@ namespace appCore.Web
 		static string OIUsername = string.Empty;
 		static string OIPassword = string.Empty;
 		public string LoggedOnUsername;
+		public bool LoggedOn;
 		public DateTime OICookieExpireDate;
 		public CookieContainer OICookieContainer {
 			get {
@@ -100,7 +101,9 @@ namespace appCore.Web
 		
 		public HttpStatusCode Logon()
 		{
-			LoggedOnUsername = string.Empty;
+			LoggedOn = false;
+			
+		Retry:
 			
 			OICookieContainer = new CookieContainer();
 			
@@ -128,9 +131,14 @@ namespace appCore.Web
 			}
 			response = client.Execute(request);
 			
-			if((int)response.StatusCode == 200) {
-				if(response.Content.Contains(@"<div class=""logged_in"">"))
-					LoggedOnUsername = OIUsername;
+			if((int)response.StatusCode == 200)
+					LoggedOn = response.Content.Contains(@"<div class=""logged_in"">");
+			else {
+				DialogResult res = appCore.UI.FlexibleMessageBox.Show("Invalid OI credentials, do you want to change?","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
+				if(res == DialogResult.Yes) {
+					client = new RestClient();
+					goto Retry;
+				}
 			}
 			
 			return response.StatusCode;

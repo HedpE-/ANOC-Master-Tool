@@ -280,7 +280,8 @@ namespace appCore.SiteFinder
 				if(Web.OIConnection.Connection == null)
 					status = Web.OIConnection.EstablishConnection();
 				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
-				if(statusCode == HttpStatusCode.OK) {
+//				if(statusCode == HttpStatusCode.OK) {
+				if(Web.OIConnection.Connection.LoggedOn) {
 					if(dataToRequest.Contains("INC"))
 						INCs = FetchINCs();
 					
