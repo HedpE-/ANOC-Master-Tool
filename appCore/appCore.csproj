@@ -73,7 +73,10 @@
     </Reference>
     <Reference Include="Microsoft.mshtml" />
     <Reference Include="Microsoft.Office.Interop.Excel" />
-    <Reference Include="Microsoft.Office.Interop.Outlook" />
+    <Reference Include="Outlook">
+      <HintPath>Extensions\Outlook.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>Extensions\RestSharp.dll</HintPath>
       <Private>False</Private>
@@ -394,6 +397,7 @@
     <EmbeddedResource Include="Extensions\log4net.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.Core.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.WindowsForms.dll" />
+    <EmbeddedResource Include="Extensions\Outlook.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
     <None Include="Web\HtmlAgilityPack\HtmlAgilityPack.snk" />
   </ItemGroup>

@@ -425,6 +425,7 @@ namespace appCore.Toolbox
 			EmbeddedAssembly.Load("appCore.Extensions.Transitions.dll", "Transitions.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.RestSharp.dll", "RestSharp.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.Excel.dll", "Excel.dll");
+			EmbeddedAssembly.Load("appCore.Extensions.Outlook.dll", "Outlook.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.log4net.dll", "log4net.dll");
 //			EmbeddedAssembly.Load("appCore.Extensions.HtmlAgilityPack.dll", "HtmlAgilityPack.dll");

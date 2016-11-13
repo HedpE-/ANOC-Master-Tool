@@ -183,12 +183,16 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha1 10/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha2 13/11/2016 #######
+		///
+		///- Fixed bug with Outlook Interop dll failing when generating Failed CRQ email
+		///- Added some more intelligence on SiteLopedia connectivity, fixing login issues
+		///
+		///####### ANOC Master Tool 7.0alpha1 10/11/2016 #######
 		///
 		///- This is basically a WHOLE new app
 		///- A lot of improvements, fixes, most old bugs should be gone, some new bugs are expected xD please be patient and help me improve as you identify them
-		///- Although there are some major improvements on the way AMT Browser authenticates users, it is almost deprecated but still present, it will possibly be made unavailable in the final v7 release as the Site Finder evolves.
-		///- The previous issues with the map not showi [rest of string was truncated]&quot;;.
+		///- Although there are some major improvements on [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
