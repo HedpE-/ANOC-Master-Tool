@@ -276,115 +276,114 @@ namespace appCore.SiteFinder
 		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "PWR"</param>
 		public void requestOIData(string dataToRequest) {
 			if(Exists) {
-				HttpStatusCode status = HttpStatusCode.NotFound;
-				if(Web.OIConnection.Connection == null)
-					status = Web.OIConnection.EstablishConnection();
-				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
+//				HttpStatusCode status = HttpStatusCode.NotFound;
+//				if(Web.OIConnection.Connection == null)
+//					status = Web.OIConnection.EstablishConnection();
+//				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
 //				if(statusCode == HttpStatusCode.OK) {
-				if(Web.OIConnection.Connection.LoggedOn) {
-					if(dataToRequest.Contains("INC"))
-						INCs = FetchINCs();
-					
-					if(dataToRequest.Contains("CRQ"))
-						CRQs = FetchCRQs();
-					
-					if(dataToRequest.Contains("Alarms"))
-						ActiveAlarms = FetchActiveAlarms();
-					
-					if(dataToRequest.Contains("Bookins"))
-						BookIns = FetchBookIns();
-					
-					if(dataToRequest.Contains("PWR")) {
-						PowerCompany = getPowerCompany();
-					}
+				if(dataToRequest.Contains("INC"))
+					INCs = FetchINCs();
+				
+				if(dataToRequest.Contains("CRQ"))
+					CRQs = FetchCRQs();
+				
+				if(dataToRequest.Contains("Alarms"))
+					ActiveAlarms = FetchActiveAlarms();
+				
+				if(dataToRequest.Contains("Bookins"))
+					BookIns = FetchBookIns();
+				
+				if(dataToRequest.Contains("PWR")) {
+					PowerCompany = getPowerCompany();
 				}
-				else {
-					if(CurrentUser.userName == "Caramelos" && dataToRequest != "PWR") {
-						DriveInfo penRoot = null;
-						foreach (var drive in DriveInfo.GetDrives()) {
-							if(drive.IsReady) {
-								if(drive.VolumeLabel == "PEN") {
-									Int64 totalGb = ((drive.TotalSize / 1024) / 1024) / 1024;
-									if(totalGb > 55 && totalGb < 65) {
-										penRoot = drive;
-										break;
-									}
-								}
-							}
-						}
-						if(penRoot != null) {
-							if(dataToRequest.Contains("INC") || dataToRequest.Contains("AllSite")) {
-								FileSystemInfo table_inc = null;
-								try {
-									table_inc = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_inc.txt")[0];
-								}
-								catch (Exception) {	}
-								if(table_inc != null) {
-									INCs = FetchINCs(table_inc);
-									DataView dv = INCs.DefaultView;
-									dv.Sort = "Incident Ref desc";
-									INCs = dv.ToTable();
-								}
-							}
-							
-							if(dataToRequest.Contains("CRQ") || dataToRequest.Contains("AllSite")) {
-								FileSystemInfo table_crq = null;
-								try {
-									table_crq = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_crq.txt")[0];
-								}
-								catch (Exception) { }
-								if(table_crq != null) {
-									CRQs = FetchCRQs(table_crq);
-									DataView dv = CRQs.DefaultView;
-									dv.Sort = "Scheduled Start desc";
-									CRQs = dv.ToTable();
-								}
-							}
-							
-							if(dataToRequest.Contains("Alarms")) {
-								FileSystemInfo table_alarms = null;
-								try {
-									table_alarms = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_alarms.txt")[0];
-								}
-								catch (Exception) { }
-								if(table_alarms != null) {
-									ActiveAlarms = FetchActiveAlarms(table_alarms);
-									DataView dv = ActiveAlarms.DefaultView;
-									dv.Sort = "Date/Time desc";
-									ActiveAlarms = dv.ToTable();
-								}
-							}
-							
-							if(dataToRequest.Contains("Bookins")) {
-								FileSystemInfo table_visits = null;
-								try {
-									table_visits = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_visits.txt")[0];
-								}
-								catch (Exception) { }
-								if(table_visits != null) {
-									this.BookIns = FetchBookIns(table_visits);
-//									BookIns = FetchBookIns(table_visits);
-									DataView dv = this.BookIns.DefaultView;
-//									DataView dv = BookIns.DefaultView;
-									dv.Sort = "Visit desc";
-									DataTable BookIns = dv.ToTable();
-								}
-							}
-						}
-					}
-				}
+//				}
+//				else {
+//					if(CurrentUser.userName == "Caramelos" && dataToRequest != "PWR") {
+//						DriveInfo penRoot = null;
+//						foreach (var drive in DriveInfo.GetDrives()) {
+//							if(drive.IsReady) {
+//								if(drive.VolumeLabel == "PEN") {
+//									Int64 totalGb = ((drive.TotalSize / 1024) / 1024) / 1024;
+//									if(totalGb > 55 && totalGb < 65) {
+//										penRoot = drive;
+//										break;
+//									}
+//								}
+//							}
+//						}
+//						if(penRoot != null) {
+//							if(dataToRequest.Contains("INC") || dataToRequest.Contains("AllSite")) {
+//								FileSystemInfo table_inc = null;
+//								try {
+//									table_inc = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_inc.txt")[0];
+//								}
+//								catch (Exception) {	}
+//								if(table_inc != null) {
+//									INCs = FetchINCs(table_inc);
+//									DataView dv = INCs.DefaultView;
+//									dv.Sort = "Incident Ref desc";
+//									INCs = dv.ToTable();
+//								}
+//							}
+//
+//							if(dataToRequest.Contains("CRQ") || dataToRequest.Contains("AllSite")) {
+//								FileSystemInfo table_crq = null;
+//								try {
+//									table_crq = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_crq.txt")[0];
+//								}
+//								catch (Exception) { }
+//								if(table_crq != null) {
+//									CRQs = FetchCRQs(table_crq);
+//									DataView dv = CRQs.DefaultView;
+//									dv.Sort = "Scheduled Start desc";
+//									CRQs = dv.ToTable();
+//								}
+//							}
+//
+//							if(dataToRequest.Contains("Alarms")) {
+//								FileSystemInfo table_alarms = null;
+//								try {
+//									table_alarms = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_alarms.txt")[0];
+//								}
+//								catch (Exception) { }
+//								if(table_alarms != null) {
+//									ActiveAlarms = FetchActiveAlarms(table_alarms);
+//									DataView dv = ActiveAlarms.DefaultView;
+//									dv.Sort = "Date/Time desc";
+//									ActiveAlarms = dv.ToTable();
+//								}
+//							}
+//
+//							if(dataToRequest.Contains("Bookins")) {
+//								FileSystemInfo table_visits = null;
+//								try {
+//									table_visits = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_visits.txt")[0];
+//								}
+//								catch (Exception) { }
+//								if(table_visits != null) {
+//									this.BookIns = FetchBookIns(table_visits);
+				////									BookIns = FetchBookIns(table_visits);
+//									DataView dv = this.BookIns.DefaultView;
+				////									DataView dv = BookIns.DefaultView;
+//									dv.Sort = "Visit desc";
+//									DataTable BookIns = dv.ToTable();
+//								}
+//							}
+//						}
+//					}
+//				}
 			}
 		}
 		
 		DataTable FetchINCs(FileSystemInfo table_inc = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			if(table_inc != null) {
-				if(table_inc.Exists)
-					response = File.ReadAllText(table_inc.FullName);
-			}
-			else
-				response = Web.OIConnection.Connection.requestPhpOutput("inc", Id);
+//			if(table_inc != null) {
+//				if(table_inc.Exists)
+//					response = File.ReadAllText(table_inc.FullName);
+//			}
+//			else
+			response = Web.OIConnection.requestPhpOutput("inc", Id);
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No open or incidents"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
@@ -394,12 +393,12 @@ namespace appCore.SiteFinder
 		DataTable FetchCRQs(FileSystemInfo table_crq = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			if(table_crq != null) {
-				if(table_crq.Exists)
-					response = File.ReadAllText(table_crq.FullName);
-			}
-			else
-				response = Web.OIConnection.Connection.requestPhpOutput("crq", Id);
+//			if(table_crq != null) {
+//				if(table_crq.Exists)
+//					response = File.ReadAllText(table_crq.FullName);
+//			}
+//			else
+			response = Web.OIConnection.requestPhpOutput("crq", Id);
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No changes in past 90 days"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
@@ -409,12 +408,12 @@ namespace appCore.SiteFinder
 		DataTable FetchActiveAlarms(FileSystemInfo table_alarms = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			if(table_alarms != null) {
-				if(table_alarms.Exists)
-					response = File.ReadAllText(table_alarms.FullName);
-			}
-			else
-				response = Web.OIConnection.Connection.requestPhpOutput("alarms", Id);
+//			if(table_alarms != null) {
+//				if(table_alarms.Exists)
+//					response = File.ReadAllText(table_alarms.FullName);
+//			}
+//			else
+			response = Web.OIConnection.requestPhpOutput("alarms", Id);
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No alarms reported"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
@@ -424,12 +423,12 @@ namespace appCore.SiteFinder
 		DataTable FetchBookIns(FileSystemInfo table_visits = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			if(table_visits != null) {
-				if(table_visits.Exists)
-					response = File.ReadAllText(table_visits.FullName);
-			}
-			else
-				response = Web.OIConnection.Connection.requestPhpOutput("sitevisit", Id, 90);
+//			if(table_visits != null) {
+//				if(table_visits.Exists)
+//					response = File.ReadAllText(table_visits.FullName);
+//			}
+//			else
+			response = Web.OIConnection.requestPhpOutput("sitevisit", Id, 90);
 			string parsedResponse = string.Empty;
 			if(!response.Contains("No site visits"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
@@ -437,53 +436,58 @@ namespace appCore.SiteFinder
 		}
 		
 		string getPowerCompany() {
-			string response = Web.OIConnection.Connection.requestPhpOutput("index", Id, string.Empty);
-			
-			HtmlDocument doc = new HtmlDocument();
-			doc.Load(new StringReader(response));
-			
-			int powerCompanyColumn = 0;
-			HtmlNode accessTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_access']").Descendants("table").First();
-			IEnumerable<HtmlNode> ATNdescendants = accessTableNode.Descendants("th");
-			for(powerCompanyColumn = 0;powerCompanyColumn < ATNdescendants.Count();powerCompanyColumn++) {
-				if(ATNdescendants.ElementAt(powerCompanyColumn).Name == "th" && ATNdescendants.ElementAt(powerCompanyColumn).InnerText.Contains("Power Company"))
-					break;
+			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
+			if(response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+				HtmlDocument doc = new HtmlDocument();
+				doc.Load(new StringReader(response));
+				
+				int powerCompanyColumn = 0;
+				HtmlNode accessTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_access']").Descendants("table").First();
+				IEnumerable<HtmlNode> ATNdescendants = accessTableNode.Descendants("th");
+				for(powerCompanyColumn = 0;powerCompanyColumn < ATNdescendants.Count();powerCompanyColumn++) {
+					if(ATNdescendants.ElementAt(powerCompanyColumn).Name == "th" && ATNdescendants.ElementAt(powerCompanyColumn).InnerText.Contains("Power Company"))
+						break;
+				}
+				string[] strTofind = { "<br>" };
+				return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 			}
-			string[] strTofind = { "<br>" };
-			return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
+			return string.Empty;
 		}
 		
 		string getOiCellsLockedState() {
-			string response = Web.OIConnection.Connection.requestPhpOutput("index", Id, string.Empty);
+			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
 			
-			HtmlDocument doc = new HtmlDocument();
-			doc.Load(new StringReader(response));
-			
-			HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
-			
-			foreach (Cell cell in Cells) {
-				HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id == "checkbox" + cell.Name);
-				if(checkBoxNode != null) {
-					if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))
-						cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
-					else
-						cell.Locked = false;
+			if(response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+				HtmlDocument doc = new HtmlDocument();
+				doc.Load(new StringReader(response));
+				
+				HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
+				
+				foreach (Cell cell in Cells) {
+					HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id == "checkbox" + cell.Name);
+					if(checkBoxNode != null) {
+						if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))
+							cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
+						else
+							cell.Locked = false;
+					}
 				}
+				
+				// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
+				// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
+				
+				return response;
 			}
-			
-			// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
-			// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
-			
-			return response;
+			return string.Empty;
 		}
 		
 		public void UpdateLockedCells() {
 			if(Exists && Cells.Count > 0) {
-				HttpStatusCode status = HttpStatusCode.NotFound;
-				if(Web.OIConnection.Connection == null)
-					status = Web.OIConnection.EstablishConnection();
-				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
-				if(statusCode == HttpStatusCode.OK)
+//				HttpStatusCode status = HttpStatusCode.NotFound;
+//				if(Web.OIConnection.Connection == null)
+//					status = Web.OIConnection.EstablishConnection();
+//				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
+//				if(statusCode == HttpStatusCode.OK)
 					getOiCellsLockedState();
 			}
 		}

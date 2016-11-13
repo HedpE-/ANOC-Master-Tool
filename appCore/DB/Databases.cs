@@ -83,14 +83,14 @@ namespace appCore.DB
 //			string test = CurrentUser.GetUserDetails("NetworkDomain"); // TODO: Test Domain name on VF network
 			FileInfo source_allsites = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv");
 			FileInfo source_allcells = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv");
-			HttpStatusCode status = HttpStatusCode.NotFound;
-			if(OIConnection.Connection == null)
-				status = OIConnection.EstablishConnection();
-			HttpStatusCode statusCode = OIConnection.Connection.Logon();
-			if(!OIConnection.Connection.LoggedOn)
-				
-				if(statusCode == HttpStatusCode.OK) {
-				string response = OIConnection.Connection.requestPhpOutput("allsites");
+//			HttpStatusCode status = HttpStatusCode.NotFound;
+//			if(OIConnection.Connection == null)
+//				status = OIConnection.EstablishConnection();
+//			HttpStatusCode statusCode = OIConnection.Connection.Logon();
+//			if(!OIConnection.Connection.LoggedOn)
+//			HttpStatusCode statusCode = OIConnection2.InitiateOiConnection();
+//			if(statusCode == HttpStatusCode.OK) {
+				string response = OIConnection.requestPhpOutput("allsites");
 				if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
 					if(GlobalProperties.shareAccess) {
 						if(source_allsites.Exists) {
@@ -105,7 +105,7 @@ namespace appCore.DB
 						}
 					}
 				}
-				response = OIConnection.Connection.requestPhpOutput("allcells");
+				response = OIConnection.requestPhpOutput("allcells");
 				if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
 					if(GlobalProperties.shareAccess) {
 						if(source_allcells.Exists) {
@@ -120,7 +120,7 @@ namespace appCore.DB
 						}
 					}
 				}
-			}
+//			}
 //			                        });
 //			thread.IsBackground = true;
 //			thread.Start();

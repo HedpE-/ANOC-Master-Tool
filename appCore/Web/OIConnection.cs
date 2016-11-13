@@ -18,79 +18,40 @@ namespace appCore.Web
 	/// <summary>
 	/// Description of OIConnection.
 	/// </summary>
-	public class OIConnection
+	public static class OIConnection
 	{
-		public static OIConnection Connection = null;
-		
-		RestClient client;
-		List<Parameter> requiredHeaders = new List<Parameter>();
-		CookieContainer cookies;
+		static RestClient client;
+		static List<Parameter> requiredHeaders = new List<Parameter>();
 		static string OIUsername = string.Empty;
 		static string OIPassword = string.Empty;
-		public string LoggedOnUsername;
-		public bool LoggedOn;
-		public DateTime OICookieExpireDate;
-		public CookieContainer OICookieContainer {
-			get {
-				return cookies;
-			}
-			set {
-				cookies = value;
-			}
+		public static bool LoggedOn;
+		public static CookieContainer OICookieContainer {
+			get;
+			set;
 		}
 		
-		public Cookie OICookie {
-			get {
-				if(OICookieContainer.Count > 0) {
-					List<Cookie> cList = OICookieContainer.ToList();
-					for(int i=1;i <= cList.Count;i++) {
-						Cookie c = cList[i];
-						if(c.Name.Contains("PHPSESSID")) {
-							return c;
-						}
-					}
-				}
-				return null;
-			}
-		}
+//		public static HttpStatusCode EstablishConnection()
+//		{
+//			OIUsername = Settings.SettingsFile.OIUsername;
+//			OIPassword = Settings.SettingsFile.OIPassword;
+//			if(Connection == null)
+//				Connection = new OIConnection();
+//			if(string.IsNullOrEmpty(OIUsername))
+//				RequestOiCredentials();
+//			HttpStatusCode status = Connection.CheckAvailability();
+//			return status;
+//		}
 		
-		public static HttpStatusCode EstablishConnection()
+		public static void Logon()
 		{
+			// Load OI credentials from SettingsFile
 			OIUsername = Settings.SettingsFile.OIUsername;
 			OIPassword = Settings.SettingsFile.OIPassword;
-			if(Connection == null)
-				Connection = new OIConnection();
-			if(string.IsNullOrEmpty(OIUsername))
+			if(string.IsNullOrEmpty(OIUsername) || string.IsNullOrEmpty(OIPassword)) // Request credentials if empty on SettingsFile
 				RequestOiCredentials();
-			HttpStatusCode status = Connection.CheckAvailability();
-			return status;
-		}
-		
-		HttpStatusCode CheckAvailability() {
-			if(client == null)
-				client = new RestClient();
-			
-			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/sso/index.php?url=%2F");
-			client.Proxy = WebRequest.DefaultWebProxy;
-			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
-			
-			IRestRequest request = new RestRequest(Method.HEAD);
-			IRestResponse response = client.Execute(request);
-			if(response.StatusCode == HttpStatusCode.OK)
-				Connection = this;
-			return response.StatusCode;
-		}
-		
-		public HttpStatusCode Logon()
-		{
-			LoggedOn = false;
-			
 		Retry:
 			
 			OICookieContainer = new CookieContainer();
-			
-			if(client == null)
-				client = new RestClient();
 			
 			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 			client.Proxy = WebRequest.DefaultWebProxy;
@@ -105,132 +66,56 @@ namespace appCore.Web
 			
 			requiredHeaders = (List<Parameter>)response.Headers;
 			
-			request = new RestRequest("/site/index.php", Method.GET);
-			request.AddHeader("Content-Type", "application/html");
-			foreach (var header in requiredHeaders) {
-				if(header.Name == "Pragma" || header.Name == "Cache-Control" || header.Name == "Vary" || header.Name == "Expires" || header.Name == "Date")
-					request.AddHeader(header.Name, header.Value.ToString());
-			}
-			response = client.Execute(request);
-			
-			if((int)response.StatusCode == 200)
-				LoggedOn = response.Content.Contains(@"<div class=""logged_in"">");
+			if(response.Content.Contains(@"<div class=""logged_in"">"))
+				LoggedOn = true;
 			else {
-				DialogResult res = appCore.UI.FlexibleMessageBox.Show("Invalid OI credentials, do you want to change?","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
+				LoggedOn = false;
+				DialogResult res = appCore.UI.FlexibleMessageBox.Show("Login failed with current OI credentials, do you want to change?\n\nIncorrect OI credentials prevents the use of this Tool's full features.","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
 				if(res == DialogResult.Yes) {
-					client = new RestClient();
+					RequestOiCredentials();
 					goto Retry;
 				}
 			}
+		}
+		
+		static HttpStatusCode CheckAvailability() {
+			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/");
+			client.Proxy = WebRequest.DefaultWebProxy;
+			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+			
+			IRestRequest request = new RestRequest(Method.HEAD);
+			IRestResponse response = client.Execute(request);
 			
 			return response.StatusCode;
 		}
 		
-		/// <summary>
-		/// Requests data from OI PHP files
-		/// </summary>
-		/// <param name="phpFile">"allsites", "allcells"</param>
-		public string requestPhpOutput(string phpFile)
-		{
-			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
-//			request.AddParameter("username", OIUsername, ParameterType.UrlSegment);
-//			request.AddParameter("password", appCore.Toolbox.Tools.EncryptDecryptText("Dec", OIPassword), ParameterType.UrlSegment);
-			request.AddHeader("Content-Type", "application/html");
-			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-//			foreach (var header in requiredHeaders) {
-//				if(header.Name == "Pragma" || header.Name == "Cache-Control" || header.Name == "Vary" || header.Name == "Expires" || header.Name == "Date")
-//					request.AddHeader(header.Name, header.Value.ToString());
-//			}
-			IRestResponse response = client.Execute(request);
+		public static void InitiateOiConnection() {
+			// Instantiate RestSharp client
 			
-			return response.Content;
-		}
-		
-		/// <summary>
-		/// Requests data from OI PHP files
-		/// </summary>
-		/// <param name="phpFile">"inc", "crq", "alarms"</param>
-		/// <param name="site">Site number</param>
-		public string requestPhpOutput(string phpFile, string site)
-		{
-			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
-			request.AddParameter("siteinput", site);
-			request.AddHeader("Content-Type", "application/html");
-			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-			IRestResponse response = client.Execute(request);
+			if(client == null)
+				client = new RestClient();
 			
-			return response.Content;
-		}
-		
-		/// <summary>
-		/// Requests data from OI PHP files
-		/// </summary>
-		/// <param name="phpFile">"sitevisit"</param>
-		/// <param name="site">Site number</param>
-		/// <param name="days">Number of days for the Site Visits query</param>
-		public string requestPhpOutput(string phpFile, string site, int days)
-		{
-			if(days == 0)
-				days = 90;
-			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
-			request.AddParameter("site", site);
-			request.AddParameter("type", "a");
-			request.AddParameter("days", days.ToString());
-			request.AddHeader("Content-Type", "application/html");
-			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-			IRestResponse response = client.Execute(request);
+			// Check server availability
 			
-			return response.Content;
-		}
-		
-		/// <summary>
-		/// Requests data from OI PHP files
-		/// </summary>
-		/// <param name="phpFile">"index"</param>
-		/// <param name="site">Site number</param>
-		/// <param name="cell">Cell number</param>
-		public string requestPhpOutput(string phpFile, string site, string cell)
-		{
-			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
-			request.AddParameter("easting", string.Empty);
-			request.AddParameter("northing", string.Empty);
-			request.AddParameter("site_single", site);
-			request.AddParameter("cell_id", cell);
-			request.AddParameter("lac_id", string.Empty);
-			request.AddParameter("location", string.Empty);
-			request.AddParameter("range", string.Empty);
-			request.AddHeader("Content-Type", "application/html");
-			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-			IRestResponse response = client.Execute(request);
+			HttpStatusCode statusCode = CheckAvailability();
+			if(statusCode == HttpStatusCode.OK) {
+				if(!LoggedOn) { // Check Login status
+					Logon();
+				}
+				else {
+					// If already logged in, confirm on server
+					client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/");
+					IRestRequest request = new RestRequest(Method.POST);
+					request.AddHeader("Content-Type", "application/html");
+					request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+					IRestResponse response = client.Execute(request);
+					
+					if(!response.Content.Contains(@"<div class=""logged_in"">")) // Login if server kicked user out
+						Logon();
+				}
+			}
 			
-			return response.Content;
-		}
-		
-		/// <summary>
-		/// Requests data from OI PHP files
-		/// </summary>
-		/// <param name="phpFile">"enterlock"</param>
-		/// <param name="site">Site number</param>
-		/// <param name="cell">Cell number</param>
-		public string requestPhpOutput(string phpFile, string site, List<string> cellsList, string INC_CRQ_Ref, string comments, bool toggle)
-		{
-			client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-			IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
-			foreach(string cell in cellsList)
-				request.AddParameter("checkbox" + cell, toggle ? "on" : "off");
-			
-			request.AddParameter("ManRef", INC_CRQ_Ref);
-			request.AddParameter("Comment", comments);
-			request.AddParameter("Site", site);
-			request.AddHeader("Content-Type", "application/html");
-			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-			IRestResponse response = client.Execute(request);
-			
-			return response.Content;
+//			return statusCode;
 		}
 		
 		static void RequestOiCredentials() {
@@ -254,9 +139,130 @@ namespace appCore.Web
 			}
 		}
 		
-		public static void WrongCredentials() {
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"allsites", "allcells"</param>
+		public static string requestPhpOutput(string phpFile)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+//				foreach (var header in requiredHeaders) {
+//					if(header.Name == "Pragma" || header.Name == "Cache-Control" || header.Name == "Vary" || header.Name == "Expires" || header.Name == "Date")
+//						request.AddHeader(header.Name, header.Value.ToString());
+//				}
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
 		}
 		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"inc", "crq", "alarms"</param>
+		/// <param name="site">Site number</param>
+		public static string requestPhpOutput(string phpFile, string site)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
+				request.AddParameter("siteinput", site);
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"sitevisit"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="days">Number of days for the Site Visits query</param>
+		public static string requestPhpOutput(string phpFile, string site, int days)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				if(days == 0)
+					days = 90;
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
+				request.AddParameter("site", site);
+				request.AddParameter("type", "a");
+				request.AddParameter("days", days.ToString());
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"index"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="cell">Cell number</param>
+		public static string requestPhpOutput(string phpFile, string site, string cell)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
+				request.AddParameter("easting", string.Empty);
+				request.AddParameter("northing", string.Empty);
+				request.AddParameter("site_single", site);
+				request.AddParameter("cell_id", cell);
+				request.AddParameter("lac_id", string.Empty);
+				request.AddParameter("location", string.Empty);
+				request.AddParameter("range", string.Empty);
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"enterlock"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="cell">Cell number</param>
+		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string INC_CRQ_Ref, string comments, bool toggle)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
+				foreach(string cell in cellsList)
+					request.AddParameter("checkbox" + cell, toggle ? "on" : "off");
+				
+				request.AddParameter("ManRef", INC_CRQ_Ref);
+				request.AddParameter("Comment", comments);
+				request.AddParameter("Site", site);
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
 		
 //			                        	I use the system.windows.forms.webbrowser and
 //

@@ -25,12 +25,10 @@ namespace appCore.Web
 		}
 		
 		void OnNavigate(object sender, WebBrowserNavigatingEventArgs e) {	
-			if(OIConnection.Connection == null) {
-				OIConnection.EstablishConnection();
-				OIConnection.Connection.Logon();
-			}
+			if(!OIConnection.LoggedOn)
+				OIConnection.InitiateOiConnection();
 			e.Cancel = true;
-			ResumeSession(e.Url, OIConnection.Connection.OICookieContainer);
+			ResumeSession(e.Url, OIConnection.OICookieContainer);
 		}
 		
 		public void ResumeSession(string url, CookieContainer container) {
