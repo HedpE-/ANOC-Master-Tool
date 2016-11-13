@@ -30,7 +30,7 @@ namespace appCore.Web
 			set;
 		}
 		
-		public static void Logon()
+		static void Logon()
 		{
 			// Load OI credentials from SettingsFile
 			OIUsername = Settings.SettingsFile.OIUsername;
@@ -77,6 +77,27 @@ namespace appCore.Web
 			return response.StatusCode;
 		}
 		
+		static void RequestOiCredentials() {
+			UI.AuthForm auth = new UI.AuthForm("OI");
+			auth.StartPosition = FormStartPosition.CenterParent;
+			auth.ShowDialog();
+			
+			if(!string.IsNullOrEmpty(auth.Username)) {
+				DialogResult ans = new DialogResult();
+				if(auth.Username != OIUsername) {
+					OIUsername = auth.Username;
+					ans = MessageBox.Show("Stored OI Credentials: " +  OIUsername + Environment.NewLine + Environment.NewLine + "You entered different credentials, do you want to overwrite the stored information?","OI credentials",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+					if(ans == DialogResult.Yes)
+						Settings.SettingsFile.OIUsername = OIUsername;
+				}
+				if(auth.Password != OIPassword) {
+					OIPassword = auth.Password;
+					if(ans == DialogResult.Yes)
+						Settings.SettingsFile.OIPassword = OIPassword;
+				}
+			}
+		}
+		
 		public static void InitiateOiConnection() {
 			// Instantiate RestSharp client
 			
@@ -100,27 +121,6 @@ namespace appCore.Web
 					
 					if(!response.Content.Contains(@"<div class=""logged_in"">")) // Login if server kicked user out
 						Logon();
-				}
-			}
-		}
-		
-		static void RequestOiCredentials() {
-			UI.AuthForm auth = new UI.AuthForm("OI");
-			auth.StartPosition = FormStartPosition.CenterParent;
-			auth.ShowDialog();
-			
-			if(!string.IsNullOrEmpty(auth.Username)) {
-				DialogResult ans = new DialogResult();
-				if(auth.Username != OIUsername) {
-					OIUsername = auth.Username;
-					ans = MessageBox.Show("Stored OI Credentials: " +  OIUsername + Environment.NewLine + Environment.NewLine + "You entered different credentials, do you want to overwrite the stored information?","OI credentials",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-					if(ans == DialogResult.Yes)
-						Settings.SettingsFile.OIUsername = OIUsername;
-				}
-				if(auth.Password != OIPassword) {
-					OIPassword = auth.Password;
-					if(ans == DialogResult.Yes)
-						Settings.SettingsFile.OIPassword = OIPassword;
 				}
 			}
 		}
