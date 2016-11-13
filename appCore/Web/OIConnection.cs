@@ -30,18 +30,6 @@ namespace appCore.Web
 			set;
 		}
 		
-//		public static HttpStatusCode EstablishConnection()
-//		{
-//			OIUsername = Settings.SettingsFile.OIUsername;
-//			OIPassword = Settings.SettingsFile.OIPassword;
-//			if(Connection == null)
-//				Connection = new OIConnection();
-//			if(string.IsNullOrEmpty(OIUsername))
-//				RequestOiCredentials();
-//			HttpStatusCode status = Connection.CheckAvailability();
-//			return status;
-//		}
-		
 		public static void Logon()
 		{
 			// Load OI credentials from SettingsFile
@@ -114,8 +102,6 @@ namespace appCore.Web
 						Logon();
 				}
 			}
-			
-//			return statusCode;
 		}
 		
 		static void RequestOiCredentials() {
