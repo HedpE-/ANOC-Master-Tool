@@ -294,7 +294,7 @@ namespace appCore.SiteFinder
 					BookIns = FetchBookIns();
 				
 				if(dataToRequest.Contains("PWR")) {
-					PowerCompany = getPowerCompany();
+					try { PowerCompany = getPowerCompany(); } catch {}
 				}
 //				}
 //				else {

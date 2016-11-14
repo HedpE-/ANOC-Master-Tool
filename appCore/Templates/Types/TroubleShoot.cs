@@ -328,7 +328,7 @@ namespace appCore.Templates.Types
 					if(cases != null) {
 						if(cases.Rows.Count > 0) {
 							temp += Environment.NewLine;
-							string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+							string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INC + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
 								"Status NOT LIKE 'Closed'"; // AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
 							List<DataRow> filteredCases = cases.Select(query).ToList();
 							if(type == "CRQ" && filteredCases.Count > 0) {
