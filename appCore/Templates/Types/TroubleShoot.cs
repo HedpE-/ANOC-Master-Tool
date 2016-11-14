@@ -177,13 +177,11 @@ namespace appCore.Templates.Types
 				if(log[++ind].Substring("Ongoing INCs:".Length) == " None")
 					OngoingINCs = log[ind++].Substring("Ongoing INCs:".Length);
 				else {
-					complete = Environment.NewLine;
+//					complete = Environment.NewLine;
 					for (ind++; ind < log.Length - 4; ind++) {
 						if (log[ind] == "") {
-							if (log[ind+1] == "Ongoing CRQs:") {
-								ind++;
+							if (log[ind+1].StartsWith("Ongoing CRQs:"))
 								break;
-							}
 						}
 						else
 							complete += log[ind] + Environment.NewLine;
@@ -194,10 +192,10 @@ namespace appCore.Templates.Types
 				if(log[++ind].Substring("Ongoing CRQs:".Length) == " None")
 					OngoingCRQs = log[ind++].Substring("Ongoing CRQs:".Length);
 				else {
-					complete = Environment.NewLine;
+//					complete = Environment.NewLine;
 					for (ind++; ind < log.Length - 4; ind++) {
 						if (log[ind] == "") {
-							if (log[ind+1] == "Active Alarms:") {
+							if (log[ind+1].StartsWith("Active Alarms:")) {
 								ind++;
 								break;
 							}

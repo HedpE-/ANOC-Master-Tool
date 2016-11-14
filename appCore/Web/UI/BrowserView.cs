@@ -58,19 +58,22 @@ namespace appCore.Web.UI
 		{
 			InitializeComponent();
 			
-			OIUsername = Settings.SettingsFile.OIUsername;
-			OIPassword = Settings.SettingsFile.OIPassword;
-			
+//			OIUsername = Settings.SettingsFile.OIUsername;
+//			OIPassword = Settings.SettingsFile.OIPassword;
+//			
 			tabControl1.SelectTab(1);
 			webBrowser1.Navigate(CitrixHome);
-			
-			string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
-			ASCIIEncoding enc = new ASCIIEncoding();
-			webBrowser2.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-			webBrowser3.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-			Thread.Sleep(1000);
-			webBrowser2.Navigate(homeAddress(webBrowser2));
-			webBrowser3.Navigate(homeAddress(webBrowser3));
+//			
+//			string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
+//			ASCIIEncoding enc = new ASCIIEncoding();
+//			webBrowser2.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
+//			webBrowser3.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
+//			Thread.Sleep(1000);
+			OIConnection.InitiateOiConnection();
+//			webBrowser2.Navigate(homeAddress(webBrowser2));
+//			webBrowser3.Navigate(homeAddress(webBrowser3));
+			webBrowser2.ResumeSession(homeAddress(webBrowser2), OIConnection.OICookieContainer);
+			webBrowser3.ResumeSession(homeAddress(webBrowser3), OIConnection.OICookieContainer);
 			
 			comboBox1.SelectedIndex = 0;
 			comboBox1.SelectedIndexChanged += ComboBox1SelectedIndexChanged;
@@ -116,19 +119,19 @@ namespace appCore.Web.UI
 				
 				groupBox1.Visible &= !lockedCellsPanelEnabled;
 				if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com") || wb.Url.ToString().Contains("195.233.194.118")) {
-					if(!checkOILogin(wb)) {
-//						OIConnection.EstablishConnection();
-//						OIConnection.Connection.Logon();
-//						wb.ResumeSession(homeAddress(wb), OIConnection.Connection.OICookieContainer);
-						string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
-						ASCIIEncoding enc = new ASCIIEncoding();
-						if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com"))
-							wb.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-						else
-							wb.Navigate(OldOILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-						Thread.Sleep(1000);
-						wb.Navigate(homeAddress(wb));
-					}
+//					if(!checkOILogin(wb)) {
+////						OIConnection.EstablishConnection();
+////						OIConnection.Connection.Logon();
+////						wb.ResumeSession(homeAddress(wb), OIConnection.OICookieContainer);
+//						string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
+//						ASCIIEncoding enc = new ASCIIEncoding();
+//						if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com"))
+//							wb.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
+//						else
+//							wb.Navigate(OldOILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
+//						Thread.Sleep(1000);
+//						wb.Navigate(homeAddress(wb));
+//					}
 					if(wb.Url.ToString().Contains(@"/site/index.php") || wb.Url.ToString().EndsWith(@"/site", StringComparison.Ordinal)) {
 						HtmlElement divCells = wb.Document.GetElementById("div_cells");
 						if(divCells != null) {
@@ -457,8 +460,9 @@ namespace appCore.Web.UI
 		
 		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
 		{
-			webBrowser3.Navigate(UrisList[comboBox1.SelectedIndex].URI);
-//			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, OIConnection.Connection.OICookieContainer);
+			OIConnection.InitiateOiConnection();
+//			webBrowser3.Navigate(UrisList[comboBox1.SelectedIndex].URI);
+			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, OIConnection.OICookieContainer);
 			tabPage3.Text = comboBox1.Text;
 			this.Text = "AMT Browser - " + comboBox1.Text;
 		}
