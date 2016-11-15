@@ -187,15 +187,12 @@ namespace appCore.UI {
 		///
 		///- Fixed crash when loading Troubleshoot logs containing Ongoing INCs or CRQs
 		///- Ongoing INCs won&apos;t show the own INC if it was saved previously on Remedy
+		///- Fixed crash when connection to OI is available but no data is returned from the server, when searching site
 		///
 		///####### ANOC Master Tool 7.0alpha2 13/11/2016 #######
 		///
 		///- Fixed bug with Outlook Interop dll failing when generating Failed CRQ email
-		///- Added some more intelligence on SiteLopedia connectivity, fixing login issues
-		///
-		///####### ANOC Master Tool 7.0alpha1 10/11/2016 #######
-		///
-		///- This is basically a W [rest of string was truncated]&quot;;.
+		///- Added some more intelligence on SiteLopedia connec [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

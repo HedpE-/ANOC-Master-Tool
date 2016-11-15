@@ -15958,6 +15958,7 @@ ZK - LTE2100 Pico</value>
 
 - Fixed crash when loading Troubleshoot logs containing Ongoing INCs or CRQs
 - Ongoing INCs won't show the own INC if it was saved previously on Remedy
+- Fixed crash when connection to OI is available but no data is returned from the server, when searching site
 
 ####### ANOC Master Tool 7.0alpha2 13/11/2016 #######
 
