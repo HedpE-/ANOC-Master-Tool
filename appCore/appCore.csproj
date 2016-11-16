@@ -107,9 +107,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrowserView.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="GMap.NET\WindowsForms\Markers\GmapMarkerWithLabel.cs" />
@@ -326,9 +323,6 @@
     <Compile Include="GMap.NET\Types\Point.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BrowserView.resx">
-      <DependentUpon>BrowserView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Logs\UI\LogBrowser.resx">
       <DependentUpon>LogBrowser.cs</DependentUpon>
     </EmbeddedResource>

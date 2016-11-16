@@ -183,16 +183,16 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha2 14/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
+		///
+		///- Fully working AMT Browser with auto OI login
+		///- Fixed a bug when UserFolder wasn&apos;t found, defining new folder wasn&apos;t updating on SettingsFile, causing the tool to search previous folder on every start.
+		///
+		///####### ANOC Master Tool 7.0alpha2 14/11/2016 #######
 		///
 		///- Fixed crash when loading Troubleshoot logs containing Ongoing INCs or CRQs
 		///- Ongoing INCs won&apos;t show the own INC if it was saved previously on Remedy
-		///- Fixed crash when connection to OI is available but no data is returned from the server, when searching site
-		///
-		///####### ANOC Master Tool 7.0alpha2 13/11/2016 #######
-		///
-		///- Fixed bug with Outlook Interop dll failing when generating Failed CRQ email
-		///- Added some more intelligence on SiteLopedia connec [rest of string was truncated]&quot;;.
+		///- Fixed crash when connection to OI i [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

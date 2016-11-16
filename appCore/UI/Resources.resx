@@ -15954,7 +15954,12 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha2 14/11/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
+
+- Fully working AMT Browser with auto OI login
+- Fixed a bug when UserFolder wasn't found, defining new folder wasn't updating on SettingsFile, causing the tool to search previous folder on every start.
+
+####### ANOC Master Tool 7.0alpha2 14/11/2016 #######
 
 - Fixed crash when loading Troubleshoot logs containing Ongoing INCs or CRQs
 - Ongoing INCs won't show the own INC if it was saved previously on Remedy

@@ -3890,16 +3890,9 @@ namespace appCore
 			}
 			
 			Thread thread = new Thread(() => {
-			                           	if(CurrentUser.GetUserDetails("Username") == "GONCARJ3") {
-			                           		Web.UI.BrowserView brwsr = new Web.UI.BrowserView();
-			                           		brwsr.StartPosition = FormStartPosition.CenterParent;
-			                           		brwsr.ShowDialog();
-			                           	}
-			                           	else {
-			                           		BrowserView brwsr = new BrowserView();
-			                           		brwsr.StartPosition = FormStartPosition.CenterParent;
-			                           		brwsr.ShowDialog();
-			                           	}
+			                           	Web.UI.BrowserView brwsr = new Web.UI.BrowserView();
+			                           	brwsr.StartPosition = FormStartPosition.CenterParent;
+			                           	brwsr.ShowDialog();
 			                           });
 			
 			thread.SetApartmentState(ApartmentState.STA);

@@ -38,7 +38,6 @@ namespace appCore.Web.UI
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBox3;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -85,7 +84,6 @@ namespace appCore.Web.UI
 			this.checkBox4 = new System.Windows.Forms.CheckBox();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
-			this.label4 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -397,24 +395,11 @@ namespace appCore.Web.UI
 			this.checkBox2.UseVisualStyleBackColor = true;
 			this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2CheckedChanged);
 			// 
-			// label4
-			// 
-			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label4.Font = new System.Drawing.Font("Stencil", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.ForeColor = System.Drawing.Color.DarkRed;
-			this.label4.Location = new System.Drawing.Point(675, 28);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(231, 56);
-			this.label4.TabIndex = 9;
-			this.label4.Text = "UNDER\r\nDEVELOPMENT";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
 			// BrowserView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(992, 628);
-			this.Controls.Add(this.label4);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.pictureBox5);
