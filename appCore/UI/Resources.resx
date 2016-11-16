@@ -15977,7 +15977,7 @@ ZK - LTE2100 Pico</value>
 - Although there are some major improvements on the way AMT Browser authenticates users, it is almost deprecated but still present, it will possibly be made unavailable in the final v7 release as the Site Finder evolves.
 - The previous issues with the map not showing should now be solved as the API now connects through the correct VF proxy.
 - A lot of speed ups, the most significant are the loading times, database queries and alarms parsing
-- Now the UserFolder is used as a "cache", this means all the db files, including all_cells, all_sites and shifts file will be there and updated periodically. This prevents breakdowns when the ANOK-UK shared folder is inaccessible.
+- Now the UserFolder is used as a "cache", this means all the db files, including all_cells, all_sites and shifts file will be there and updated periodically. This prevents breakdowns when the ANOC-UK shared folder is inaccessible.
 
 DO NOT REMOVE ANY OF THESE FILES FROM YOUR USERFOLDER WHILE THE TOOL IS EXECUTING!!!!
 Or else you'll have to restart it xD
