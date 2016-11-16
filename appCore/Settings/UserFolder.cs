@@ -106,6 +106,7 @@ namespace appCore.Settings
 						DialogResult ans = FlexibleMessageBox.Show("The following path was chosen:\n\n" + folderBrowserDialog1.SelectedPath + "\n\nContinue with User Folder selection?","Path confirmation",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
 						if(ans == DialogResult.Yes) {
 							userFolder = new DirectoryInfo(folderBrowserDialog1.SelectedPath);
+							SettingsFile.UserFolderPath = userFolder;
 						}
 					}
 				} while (userFolder == null);

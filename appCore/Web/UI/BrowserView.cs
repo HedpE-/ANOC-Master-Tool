@@ -48,10 +48,9 @@ namespace appCore.Web.UI
 			new UriItem("Locked Cells (Old)", new Uri("http://195.233.194.118/site/cellslocked.php")),
 			new UriItem("Sites Off Air", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/offair.php")),
 			new UriItem("Vendor Override", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/RANOps/admin/beaconit.php")),
-			new UriItem("COOS TICKETS - NO UNAVAILABILITY", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ranops/coos-tickets.php")),
+			new UriItem("COOS - No Unavailability", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ranops/coos-tickets.php")),
 			new UriItem("Bulk Uploader", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ukoim/bulk_uploader.php")),
-			new UriItem("ANOC Site Management Diary (Book Ins)", new Uri("https://smsproxy.vavs.vodafone.com/anoc/")),
-			new UriItem("COOS - No Unavailability", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ranops/coos-tickets.php"))
+			new UriItem("ANOC Site Management Diary (Book Ins)", new Uri("https://smsproxy.vavs.vodafone.com/anoc/"))
 		};
 		
 		public BrowserView()
@@ -60,10 +59,10 @@ namespace appCore.Web.UI
 			
 //			OIUsername = Settings.SettingsFile.OIUsername;
 //			OIPassword = Settings.SettingsFile.OIPassword;
-//			
+//
 			tabControl1.SelectTab(1);
 			webBrowser1.Navigate(CitrixHome);
-//			
+//
 //			string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
 //			ASCIIEncoding enc = new ASCIIEncoding();
 //			webBrowser2.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
@@ -120,9 +119,9 @@ namespace appCore.Web.UI
 				groupBox1.Visible &= !lockedCellsPanelEnabled;
 				if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com") || wb.Url.ToString().Contains("195.233.194.118")) {
 //					if(!checkOILogin(wb)) {
-////						OIConnection.EstablishConnection();
-////						OIConnection.Connection.Logon();
-////						wb.ResumeSession(homeAddress(wb), OIConnection.OICookieContainer);
+					////						OIConnection.EstablishConnection();
+					////						OIConnection.Connection.Logon();
+					////						wb.ResumeSession(homeAddress(wb), OIConnection.OICookieContainer);
 //						string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
 //						ASCIIEncoding enc = new ASCIIEncoding();
 //						if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com"))
@@ -132,7 +131,7 @@ namespace appCore.Web.UI
 //						Thread.Sleep(1000);
 //						wb.Navigate(homeAddress(wb));
 //					}
-					if(wb.Url.ToString().Contains(@"/site/index.php") || wb.Url.ToString().EndsWith(@"/site", StringComparison.Ordinal)) {
+					if(wb.Url.ToString().Contains(@"://195.233.194.118/site_old") || wb.Url.ToString().Contains(@"://operationalintelligence.vf-uk.corp.vodafone.com/site/")) {
 						HtmlElement divCells = wb.Document.GetElementById("div_cells");
 						if(divCells != null) {
 							groupBox1.Visible |= lockedCellsPanelEnabled;
@@ -236,19 +235,19 @@ namespace appCore.Web.UI
 			}
 		}
 		
-		bool checkOILogin(AMTBrowser wb) {
-			var elements = wb.Document.GetElementsByTagName("form");
-			bool loginform = false;
-			HtmlElement loginfrm = null;
-			foreach (HtmlElement elem in elements) {
-				if(elem.GetAttribute("name") == "loginform") {
-					loginform = true;
-					loginfrm = elem;
-					break;
-				}
-			}
-			return !loginform;
-		}
+//		bool checkOILogin(AMTBrowser wb) {
+//			var elements = wb.Document.GetElementsByTagName("form");
+//			bool loginform = false;
+//			HtmlElement loginfrm = null;
+//			foreach (HtmlElement elem in elements) {
+//				if(elem.GetAttribute("name") == "loginform") {
+//					loginform = true;
+//					loginfrm = elem;
+//					break;
+//				}
+//			}
+//			return !loginform;
+//		}
 		
 		string homeAddress(AMTBrowser wb)
 		{
@@ -331,10 +330,13 @@ namespace appCore.Web.UI
 					webBrowser1.Navigate(CitrixHome);
 					break;
 				case 1:
-					webBrowser2.Navigate(UrisList[0].URI);
+					OIConnection.InitiateOiConnection();
+					webBrowser2.ResumeSession(homeAddress(webBrowser2), OIConnection.OICookieContainer);
 					break;
 				case 2:
-					webBrowser3.Navigate(UrisList[comboBox1.SelectedIndex].URI);
+					OIConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
+					CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OIConnection.OldOICookieContainer : OIConnection.OICookieContainer;
+					webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, cookies);
 					break;
 			}
 		}
@@ -460,9 +462,9 @@ namespace appCore.Web.UI
 		
 		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
 		{
-			OIConnection.InitiateOiConnection();
-//			webBrowser3.Navigate(UrisList[comboBox1.SelectedIndex].URI);
-			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, OIConnection.OICookieContainer);
+			OIConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
+			CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OIConnection.OldOICookieContainer : OIConnection.OICookieContainer;
+			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, cookies);
 			tabPage3.Text = comboBox1.Text;
 			this.Text = "AMT Browser - " + comboBox1.Text;
 		}
@@ -546,11 +548,13 @@ namespace appCore.Web.UI
 		{
 			MouseEventArgs me = (MouseEventArgs) e;
 			if(me.Button == MouseButtons.Right) {
-				if(Control.ModifierKeys.ToString().Contains("Shift") && Control.ModifierKeys.ToString().Contains("Control"))
+				if(Control.ModifierKeys.ToString().Contains("Shift") && Control.ModifierKeys.ToString().Contains("Control")) {
 					lockedCellsPanelEnabled = !lockedCellsPanelEnabled;
+					return;
+				}
 			}
-			else
-				lockedCellsPanelEnabled = false;
+			
+			lockedCellsPanelEnabled = false;
 		}
 	}
 

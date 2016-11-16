@@ -325,14 +325,13 @@ namespace appCore.Web.UI
 			this.comboBox1.Items.AddRange(new object[] {
 			"SITE Lopedia",
 			"SITE Lopedia (Old)",
-			"Locked Cells (Old)",
 			"Locked Cells",
+			"Locked Cells (Old)",
 			"Sites Off Air",
 			"Vendor Override",
-			"COOS TICKETS - NO UNAVAILABILITY",
+			"COOS - No Unavailability",
 			"Bulk Uploader",
-			"ANOC Site Management Diary (Book Ins)",
-			"COOS - No Unavailability"});
+			"ANOC Site Management Diary (Book Ins)"});
 			this.comboBox1.Location = new System.Drawing.Point(675, 4);
 			this.comboBox1.Name = "comboBox1";
 			this.comboBox1.Size = new System.Drawing.Size(231, 21);
