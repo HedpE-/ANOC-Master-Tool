@@ -70,56 +70,51 @@ namespace appCore.DB
 		}
 		
 		public static void Initialize() {
-			if((CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "SANTOSS0") && GlobalProperties.autoUpdateDbFiles)
+			if((CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "SANTOSS2") && GlobalProperties.autoUpdateDbFiles)
 				UpdateSourceDBFiles();
 			
 			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
 			_all_cells = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
 		}
 		
-		public static void UpdateSourceDBFiles() { // string all_sites, string all_cells) {
-			// UNDONE: UpdateSourceDBFiles()
+		public static void UpdateSourceDBFiles(bool onUserFolder = false) {
 //			var thread = new Thread(() => {
 //			string test = CurrentUser.GetUserDetails("NetworkDomain"); // TODO: Test Domain name on VF network
-			FileInfo source_allsites = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv");
-			FileInfo source_allcells = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv");
-//			HttpStatusCode status = HttpStatusCode.NotFound;
-//			if(OIConnection.Connection == null)
-//				status = OIConnection.EstablishConnection();
-//			HttpStatusCode statusCode = OIConnection.Connection.Logon();
-//			if(!OIConnection.Connection.LoggedOn)
-//			HttpStatusCode statusCode = OIConnection2.InitiateOiConnection();
-//			if(statusCode == HttpStatusCode.OK) {
-				string response = OIConnection.requestPhpOutput("allsites");
-				if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
-					if(GlobalProperties.shareAccess) {
-						if(source_allsites.Exists) {
-							if(response != File.ReadAllText(source_allsites.FullName)) {
-								MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
-								File.WriteAllText(source_allsites.FullName, response);
-							}
-						}
-						else {
+			FileInfo source_allsites = onUserFolder ? new FileInfo(UserFolder.FullName + @"\all_sites.csv") :
+				new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv");
+			FileInfo source_allcells = onUserFolder ? new FileInfo(UserFolder.FullName + @"\all_cells.csv") :
+				new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv");
+			
+			string response = OIConnection.requestPhpOutput("allsites");
+			if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
+				if(GlobalProperties.shareAccess || onUserFolder) {
+					if(source_allsites.Exists) {
+						if(response != File.ReadAllText(source_allsites.FullName)) {
 							MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
 							File.WriteAllText(source_allsites.FullName, response);
 						}
 					}
+					else {
+						MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
+						File.WriteAllText(source_allsites.FullName, response);
+					}
 				}
-				response = OIConnection.requestPhpOutput("allcells");
-				if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
-					if(GlobalProperties.shareAccess) {
-						if(source_allcells.Exists) {
-							if(response != File.ReadAllText(source_allcells.FullName)) {
-								MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
-								File.WriteAllText(source_allcells.FullName, response);
-							}
-						}
-						else {
+			}
+			response = OIConnection.requestPhpOutput("allcells");
+			if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
+				if(GlobalProperties.shareAccess || onUserFolder) {
+					if(source_allcells.Exists) {
+						if(response != File.ReadAllText(source_allcells.FullName)) {
 							MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
 							File.WriteAllText(source_allcells.FullName, response);
 						}
 					}
+					else {
+						MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
+						File.WriteAllText(source_allcells.FullName, response);
+					}
 				}
+			}
 //			}
 //			                        });
 //			thread.IsBackground = true;

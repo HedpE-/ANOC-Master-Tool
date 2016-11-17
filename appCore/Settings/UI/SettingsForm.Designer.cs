@@ -94,7 +94,6 @@ namespace appCore.Settings.UI
 			this.label10 = new System.Windows.Forms.Label();
 			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
-			this.AgentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.label9 = new System.Windows.Forms.Label();
@@ -138,7 +137,7 @@ namespace appCore.Settings.UI
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(395, 98);
+			this.button2.Location = new System.Drawing.Point(395, 260);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(86, 23);
 			this.button2.TabIndex = 3;
@@ -154,7 +153,7 @@ namespace appCore.Settings.UI
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(514, 317);
+			this.tabControl1.Size = new System.Drawing.Size(496, 317);
 			this.tabControl1.TabIndex = 0;
 			// 
 			// tabPage1
@@ -174,7 +173,7 @@ namespace appCore.Settings.UI
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(506, 291);
+			this.tabPage1.Size = new System.Drawing.Size(488, 291);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			// 
@@ -258,7 +257,7 @@ namespace appCore.Settings.UI
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(873, 291);
+			this.tabPage2.Size = new System.Drawing.Size(506, 291);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "About";
 			// 
@@ -519,7 +518,6 @@ namespace appCore.Settings.UI
 			// 
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-			this.AgentName,
 			this.Username,
 			this.Permission});
 			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -529,13 +527,6 @@ namespace appCore.Settings.UI
 			this.dataGridView1.RowTemplate.Height = 37;
 			this.dataGridView1.Size = new System.Drawing.Size(506, 142);
 			this.dataGridView1.TabIndex = 0;
-			// 
-			// AgentName
-			// 
-			this.AgentName.HeaderText = "Name";
-			this.AgentName.Name = "Name";
-			this.AgentName.ReadOnly = true;
-			this.AgentName.Width = 150;
 			// 
 			// Username
 			// 
@@ -565,7 +556,7 @@ namespace appCore.Settings.UI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(514, 317);
+			this.ClientSize = new System.Drawing.Size(496, 317);
 			this.Controls.Add(this.tabControl1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;

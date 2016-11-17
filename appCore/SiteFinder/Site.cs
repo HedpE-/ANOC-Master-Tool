@@ -242,9 +242,9 @@ namespace appCore.SiteFinder
 //			try { IP_3G_E = _site[_site.Row.Table.Columns.IndexOf("IP_3G_E")].ToString(); } catch (Exception) { }
 //			try { IP_4G_I = _site[_site.Row.Table.Columns.IndexOf("IP_4G_I")].ToString(); } catch (Exception) { }
 //			try { IP_4G_E = _site[_site.Row.Table.Columns.IndexOf("IP_4G_E")].ToString(); } catch (Exception) { }
-				try { VENDOR_2G = getVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
-				try { VENDOR_3G = getVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
-				try { VENDOR_4G = getVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
+				try { VENDOR_2G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
+				try { VENDOR_3G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
+				try { VENDOR_4G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
 				try { DATE = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("DATE")].ToString()); } catch (Exception) { }
 //			try { MTX_RELATED = _site[_site.Row.Table.Columns.IndexOf("MTX_RELATED")].ToString(); } catch (Exception) { }
 				
@@ -378,14 +378,8 @@ namespace appCore.SiteFinder
 		DataTable FetchINCs(FileSystemInfo table_inc = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-//			if(table_inc != null) {
-//				if(table_inc.Exists)
-//					response = File.ReadAllText(table_inc.FullName);
-//			}
-//			else
 			response = Web.OIConnection.requestPhpOutput("inc", Id);
-			string parsedResponse = string.Empty;
-			if(!response.Contains("No open or incidents"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
 			return dt;
 		}
@@ -393,14 +387,8 @@ namespace appCore.SiteFinder
 		DataTable FetchCRQs(FileSystemInfo table_crq = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-//			if(table_crq != null) {
-//				if(table_crq.Exists)
-//					response = File.ReadAllText(table_crq.FullName);
-//			}
-//			else
 			response = Web.OIConnection.requestPhpOutput("crq", Id);
-			string parsedResponse = string.Empty;
-			if(!response.Contains("No changes in past 90 days"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
 			return dt;
 		}
@@ -408,14 +396,8 @@ namespace appCore.SiteFinder
 		DataTable FetchActiveAlarms(FileSystemInfo table_alarms = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-//			if(table_alarms != null) {
-//				if(table_alarms.Exists)
-//					response = File.ReadAllText(table_alarms.FullName);
-//			}
-//			else
 			response = Web.OIConnection.requestPhpOutput("alarms", Id);
-			string parsedResponse = string.Empty;
-			if(!response.Contains("No alarms reported"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
 			return dt;
 		}
@@ -423,21 +405,15 @@ namespace appCore.SiteFinder
 		DataTable FetchBookIns(FileSystemInfo table_visits = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-//			if(table_visits != null) {
-//				if(table_visits.Exists)
-//					response = File.ReadAllText(table_visits.FullName);
-//			}
-//			else
 			response = Web.OIConnection.requestPhpOutput("sitevisit", Id, 90);
-			string parsedResponse = string.Empty;
-			if(!response.Contains("No site visits"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
 			return dt;
 		}
 		
 		string getPowerCompany() {
 			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
-			if(response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
 				HtmlDocument doc = new HtmlDocument();
 				doc.Load(new StringReader(response));
 				
@@ -457,7 +433,7 @@ namespace appCore.SiteFinder
 		string getOiCellsLockedState() {
 			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
 			
-			if(response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
 				HtmlDocument doc = new HtmlDocument();
 				doc.Load(new StringReader(response));
 				
@@ -488,7 +464,7 @@ namespace appCore.SiteFinder
 //					status = Web.OIConnection.EstablishConnection();
 //				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
 //				if(statusCode == HttpStatusCode.OK)
-					getOiCellsLockedState();
+				getOiCellsLockedState();
 			}
 		}
 		
@@ -496,7 +472,7 @@ namespace appCore.SiteFinder
 //			string response = Web.OIConnection.Connection.requestPhpOutput("enterlock", Id, cellsList, ManRef, comments, false);
 		}
 		
-		Vendors getVendor(string strVendor) {
+		Vendors resolveVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
 					return Site.Vendors.Ericsson;

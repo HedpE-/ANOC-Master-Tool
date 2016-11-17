@@ -36,6 +36,11 @@ namespace appCore.Settings
             get;
             private set;
         }
+        public static string networkDomain
+        {
+        	get { return GetUserDetails("NetworkDomain"); }
+        	private set { }
+        }
 
         public static void InitializeUserProperties()
         {

@@ -183,16 +183,17 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
+		///
+		///- Fixed crashes when OI server connection is not available
+		///- Fixed issue related with OI session cookies that caused loss of connection after 1st request to server
+		///- New users without network share access will download all_cells and all_sites automatically from OI
+		///- Fixed Site Finder map proxy issues, for good!
+		///
+		///####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
 		///
 		///- Fully working AMT Browser with auto OI login
-		///- Fixed a bug when UserFolder wasn&apos;t found, defining new folder wasn&apos;t updating on SettingsFile, causing the tool to search previous folder on every start.
-		///
-		///####### ANOC Master Tool 7.0alpha2 14/11/2016 #######
-		///
-		///- Fixed crash when loading Troubleshoot logs containing Ongoing INCs or CRQs
-		///- Ongoing INCs won&apos;t show the own INC if it was saved previously on Remedy
-		///- Fixed crash when connection to OI i [rest of string was truncated]&quot;;.
+		///- Fixed a bug when UserFolder w [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

@@ -91,7 +91,8 @@ namespace appCore.Settings
 		}
 		
 		public static void Initialize() {
-			if(GlobalProperties.shareAccess && SettingsFile.Exists)
+//			if(GlobalProperties.shareAccess && SettingsFile.Exists)
+			if(SettingsFile.Exists)
 				userFolder = SettingsFile.UserFolderPath;
 			if(userFolder.FullName == GlobalProperties.ShareRootDir.FullName || !userFolder.Exists || !usernameFolder.Exists) {
 				DialogResult result;
@@ -201,55 +202,27 @@ namespace appCore.Settings
 				
 				if(source_allsites.Exists) {
 					if(Databases.all_sites != null) {
-						if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime) {
+						if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime)
 							source_allsites.CopyTo(Databases.all_sites.FullName, true);
-//							Databases.RefreshDBFiles("all_sites");
-						}
 					}
 					else {
 						source_allsites.CopyTo(userFolder.FullName + @"\all_sites.csv", true);
-//						Databases.RefreshDBFiles("all_sites");
 					}
 				}
 				
 				if(source_allcells.Exists) {
 					if(Databases.all_cells != null) {
-						if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime) {
+						if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime)
 							source_allcells.CopyTo(Databases.all_cells.FullName, true);
-//							Databases.RefreshDBFiles("all_cells");
-						}
 					}
-					else {
+					else
 						source_allcells.CopyTo(userFolder.FullName + @"\all_cells.csv", true);
-//						Databases.RefreshDBFiles("all_cells");
-					}
 				}
 			}
-//			else
-//				Databases.RefreshDBFiles("all_sites,all_cells");
-//			if(!(Databases.all_sites.Exists || Databases.all_cells.Exists) || !GlobalProperties.shareAccess) {
-//				if(File.Exists(UserFolder.FullName + @"\all_sites.csv")) {
-//					FileInfo a_s = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
-//					if(a_s.LastWriteTime > lastSitesDBfile_wrTime) {
-//						siteDetailsTable = Tools.GetDataTableFromCsv(a_s.ToString(),true);
-//						lastSitesDBfile_wrTime = a_s.LastWriteTime;
-//					}
-//				}
-//				else
-//					if(siteDetailsTable == null)
-//						siteDetailsTable =  buildSitesTable();
-//
-//				if(File.Exists(UserFolder.FullName + @"\all_cells.csv")) {
-//					FileInfo a_c = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
-//					if(a_c.LastWriteTime > lastCellsDBfile_wrTime) {
-//						cellDetailsTable = Tools.GetDataTableFromCsv(a_c.ToString(),true);
-//						lastCellsDBfile_wrTime = a_c.LastWriteTime;
-//					}
-//				}
-//				else
-//					if(cellDetailsTable == null)
-//						cellDetailsTable = buildCellsTable();
-//			}
+			else {
+				if(!Databases.all_sites.Exists || !Databases.all_cells.Exists)
+					Databases.UpdateSourceDBFiles(true);
+			}
 		}
 
 		public static FileInfo getDBFile(string file) {

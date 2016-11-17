@@ -710,7 +710,7 @@ namespace appCore
 
 			}
 			else {
-				Thread t = new Thread(Databases.UpdateSourceDBFiles);
+				Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
 				t.Start();
 			}
 		}
@@ -793,13 +793,12 @@ namespace appCore
 				butt2.AutoSize = true;
 				butt2.Click += buttClick;
 				tabPage1.Controls.Add(butt2);
-				
-				Button butt = new Button();
-				butt.Name = "butt";
-				butt.Location = new Point(5, butt2.Top - butt.Height - 5);
-				butt.Click += buttClick;
-				tabPage1.Controls.Add(butt);
 				if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos") {
+					Button butt = new Button();
+					butt.Name = "butt";
+					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
+					butt.Click += buttClick;
+					tabPage1.Controls.Add(butt);
 					OutageUI.Location = new Point(1, 2);
 					tabPage17.Controls.Add(OutageUI);
 				}

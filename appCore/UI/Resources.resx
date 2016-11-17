@@ -15954,7 +15954,14 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
+
+- Fixed crashes when OI server connection is not available
+- Fixed issue related with OI session cookies that caused loss of connection after 1st request to server
+- New users without network share access will download all_cells and all_sites automatically from OI
+- Fixed Site Finder map proxy issues, for good!
+
+####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
 
 - Fully working AMT Browser with auto OI login
 - Fixed a bug when UserFolder wasn't found, defining new folder wasn't updating on SettingsFile, causing the tool to search previous folder on every start.

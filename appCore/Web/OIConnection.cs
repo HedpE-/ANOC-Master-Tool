@@ -36,6 +36,12 @@ namespace appCore.Web
 			get;
 			private set;
 		}
+		public static bool Available {
+			get {
+				return CheckAvailability(false) == HttpStatusCode.OK;
+			}
+			private set {}
+		}
 		
 		static void Logon(bool OldOiPortal)
 		{
@@ -126,17 +132,16 @@ namespace appCore.Web
 			
 			client = new RestClient();
 			
-			// Check server availability
-			
-			HttpStatusCode statusCode = CheckAvailability(OldOiPortal);
-			if(statusCode == HttpStatusCode.OK) {
+			if(CheckAvailability(OldOiPortal) == HttpStatusCode.OK) { // Check server availability
+				// Check Login status
 				bool loginState = OldOiPortal ? LoggedOnOldOiPortal : LoggedOn;
-				if(!loginState) { // Check Login status
+				if(!loginState) { 
 					Logon(OldOiPortal);
 				}
 				else {
 					// If already logged in, confirm on server
 					client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
+					client.CookieContainer = OICookieContainer;
 					IRestRequest request = new RestRequest(Method.POST);
 					request.AddHeader("Content-Type", "application/html");
 					request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
@@ -157,6 +162,7 @@ namespace appCore.Web
 			InitiateOiConnection();
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
@@ -181,6 +187,7 @@ namespace appCore.Web
 			InitiateOiConnection();
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddParameter("siteinput", site);
 				request.AddHeader("Content-Type", "application/html");
@@ -205,6 +212,7 @@ namespace appCore.Web
 				if(days == 0)
 					days = 90;
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddParameter("site", site);
 				request.AddParameter("type", "a");
@@ -229,6 +237,7 @@ namespace appCore.Web
 			InitiateOiConnection();
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
 				request.AddParameter("easting", string.Empty);
 				request.AddParameter("northing", string.Empty);
@@ -257,6 +266,7 @@ namespace appCore.Web
 			InitiateOiConnection();
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				foreach(string cell in cellsList)
 					request.AddParameter("checkbox" + cell, toggle ? "on" : "off");

@@ -209,11 +209,18 @@ namespace appCore.SiteFinder.UI
 		GMapControl drawGMap(string mapName,bool multi) {
 			// TODO: implement weather layer if possible with GMaps
 			GMapProvider.TimeoutMs = 20*1000;
+			IWebProxy proxy;
+			try {
+				proxy = Settings.CurrentUser.networkDomain == "internal.vodafone.com" ?
+					new WebProxy("http://10.74.51.1:80/", true) :
+					WebRequest.GetSystemWebProxy();
+			}
+			catch (Exception) {
+				proxy = WebRequest.GetSystemWebProxy();
+			}
 			
-			WebProxy VfProxy = new WebProxy("http://10.74.51.1:80/",true);
-			VfProxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-			
-			GMapProvider.WebProxy = VfProxy;
+			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+			GMapProvider.WebProxy = proxy;
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
@@ -244,7 +251,7 @@ namespace appCore.SiteFinder.UI
 		
 		void selectedSiteDetailsPopulate(Site site) {
 			currentSite = site;
-			if(currentSite.Exists) {				
+			if(currentSite.Exists) {
 				textBox1.Text = currentSite.Id;
 				textBox2.Text = currentSite.PowerCompany;
 				textBox3.Text = currentSite.JVCO;
