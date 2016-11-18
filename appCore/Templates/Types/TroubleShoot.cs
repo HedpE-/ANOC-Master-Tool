@@ -335,7 +335,7 @@ namespace appCore.Templates.Types
 								for(int c = 0;c < filteredCases.Count;c++) {
 									DataRow row = filteredCases[c];
 									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-										if(!(DateTime.Now >= Convert.ToDateTime(row["Scheduled Start"]) && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+										if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
 											filteredCases.RemoveAt(c);
 											c--;
 										}
@@ -351,7 +351,7 @@ namespace appCore.Templates.Types
 									string endDate = string.Empty;
 									try { startDate = Convert.ToDateTime(row["Scheduled Start"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
 									try { endDate = Convert.ToDateTime(row["Scheduled End"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
-									rowString = row["Change Ref"] + " - " + row["Summary"] + " - " + startDate + " until " + endDate + Environment.NewLine;
+									rowString = row["Change Ref"] + " - " + row["Status"] + " - " + row["Summary"] + " - " + startDate + " until " + endDate + Environment.NewLine;
 								}
 								temp += rowString;
 							}

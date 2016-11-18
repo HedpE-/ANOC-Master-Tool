@@ -15954,7 +15954,14 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
+
+- Fixed BCP Form
+- Fixed BCP Email subject for a more intuitive description
+- Menu Bar tweaks
+- Added CRQ Status on Troubleshoot Template's Ongoing CRQs 
+
+####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
 
 - Fixed crashes when OI server connection is not available
 - Fixed issue related with OI session cookies that caused loss of connection after 1st request to server

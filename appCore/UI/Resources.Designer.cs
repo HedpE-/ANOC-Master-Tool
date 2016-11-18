@@ -183,17 +183,18 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
+		///
+		///- Fixed BCP Form
+		///- Fixed BCP Email subject for a more intuitive description
+		///- Menu Bar tweaks
+		///- Added CRQ Status on Troubleshoot Template&apos;s Ongoing CRQs 
+		///
+		///####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
 		///
 		///- Fixed crashes when OI server connection is not available
 		///- Fixed issue related with OI session cookies that caused loss of connection after 1st request to server
-		///- New users without network share access will download all_cells and all_sites automatically from OI
-		///- Fixed Site Finder map proxy issues, for good!
-		///
-		///####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
-		///
-		///- Fully working AMT Browser with auto OI login
-		///- Fixed a bug when UserFolder w [rest of string was truncated]&quot;;.
+		///- New users without network share access will download all_cells and all [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

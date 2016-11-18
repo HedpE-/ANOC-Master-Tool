@@ -201,15 +201,6 @@ namespace appCore.Templates.UI
 			TroubleshootTextBox.Text = currentTemplate.Troubleshoot;
 		}
 
-		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
-		{
-			currentSite = null;
-			siteFinder_Toggle(false, false);
-			PowerCompanyTextBox.Text = string.Empty;
-			RegionTextBox.Text = string.Empty;
-			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
-		}
-
 		void siteFinder_Toggle(bool toggle, bool siteFound) {
 			foreach (object ctrl in Controls) {
 				switch(ctrl.GetType().ToString())
@@ -281,6 +272,7 @@ namespace appCore.Templates.UI
 				siteFinder_Toggle(true, currentSite.Exists);
 				generateTemplateToolStripMenuItem.Enabled = true;
 				generateTaskToolStripMenuItem.Enabled = true;
+				sendBCPToolStripMenuItem.Enabled = true;
 				
 				List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
 				COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
@@ -300,6 +292,15 @@ namespace appCore.Templates.UI
 //				sw.Stop();
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
 			}
+		}
+
+		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
+		{
+			currentSite = null;
+			siteFinder_Toggle(false, false);
+			PowerCompanyTextBox.Text = string.Empty;
+			RegionTextBox.Text = string.Empty;
+			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
@@ -686,6 +687,8 @@ namespace appCore.Templates.UI
 				else
 					FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
+			else
+				FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
@@ -818,7 +821,6 @@ namespace appCore.Templates.UI
 		
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {
-				INCTextBox.KeyPress -= INCTextBoxKeyPress;
 				SiteIdTextBox.TextChanged -= SiteIdTextBoxTextChanged;
 				SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
 				OtherSitesImpactedCheckBox.CheckedChanged -= OtherSitesImpactedCheckedChanged;
@@ -1035,7 +1037,7 @@ namespace appCore.Templates.UI
 			// sendBCPToolStripMenuItem
 			// 
 			sendBCPToolStripMenuItem.Name = "sendBCPToolStripMenuItem";
-			sendBCPToolStripMenuItem.Text = "Send BCP Form";
+			sendBCPToolStripMenuItem.Text = "Send BCP Email...";
 			sendBCPToolStripMenuItem.Click += SendBCPForm;
 			// 
 			// SiteIdLabel

@@ -12,10 +12,10 @@ using System.Windows.Forms;
 
 namespace appCore.UI
 {
-    /// <summary>
-    /// Description of AMTMenuStrip.
-    /// </summary>
-    public class AMTMenuStrip : MenuStrip
+	/// <summary>
+	/// Description of AMTMenuStrip.
+	/// </summary>
+	public class AMTMenuStrip : MenuStrip
 	{
 		public ToolStripMenuItem MainMenu = new ToolStripMenuItem();
 		
@@ -196,25 +196,15 @@ namespace appCore.UI
 					}
 				}
 				else {
-					if(tsmi.Name.Contains("Refresh")) {
-						tsmi.Enabled = false;
-						tsmi.Text = string.Empty;
-					}
-					else {
-						foreach (object ctr in tsmi.DropDownItems) {
-							if(ctr.GetType().ToString() != "System.Windows.Forms.ToolStripSeparator") {
-								ToolStripMenuItem tsmi2 = ctr as ToolStripMenuItem;
-								if(tsmi2.Text.Contains("Generate") || tsmi2.Text == "Site Details" || tsmi2.Text == "Clear") {
-									if(tsmi2.Text == "Site Details") {
-										if(!toggle || !siteFound)
-											tsmi2.Enabled = false;
-										else
-											tsmi2.Enabled = true;
-										break;
-									}
-									tsmi2.Enabled = toggle;
-								}
+					for(int i = 0;i < tsmi.DropDownItems.Count;i++) {
+						if(tsmi.DropDownItems[i] is ToolStripMenuItem) {
+							if(tsmi.DropDownItems[i].Text == "Site Details") {
+								if(!toggle || !siteFound)
+									tsmi.DropDownItems[i].Enabled = false;
+								else
+									tsmi.DropDownItems[i].Enabled = true;
 							}
+							tsmi.DropDownItems[i].Enabled = toggle;
 						}
 					}
 				}
