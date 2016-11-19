@@ -187,14 +187,16 @@ namespace appCore.UI {
 		///
 		///- Fixed BCP Form
 		///- Fixed BCP Email subject for a more intuitive description
+		///- Added new field to BCP Form to choose the email recipient between EGI and TX email
+		///- BCP Task number accepts free text now
+		///- Updated EGI number on contacts
 		///- Menu Bar tweaks
 		///- Added CRQ Status on Troubleshoot Template&apos;s Ongoing CRQs 
 		///
 		///####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
 		///
 		///- Fixed crashes when OI server connection is not available
-		///- Fixed issue related with OI session cookies that caused loss of connection after 1st request to server
-		///- New users without network share access will download all_cells and all [rest of string was truncated]&quot;;.
+		///- Fixed issue rel [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

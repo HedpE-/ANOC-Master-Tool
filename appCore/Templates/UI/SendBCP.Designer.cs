@@ -31,6 +31,8 @@ namespace appCore.Templates.UI
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox checkBox2;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.ComboBox comboBox2;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -70,6 +72,8 @@ namespace appCore.Templates.UI
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.comboBox2 = new System.Windows.Forms.ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -109,7 +113,6 @@ namespace appCore.Templates.UI
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(118, 20);
 			this.textBox1.TabIndex = 1;
-			this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox1KeyPress);
 			// 
 			// label3
 			// 
@@ -145,7 +148,7 @@ namespace appCore.Templates.UI
 			// button3
 			// 
 			this.button3.Enabled = false;
-			this.button3.Location = new System.Drawing.Point(404, 108);
+			this.button3.Location = new System.Drawing.Point(404, 135);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(24, 20);
 			this.button3.TabIndex = 10;
@@ -156,7 +159,7 @@ namespace appCore.Templates.UI
 			// textBox4
 			// 
 			this.textBox4.DetectUrls = false;
-			this.textBox4.Location = new System.Drawing.Point(3, 131);
+			this.textBox4.Location = new System.Drawing.Point(3, 158);
 			this.textBox4.Name = "textBox4";
 			this.textBox4.ReadOnly = true;
 			this.textBox4.Size = new System.Drawing.Size(425, 256);
@@ -166,7 +169,7 @@ namespace appCore.Templates.UI
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(3, 111);
+			this.label5.Location = new System.Drawing.Point(3, 138);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(119, 17);
 			this.label5.TabIndex = 69;
@@ -174,7 +177,7 @@ namespace appCore.Templates.UI
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(3, 393);
+			this.button1.Location = new System.Drawing.Point(3, 420);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(89, 23);
 			this.button1.TabIndex = 11;
@@ -237,11 +240,32 @@ namespace appCore.Templates.UI
 			this.checkBox2.UseVisualStyleBackColor = true;
 			this.checkBox2.Visible = false;
 			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(3, 111);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(119, 17);
+			this.label6.TabIndex = 79;
+			this.label6.Text = "Send Email to";
+			// 
+			// comboBox2
+			// 
+			this.comboBox2.FormattingEnabled = true;
+			this.comboBox2.Items.AddRange(new object[] {
+			"egi.vodafone.shiftleader@ericsson.com",
+			"1stLineANOCUKTX@vodafone.com"});
+			this.comboBox2.Location = new System.Drawing.Point(128, 108);
+			this.comboBox2.Name = "comboBox2";
+			this.comboBox2.Size = new System.Drawing.Size(300, 21);
+			this.comboBox2.TabIndex = 80;
+			// 
 			// SendBCP
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(432, 419);
+			this.ClientSize = new System.Drawing.Size(432, 446);
+			this.Controls.Add(this.comboBox2);
+			this.Controls.Add(this.label6);
 			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.checkBox1);
