@@ -209,6 +209,7 @@
     <Compile Include="Toolbox\coordConvert.cs" />
     <Compile Include="Toolbox\CSVParser.cs" />
     <Compile Include="Toolbox\EmbeddedAssembly.cs" />
+    <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\ScrollableMessageBox.cs">
       <SubType>Form</SubType>
     </Compile>

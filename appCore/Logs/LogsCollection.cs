@@ -125,9 +125,7 @@ namespace appCore.Logs
 			if(LogFile.Exists) {
 //				logfile = LogFile.OpenText().ReadToEnd();
 				using (StreamReader reader = new StreamReader(LogFile.FullName))
-				{
 					logfile = reader.ReadToEnd();
-				}
 			}
 			
 			int logsCount = Toolbox.Tools.CountStringOccurrences(logfile, logSeparator);
@@ -284,13 +282,13 @@ namespace appCore.Logs
 				case "Troubleshoot": case "Failed CRQ": case "Update":
 					T existingLog = (T)List[existingLogIndex];
 					if (n.fullLog != existingLog.fullLog) {
-                        //						Toolbox.ScrollableMessageBox msgBox = new Toolbox.ScrollableMessageBox();
-                        //						Action action = new Action(delegate {
-                        //						msgBox.StartPosition = FormStartPosition.CenterParent;
-                        //						msgBox.Show(existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, "Overwrite existing log?",false);
-                        DialogResult res = DialogResult.No;
-                        if (!ForceOverwriteLog)
-						    res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+						//						Toolbox.ScrollableMessageBox msgBox = new Toolbox.ScrollableMessageBox();
+						//						Action action = new Action(delegate {
+						//						msgBox.StartPosition = FormStartPosition.CenterParent;
+						//						msgBox.Show(existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, "Overwrite existing log?",false);
+						DialogResult res = DialogResult.No;
+						if (!ForceOverwriteLog)
+							res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 //						                           });
 //						Toolbox.Tools.darkenBackgroundForm(action,false,this);
 						if (res == DialogResult.Yes || ForceOverwriteLog) {
@@ -367,14 +365,16 @@ namespace appCore.Logs
 //					Console.WriteLine(s);
 //				}
 //			}
-		Retry:
-
-			try
-			{
+//		Retry:
+//
+//			try
+//			{
 //				if(List.Count > 0 && !LogFile.Exists)
 //					LogFile = new FileInfo(LogFile.FullName);
-				
-				if (LogFile.Exists) {
+			
+			if (LogFile.Exists) {
+			Retry:
+				try {
 					using (StreamWriter sw = LogFile.AppendText())
 					{
 						sw.WriteLine();
@@ -389,7 +389,27 @@ namespace appCore.Logs
 						sw.Write(logSeparator);
 					}
 				}
-				else {
+				catch (Exception e) {
+					int errorCode = (int)(e.HResult & 0x0000FFFF);
+					DialogResult ans;
+					switch(errorCode) {
+						case 32:
+							ans = ErrorHandling.showFileInUseDuringLogFileOperation;
+							break;
+						case 112:
+							ans = ErrorHandling.showLowSpaceWarningDuringLogFileOperation;
+							break;
+						default:
+							ans = DialogResult.None;
+							break;
+					}
+					if(ans == DialogResult.Retry)
+						goto Retry;
+				}
+			}
+			else {
+			Retry2:
+				try {
 					using (StreamWriter sw = LogFile.CreateText())
 					{
 						string logtype = n.LogType;
@@ -401,15 +421,33 @@ namespace appCore.Logs
 					}
 					LogFile = new FileInfo(LogFile.FullName);
 				}
+				catch (Exception e) {
+					int errorCode = (int)(e.HResult & 0x0000FFFF);
+					DialogResult ans;
+					switch(errorCode) {
+						case 32:
+							ans = ErrorHandling.showFileInUseDuringLogFileOperation;
+							break;
+						case 112:
+							ans = ErrorHandling.showLowSpaceWarningDuringLogFileOperation;
+							break;
+						default:
+							ans = DialogResult.None;
+							break;
+					}
+					if(ans == DialogResult.Retry)
+						goto Retry2;
+				}
 			}
-			catch (IOException)
-			{
-//				Action action = new Action(delegate {
-				FlexibleMessageBox.Show("Log file is currently in use, please close it and press OK to retry","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//				                           });
-//				Toolbox.Tools.darkenBackgroundForm(action,false,this);
-				goto Retry;
-			}
+//			}
+//			catch (IOException)
+//			{
+			////				Action action = new Action(delegate {
+//				FlexibleMessageBox.Show("Log file is currently in use, please close it and press OK to retry","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+			////				                           });
+			////				Toolbox.Tools.darkenBackgroundForm(action,false,this);
+//				goto Retry;
+//			}
 			this.List.Add(n);
 			MainForm.UpdateTicketCountLabel();
 		}

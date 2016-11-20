@@ -185,7 +185,7 @@ namespace appCore.DB
 //			UpdateDBFiles(all_sites, all_cells);
 			bool finishedTask = false;
 			var thread = new Thread(() => {
-			                        	UserFolder.UpdateLocalDBFilesCopy();
+			                        	UserFolder.UpdateLocalDBFilesCopy(false);
 			                        	finishedTask = true;
 			                        });
 			thread.IsBackground = true;

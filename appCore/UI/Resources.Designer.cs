@@ -183,7 +183,11 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha6 28/11/2016 #######
+		///
+		///- First implementations of Error Handling to prevent crashes due to IO errors
+		///
+		///####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
 		///
 		///- Fixed BCP Form
 		///- Fixed BCP Email subject for a more intuitive description
@@ -191,12 +195,7 @@ namespace appCore.UI {
 		///- BCP Task number accepts free text now
 		///- Updated EGI number on contacts
 		///- Menu Bar tweaks
-		///- Added CRQ Status on Troubleshoot Template&apos;s Ongoing CRQs 
-		///
-		///####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
-		///
-		///- Fixed crashes when OI server connection is not available
-		///- Fixed issue rel [rest of string was truncated]&quot;;.
+		///- Added CRQ Status on Troubleshoot Template&apos;s Ongoing CRQs  [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
