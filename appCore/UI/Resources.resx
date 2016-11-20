@@ -15957,6 +15957,7 @@ ZK - LTE2100 Pico</value>
     <value>####### ANOC Master Tool 7.0alpha6 28/11/2016 #######
 
 - First implementations of Error Handling to prevent crashes due to IO errors
+- Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
 
 ####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
 

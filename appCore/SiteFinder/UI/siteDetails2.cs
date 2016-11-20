@@ -397,7 +397,7 @@ namespace appCore.SiteFinder.UI
 		void Button45Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox4.Text,label4.Text,true);
+			                           	LargeTextForm enlarge = new LargeTextForm(textBox4.Text,label4.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           });
@@ -488,7 +488,7 @@ namespace appCore.SiteFinder.UI
 			                           		form.AutoScaleDimensions = new SizeF(6F, 13F);
 			                           		form.AutoScaleMode = AutoScaleMode.Font;
 			                           		form.ClientSize = new Size(182, 337);
-			                           		form.Icon = appCore.UI.Resources.MB_0001_vodafone3;
+			                           		form.Icon = Resources.MB_0001_vodafone3;
 			                           		form.MaximizeBox = false;
 			                           		form.FormBorderStyle = FormBorderStyle.FixedSingle;
 			                           		form.Controls.Add(titleLabel);
@@ -498,7 +498,7 @@ namespace appCore.SiteFinder.UI
 			                           		form.Name = "BulkSiteSearch";
 			                           		form.Text = "Sites Bulk Search";
 			                           		form.StartPosition = FormStartPosition.Manual;
-			                           		System.Drawing.Point loc = this.PointToScreen(System.Drawing.Point.Empty);
+			                           		System.Drawing.Point loc = PointToScreen(System.Drawing.Point.Empty);
 			                           		loc.X = loc.X + ((this.Width - form.Width) / 2);
 			                           		loc.Y = loc.Y + ((this.Height - form.Height) / 2);
 			                           		form.Location = loc;

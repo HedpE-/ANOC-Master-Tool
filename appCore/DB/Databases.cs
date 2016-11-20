@@ -9,7 +9,6 @@
 using System.Data;
 using System.Threading;
 using System.IO;
-using System.Net;
 using System.Timers;
 using appCore.Settings;
 using appCore.Toolbox;

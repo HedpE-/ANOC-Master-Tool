@@ -152,90 +152,6 @@ namespace appCore
 			}
 		}
 		
-//		void UpdateLogFile(string ToLog, string src, string LogType)
-//		{
-//			string separator = string.Empty;
-//			for (int i = 1; i < 301; i++) {
-//				if (i == 151) separator = separator + Environment.NewLine;
-//				separator = separator + "*";
-//			}
-//
-		////			TODO: BCP Template - search on logs
-		////				>1 per INC
-		////				Find all INCs and compare contents
-//
-//			int[] LogIndex = CheckLogExists(src,LogType);
-//
-//			if(LogIndex.Length > 0) {
-//				string[] Logs = appCore.Logs.UI.LogEditor.ParseLogs(LogFilePath);
-//				switch(LogType) {
-//					case "Troubleshoot Template": case "Failed CRQ":
-//						string existingLog = Logs[LogIndex[0]].Substring(Logs[LogIndex[0]].IndexOf("\r\n", StringComparison.Ordinal) + 2,Logs[LogIndex[0]].Length - (Logs[LogIndex[0]].IndexOf("\r\n", StringComparison.Ordinal) + 2));
-//						if (existingLog != ToLog){
-//							string[] strTofind = { "\r\n" };
-//							string[] log = Logs[LogIndex[0]].Split(strTofind, StringSplitOptions.None);
-//
-//							ScrollableMessageBox msgBox = new ScrollableMessageBox();
-//							Action action = new Action(delegate {
-//							                           	msgBox.StartPosition = FormStartPosition.CenterParent;
-//							                           	msgBox.Show(Logs[LogIndex[0]], "Existing log found", MessageBoxButtons.YesNo, "Overwrite existing log?",false);
-//							                           });
-//							Toolbox.Tools.darkenBackgroundForm(action,false,this);
-//							if (msgBox.DialogResult == DialogResult.Yes) {
-//								Logs = Logs.Where((source, index) => index != LogIndex[0]).ToArray();
-//								List<string> LogsList = Logs.ToList<string>();
-//								LogsList.Add(dt.ToString("HH:mm:ss") + " - " + LogType + Environment.NewLine + ToLog);
-//								Logs = LogsList.ToArray();
-//								File.Delete(LogFilePath);
-//								foreach (string str in Logs) {
-//									if (str == Logs[0])	File.AppendAllText(LogFilePath, str + Environment.NewLine + separator);
-//									else File.AppendAllText(LogFilePath, Environment.NewLine + str + Environment.NewLine + separator);
-//								}
-//							}
-//							else return;
-//						}
-//						break;
-//					case "TX Template": case "Update Template":
-//						foreach(int index in LogIndex) {
-//							string tempLog = Logs[index].Substring(Logs[index].IndexOf("\r\n", StringComparison.Ordinal) + 2,Logs[index].Length - (Logs[index].IndexOf("\r\n", StringComparison.Ordinal) + 2));
-//							if(tempLog == ToLog)
-//								return;
-//						}
-//						ToLog += Environment.NewLine + separator;
-//						addLog(ToLog,LogType);
-//						break;
-//					case "BCP":
-//						break;
-//				}
-//
-//			}
-//			else {
-//				ToLog += Environment.NewLine + separator;
-//				addLog(ToLog,LogType);
-//			}
-//		}
-//
-//		void addLog(string ToLog, string LogType)
-//		{
-//
-//		Retry:
-//
-//			try
-//			{
-//				if (CheckLogFileExists("template")) File.AppendAllText(LogFilePath,Environment.NewLine + dt.ToString("HH:mm:ss") + " - " + LogType + Environment.NewLine + ToLog);
-//				else File.WriteAllText(LogFilePath,dt.ToString("HH:mm:ss") + " - " + LogType  + Environment.NewLine + ToLog);
-//			}
-//			catch (IOException)
-//			{
-//				Action action = new Action(delegate {
-//				                           	MessageBox.Show("Log file is currently in use, please close it and press OK to retry","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//				                           });
-//				Toolbox.Tools.darkenBackgroundForm(action,false,this);
-//				goto Retry;
-//			}
-//
-//		}
-		
 		public void FillTemplateFromLog(Template log)
 		{
 			switch(log.LogType) {
@@ -581,123 +497,6 @@ namespace appCore
 			toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
 			toolTip.SetToolTip(button25, "To paste on Site Lopedia's bulk search");
 		}
-		
-//		void trayIconPopulate()
-//		{
-//			// Documents on constants for easier filename change
-//			string ProcessesDoc = "\\\\vf-pt\\fs\\ANOC-UK\\ANOC-UK 1st LINE\\1. RAN 1st LINE\\Processes";
-//			const string TeamContactsDoc = "\\\\vf-pt\\fs\\ANOC-UK\\ANOC-UK 1st LINE\\Contactos\\ANOC Team contact numbers.xlsx";
-//			const string VFcontactsDoc = "\\\\vf-pt\\fs\\ANOC-UK\\ANOC-UK 1st LINE\\Contactos\\25-09-2013 USEFUL CONTACTS.xlsx";
-//
-//			// Add menu items to shortcut menu.
-//			MenuItem Documents = new MenuItem("ANOC Documents");
-//			Documents.MenuItems.Add("Shifts", (s, e) => Process.Start("excel.exe", '"' + ShiftsDoc + '"'));
-//			Documents.MenuItems.Add("ANOC Contacts", (s, e) => Process.Start("excel.exe", '"' + TeamContactsDoc + '"'));
-//			Documents.MenuItems.Add("-");
-//			Documents.MenuItems.Add("Useful Contacts", (s, e) => Process.Start("excel.exe", '"' + VFcontactsDoc + '"'));
-//			Documents.MenuItems.Add("Processes", (s, e) => Process.Start("winword.exe", '"' + ProcessesDoc + '"'));
-//
-//			MenuItem Links = new MenuItem("Links");
-//			Links.MenuItems.Add("ST Internal Citrix", (s, e) => Process.Start("https://st.internal.vodafone.co.uk/"));
-//			Links.MenuItems.Add("ANOC-UK Network Share", (s, e) => Process.Start("explorer.exe", '"' + "\\\\vf-pt\\fs\\ANOC-UK" + '"'));
-//			Links.MenuItems.Add("Energy Networks", (s, e) => Process.Start("http://www.energynetworks.org/info/faqs/electricity-distribution-map.html"));
-//			Links.MenuItems.Add("BT Wholesale", (s, e) => Process.Start("https://www.btwholesale.com/portalzone/portalzone/homeLogin.do"));
-//			Links.MenuItems.Add("ALEX", (s, e) => Process.Start("http://oprweb/alex"));
-//			Links.MenuItems.Add("Google Translate", (s, e) => Process.Start("http://translate.google.com/"));
-//
-//			TrayIcon.ContextMenu = new ContextMenu(new MenuItem[] {
-//			                                       	Documents,
-//			                                       	Links,
-//			                                       	new MenuItem("-"),
-//			                                       	new MenuItem("Settings", (s, e) => PictureBox1Click(null, null)),
-//			                                       	new MenuItem("AMT Browser", (s, e) => PictureBox2Click(null, null)),
-//			                                       	new MenuItem("Notes", (s, e) => PictureBox3Click(null, null)),
-//			                                       	new MenuItem("Log Browser", (s, e) => PictureBox4Click(null, null)),
-//			                                       	new MenuItem("Site Finder", (s, e) => PictureBox5Click(null, null)),
-//			                                       	new MenuItem("-"),
-//			                                       	new MenuItem("Check for Updates..."),
-//			                                       	new MenuItem("Exit AMT", (s, e) => Application.Exit()),
-//			                                       });
-//			//trayIcon.DoubleClick += new EventHandler(trayIcon_DoubleClick);
-//			trayIcon.MouseUp += trayIcon_MouseUp;
-//
-//			if(GlobalProperties.shareAccess) {
-//				string[] ProcessesDocFiles = Directory.GetFiles(ProcessesDoc);
-//
-//				foreach (string file in ProcessesDocFiles) {
-//					if(file.Contains("ANOC UK 1st Line Processes") && file.Contains(".docx")) {
-//						ProcessesDoc = file;
-//						break;
-//					}
-//				}
-//
-//				DirectoryInfo ShiftsDir = new DirectoryInfo(Path.GetDirectoryName(ShiftsDoc));
-//				FileInfo[] shiftFiles = ShiftsDir.GetFiles("*shift*.xlsx");
-//
-//				if(shiftFiles.Length > 0) {
-//					DateTime newestDate = Convert.ToDateTime("01/01/1900 00:00:00");
-//					foreach (FileInfo file in shiftFiles) {
-//						if(file.CreationTime > newestDate && !file.Attributes.ToString().Contains("Hidden")) {
-//							newestDate = file.CreationTime;
-//							ShiftsDoc = file.FullName;
-//						}
-//					}
-//				}
-//
-//				if(Toolbox.Tools.GetUserDetails("Username") == "GONCARJ3") {
-//					string errmsg = string.Empty;
-//					if(!File.Exists(ProcessesDoc))
-//						errmsg += "Processes Document";
-//					if(!File.Exists(ShiftsDoc)) {
-//						if(!string.IsNullOrEmpty(errmsg))
-//							errmsg += Environment.NewLine;
-//						errmsg += "Shifts Document";
-//					}
-//					if(!File.Exists(TeamContactsDoc)) {
-//						if(!string.IsNullOrEmpty(errmsg))
-//							errmsg += Environment.NewLine;
-//						errmsg += "Team Contacts Document";
-//					}
-//					if(!File.Exists(VFcontactsDoc)) {
-//						if(!string.IsNullOrEmpty(errmsg))
-//							errmsg += Environment.NewLine;
-//						errmsg += "Useful Contacts Document";
-//					}
-//					if (!string.IsNullOrEmpty(errmsg))
-//						showBalloon("The following documents were not found",errmsg);
-//				}
-//			}
-//			else {
-//				FileInfo[] shiftFiles = UserProperties.userFolder.GetFiles("*shift*.xlsx");
-//
-//				if(shiftFiles.Length > 0) {
-//					DateTime newestDate = Convert.ToDateTime("01/01/1900 00:00:00");
-//					foreach (FileInfo file in shiftFiles) {
-//						if(file.CreationTime > newestDate && !file.Attributes.ToString().Contains("Hidden")) {
-//							newestDate = file.CreationTime;
-//							ShiftsDoc = file.FullName;
-//						}
-//					}
-//				}
-//
-//				foreach (MenuItem item in Documents.MenuItems) {
-//					if(item.Name == "Shifts" && File.Exists(ShiftsDoc))
-//						item.Enabled = true;
-//					else
-//						item.Enabled = false;
-//				}
-//				Links.MenuItems[1].Enabled = false;
-//				TrayIcon.ContextMenu.MenuItems[9].Enabled = false;
-//			}
-//		}
-//
-//		void trayIcon_MouseUp(object sender, MouseEventArgs e)
-//		{
-//			if (e.Button == MouseButtons.Left) {
-//				MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
-//				mi.Invoke(trayIcon, null);
-//			}
-//		}
 		
 		void buttClick(object sender, EventArgs e) {
 			Button bt = (Button)sender;
@@ -1129,43 +928,15 @@ namespace appCore
 		
 		void shiftsPanel_refreshClick(object sender, EventArgs e)
 		{
-			Thread t = new Thread(() => {
-			                      	shiftsBodySnap = Tools.loadShifts(shiftsBodySnap, shiftsChosenDate);
-			                      	shiftsPanel.Invalidate(true);
-			                      });
-			t.Start();
+			// FIXME: shiftsPanel_refreshClick disabled due to System.InvalidOperationException on shiftsPanel.Invalidate(true)
+			// System.InvalidOperationException: Cross-thread operation not valid: Control 'shiftsPanel' accessed from a thread other than the thread it was created on.
+
+//			Thread t = new Thread(() => {
+//			                      	shiftsBodySnap = Tools.loadShifts(shiftsBodySnap, shiftsChosenDate);
+//			                      	shiftsPanel.Invalidate(true);
+//			                      });
+//			t.Start();
 		}
-		
-//		bool siteFinder_mainswitch {
-//			get {
-//				return _siteFinder_mainswitch;
-//			}
-//			set {
-//				if(_siteFinder_mainswitch == value)
-//					return;
-//				_siteFinder_mainswitch = value;
-//				if (!_siteFinder_mainswitch) {
-		////					textBox27.KeyPress -= siteFinder;
-		////					textBox43.KeyPress -= siteFinder;
-//					textBox50.KeyPress -= siteFinder;
-//					pictureBox5.Visible = false;
-//					siteFinder_Toggle(true,false,"All");
-//				}
-//				else {
-		////					textBox27.KeyPress += siteFinder;
-		////					textBox43.KeyPress += siteFinder;
-//					textBox50.KeyPress += siteFinder;
-//					pictureBox5.Visible = true;
-//					siteFinder_Toggle(false,false,"All");
-//				}
-//			}
-//		}
-//
-//		public static bool siteFinderMainswitch {
-//			get {
-//				return _siteFinder_mainswitch;
-//			}
-//		}
 
 		public void siteFinder(object sender, KeyPressEventArgs e)
 		{
@@ -1223,7 +994,7 @@ namespace appCore
 //				                           	FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
 				                           	siteFinder_Toggle(true, siteFound, tb.Name);
 				                           });
-				Toolbox.Tools.darkenBackgroundForm(action,true,this);
+				Tools.darkenBackgroundForm(action,true,this);
 			}
 		}
 
@@ -1328,7 +1099,7 @@ namespace appCore
 				textBox15.Text = textBox15.Text.ToUpper();
 				textBox13.TextChanged += TextBox13TextChanged;
 				textBox15.TextChanged += TextBox15TextChanged;
-				if (Toolbox.Tools.IsAllDigits(textBox13.Text.Substring(3,textBox13.Text.Length - 3))) {
+				if (Tools.IsAllDigits(textBox13.Text.Substring(3,textBox13.Text.Length - 3))) {
 					int[] rng = new int[12];
 					for (int c = 0; c <= 11; c++) {
 						rng[c] = Convert.ToInt32(textBox13.Text.Substring(c + 3,1));
@@ -1350,7 +1121,7 @@ namespace appCore
 					                           	textBox13.Text = "";
 					                           	textBox13.TextChanged += TextBox13TextChanged;
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 				}
 			}
 			else {
@@ -1384,303 +1155,13 @@ namespace appCore
 			finally {}
 		}
 
-//		void Button1Click(object sender, EventArgs e)
-//		{
-//			Action action = new Action(delegate {
-//			                           	string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(textBox1.Text, "INC");
-//			                           	if (CompINC_CRQ != "error") textBox1.Text = CompINC_CRQ;
-//			                           	else {
-//			                           		MessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//			                           		return;
-//			                           	}
-//			                           	string errmsg = "";
-//			                           	if (string.IsNullOrEmpty(textBox1.Text)) {
-//			                           		errmsg = "         - INC/Ticket Number missing\n";
-//			                           	}
-//			                           	if (string.IsNullOrEmpty(textBox2.Text)) {
-//			                           		errmsg += "         - Site ID missing\n";
-//			                           	}
-//			                           	if (comboBox1.SelectedIndex == 1 && string.IsNullOrEmpty(textBox3.Text)) {
-//			                           		errmsg += "          - TF Site ID missing\n";
-//			                           	}
-//			                           	if (string.IsNullOrEmpty(textBox4.Text)) {
-//			                           		errmsg += "         - Site Address missing\n";
-//			                           	}
-//			                           	if (string.IsNullOrEmpty(textBox7.Text)) {
-//			                           		errmsg += "         - Active alarms missing\n";
-//			                           	}
-//			                           	if (string.IsNullOrEmpty(textBox9.Text)) {
-//			                           		errmsg += "         - Troubleshoot missing\n";
-//			                           	}
-//			                           	if (checkBox2.Checked) {
-//			                           		if ((numericUpDown1.Value == 0) && (numericUpDown2.Value == 0) && (numericUpDown3.Value == 0)) {
-//			                           			errmsg += "         - COOS count missing\n";
-//			                           		}
-//			                           	}
-//			                           	if (!string.IsNullOrEmpty(errmsg)) {
-//			                           		MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//			                           		return;
-//			                           	}
-//			                           	errmsg = "";
-//
-//			                           	// No changes since the last template warning
-//
-//			                           	if (prevTemp[0] != "-") {
-//			                           		if (textBox1.Text == prevTemp[0]) {
-//			                           			errmsg = "         - INC\n";
-//			                           		}
-//			                           		if (textBox2.Text == prevTemp[1]) {
-//			                           			errmsg += "         - Site ID\n";
-//			                           		}
-//			                           		if (comboBox1.Text == "TF" && textBox3.Text == prevTemp[2]) {
-//			                           			errmsg += "         - TF Site ID\n";
-//			                           		}
-//			                           		if (textBox4.Text == prevTemp[3]) {
-//			                           			errmsg += "         - Site Address\n";
-//			                           		}
-//			                           		if (textBox5.Text != "" && textBox5.Text == prevTemp[4]) {
-//			                           			errmsg += "         - CCT reference\n";
-//			                           		}
-//			                           		if (checkBox1.Checked && checkBox1.Checked.ToString() == prevTemp[5]){
-//			                           			errmsg += "         - Other sites impacted\n";
-//			                           		}
-//			                           		if (checkBox2.Checked) {
-//			                           			if(numericUpDown1.Text == prevTemp[6] && numericUpDown2.Text == prevTemp[7] && numericUpDown3.Text == prevTemp[8]) {
-//			                           				if (checkBox2.Checked && numericUpDown1.Text == prevTemp[6]){
-//			                           					errmsg += "         - 2G COOS count\n";
-//			                           				}
-//			                           				if (checkBox2.Checked && numericUpDown2.Text == prevTemp[7]) {
-//			                           					errmsg += "         - 3G COOS count\n";
-//			                           				}
-//			                           				if (checkBox2.Checked && numericUpDown3.Text == prevTemp[8]) {
-//			                           					errmsg += "         - 4G COOS count\n";
-//			                           				}
-//			                           			}
-//			                           			if(checkBox18.Checked && checkBox18.Checked.ToString() == prevTemp[9])
-//			                           				errmsg += "         - Full Site Outage flag\n";
-//			                           		}
-//			                           		if (checkBox3.Checked && checkBox3.Checked.ToString() == prevTemp[10]) {
-//			                           			errmsg += "         - Performance issue\n";
-//			                           		}
-//			                           		if (checkBox4.Checked && checkBox4.Checked.ToString() == prevTemp[11]) {
-//			                           			errmsg += "         - Intermittent issue\n";
-//			                           		}
-//			                           		if (textBox6.Text != "" && textBox6.Text == prevTemp[12]) {
-//			                           			errmsg += "         - Related INC/CRQ\n";
-//			                           		}
-//			                           		if (textBox7.Text == prevTemp[13]) {
-//			                           			errmsg += "         - Active Alarms\n";
-//			                           		}
-//			                           		if (textBox8.Text != "" && textBox8.Text == prevTemp[14]) {
-//			                           			errmsg += "         - Alarm History\n";
-//			                           		}
-//			                           		if (textBox9.Text == prevTemp[15]) {
-//			                           			errmsg += "         - Troubleshoot\n";
-//			                           		}
-//			                           		if (errmsg != "") {
-//			                           			DialogResult ans = MessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-//			                           			if (ans == DialogResult.No)	return;
-//			                           		}
-//			                           	}
-//			                           	Template test = new Templates.Types.TroubleShoot(tabPage8.Controls);
-//			                           	string template = buildTST();
-//
-//			                           	try {
-//			                           		Clipboard.SetText(template);
-//			                           	}
-//			                           	catch (Exception) {
-//			                           		try {
-//			                           			Clipboard.SetText(template);
-//			                           		}
-//			                           		catch (Exception) {
-//			                           			MessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-//			                           		}
-//			                           	}
-//
-//			                           	ScrollableMessageBox msgBox = new ScrollableMessageBox();
-//			                           	msgBox.StartPosition = FormStartPosition.CenterParent;
-//			                           	msgBox.Show(template, "Success", MessageBoxButtons.OK, "Template copied to Clipboard",true);
-//
-//			                           	// Store this template for future warning on no changes
-//
-//			                           	prevTemp[0] = textBox1.Text;
-//			                           	prevTemp[1] = textBox2.Text;
-//			                           	prevTemp[2] = textBox3.Text;
-//			                           	prevTemp[3] = textBox4.Text;
-//			                           	prevTemp[4] = textBox5.Text;
-//			                           	prevTemp[5] = checkBox1.Checked.ToString();
-//			                           	prevTemp[6] = numericUpDown1.Text;
-//			                           	prevTemp[7] = numericUpDown2.Text;
-//			                           	prevTemp[8] = numericUpDown3.Text;
-//			                           	prevTemp[9] = checkBox18.Checked.ToString();
-//			                           	prevTemp[10] = checkBox3.Checked.ToString();
-//			                           	prevTemp[11] = checkBox4.Checked.ToString();
-//			                           	prevTemp[12] = textBox6.Text;
-//			                           	prevTemp[13] = textBox7.Text;
-//			                           	prevTemp[14] = textBox8.Text;
-//			                           	prevTemp[15] = textBox9.Text;
-//
-//			                           	UpdateLogFile(template, textBox1.Text, "Troubleshoot Template"); // store template in logfile
-//			                           	if (label40.Text != string.Empty) Updatelabel40();
-//			                           	button44.Enabled = true;
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-//		}
-
-//		string buildTST()
-//		{
-//			string template = "INC: " + textBox1.Text + Environment.NewLine;
-//			template += "Site ID: " + textBox2.Text + Environment.NewLine;
-//			template += "Site Owner: ";
-//			if (comboBox1.SelectedIndex == -1) {
-//				comboBox1.SelectedIndex = 0;
-//			}
-//			else {
-//				if (comboBox1.SelectedIndex == 1) {
-//					comboBox1.Text = "TF (" + textBox3.Text + ")";
-//				}
-//			}
-//			template += comboBox1.Text + Environment.NewLine;
-//			template += "Site Address: " + textBox4.Text + Environment.NewLine;
-//			template += "Other sites impacted: ";
-//			if (checkBox1.Checked){
-//				template += "YES * more info on the INC" + Environment.NewLine;
-//			}
-//			else {
-//				template += "None" + Environment.NewLine;
-//			}
-//			template += "COOS: ";
-//			if (checkBox2.Checked) {
-//				template += "YES 2G: " + numericUpDown1.Value + " 3G: " + numericUpDown2.Value + " 4G: " + numericUpDown3.Value + Environment.NewLine;
-//			}
-//			else
-//				template += "No" + Environment.NewLine;
-//			template += "Full Site Outage: ";
-//			if(checkBox18.Checked)
-//				template += "YES" + Environment.NewLine;
-//			else
-//				template += "No" + Environment.NewLine;
-//			template += "Performance Issue: ";
-//			if (checkBox3.Checked) {
-//				template += "YES" + Environment.NewLine;
-//			}
-//			else {
-//				template += "No" + Environment.NewLine;
-//			}
-//			template += "Intermittent Issue: ";
-//			if (checkBox4.Checked) {
-//				template += "YES" + Environment.NewLine;
-//			}
-//			else {
-//				template += "No" + Environment.NewLine;
-//			}
-//			if (!string.IsNullOrEmpty(textBox5.Text)) {
-//				template += "CCT Reference: " + textBox5.Text + Environment.NewLine;
-//			}
-//			else {
-//				template += "CCT Reference: None" + Environment.NewLine;
-//			}
-//			if (!string.IsNullOrEmpty(textBox6.Text)) {
-//				template += "Related INC/CRQ: " + textBox6.Text + Environment.NewLine;
-//			}
-//			else {
-//				template += "Related INC/CRQ: None" + Environment.NewLine + Environment.NewLine;
-//			}
-//			template += "Active Alarms:" + Environment.NewLine;
-//			template += textBox7.Text + Environment.NewLine + Environment.NewLine;
-//			template += "Alarm History:" + Environment.NewLine;
-//			if (string.IsNullOrEmpty(textBox8.Text)) {
-//				template += "None related" + Environment.NewLine + Environment.NewLine;
-//			}
-//			else {
-//				template += textBox8.Text + Environment.NewLine + Environment.NewLine;
-//			}
-//			template += "Troubleshoot:" + Environment.NewLine;
-//			template += textBox9.Text;
-//			comboBox1.Text = comboBox1.Text.Substring(0,2);
-//
-//			string[] name = Toolbox.Tools.GetUserDetails("Name").Split(' ');
-//			string dept = Toolbox.Tools.GetUserDetails("Department");
-//			dept = dept.Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
-//
-//			template += Environment.NewLine + Environment.NewLine + name[1].Replace(",",string.Empty) + " " + name[0].Replace(",",string.Empty) + Environment.NewLine + dept + Environment.NewLine + "ANOC Number: +44 163 569 206";
-//			template += dept == "1st Line RAN Support" ? "7" : "9";
-//			return template;
-//		}
-
-//		void TSTChanged(object sender, EventArgs e)
-//		{
-//			if(siteFinder_mainswitch && sender.GetHashCode() == textBox2.GetHashCode()) {
-//				siteFinder_Toggle(false, false, "textBox2");
-//				textBox42.Text = string.Empty;
-//			}
-//
-//			if(button44.Enabled) {
-//				if(sender is TextBox || sender is RichTextBox) {
-//					TextBoxBase tb = (TextBoxBase)sender;
-//					int controlNum = Convert.ToInt16(tb.Name.Substring(tb.Name.Length - 1,1));
-//					switch(controlNum) {
-//						case 1: case 2: case 3: case 4: case 5:
-//							if(tb.Text != prevTemp[controlNum - 1])
-//								button44.Enabled = false;
-//							break;
-//						default:
-//							if(tb.Text != prevTemp[controlNum + 5])
-//								button44.Enabled = false;
-//							break;
-//					}
-//				}
-//				else if(sender is CheckBox) {
-//					CheckBox chkb = (CheckBox)sender;
-//					int controlNum = Convert.ToInt16(chkb.Name.Remove(0,"checkBox".Length));
-//					switch(controlNum) {
-//						case 1:
-//							button44.Enabled = chkb.Checked.ToString() == prevTemp[5];
-//							break;
-//						case 2:
-//							for(int c=1;c<4;c++){
-//								if(tabPage8.Controls["numericUpDown" + c].Text != prevTemp[c + 5]) {
-//									button44.Enabled = false;
-//									break;
-//								}
-//							}
-//							break;
-//						case 18:
-//							button44.Enabled = chkb.Checked.ToString() == prevTemp[9];
-//							break;
-//						default:
-//							if(chkb.Checked.ToString() != prevTemp[controlNum + 7])
-//								button44.Enabled = false;
-//							break;
-//					}
-//				}
-//				else if(sender is ComboBox) {
-//					ComboBox cmbb = (ComboBox)sender;
-//					if(textBox3.Text != prevTemp[2])
-//						button44.Enabled = false;
-//				}
-//				else if(sender is NumericUpDown) {
-//					NumericUpDown nud = (NumericUpDown)sender;
-//					int controlNum = Convert.ToInt16(nud.Name.Substring(nud.Name.Length - 1,1));
-//					if(nud.Text != prevTemp[controlNum + 5])
-//						button44.Enabled = false;
-//				}
-//			}
-//		}
-
-//		void Button44Click(object sender, EventArgs e)
-//		{
-//			Templates.UI.SendBCP bcp = new Templates.UI.SendBCP(textBox2.Text,buildTST());
-//			bcp.ShowDialog();
-//		}
-
 		void Button46Click(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(textBox10.Text)) {
 				Action action = new Action(delegate {
 				                           	MessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				                           });
-				Toolbox.Tools.darkenBackgroundForm(action,false,this);
+				Tools.darkenBackgroundForm(action,false,this);
 				return;
 			}
 			
@@ -2243,7 +1724,7 @@ namespace appCore
 			                           		thread.Start();
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+			Tools.darkenBackgroundForm(action,true,this);
 		}
 
 		void TabControl4SelectedIndexChanged(object sender, EventArgs e)
@@ -2361,52 +1842,6 @@ namespace appCore
 			textBox12.Focus();
 		}
 
-//		void Button7Click(object sender, EventArgs e)
-//		{
-//			Action action = new Action(delegate {
-//			                           	FormCollection fc = Application.OpenForms;
-//
-//			                           	foreach (Form frm in fc)
-//			                           	{
-//			                           		if (frm.Name == "TasksForm") {
-//			                           			frm.Activate();
-//			                           			DialogResult ans = MessageBox.Show("Task Notes Generator is already open, in order to open the requested Task Notes Generator, the previous must be closed.\n\nDo you want to close?","Task Notes Generator",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-//			                           			if (ans == DialogResult.Yes) frm.Close();
-//			                           			else return;
-//			                           			break;
-//			                           		}
-//			                           	}
-//
-//			                           	string errmsg = "";
-//			                           	if (string.IsNullOrEmpty(textBox1.Text)) {
-//			                           		errmsg += "         - INC/Ticket Number missing\n";
-//			                           	}
-//			                           	if (string.IsNullOrEmpty(textBox2.Text)) {
-//			                           		errmsg += "         - Site ID missing\n";
-//			                           	}
-//			                           	if (comboBox1.SelectedIndex == 1 && string.IsNullOrEmpty(textBox3.Text)) {
-//			                           		errmsg += "          - TF Site ID missing\n";
-//			                           	}
-//			                           	if (string.IsNullOrEmpty(textBox4.Text)) {
-//			                           		errmsg += "         - Site Address missing\n";
-//			                           	}
-//			                           	if (!string.IsNullOrEmpty(errmsg)) {
-//			                           		MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//			                           		return;
-//			                           	}
-//			                           	Templates.UI.TasksForm Tasks = new Templates.UI.TasksForm();
-//			                           	Templates.UI.TasksForm.siteID = textBox2.Text;
-//			                           	Templates.UI.TasksForm.siteAddress = textBox4.Text;
-//			                           	Templates.UI.TasksForm.powerCompany = textBox42.Text;
-//			                           	Templates.UI.TasksForm.cct = textBox5.Text;
-//			                           	Templates.UI.TasksForm.siteTEF = textBox3.Text;
-//			                           	Templates.UI.TasksForm.relatedINC = textBox6.Text;
-//			                           	Tasks.StartPosition = FormStartPosition.CenterParent;
-//			                           	Tasks.Show();
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
-//		}
-
 		void TabControl1SelectedIndexChanged(object sender, EventArgs e)
 		{
 			switch (tabControl1.SelectedIndex)
@@ -2451,13 +1886,13 @@ namespace appCore
 			if (Convert.ToInt32(e.KeyChar) == 13)
 			{
 				if (textBox13.Text.Length > 0) {
-					string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(textBox13.Text, "INC");
+					string CompINC_CRQ = Tools.CompleteINC_CRQ_TAS(textBox13.Text, "INC");
 					if (CompINC_CRQ != "error") textBox13.Text = CompINC_CRQ;
 					else {
 						Action action = new Action(delegate {
 						                           	MessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
 						                           });
-						Toolbox.Tools.darkenBackgroundForm(action,false,this);
+						Tools.darkenBackgroundForm(action,false,this);
 						return;
 					}
 				}
@@ -2484,7 +1919,7 @@ namespace appCore
 			                           		tabPage1.BackgroundImage = Image.FromFile(fileBrowser.FileName);
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void ToolStripMenuItem3Click(object sender, EventArgs e)
@@ -2506,7 +1941,7 @@ namespace appCore
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 				}
 			}
 		}
@@ -2518,7 +1953,7 @@ namespace appCore
 			                           	tabControl1.SelectTab(1);
 			                           	tabControl2.SelectTab(0);
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void RadioButton1CheckedChanged(object sender, EventArgs e)
@@ -2570,7 +2005,7 @@ namespace appCore
 			                           	enlarge.ShowDialog();
 			                           	textBox10.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void TextBox11TextChanged(object sender, EventArgs e)
@@ -2587,7 +2022,7 @@ namespace appCore
 			                           	enlarge.ShowDialog();
 			                           	textBox11.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void TextBox12TextChanged(object sender, EventArgs e)
@@ -2604,7 +2039,7 @@ namespace appCore
 			                           	enlarge.ShowDialog();
 			                           	textBox12.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void RichTextBox6TextChanged(object sender, EventArgs e)
@@ -2629,7 +2064,7 @@ namespace appCore
 			                           	enlarge.ShowDialog();
 			                           	richTextBox6.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void RichTextBox7TextChanged(object sender, EventArgs e)
@@ -2647,12 +2082,12 @@ namespace appCore
 		void Button27Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox7.Text,label45.Text,true);
+			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox7.Text,label45.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox7.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void RichTextBox8TextChanged(object sender, EventArgs e)
@@ -2670,12 +2105,12 @@ namespace appCore
 		void Button28Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox8.Text,label46.Text,true);
+			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox8.Text,label46.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox8.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void TextBox28TextChanged(object sender, EventArgs e)
@@ -2853,11 +2288,11 @@ namespace appCore
 		void TextBox31TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox31.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox31.Text)) {
+				if (!Tools.IsAllDigits(textBox31.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BCF can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				int radioch = 0;
@@ -3162,11 +2597,11 @@ namespace appCore
 		void TextBox32TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox32.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox32.Text)) {
+				if (!Tools.IsAllDigits(textBox32.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox33.Text = (Convert.ToInt32(textBox32.Text) + 1).ToString();
@@ -3178,11 +2613,11 @@ namespace appCore
 		void TextBox33TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox33.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox33.Text)) {
+				if (!Tools.IsAllDigits(textBox33.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox34.Text = (Convert.ToInt32(textBox33.Text) + 1).ToString();
@@ -3194,11 +2629,11 @@ namespace appCore
 		void TextBox34TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox34.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox34.Text)) {
+				if (!Tools.IsAllDigits(textBox34.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox35.Text = (Convert.ToInt32(textBox34.Text) + 1).ToString();
@@ -3210,11 +2645,11 @@ namespace appCore
 		void TextBox35TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox35.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox35.Text)) {
+				if (!Tools.IsAllDigits(textBox35.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox36.Text = (Convert.ToInt32(textBox35.Text) + 1).ToString();
@@ -3226,11 +2661,11 @@ namespace appCore
 		void TextBox36TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox32.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox36.Text)) {
+				if (!Tools.IsAllDigits(textBox36.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox37.Text = (Convert.ToInt32(textBox36.Text) + 1).ToString();
@@ -3242,11 +2677,11 @@ namespace appCore
 		void TextBox37TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox37.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox37.Text)) {
+				if (!Tools.IsAllDigits(textBox37.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox38.Text = (Convert.ToInt32(textBox37.Text) + 1).ToString();
@@ -3258,11 +2693,11 @@ namespace appCore
 		void TextBox38TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox38.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox38.Text)) {
+				if (!Tools.IsAllDigits(textBox38.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox39.Text = (Convert.ToInt32(textBox38.Text) + 1).ToString();
@@ -3274,11 +2709,11 @@ namespace appCore
 		void TextBox39TextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(textBox39.Text)) {
-				if (!Toolbox.Tools.IsAllDigits(textBox39.Text)) {
+				if (!Tools.IsAllDigits(textBox39.Text)) {
 					Action action = new Action(delegate {
 					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
+					Tools.darkenBackgroundForm(action,false,this);
 					return;
 				}
 				textBox40.Text = (Convert.ToInt32(textBox39.Text) + 1).ToString();
@@ -3476,157 +2911,11 @@ namespace appCore
 			}
 		}
 
-//		public static void showBalloon(string title, string body)
-//		{
-//			if (title != null)
-//				trayIcon.BalloonTipTitle = title;
-//
-//			if (body != null)
-//				trayIcon.BalloonTipText = body;
-//
-//			trayIcon.ShowBalloonTip(10000);
-//		}
-
-//		void Button43Click(object sender, EventArgs e)
-//		{
-//			DataRowView site = null;
-//			DataView cells = null;
-//			if(!string.IsNullOrEmpty(textBox2.Text)) {
-//				site = findSite(textBox2.Text);
-//				cells = findCells(textBox2.Text);
-//			}
-//			else
-//				return;
-//
-//			FormCollection fc = Application.OpenForms;
-//
-//			foreach (Form frm in fc)
-//			{
-//				if (frm.Name == "siteDetails") {
-//					frm.Close();
-//					break;
-//				}
-//			}
-//
-//			siteDetails sd = new siteDetails(site,cells);
-//			sd.Show();
-//		}
-
 		void TextBox50TextChanged(object sender, EventArgs e)
 		{
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false, "textBox50");
 		}
-
-//		void CheckBox1CheckedChanged(object sender, EventArgs e)
-//		{
-//			if(checkBox1.Checked) {
-//				for(int c=1;c<4;c++) {
-//					NumericUpDown nupd = (NumericUpDown)tabPage8.Controls["numericUpDown" + c];
-//					nupd.Maximum = 9999;
-//					nupd.Enabled = true;
-//				}
-//			}
-//			else {
-//				for(int c=1;c<4;c++) {
-//					NumericUpDown nupd = (NumericUpDown)tabPage8.Controls["numericUpDown" + c];
-//					string max;
-//					string temp = tabPage8.Controls["label" + (c + 14)].Text.Split('(')[1];
-//					max = temp.Substring(0,temp.Length - 1);
-//					if(max == "0")
-//						nupd.Enabled = false;
-//					else {
-//						nupd.Maximum = Convert.ToInt16(max);
-//						nupd.Enabled = true;
-//					}
-//				}
-//			}
-//			TSTChanged(sender,e);
-//		}
-
-//		void Label15DoubleClick(object sender, EventArgs e)
-//		{
-//			if(numericUpDown1.Enabled) {
-//				int max = Convert.ToInt16(label15.Text.Split('(')[1].Replace(")",string.Empty));
-//				if(numericUpDown1.Value < max)
-//					numericUpDown1.Value = max;
-//				else {
-//					if(numericUpDown1.Value == max)
-//						numericUpDown1.Value = 0;
-//				}
-//			}
-//		}
-//
-//		void Label16DoubleClick(object sender, EventArgs e)
-//		{
-//			if(numericUpDown2.Enabled) {
-//				int max = Convert.ToInt16(label16.Text.Split('(')[1].Replace(")",string.Empty));
-//				if(numericUpDown2.Value < max)
-//					numericUpDown2.Value = max;
-//				else {
-//					if(numericUpDown2.Value == max)
-//						numericUpDown2.Value = 0;
-//				}
-//			}
-//		}
-//
-//		void Label17DoubleClick(object sender, EventArgs e)
-//		{
-//			if(numericUpDown3.Enabled) {
-//				int max = Convert.ToInt16(label17.Text.Split('(')[1].Replace(")",string.Empty));
-//				if(numericUpDown3.Value < max)
-//					numericUpDown3.Value = max;
-//				else {
-//					if(numericUpDown3.Value == max)
-//						numericUpDown3.Value = 0;
-//				}
-//			}
-//		}
-		
-//		void CheckBox18CheckedChanged(object sender, EventArgs e) {
-//			if(!checkBox1.Checked) {
-//				if(checkBox18.Checked) {
-//					if(siteFinder_mainswitch) {
-//						for(int c=1;c<4;c++) {
-//							NumericUpDown nupd = (NumericUpDown)tabPage8.Controls["numericUpDown" + c];
-//							if (nupd.Maximum < 999) {
-//								nupd.Value = nupd.Maximum;
-//								nupd.Enabled = false;
-//							}
-//						}
-//					}
-//				}
-//				else {
-//					for(int c=1;c<4;c++) {
-//						NumericUpDown nupd = (NumericUpDown)tabPage8.Controls["numericUpDown" + c];
-//						nupd.Value = 0;
-//						if (nupd.Maximum < 999) {
-//							nupd.Value = 0;
-//							nupd.Enabled = true;
-//						}
-//					}
-//				}
-//			}
-//			TSTChanged(sender,e);
-//		}
-		
-//		void NumericUpDownValueChanged(object sender, EventArgs e)
-//		{
-//			int nupdTotal = 0;
-//			int nupdMaxed = 0;
-//			for(int c = 1;c<4;c++) {
-//				NumericUpDown nupd = (NumericUpDown)tabPage8.Controls["numericUpDown" + c];
-//				if(nupd.Maximum < 999) {
-//					nupdTotal++;
-//					if(nupd.Value == nupd.Maximum)
-//						nupdMaxed++;
-//				}
-//			}
-//			if(nupdMaxed == nupdTotal)
-//				if(!checkBox18.Checked)
-//					checkBox18.Checked = true;
-//			TSTChanged(sender, e);
-//		}
 		
 		public static void shiftsPanelPaint(object sender, PaintEventArgs e)
 		{

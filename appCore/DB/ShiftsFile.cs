@@ -39,10 +39,8 @@ namespace appCore.DB
 		{
 			get
 			{
-				if (shiftsFile != null)
-					return shiftsFile.Exists;
-				else
-					return false;
+				return shiftsFile != null && shiftsFile.Exists;
+				
 			}
 			protected set { }
 		}
