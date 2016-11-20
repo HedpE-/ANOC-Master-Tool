@@ -146,6 +146,14 @@ namespace appCore.Settings
 			
 			if((chosenDrive.DriveType == DriveType.Removable || chosenDrive.DriveType == DriveType.Fixed) && chosenDrive.AvailableFreeSpace > 50 * Math.Pow(1024, 2)) {
 				DirectoryInfo prevFolder = userFolder;
+				
+				userFolder = newFolder;
+				if(!UpdateLocalDBFilesCopy()) {
+					userFolder = prevFolder;
+					newFolder.Delete(true);
+					return false;
+				}
+				
 				if(!newFolder.Exists) {
 					newFolder.Create();
 					newFolder = new DirectoryInfo(newFolder.FullName);
@@ -158,13 +166,16 @@ namespace appCore.Settings
 							DialogResult res;
 							res = FlexibleMessageBox.Show("Previous User Folder exists. Do you want to copy all contents to the new Folder?","Copy Contents",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 							if(res == DialogResult.Yes) {
-								FlexibleMessageBox.Show("LAST WARNING!" + Environment.NewLine + Environment.NewLine +
-								                        "New User Folder is not empty." + Environment.NewLine + Environment.NewLine +
-								                        "ANY EXISTING FILES WILL BE OVERWRITTEN IF NOT BACKED UP MANUALLY." + Environment.NewLine + Environment.NewLine +
-								                        "Please ensure to backup all data from " + newFolder.FullName +
-								                        "\\ before continuing.",
-								                        "LAST WARNING!",MessageBoxButtons.OK,MessageBoxIcon.Stop);
-								
+								res = FlexibleMessageBox.Show("LAST WARNING!" + Environment.NewLine + Environment.NewLine +
+								                              "New User Folder is not empty." + Environment.NewLine + Environment.NewLine +
+								                              "ANY EXISTING FILES WILL BE OVERWRITTEN IF NOT BACKED UP MANUALLY." + Environment.NewLine + Environment.NewLine +
+								                              "Please ensure to backup all data from " + newFolder.FullName +
+								                              "\\ before continuing.",
+								                              "LAST WARNING!",MessageBoxButtons.OKCancel,MessageBoxIcon.Stop);
+								if(res == DialogResult.Cancel) {
+									newFolder.Delete(true);
+									return false;
+								}
 								prevUsernameFolder.CopyTo(newFolder.FullName + "\\" + CurrentUser.userName);
 								
 								if(!newFolder.FullName.Contains(prevUsernameFolder.FullName))
@@ -190,16 +201,16 @@ namespace appCore.Settings
 						prevFolder = new DirectoryInfo(prevFolder.FullName);
 						if(!isPrevFallbackFolder) {
 							DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
-							if(prevSettingsFolder.Exists)
+							if(prevSettingsFolder.Exists) {
 								prevSettingsFolder.Delete(true);
-							prevFolder = new DirectoryInfo(prevFolder.FullName);
+								prevFolder = new DirectoryInfo(prevFolder.FullName);
+							}
 						}
 						else
 							if(prevFolder.GetDirectories().Length < 1)
 								prevFolder.Delete(true);
 					}
 				}
-				userFolder = newFolder;
 				
 				if(!LogsFolder.Exists)
 					LogsFolder.Create();
@@ -208,11 +219,7 @@ namespace appCore.Settings
 					usernameFolder = new DirectoryInfo(usernameFolder.FullName);
 				}
 				SettingsFile.UserFolderPath = userFolder;
-				if(!UpdateLocalDBFilesCopy(false)) {
-					userFolder = prevFolder;
-					newFolder.Delete(true);
-					return false;
-				}
+				
 				return true;
 			}
 			
@@ -224,7 +231,7 @@ namespace appCore.Settings
 			return false;
 		}
 
-		public static bool UpdateLocalDBFilesCopy(bool ForceCloseAppOnError) {
+		public static bool UpdateLocalDBFilesCopy(bool ForceCloseAppOnError = false) {
 		retry:
 			try {
 				// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
@@ -242,7 +249,7 @@ namespace appCore.Settings
 //					if(ForceCloseAppOnError)
 //						Application.Exit();
 //					else
-						return false;
+					return false;
 				}
 			}
 			
