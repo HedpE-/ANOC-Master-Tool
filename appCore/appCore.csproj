@@ -144,10 +144,8 @@
     </Compile>
     <Compile Include="Settings\CurrentUser.cs" />
     <Compile Include="Settings\UserFolder.cs" />
-    <Compile Include="Shifts\ScrollPanelMessageFilter.cs" />
-    <Compile Include="Shifts\ShiftsPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Shifts\PopupHelper.cs" />
+    <Compile Include="Shifts\ShiftsCalendar.cs" />
     <Compile Include="Shifts\WholeShiftsPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -224,6 +222,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\AMTRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\AMTRoundCornersPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />

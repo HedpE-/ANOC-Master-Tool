@@ -406,6 +406,7 @@ namespace appCore
 			this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.pictureBox6.TabIndex = 9;
 			this.pictureBox6.TabStop = false;
+			this.pictureBox6.Visible = false;
 			this.pictureBox6.Click += new System.EventHandler(this.PictureBoxesClick);
 			this.pictureBox6.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
 			this.pictureBox6.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);

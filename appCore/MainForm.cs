@@ -11,13 +11,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using Transitions;
 using appCore.DB;
 using appCore.Logs;
 using appCore.Settings;
@@ -44,15 +41,6 @@ namespace appCore
 		public static string VFbulkCI;
 		public static string TFbulkCI;
 		
-		public static ShiftsPanel shiftsPanel;
-		public static List<Rectangle> rectCollection = new List<Rectangle>();
-		public static DataRow[] foundRows;
-		public static DateTime shiftsChosenDate = DateTime.Now;
-		public static Bitmap shiftsBodySnap;
-		public static WholeShiftsPanel wholeShiftsPanel = new WholeShiftsPanel();
-		public static Bitmap wholeShiftSnap;
-		static string wholeShiftString;
-		
 		DataView eScriptCellsGlobal = new DataView();
 		
 		public static TrayIcon trayIcon;
@@ -64,6 +52,7 @@ namespace appCore
 		public static PictureBox SiteDetailsPictureBox = new PictureBox();
 		public static OutageControls OutageUI = new OutageControls();
 		public static LogsCollection<Template> logFile = new LogsCollection<Template>();
+		public static ShiftsCalendar shiftsCalendar;
 		static Label TicketCountLabel = new Label();
 		
 		bool CheckLogFileExists(string logtype)
@@ -506,7 +495,6 @@ namespace appCore
 				tabControl1.SelectTab(6);
 				OutageUI = new OutageControls();
 				tabPage17.Controls.Add(OutageUI);
-
 			}
 			else {
 				Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
@@ -521,8 +509,6 @@ namespace appCore
 			
 			SplashForm.ShowSplashScreen();
 			trayIcon = new TrayIcon(tray);
-//			trayIc = tray;
-//			tray.Dispose();
 			
 			Tools.EmbeddedAssembliesInit();
 			
@@ -555,7 +541,7 @@ namespace appCore
 			
 			tabPage1.Controls.Add(SiteDetailsPictureBox);
 			// 
-			// pictureBox5
+			// SiteDetailsPictureBox
 			// 
 			SiteDetailsPictureBox.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
 			SiteDetailsPictureBox.BackColor = Color.Transparent;
@@ -576,7 +562,6 @@ namespace appCore
 			// 
 			TicketCountLabel.BackColor = Color.Transparent;
 			TicketCountLabel.Size = new Size(40, 20);
-//			TicketCountLabel.Location = new Point(480, 631);
 			TicketCountLabel.Location = new Point(tabPage1.Width - TicketCountLabel.Width - 5, tabPage1.Height - TicketCountLabel.Height - 5);
 			TicketCountLabel.Name = "TicketCountLabel";
 			TicketCountLabel.TabIndex = 5;
@@ -624,60 +609,15 @@ namespace appCore
 			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
 			
 			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
-				foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'");
+				DataRow[] foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'");
 				
-				if(foundRows.Length < 1) {
-					pictureBox6.Visible = false;
-					goto noPanel;
+				if(foundRows.Length >= 1) {
+					pictureBox6.Visible = true;
+					shiftsCalendar = new ShiftsCalendar();
+					shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
+					tabPage1.Controls.Add(shiftsCalendar);
 				}
-				
-				shiftsPanel = new ShiftsPanel();
-				shiftsPanel.DoubleBufferActive = true;
-				shiftsPanel.BorderColor = Color.Black;
-				shiftsPanel.BackColor = Color.Gray;
-				shiftsPanel.Size = new Size(220, 26);
-				shiftsPanel.BorderWidth = 1.25f;
-				shiftsPanel.BordersToDraw = ShiftsPanel.Borders.Left | ShiftsPanel.Borders.Bottom | ShiftsPanel.Borders.Right;
-//					shiftsPanel.BordersToDraw = ShiftsPanel.Borders.None;
-				shiftsPanel.CornersToRound = ShiftsPanel.Corners.BottomLeft | ShiftsPanel.Corners.BottomRight;
-				shiftsPanel.MouseClick += shiftsPanel_MouseClick;
-				PictureBox shiftsPanel_icon = new PictureBox();
-				((System.ComponentModel.ISupportInitialize)(shiftsPanel_icon)).BeginInit();
-				shiftsPanel_icon.BackColor = Color.Gray;
-				shiftsPanel_icon.Name = "shiftsPanel_icon";
-				shiftsPanel_icon.Size = new Size(16, 16);
-				shiftsPanel_icon.Image = Resources.Business_Planner_icon;
-				shiftsPanel_icon.SizeMode = PictureBoxSizeMode.StretchImage;
-				shiftsPanel_icon.Parent = shiftsPanel;
-				shiftsPanel_icon.Location = new Point(5, 5);
-				shiftsPanel.Controls.Add(shiftsPanel_icon);
-				PictureBox shiftsPanel_refresh = new PictureBox();
-				((System.ComponentModel.ISupportInitialize)(shiftsPanel_refresh)).BeginInit();
-				shiftsPanel_refresh.BackColor = Color.Gray;
-				shiftsPanel_refresh.Name = "shiftsPanel_refresh";
-				shiftsPanel_refresh.Size = new Size(16, 16);
-				shiftsPanel_refresh.Image = Resources.Replace_64;
-				shiftsPanel_refresh.SizeMode = PictureBoxSizeMode.StretchImage;
-				shiftsPanel_refresh.Parent = shiftsPanel;
-				shiftsPanel_refresh.Location = new Point(shiftsPanel.Width - 21, 5);
-				shiftsPanel_refresh.Click += shiftsPanel_refreshClick;
-//					shiftsPanel_refresh.MouseLeave += (this.PictureBox5MouseLeave);
-//					shiftsPanel_refresh.MouseHover += (this.PictureBox5MouseHover);
-				shiftsPanel.Controls.Add(shiftsPanel_refresh);
-				shiftsPanel.Name = "shiftsPanel";
-//					shiftsPanel.MouseMove += shiftsPanel_MouseMove;
-//					http://www.codeproject.com/Articles/38436/Extended-Graphics-Rounded-rectangles-Font-metrics
-				shiftsBodySnap = Toolbox.Tools.loadShifts(shiftsBodySnap, shiftsChosenDate);
-				shiftsPanel.Location = new Point((tabPage1.Width - shiftsPanel.Width) / 2, 0 - shiftsPanel.Height);
-				shiftsPanel.Paint += shiftsPanelPaint;
-				shiftsPanel.LocationChanged += shiftsPanel_LocationChanged;
-				
-				tabPage1.Controls.Add(shiftsPanel);
 			}
-			else
-				pictureBox6.Visible = false;
-			
-			noPanel:;
 			
 			// TODO: get sites list from alarms
 			
@@ -701,241 +641,6 @@ namespace appCore
 				msgBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK, "New Version Changelog",false);
 			}
 			SplashForm.CloseForm();
-		}
-
-		void shiftsPanel_LocationChanged(object sender, EventArgs e)
-		{
-			if(shiftsPanel.Location.Y == 0)
-				shiftsPanel.Refresh();
-		}
-
-		void shiftsPanel_MouseClick(object sender, MouseEventArgs e)
-		{
-			if(wholeShiftsPanel.Parent != null) {
-				wholeShiftsPanelDispose();
-				return;
-			}
-			
-			bool loopFinished = true;
-			for(int c = 0;c < rectCollection.Count;c++)
-			{
-				if(rectCollection[c].Contains(e.Location)) {
-					shiftsChosenDate = new DateTime(shiftsChosenDate.Year, shiftsChosenDate.Month, c + 1);
-					loopFinished = false;
-					break;
-				}
-			}
-			if(loopFinished)
-				return;
-			
-			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + Toolbox.Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Toolbox.Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
-			if(string.IsNullOrEmpty(shift))
-				return;
-			
-			DataRow[] sameShiftRows = Tools.getWholeShift(shiftsChosenDate);
-			
-			if(sameShiftRows == null)
-				return;
-			if(sameShiftRows.Length == 0)
-				return;
-			
-			wholeShiftsPanel = new WholeShiftsPanel();
-			
-			List<DataRow> SL = new List<DataRow>();
-			List<DataRow> Agents = new List<DataRow>();
-			FieldInfo _rowID;
-			foreach(DataRow dr in sameShiftRows) {
-				_rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
-				int rowID = (int)Convert.ToInt64(_rowID.GetValue(dr));
-				if(rowID > 3 && rowID < 12)
-					SL.Add(dr);
-				else
-					Agents.Add(dr);
-			}
-			
-			// Draw panel
-			// FIXME: improve wholeShiftsPanel performance(generate a cache for individual shifts on separate thread)
-			const int RectHeight = 20;
-			const int nameRectWidth = 145;
-			const int shiftRectWidth = 35;
-			const int headerSpacing = 10;
-			const int paddingVertical = 7;
-			const int paddingHorizontal = 7;
-			int num_lines = SL.Count + Agents.Count + 3; // + 3 for Title, SL & Agents headers
-			
-			int panelHeight = (int)(2 * paddingVertical) + (2 * headerSpacing) + (num_lines * RectHeight);
-			int panelWidth = (int)(2 * paddingHorizontal) + nameRectWidth + shiftRectWidth;
-			
-			wholeShiftString = string.Empty;
-			wholeShiftSnap = new Bitmap(panelWidth, panelHeight);
-			
-			using (Graphics g = Graphics.FromImage(wholeShiftSnap)) {
-				g.SmoothingMode = SmoothingMode.AntiAlias;
-				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				g.PixelOffsetMode = PixelOffsetMode.HighQuality; // Set format of string.
-				g.FillRectangle(new SolidBrush(Color.Black), 0, 0, wholeShiftSnap.Width, wholeShiftSnap.Height);
-				
-				StringFormat drawStringFormat = new StringFormat();
-				drawStringFormat.Alignment = StringAlignment.Center;
-				drawStringFormat.LineAlignment = StringAlignment.Center;
-				Font titlesFont = new Font("Tahoma",11, FontStyle.Bold);
-				Font stringFont = new Font("Tahoma",8, FontStyle.Bold);
-				
-				string tempText = String.Format("{0:dd/MM/yyyy}", shiftsChosenDate) + " - " + shift + " Shift";
-				wholeShiftString += tempText + Environment.NewLine;
-				Rectangle rectangle = new Rectangle(new Point(paddingHorizontal, paddingVertical), new Size(wholeShiftSnap.Width - (paddingHorizontal * 2), RectHeight));
-				g.DrawString(tempText, titlesFont, Brushes.Gray, rectangle, drawStringFormat);
-				
-				int previousRectBottomCoord = rectangle.Bottom;
-				
-				tempText = "Shift Leaders:";
-				wholeShiftString += Environment.NewLine + tempText + Environment.NewLine;
-				drawStringFormat.Alignment = StringAlignment.Near;
-				rectangle = new Rectangle(new Point(7, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
-				g.DrawString(tempText, titlesFont, Brushes.Red, rectangle, drawStringFormat);
-				previousRectBottomCoord = rectangle.Bottom;
-				
-				foreach(DataRow dr in SL) {
-					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
-					tempText = dr["Column3"].ToString();
-					wholeShiftString += tempText + '\t';
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
-					drawStringFormat.Alignment = StringAlignment.Far;
-					rectangle = new Rectangle(new Point(paddingHorizontal + nameRectWidth, previousRectBottomCoord), new Size(shiftRectWidth, RectHeight));
-					tempText = dr["Day" + shiftsChosenDate.Day].ToString();
-					wholeShiftString += tempText + Environment.NewLine;
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
-					previousRectBottomCoord = rectangle.Bottom;
-					drawStringFormat.Alignment = StringAlignment.Near;
-				}
-				
-				tempText = "Agents:";
-				wholeShiftString += Environment.NewLine + tempText + Environment.NewLine;
-				rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
-				g.DrawString(tempText, titlesFont, Brushes.Red, rectangle, drawStringFormat);
-				previousRectBottomCoord = rectangle.Bottom;
-				
-				for(int c = 1;c <= Agents.Count;c++) {
-					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
-					tempText = Agents[c - 1]["Column3"].ToString();
-					wholeShiftString += tempText + '\t';
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
-					drawStringFormat.Alignment = StringAlignment.Far;
-					rectangle = new Rectangle(new Point(paddingHorizontal + nameRectWidth, previousRectBottomCoord), new Size(shiftRectWidth, RectHeight));
-					tempText = Agents[c - 1]["Day" + shiftsChosenDate.Day].ToString();
-					wholeShiftString += tempText;
-					if(c < Agents.Count)
-						wholeShiftString +=  Environment.NewLine;
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
-					previousRectBottomCoord = rectangle.Bottom;
-					drawStringFormat.Alignment = StringAlignment.Near;
-				}
-//				if(Tools.GetUserDetails("Username") == "Caramelos")
-//					wholeShiftSnap.Save(UserFolderPath + @"\wholeShiftSnap.png");
-//				else
-//					wholeShiftSnap.Save(@"\\vf-pt\fs\ANOC-UK\ANOC-UK 1st LINE\1. RAN 1st LINE\ANOC Master Tool\ANOC Master Tool\wholeShiftSnap.png");
-			}
-			PictureBox shiftsPictureBox = new PictureBox();
-			shiftsPictureBox.Parent = this;
-			shiftsPictureBox.Size = new Size(wholeShiftSnap.Width, wholeShiftSnap.Height);
-			shiftsPictureBox.Location = new Point(0, 0);
-			shiftsPictureBox.Image = wholeShiftSnap;
-			shiftsPictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-			Button shiftsCopyButton = new Button();
-			shiftsCopyButton.BackColor = Color.Black;
-			shiftsCopyButton.FlatStyle = FlatStyle.Flat;
-			shiftsCopyButton.ForeColor = Color.Gray;
-			shiftsCopyButton.Text = "Copy to Clipboard";
-			shiftsCopyButton.Size = new Size(shiftsPictureBox.Width, 23);
-			shiftsCopyButton.Location = new Point(0, shiftsPictureBox.Bottom);
-			shiftsCopyButton.Click += shiftsCopyButtonClick;
-			wholeShiftsPanel.AutoScroll = true;
-//			wholeShiftsPanel.BordersToDraw = ShapedPanel.Borders.None;
-//			wholeShiftsPanel.CornersToRound = ShapedPanel.Corners.None;
-			wholeShiftsPanel.Location = e.Location;
-			wholeShiftsPanel.BackColor = Color.Black;
-			wholeShiftsPanel.Capture = true;
-//			wholeShiftsPanel.MouseWheel += wholeShiftsPanelMouseWheel;
-			wholeShiftsPanel.MouseDown += wholeShiftsPanelMouseDown;
-			wholeShiftsPanel.MouseEnter += wholeShiftsPanelMouseEnter;
-//			wholeShiftsPanel.MouseLeave += wholeShiftsPanelMouseLeave;
-			const int wholeshiftsPanelMaxHeight = 277;
-			if(wholeShiftSnap.Height + shiftsCopyButton.Height > wholeshiftsPanelMaxHeight) {
-				wholeShiftsPanel.Size = new Size(wholeShiftSnap.Width + SystemInformation.VerticalScrollBarWidth, wholeshiftsPanelMaxHeight);
-//				wholeShiftsPanel.Size = new Size(wholeShiftSnap.Width, wholeshiftsPanelMaxHeight);
-//				wholeShiftsPanel.AutoScrollPosition = new Point(0, 0);
-//				wholeShiftsPanel.VerticalScroll.Maximum = (wholeShiftSnap.Height + shiftsCopyButton.Height) - wholeshiftsPanelMaxHeight;
-//				wholeShiftsPanel.VerticalScroll.Minimum = 0;
-			}
-			else
-				wholeShiftsPanel.Size = new Size(wholeShiftSnap.Width, wholeShiftSnap.Height + shiftsCopyButton.Height);
-			wholeShiftsPanel.Controls.Add(shiftsPictureBox);
-			wholeShiftsPanel.Controls.Add(shiftsCopyButton);
-			this.Controls.Add(wholeShiftsPanel);
-			wholeShiftsPanel.BringToFront();
-		}
-		
-		void wholeShiftsPanelDispose() {
-			if(wholeShiftsPanel.Parent != null) {
-				wholeShiftsPanel.Dispose();
-				shiftsPanel.Invalidate(true);
-				return;
-			}
-		}
-		
-		void wholeShiftsPanelMouseWheel(object sender, MouseEventArgs e)
-		{
-			wholeShiftsPanel.SuspendLayout();
-			if (e.Delta == 120)
-			{
-				if (wholeShiftsPanel.VerticalScroll.Value - 2 >= wholeShiftsPanel.VerticalScroll.Minimum)
-					wholeShiftsPanel.VerticalScroll.Value -= 2;
-				else
-					wholeShiftsPanel.VerticalScroll.Value = wholeShiftsPanel.VerticalScroll.Minimum;
-			}
-			if (e.Delta == -120)
-			{
-				if (wholeShiftsPanel.VerticalScroll.Value + 2 <= wholeShiftsPanel.VerticalScroll.Maximum)
-					wholeShiftsPanel.VerticalScroll.Value += 2;
-				else
-					wholeShiftsPanel.VerticalScroll.Value = wholeShiftsPanel.VerticalScroll.Maximum;
-			}
-			wholeShiftsPanel.ResumeLayout();
-		}
-		
-		void wholeShiftsPanelMouseEnter(object sender, EventArgs e) {
-			wholeShiftsPanel.Focus();
-		}
-		
-		void wholeShiftsPanelMouseLeave(object sender, EventArgs e) {
-			wholeShiftsPanel.Focus();
-		}
-		
-		void wholeShiftsPanelMouseDown(object sender, MouseEventArgs e) {
-			Rectangle wholePanelArea = Rectangle.Union(wholeShiftsPanel.ClientRectangle,new Rectangle(wholeShiftsPanel.Right, wholeShiftsPanel.Top, 23, wholeShiftsPanel.Height));
-			if(!wholePanelArea.Contains(e.Location)) {
-				if(wholeShiftsPanel.Parent != null) {
-					wholeShiftsPanel.Dispose();
-					shiftsPanel.Invalidate(true);
-				}
-			}
-		}
-		
-		void shiftsCopyButtonClick(object sender, EventArgs e) {
-			Clipboard.SetText(wholeShiftString);
-			trayIcon.showBalloon("Copied to clipboard","Copied to clipboard");
-		}
-		
-		void shiftsPanel_refreshClick(object sender, EventArgs e)
-		{
-			// FIXME: shiftsPanel_refreshClick disabled due to System.InvalidOperationException on shiftsPanel.Invalidate(true)
-			// System.InvalidOperationException: Cross-thread operation not valid: Control 'shiftsPanel' accessed from a thread other than the thread it was created on.
-
-//			Thread t = new Thread(() => {
-//			                      	shiftsBodySnap = Tools.loadShifts(shiftsBodySnap, shiftsChosenDate);
-//			                      	shiftsPanel.Invalidate(true);
-//			                      });
-//			t.Start();
 		}
 
 		public void siteFinder(object sender, KeyPressEventArgs e)
@@ -1901,7 +1606,7 @@ namespace appCore
 
 		void TabPage1MouseClick(object sender, MouseEventArgs e)
 		{
-			wholeShiftsPanelDispose();
+			//FIXME:			wholeShiftsPanelDispose();
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 				contextMenuStrip1.Show(PointToScreen(e.Location));
 		}
@@ -2000,7 +1705,7 @@ namespace appCore
 		void Button22Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(textBox10.Text,label33.Text,false);
+			                           	LargeTextForm enlarge = new LargeTextForm(textBox10.Text,label33.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox10.Text = enlarge.finaltext;
@@ -2017,7 +1722,7 @@ namespace appCore
 		void Button23Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(textBox11.Text,label32.Text,false);
+			                           	LargeTextForm enlarge = new LargeTextForm(textBox11.Text,label32.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox11.Text = enlarge.finaltext;
@@ -2034,7 +1739,7 @@ namespace appCore
 		void Button24Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(textBox12.Text,label34.Text,false);
+			                           	LargeTextForm enlarge = new LargeTextForm(textBox12.Text,label34.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox12.Text = enlarge.finaltext;
@@ -2059,7 +1764,7 @@ namespace appCore
 		void Button26Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox6.Text,label44.Text,false);
+			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox6.Text,label44.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox6.Text = enlarge.finaltext;
@@ -2805,7 +2510,7 @@ namespace appCore
 		void Button37Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox9.Text,groupBox6.Text,false);
+			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox9.Text,groupBox6.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox9.Text = enlarge.finaltext;
@@ -2876,7 +2581,7 @@ namespace appCore
 
 		void MainFormFormClosing(object sender, FormClosingEventArgs e)
 		{
-			wholeShiftsPanelDispose();
+			//FIXME:			wholeShiftsPanelDispose();
 			DialogResult ans = DialogResult.No;
 			Action action = new Action(delegate {
 			                           	ans = MessageBox.Show("Are you sure you want to quit ANOC Master Tool?","Quitting",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
@@ -2917,14 +2622,14 @@ namespace appCore
 				siteFinder_Toggle(false, false, "textBox50");
 		}
 		
-		public static void shiftsPanelPaint(object sender, PaintEventArgs e)
-		{
-			MainForm.shiftsPanel.Invalidate(true);
-//			shiftsSnap.Save(UserFolderPath + @"\bmp.png");
-			MainForm.shiftsPanel.Size = new Size(MainForm.shiftsBodySnap.Width, MainForm.shiftsBodySnap.Height);
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			e.Graphics.DrawImageUnscaled(MainForm.shiftsBodySnap, Point.Empty);
-		}
+//		public static void shiftsPanelPaint(object sender, PaintEventArgs e)
+//		{
+//			MainForm.shiftsCalendar.Invalidate(true);
+		////			shiftsSnap.Save(UserFolderPath + @"\bmp.png");
+//			MainForm.shiftsCalendar.Size = new Size(MainForm.shiftsBodySnap.Width, MainForm.shiftsBodySnap.Height);
+//			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+//			e.Graphics.DrawImageUnscaled(MainForm.shiftsBodySnap, Point.Empty);
+//		}
 		
 		void RadioButton6CheckedChanged(object sender, EventArgs e)
 		{
@@ -3250,30 +2955,30 @@ namespace appCore
 			thread.Start();
 		}
 		
-		public static void toggleShiftsPanel() {
-			// FIXME: UI glitch on shiftsPanel objects
-			// FIXME: If shiftFile doesn't exist and share access is denied, app crashes
-			if(shiftsPanel.Location.Y == 0) {
-				if(wholeShiftsPanel.Parent != null) {
-					wholeShiftsPanel.Dispose();
-					shiftsPanel.Invalidate(true);
-				}
-				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
-				t.add(shiftsPanel, "Top", 0 - shiftsPanel.Height);
-				t.run();
-			}
-			else {
-				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
-				t.add(shiftsPanel, "Top", 0);
-				t.run();
-			}
-		}
+//		public static void toggleShiftsPanel() {
+//			// FIXME: UI glitch on shiftsPanel objects
+//			// FIXME: If shiftFile doesn't exist and share access is denied, app crashes
+//			if(shiftsCalendar.Location.Y == 0) {
+//				if(wholeShiftsPanel.Parent != null) {
+//					wholeShiftsPanel.Dispose();
+//					shiftsCalendar.Invalidate(true);
+//				}
+//				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
+//				t.add(shiftsCalendar, "Top", 0 - shiftsCalendar.Height);
+//				t.run();
+//			}
+//			else {
+//				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
+//				t.add(shiftsCalendar, "Top", 0);
+//				t.run();
+//			}
+//		}
 		
 		void PictureBoxesClick(object sender, EventArgs e) {
 			PictureBox pic = (PictureBox)sender;
 			switch(pic.Name) {
 				case "pictureBox1":
-					wholeShiftsPanelDispose();
+//					wholeShiftsPanelDispose();
 					MainFormActivate(null,null);
 					Action action = new Action(delegate {
 					                           	openSettings();
@@ -3281,27 +2986,27 @@ namespace appCore
 					Tools.darkenBackgroundForm(action,false,this);
 					break;
 				case "pictureBox2":
-					wholeShiftsPanelDispose();
+//					wholeShiftsPanelDispose();
 					MainFormActivate(null,null);
 					openAMTBrowser();
 					break;
 				case "pictureBox3":
-					wholeShiftsPanelDispose();
+//					wholeShiftsPanelDispose();
 					MainFormActivate(null,null);
 					openNotes();
 					break;
 				case "pictureBox4":
-					wholeShiftsPanelDispose();
+//					wholeShiftsPanelDispose();
 					MainFormActivate(null,null);
 					openLogBrowser();
 					break;
 				case "pictureBox5":
-					wholeShiftsPanelDispose();
+//					wholeShiftsPanelDispose();
 					MainFormActivate(null,null);
 					openSiteFinder();
 					break;
 				case "pictureBox6":
-					toggleShiftsPanel();
+					shiftsCalendar.toggleShiftsPanel();
 					break;
 			}
 		}

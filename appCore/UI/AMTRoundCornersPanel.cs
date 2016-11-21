@@ -12,12 +12,11 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Collections.Generic;
-using appCore.UI;
 //using RoundedRectangles;
 
-namespace appCore.Shifts
+namespace appCore.UI
 {
-    public class ShiftsPanel : Panel
+    public class AMTRoundCornersPanel : Panel
 	{
 		[Flags]
 		public enum Borders
@@ -114,7 +113,7 @@ namespace appCore.Shifts
 		
 		GraphicsPath path;
 		
-		public ShiftsPanel()
+		public AMTRoundCornersPanel()
 		{
 		}
 
