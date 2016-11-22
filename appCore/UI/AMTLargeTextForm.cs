@@ -13,16 +13,16 @@ using System.Drawing;
 namespace appCore.UI
 {
 	/// <summary>
-	/// Description of LargeTextForm.
+	/// Description of AMTLargeTextForm.
 	/// </summary>
-	public sealed partial class LargeTextForm : Form
+	public sealed class AMTLargeTextForm : Form
 	{
 		AMTRichTextBox richTextBox1 = new AMTRichTextBox();
 		Button button1 = new Button();
 		Button button2 = new Button();
 		public string finaltext = string.Empty;
 		
-		public LargeTextForm(string content, string title, bool ReadOnly)
+		public AMTLargeTextForm(string content, string title, bool ReadOnly)
 		{
 			InitializeComponent();
 			

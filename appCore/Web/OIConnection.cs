@@ -11,7 +11,7 @@ using System.Net;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using RestSharp;
-using appCore.Web;
+using appCore.UI;
 
 namespace appCore.Web
 {
@@ -115,7 +115,7 @@ namespace appCore.Web
 				DialogResult ans = new DialogResult();
 				if(auth.Username != OIUsername) {
 					OIUsername = auth.Username;
-					ans = MessageBox.Show("Stored OI Credentials: " +  OIUsername + Environment.NewLine + Environment.NewLine + "You entered different credentials, do you want to overwrite the stored information?","OI credentials",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+					ans = FlexibleMessageBox.Show("Stored OI Credentials: " +  OIUsername + Environment.NewLine + Environment.NewLine + "You entered different credentials, do you want to overwrite the stored information?","OI credentials",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 					if(ans == DialogResult.Yes)
 						Settings.SettingsFile.OIUsername = OIUsername;
 				}

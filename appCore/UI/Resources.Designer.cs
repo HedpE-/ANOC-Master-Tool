@@ -185,16 +185,17 @@ namespace appCore.UI {
 		/// <summary>
 		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha6 28/11/2016 #######
 		///
-		///- First implementations of Error Handling to prevent crashes due to IO errors
+		///- New Error Handling should prevent a lot of crashes due to IO errors
 		///- Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
+		///- Tweaked the Whole Shift Popup 
+		///- Implemented the Menu bar on all Templates, off with the old buttons
+		///- All Message boxes have the same look now
 		///
 		///####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
 		///
 		///- Fixed BCP Form
 		///- Fixed BCP Email subject for a more intuitive description
-		///- Added new field to BCP Form to choose the email recipient between EGI and TX email
-		///- BCP Task number accepts free text now
-		///- Updated EGI number on c [rest of string was truncated]&quot;;.
+		///- Added new [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

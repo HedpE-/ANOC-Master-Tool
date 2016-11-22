@@ -91,7 +91,7 @@ namespace appCore.UI
         /// 
         /// Default is: 70% of the working area width.
         /// </summary>
-        public static double MAX_WIDTH_FACTOR = 0.7;
+        public static double MAX_WIDTH_FACTOR = 0.45;
 
         /// <summary>
         /// Defines the maximum height for all FlexibleMessageBox instances in percent of the working area.

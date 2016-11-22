@@ -8,6 +8,7 @@
  */
 using System;
 using System.Windows.Forms;
+using appCore.UI;
 
 namespace appCore.Templates.UI
 {
@@ -197,7 +198,7 @@ namespace appCore.Templates.UI
 			}
 			if (!string.IsNullOrEmpty(errmsg)) {
 				Action action = new Action(delegate {
-				                           	MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				                           	FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				                           });
 				Toolbox.Tools.darkenBackgroundForm(action,false,this);
 				return;

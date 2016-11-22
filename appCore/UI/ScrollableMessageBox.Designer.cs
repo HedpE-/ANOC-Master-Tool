@@ -1,4 +1,4 @@
-namespace appCore.Toolbox
+namespace appCore.UI
 {
     partial class ScrollableMessageBox
     {

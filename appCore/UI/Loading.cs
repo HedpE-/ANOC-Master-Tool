@@ -20,8 +20,19 @@ namespace appCore.UI
 		private delegate void CloseDelegate(); //Delegate for cross thread call to close
 		static System.Drawing.Point formXY;
 		static Loading loadingForm;
-		static int _spinnerSize = 32;
 		static Thread thread;
+		
+		static int _spinnerSize = 32;		
+		public static int spinnerSize
+		{
+			get {
+				return _spinnerSize;
+			}
+			set {
+				_spinnerSize = value;
+			}
+		}
+		
 		Loading()
 		{
 			InitializeComponent();
@@ -94,16 +105,6 @@ namespace appCore.UI
 			                                   	int difference = controlWidth - labelWidth;
 			                                   	lb1.Left = difference / 2;
 			                                   }));
-		}
-		
-		public static int spinnerSize
-		{
-			get {
-				return _spinnerSize;
-			}
-			set {
-				_spinnerSize = value;
-			}
 		}
 	}
 }

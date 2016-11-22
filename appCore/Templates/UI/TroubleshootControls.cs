@@ -517,7 +517,7 @@ namespace appCore.Templates.UI
 					break;
 			}
 			
-			LargeTextForm enlarge = new LargeTextForm(tb.Text,lbl,false);
+			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
@@ -637,7 +637,7 @@ namespace appCore.Templates.UI
 			{
 				if (frm.Name == "TasksForm") {
 					frm.Activate();
-					DialogResult ans = MessageBox.Show("Task Notes Generator is already open, in order to open the requested Task Notes Generator, the previous must be closed.\n\nDo you want to close?","Task Notes Generator",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+					DialogResult ans = FlexibleMessageBox.Show("Task Notes Generator is already open, in order to open the requested Task Notes Generator, the previous must be closed.\n\nDo you want to close?","Task Notes Generator",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 					if (ans == DialogResult.Yes) frm.Close();
 					else return;
 					break;
@@ -658,7 +658,7 @@ namespace appCore.Templates.UI
 				errmsg += "         - Site Address missing\n";
 			}
 			if (!string.IsNullOrEmpty(errmsg)) {
-				MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			TasksForm Tasks = new TasksForm();
@@ -724,13 +724,13 @@ namespace appCore.Templates.UI
 					}
 				}
 				if (!string.IsNullOrEmpty(errmsg)) {
-					MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 			}
 			
-			if(currentTemplate != null)
-				currentTemplate = null;
+//			if(currentTemplate != null)
+//				currentTemplate = null;
 			currentTemplate = new TroubleShoot(Controls);
 			
 			if(UiMode == Template.UIenum.Template && prevTemp != null) {

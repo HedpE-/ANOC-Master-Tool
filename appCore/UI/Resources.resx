@@ -15956,8 +15956,11 @@ ZK - LTE2100 Pico</value>
   <data name="Changelog" xml:space="preserve">
     <value>####### ANOC Master Tool 7.0alpha6 28/11/2016 #######
 
-- First implementations of Error Handling to prevent crashes due to IO errors
+- New Error Handling should prevent a lot of crashes due to IO errors
 - Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
+- Tweaked the Whole Shift Popup 
+- Implemented the Menu bar on all Templates, off with the old buttons
+- All Message boxes have the same look now
 
 ####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
 

@@ -165,7 +165,7 @@ namespace appCore.Templates.UI
 		{
 //			Action action = new Action(delegate {
 			if (string.IsNullOrEmpty(textBox10.Text)) {
-				MessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			try {
@@ -807,7 +807,7 @@ namespace appCore.Templates.UI
 					break;
 			}
 			
-			LargeTextForm enlarge = new LargeTextForm(tb.Text,lbl,false);
+			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;

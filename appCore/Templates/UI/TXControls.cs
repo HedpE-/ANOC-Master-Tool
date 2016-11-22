@@ -19,8 +19,8 @@ namespace appCore.Templates.UI
     /// </summary>
     public class TXControls : Panel
 	{
-		public Button Button_OuterRight = new Button();
-		public Button Button_OuterLeft = new Button();
+//		public Button Button_OuterRight = new Button();
+//		public Button Button_OuterLeft = new Button();
 //		public Button Button_InnerLeft = new Button();
 //		public Button Button_InnerRight = new Button();
 		
@@ -40,6 +40,11 @@ namespace appCore.Templates.UI
 		public CheckBox Repeat_IntermittentCheckBox = new CheckBox();
 		public ComboBox ServiceAffectedComboBox = new ComboBox();
 		public ComboBox TxTypeComboBox = new ComboBox();
+		
+		AMTMenuStrip MainMenu = new AMTMenuStrip();
+		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		
 		TX currentTemplate;
 		TX prevTemp = new TX();
@@ -82,43 +87,20 @@ namespace appCore.Templates.UI
 					Repeat_IntermittentCheckBox.Enabled = false;
 					ServiceAffectedComboBox.Enabled = false;
 					TxTypeComboBox.Enabled = false;
-					// 
-					// Button_OuterRight
-					// 
-					Button_OuterRight.Name = "CopyToNewTroubleshoot";
-					Button_OuterRight.Size = new Size(183, 23);
-					Button_OuterRight.TabIndex = 24;
-					Button_OuterRight.Text = "Copy to new Troubleshoot template";
-					Button_OuterRight.Click += LoadTemplateFromLog;
+					
+					MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
+					                                         	generateTemplateToolStripMenuItem,
+					                                         	copyToNewTemplateToolStripMenuItem});
 				}
 				else {
 					InitializeComponent();
 					TxTypeComboBox.SelectedIndexChanged += TxTypeComboBoxSelectedIndexChanged;
-					// 
-					// Button_OuterRight
-					// 
-					Button_OuterRight.Size = new Size(75, 23);
-					Button_OuterRight.Name = "ClearButton";
-					Button_OuterRight.TabIndex = 24;
-					Button_OuterRight.Text = "Clear";
-					Button_OuterRight.Click += ClearAllControls;
+					
+					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
-				// 
-				// Button_OuterLeft
-				// 
-				Button_OuterLeft.Name = "GenerateTemplateButton";
-				Button_OuterLeft.Size = new Size(112, 23);
-				Button_OuterLeft.TabIndex = 22;
-				Button_OuterLeft.Text = "Generate Template";
-				Button_OuterLeft.Click += GenerateTemplate;
-				Controls.Add(Button_OuterLeft);
-				Controls.Add(Button_OuterRight);
-				
-				Button_OuterLeft.Location = new Point(PaddingLeftRight, DetailedRanTroubleshootTextBox.Bottom + 5);
-//				Button_InnerLeft.Location = new Point(Button_OuterLeft.Right + 3, DetailedRanTroubleshootTextBox.Bottom + 5);
-				Button_OuterRight.Location = new Point(DetailedRanTroubleshootTextBox.Right - Button_OuterRight.Width, DetailedRanTroubleshootTextBox.Bottom + 5);
-//				Button_InnerRight.Location = new Point(Button_OuterRight.Left - Button_InnerRight.Width - 3, DetailedRanTroubleshootTextBox.Bottom + 5);
-				Size = new Size(DetailedRanTroubleshootTextBox.Right + PaddingLeftRight, Button_OuterLeft.Bottom + PaddingTopBottom);
+				Size = new Size(DetailedRanTroubleshootTextBox.Right + PaddingLeftRight, DetailedRanTroubleshootTextBox.Bottom + PaddingTopBottom);
 			}
 		}
 		
@@ -169,7 +151,7 @@ namespace appCore.Templates.UI
 					errmsg += "         - Detailed RAN troubleshooting missing\n";
 				}
 				if (!string.IsNullOrEmpty(errmsg)) {
-					MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 				errmsg = string.Empty;
@@ -197,8 +179,6 @@ namespace appCore.Templates.UI
 				prevTemp = currentTemplate;
 				
 				MainForm.logFile.HandleLog(currentTemplate);
-//				if (label40.Text != string.Empty)
-//					Updatelabel40();
 			}
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,true,this);
@@ -275,7 +255,7 @@ namespace appCore.Templates.UI
 					break;
 			}
 			
-			LargeTextForm enlarge = new LargeTextForm(tb.Text,lbl,false);
+			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
@@ -287,6 +267,7 @@ namespace appCore.Templates.UI
 		{
 			BackColor = SystemColors.Control;
 			Name = "TX Template GUI";
+			Controls.Add(MainMenu);
 			Controls.Add(SitesLargeTextButton);
 			Controls.Add(DetailedRanTroubleshootLargeTextButton);
 			Controls.Add(PerformanceOutageDetailsLargeTextButton);
@@ -304,9 +285,31 @@ namespace appCore.Templates.UI
 			Controls.Add(Repeat_IntermittentCheckBox);
 			Controls.Add(ServiceAffectedComboBox);
 			// 
+			// MainMenu
+			// 
+			MainMenu.Location = new Point(paddingLeftRight, 0);
+			// 
+			// generateTemplateToolStripMenuItem
+			// 
+			generateTemplateToolStripMenuItem.Name = "generateTemplateToolStripMenuItem";
+			generateTemplateToolStripMenuItem.Text = "Generate Template";
+			generateTemplateToolStripMenuItem.Click += GenerateTemplate;
+			// 
+			// clearToolStripMenuItem
+			// 
+			clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			clearToolStripMenuItem.Text = "Clear template";
+			clearToolStripMenuItem.Click += ClearAllControls;
+			// 
+			// copyToNewTemplateToolStripMenuItem
+			// 
+			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
+			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
+//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
+			// 
 			// SitesLabel
 			// 
-			SitesLabel.Location = new Point(PaddingLeftRight, PaddingTopBottom);
+			SitesLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
 			SitesLabel.Name = "SitesLabel";
 			SitesLabel.Size = new Size(245, 20);
 			SitesLabel.Text = "Site(s) reference(s)";
@@ -455,22 +458,6 @@ namespace appCore.Templates.UI
 			DetailedRanTroubleshootLargeTextButton.Text = "...";
 			DetailedRanTroubleshootLargeTextButton.Click += LargeTextButtonsClick;
 			DetailedRanTroubleshootLargeTextButton.UseVisualStyleBackColor = true;
-			// 
-			// Button_OuterLeft
-			// 
-			Button_OuterLeft.UseVisualStyleBackColor = true;
-			// 
-			// Button_OuterRight
-			// 
-			Button_OuterRight.UseVisualStyleBackColor = true;
-			// 
-			// Button_InnerLeft
-			// 
-//			Button_InnerLeft.UseVisualStyleBackColor = true;
-			// 
-			// Button_InnerRight
-			// 
-//			Button_InnerRight.UseVisualStyleBackColor = true;
 		}
 	}
 }

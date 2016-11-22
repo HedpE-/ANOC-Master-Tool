@@ -8,9 +8,11 @@
  */
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using appCore.Settings;
 using appCore.SiteFinder;
+using appCore.SiteFinder.UI;
 using appCore.Templates.Types;
 using appCore.UI;
 
@@ -21,11 +23,6 @@ namespace appCore.Templates.UI
     /// </summary>
     public class UpdateControls : Panel
 	{
-		public Button Button_OuterRight = new Button();
-		public Button Button_OuterLeft = new Button();
-		public Button Button_InnerLeft = new Button();
-		public Button Button_InnerRight = new Button();
-		
 		public Button NextActionsLargeTextButton = new Button();
 		public Button UpdateLargeTextButton = new Button();
 		Label NextActionsLabel = new Label();
@@ -42,6 +39,14 @@ namespace appCore.Templates.UI
 		public TextBox PowerCompanyTextBox = new TextBox();
 		public AMTRichTextBox NextActionsTextBox = new AMTRichTextBox();
 		public AMTRichTextBox UpdateTextBox = new AMTRichTextBox();
+		
+		AMTMenuStrip MainMenu = new AMTMenuStrip();
+		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
+		
+		public static siteDetails2 SiteDetailsUI;
 		
 		public Site currentSite { get; private set; }
 		Update currentTemplate;
@@ -82,24 +87,10 @@ namespace appCore.Templates.UI
 					INCTextBox.ReadOnly = true;
 					NextActionsTextBox.ReadOnly = true;
 					UpdateTextBox.ReadOnly = true;
-					// 
-					// Button_OuterLeft
-					// 
-					Button_OuterLeft.Name = "GenerateTemplateButton";
-					Button_OuterLeft.Size = new Size(112, 23);
-					Button_OuterLeft.TabIndex = 22;
-					Button_OuterLeft.Text = "Generate Template";
-					Button_OuterLeft.Click += GenerateTemplate;
-					Controls.Add(Button_OuterLeft);
-					// 
-					// Button_OuterRight
-					// 
-					Button_OuterRight.Name = "CopyToNewTroubleshoot";
-					Button_OuterRight.Size = new Size(183, 23);
-					Button_OuterRight.TabIndex = 24;
-					Button_OuterRight.Text = "Copy to new Troubleshoot template";
-					Button_OuterRight.Click += LoadTemplateFromLog;
-					Controls.Add(Button_OuterRight);
+					
+					MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
+					                                         	generateTemplateToolStripMenuItem,
+					                                         	copyToNewTemplateToolStripMenuItem});
 				}
 				else {
 					InitializeComponent();
@@ -107,30 +98,18 @@ namespace appCore.Templates.UI
 					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					INCTextBox.KeyPress += INCTextBoxKeyPress;
 					SiteIdTextBox.Size = new Size(67, 20);
-					// 
-					// Button_OuterLeft
-					// 
-					Button_OuterLeft.Name = "GenerateTemplateButton";
-					Button_OuterLeft.Size = new Size(112, 23);
-					Button_OuterLeft.TabIndex = 22;
-					Button_OuterLeft.Text = "Generate Template";
-					Button_OuterLeft.Click += GenerateTemplate;
-					Controls.Add(Button_OuterLeft);
-					// 
-					// Button_OuterRight
-					// 
-					Button_OuterRight.Size = new Size(75, 23);
-					Button_OuterRight.Name = "ClearButton";
-					Button_OuterRight.TabIndex = 24;
-					Button_OuterRight.Text = "Clear";
-					Button_OuterRight.Click += ClearAllControls;
-					Controls.Add(Button_OuterRight);
+					
+					MainMenu.InitializeTroubleshootMenu();
+					MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
+					MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+					
+					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
-				Button_OuterLeft.Location = new Point(PaddingLeftRight, NextActionsTextBox.Bottom + 5);
-				Button_InnerLeft.Location = new Point(Button_OuterLeft.Right + 3, NextActionsTextBox.Bottom + 5);
-				Button_OuterRight.Location = new Point(NextActionsTextBox.Right - Button_OuterRight.Width, NextActionsTextBox.Bottom + 5);
-				Button_InnerRight.Location = new Point(Button_OuterRight.Left - Button_InnerRight.Width - 3, NextActionsTextBox.Bottom + 5);
-				Size = new Size(NextActionsTextBox.Right + PaddingLeftRight, Button_OuterLeft.Bottom + PaddingTopBottom);
+				Size = new Size(NextActionsTextBox.Right + PaddingLeftRight, NextActionsTextBox.Bottom + PaddingTopBottom);
 			}
 		}
 		
@@ -162,6 +141,9 @@ namespace appCore.Templates.UI
 			foreach (object ctrl in Controls) {
 				switch(ctrl.GetType().ToString())
 				{
+					case "appCore.UI.AMTMenuStrip":
+						MainMenu.siteFinder_Toggle(toggle, siteFound);
+						break;
 					case "System.Windows.Forms.Button":
 						Button btn = ctrl as Button;
 						if(btn.Text.Contains("Generate") || btn.Text == "Clear") {
@@ -208,8 +190,8 @@ namespace appCore.Templates.UI
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
 				currentSite = Finder.getSite(tb.Text);
-				bool siteFound = !string.IsNullOrEmpty(currentSite.Id);
-				if(!string.IsNullOrEmpty(currentSite.Id)) {
+				if(currentSite.Exists) {
+					currentSite.requestOIData("INCCRQPWR");
 					PriorityTextBox.Text = currentSite.Priority;
 					PowerCompanyTextBox.Text = currentSite.PowerCompany;
 					RegionTextBox.Text = currentSite.Region;
@@ -221,14 +203,16 @@ namespace appCore.Templates.UI
 				}
 //				sw.Stop();
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				siteFinder_Toggle(true, siteFound);
+				siteFinder_Toggle(true, currentSite.Exists);
 			}
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
-			if(GlobalProperties.siteFinder_mainswitch)
-				siteFinder_Toggle(false, false);
+			currentSite = null;
+//			if(GlobalProperties.siteFinder_mainswitch)
+			siteFinder_Toggle(false, false);
+			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
@@ -282,7 +266,7 @@ namespace appCore.Templates.UI
 					break;
 			}
 			
-			LargeTextForm enlarge = new LargeTextForm(tb.Text,lbl,false);
+			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
@@ -315,7 +299,7 @@ namespace appCore.Templates.UI
 				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
 				if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
 				else {
-					MessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+					FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 				string errmsg = "";
@@ -388,11 +372,129 @@ namespace appCore.Templates.UI
 				siteFinder_Toggle(false,false);
 			}
 		}
+
+		void SiteDetailsButtonClick(object sender, EventArgs e)
+		{
+			if(SiteDetailsUI != null) {
+				SiteDetailsUI.Close();
+				SiteDetailsUI.Dispose();
+			}
+			SiteDetailsUI = new siteDetails2(currentSite);
+			SiteDetailsUI.Show();
+		}
+		
+		void LoadDisplayOiDataTable(object sender, EventArgs e) {
+			ToolStripMenuItem tsim = sender as ToolStripMenuItem;
+//			if(e.Button == MouseButtons.Left) {
+			if(currentSite.Exists) {
+				System.Data.DataTable dt = new System.Data.DataTable();
+				string dataToShow = string.Empty;
+				switch (tsim.Name) {
+					case "INCsButton":
+						if(currentSite.INCs == null) {
+							currentSite.requestOIData("INC");
+							if(currentSite.INCs != null) {
+								if(currentSite.INCs.Rows.Count > 0) {
+									MainMenu.INCsButton.Enabled = true;
+									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+									MainMenu.INCsButton.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
+								}
+								else {
+									MainMenu.INCsButton.Enabled = false;
+									MainMenu.INCsButton.Text = "No INC history";
+								}
+							}
+							return;
+						}
+						dataToShow = "INCs";
+						dt = currentSite.INCs;
+						break;
+					case "CRQsButton":
+						if(currentSite.CRQs == null) {
+							currentSite.requestOIData("CRQ");
+							if(currentSite.CRQs != null) {
+								if(currentSite.CRQs.Rows.Count > 0) {
+									MainMenu.CRQsButton.Enabled = true;
+									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
+								}
+								else {
+									MainMenu.CRQsButton.Enabled = false;
+									MainMenu.CRQsButton.Text = "No CRQ history";
+								}
+							}
+							return;
+						}
+						dataToShow = "CRQs";
+						dt = currentSite.CRQs;
+						break;
+					case "BookInsButton":
+						if(currentSite.BookIns == null) {
+							currentSite.requestOIData("Bookins");
+							if(currentSite.BookIns != null) {
+								if(currentSite.BookIns.Rows.Count > 0) {
+									MainMenu.BookInsButton.Enabled = true;
+									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
+								}
+								else {
+									MainMenu.BookInsButton.Enabled = false;
+									MainMenu.BookInsButton.Text = "No Book In history";
+								}
+							}
+							return;
+						}
+						dataToShow = "BookIns";
+						dt = currentSite.BookIns;
+						break;
+					case "ActiveAlarmsButton":
+						if(currentSite.ActiveAlarms == null) {
+							currentSite.requestOIData("Alarms");
+							if(currentSite.ActiveAlarms != null) {
+								if(currentSite.ActiveAlarms.Rows.Count > 0) {
+									MainMenu.ActiveAlarmsButton.Enabled = true;
+									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
+								}
+								else {
+									MainMenu.ActiveAlarmsButton.Enabled = false;
+									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+								}
+							}
+							return;
+						}
+						dataToShow = "ActiveAlarms";
+						dt = currentSite.ActiveAlarms;
+						break;
+				}
+				
+				var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
+				Form openForm = null;
+				
+				foreach (Form frm in fc)
+				{
+					if(frm.Name.Contains(dataToShow)) {
+						openForm = frm;
+						break;
+					}
+				}
+				if(openForm != null)
+					openForm.Close();
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
+				OiTable.Show();
+			}
+		}
+		
+		void refreshOiData(object sender, EventArgs e) {
+			currentSite.requestOIData("INCCRQBookinsAlarms");
+			MainMenu.siteFinder_Toggle(true);
+		}
 		
 		void InitializeComponent()
 		{
 			BackColor = SystemColors.Control;
 			Name = "Update Template GUI";
+			Controls.Add(MainMenu);
 			Controls.Add(RegionLabel);
 			Controls.Add(RegionTextBox);
 			Controls.Add(PriorityLabel);
@@ -410,9 +512,38 @@ namespace appCore.Templates.UI
 			Controls.Add(SiteIdTextBox);
 			Controls.Add(INCTextBox);
 			// 
+			// MainMenu
+			// 
+			MainMenu.Location = new Point(paddingLeftRight, 0);
+			// 
+			// SiteDetailsToolStripMenuItem
+			// 
+			SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
+			SiteDetailsToolStripMenuItem.Text = "Site Details";
+//			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+			SiteDetailsToolStripMenuItem.Click += SiteDetailsButtonClick;
+			// 
+			// generateTemplateToolStripMenuItem
+			// 
+			generateTemplateToolStripMenuItem.Name = "generateTemplateToolStripMenuItem";
+			generateTemplateToolStripMenuItem.Text = "Generate Template";
+			generateTemplateToolStripMenuItem.Click += GenerateTemplate;
+			// 
+			// clearToolStripMenuItem
+			// 
+			clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			clearToolStripMenuItem.Text = "Clear template";
+			clearToolStripMenuItem.Click += ClearAllControls;
+			// 
+			// copyToNewTemplateToolStripMenuItem
+			// 
+			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
+			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
+//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
+			// 
 			// SiteIdLabel
 			// 
-			SiteIdLabel.Location = new Point(PaddingLeftRight, PaddingTopBottom);
+			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
 			SiteIdLabel.Name = "SiteIdLabel";
 			SiteIdLabel.Size = new Size(90, 20);
 			SiteIdLabel.Text = "Site ID";
@@ -421,7 +552,7 @@ namespace appCore.Templates.UI
 			// SiteIdTextBox
 			// 
 			SiteIdTextBox.Font = new Font("Courier New", 8.25F);
-			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, PaddingTopBottom);
+			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
 			SiteIdTextBox.MaxLength = 6;
 			SiteIdTextBox.Name = "SiteIdTextBox";
 			SiteIdTextBox.Size = new Size(68, 20);
@@ -429,7 +560,7 @@ namespace appCore.Templates.UI
 			// 
 			// PriorityLabel
 			// 
-			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 5, PaddingTopBottom);
+			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 5, MainMenu.Bottom + 4);
 			PriorityLabel.Name = "PriorityLabel";
 			PriorityLabel.Size = new Size(40, 20);
 			PriorityLabel.Text = "Priority";
@@ -438,7 +569,7 @@ namespace appCore.Templates.UI
 			// PriorityTextBox
 			// 
 			PriorityTextBox.Font = new Font("Courier New", 8.25F);
-			PriorityTextBox.Location = new Point(PriorityLabel.Right + 2, PaddingTopBottom);
+			PriorityTextBox.Location = new Point(PriorityLabel.Right + 2, MainMenu.Bottom + 4);
 			PriorityTextBox.Name = "PriorityTextBox";
 			PriorityTextBox.ReadOnly = true;
 			PriorityTextBox.Size = new Size(73, 20);
@@ -464,7 +595,7 @@ namespace appCore.Templates.UI
 			// 
 			// INCLabel
 			// 
-			INCLabel.Location = new Point(PriorityTextBox.Right + 5, PaddingTopBottom);
+			INCLabel.Location = new Point(PriorityTextBox.Right + 5, MainMenu.Bottom + 4);
 			INCLabel.Name = "INCLabel";
 			INCLabel.Size = new Size(43, 20);
 			INCLabel.Text = "INC";
@@ -474,7 +605,7 @@ namespace appCore.Templates.UI
 			// 
 			INCTextBox.AcceptsTab = true;
 			INCTextBox.Font = new Font("Courier New", 8.25F);
-			INCTextBox.Location = new Point(INCLabel.Right + 2, PaddingTopBottom);
+			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
 			INCTextBox.MaxLength = 15;
 			INCTextBox.Name = "INCTextBox";
 			INCTextBox.Size = new Size(180, 20);
@@ -558,22 +689,6 @@ namespace appCore.Templates.UI
 			NextActionsLargeTextButton.Text = "...";
 			NextActionsLargeTextButton.UseVisualStyleBackColor = true;
 			NextActionsLargeTextButton.Click += LargeTextButtonsClick;
-			// 
-			// Button_OuterLeft
-			// 
-			Button_OuterLeft.UseVisualStyleBackColor = true;
-			// 
-			// Button_OuterRight
-			// 
-			Button_OuterRight.UseVisualStyleBackColor = true;
-			// 
-			// Button_InnerLeft
-			// 
-			Button_InnerLeft.UseVisualStyleBackColor = true;
-			// 
-			// Button_InnerRight
-			// 
-			Button_InnerRight.UseVisualStyleBackColor = true;
 		}
 	}
 }

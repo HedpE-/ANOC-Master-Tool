@@ -11,6 +11,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections;
 using System.Globalization;
+using appCore.UI;
 
 namespace appCore.Logs.UI
 {
@@ -166,7 +167,7 @@ namespace appCore.Logs.UI
 			                           				LogEdit.ShowDialog(this);
 			                           			}
 			                           			else {
-			                           				DialogResult ans = MessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+			                           				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
 			                           				if (ans == DialogResult.No)	return;
 			                           				System.Diagnostics.Process.Start("notepad.exe", LogFile);
 			                           			}

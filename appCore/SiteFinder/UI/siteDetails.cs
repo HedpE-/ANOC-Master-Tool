@@ -410,7 +410,7 @@ namespace appCore.SiteFinder.UI
 		void Button45Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox4.Text,label4.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox4.Text,label4.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           });

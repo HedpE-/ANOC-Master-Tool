@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.IO;
@@ -29,6 +30,18 @@ namespace appCore.Settings
 		public static string OfficePath = string.Empty;
 		
 		public static bool autoUpdateDbFiles = false;
+		
+		static FileVersionInfo _assemblyFileVersionInfo;
+		public static FileVersionInfo AssemblyFileVersionInfo {
+			get {
+				if(_assemblyFileVersionInfo == null) {
+					System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+					_assemblyFileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+				}
+				return _assemblyFileVersionInfo;
+			}
+			private set {}
+		}
 		
 		static bool _shareAccess = true;
 		public static bool shareAccess {
@@ -55,14 +68,12 @@ namespace appCore.Settings
 					MainForm.TroubleshootUI.siteFinderSwitch("off");
 					MainForm.FailedCRQUI.siteFinderSwitch("off");
 					MainForm.UpdateUI.siteFinderSwitch("off");
-//					MainForm.OutageUI.siteFinderSwitch("off");
 				}
 				else {
 					MainForm.SiteDetailsPictureBox.Visible = true;
 					MainForm.TroubleshootUI.siteFinderSwitch("on");
 					MainForm.FailedCRQUI.siteFinderSwitch("on");
 					MainForm.UpdateUI.siteFinderSwitch("on");
-//					MainForm.OutageUI.siteFinderSwitch("on");
 				}
 			}
 		}

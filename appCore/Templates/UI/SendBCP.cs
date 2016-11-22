@@ -9,6 +9,7 @@
 using System;
 using System.Windows.Forms;
 using appCore.Templates.Types;
+using appCore.UI;
 
 namespace appCore.Templates.UI
 {
@@ -63,7 +64,7 @@ namespace appCore.Templates.UI
 					string CompTAS = Toolbox.Tools.CompleteINC_CRQ_TAS(textBox1.Text, "TAS");
 					if (CompTAS != "error") textBox1.Text = CompTAS;
 					else {
-						MessageBox.Show("Task number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+						FlexibleMessageBox.Show("Task number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
 				}
@@ -78,7 +79,7 @@ namespace appCore.Templates.UI
 		void Button3Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox4.Text,label5.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox4.Text,label5.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox4.Text = enlarge.finaltext;
@@ -114,7 +115,7 @@ namespace appCore.Templates.UI
 				errmsg = errmsg + "         - Email recipient missing\n";
 			}
 			if (!string.IsNullOrEmpty(errmsg)) {
-				MessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			errmsg = string.Empty;

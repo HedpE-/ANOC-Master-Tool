@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
-namespace appCore.Toolbox
+namespace appCore.UI
 {
 
 	public partial class ScrollableMessageBox : Form

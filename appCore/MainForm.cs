@@ -134,7 +134,7 @@ namespace appCore
 			catch (IOException)
 			{
 				Action action = new Action(delegate {
-				                           	MessageBox.Show("Log file is currently in use, please close it and press OK to retry","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+				                           	FlexibleMessageBox.Show("Log file is currently in use, please close it and press OK to retry","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
 				                           });
 				Tools.darkenBackgroundForm(action,false,this);
 				goto Retry;
@@ -634,13 +634,12 @@ namespace appCore
 			
 			string thisfn = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll";
 			
-			if (SettingsFile.LastRunVersion != FileVersionInfo.GetVersionInfo(thisfn).FileVersion) {
-				SettingsFile.LastRunVersion = FileVersionInfo.GetVersionInfo(thisfn).FileVersion;
-				ScrollableMessageBox msgBox = new ScrollableMessageBox();
-				msgBox.StartPosition = FormStartPosition.CenterParent;
-				msgBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK, "New Version Changelog",false);
-			}
 			SplashForm.CloseForm();
+			
+			if (SettingsFile.LastRunVersion != GlobalProperties.AssemblyFileVersionInfo.FileVersion) {
+				SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;
+				FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
+			}
 		}
 
 		public void siteFinder(object sender, KeyPressEventArgs e)
@@ -821,7 +820,7 @@ namespace appCore
 				}
 				else {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("INC/CRQ can only contain numbers","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("INC/CRQ can only contain numbers","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           	textBox13.TextChanged -= TextBox13TextChanged;
 					                           	textBox13.Text = "";
 					                           	textBox13.TextChanged += TextBox13TextChanged;
@@ -864,7 +863,7 @@ namespace appCore
 		{
 			if (string.IsNullOrEmpty(textBox10.Text)) {
 				Action action = new Action(delegate {
-				                           	MessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				                           	FlexibleMessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				                           });
 				Tools.darkenBackgroundForm(action,false,this);
 				return;
@@ -1354,7 +1353,7 @@ namespace appCore
 		{
 			Action action = new Action(delegate {
 			                           	if (string.IsNullOrEmpty(textBox10.Text)) {
-			                           		MessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                           		FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			                           		return;
 			                           	}
 			                           	Button btn = (Button)sender;
@@ -1406,7 +1405,7 @@ namespace appCore
 			                           				label33.Text = "Generated Outage Report";
 			                           				LogOutageReport();
 			                           				if (op.tableRemoved)
-			                           					MessageBox.Show("WARNING!!!" + Environment.NewLine + Environment.NewLine + "One or more tables to parse have been removed." + Environment.NewLine + "All tables must have the same columns and order.","Warning",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+			                           					FlexibleMessageBox.Show("WARNING!!!" + Environment.NewLine + Environment.NewLine + "One or more tables to parse have been removed." + Environment.NewLine + "All tables must have the same columns and order.","Warning",MessageBoxButtons.OK,MessageBoxIcon.Warning);
 			                           			}
 			                           		}
 			                           		catch {
@@ -1503,7 +1502,7 @@ namespace appCore
 			                           		temp[c] = Convert.ToInt32(temp[c].Replace("RBS",string.Empty)).ToString();
 			                           	}
 			                           	
-			                           	MessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+			                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
 			                           	Clipboard.SetText(string.Join(Environment.NewLine,temp));
 			                           });
 			Tools.darkenBackgroundForm(action,false,this);
@@ -1514,7 +1513,7 @@ namespace appCore
 		{
 			Action action = new Action(delegate {
 			                           	if (string.IsNullOrEmpty(textBox12.Text)) {
-			                           		MessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                           		FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			                           		return;
 			                           	}
 			                           	try {
@@ -1595,7 +1594,7 @@ namespace appCore
 					if (CompINC_CRQ != "error") textBox13.Text = CompINC_CRQ;
 					else {
 						Action action = new Action(delegate {
-						                           	MessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+						                           	FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
 						                           });
 						Tools.darkenBackgroundForm(action,false,this);
 						return;
@@ -1644,7 +1643,7 @@ namespace appCore
 				}
 				catch (Exception) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 				}
@@ -1705,7 +1704,7 @@ namespace appCore
 		void Button22Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(textBox10.Text,label33.Text,false);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox10.Text,label33.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox10.Text = enlarge.finaltext;
@@ -1722,7 +1721,7 @@ namespace appCore
 		void Button23Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(textBox11.Text,label32.Text,false);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox11.Text,label32.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox11.Text = enlarge.finaltext;
@@ -1739,7 +1738,7 @@ namespace appCore
 		void Button24Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(textBox12.Text,label34.Text,false);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox12.Text,label34.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox12.Text = enlarge.finaltext;
@@ -1764,7 +1763,7 @@ namespace appCore
 		void Button26Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox6.Text,label44.Text,false);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox6.Text,label44.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox6.Text = enlarge.finaltext;
@@ -1787,7 +1786,7 @@ namespace appCore
 		void Button27Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox7.Text,label45.Text,true);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox7.Text,label45.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox7.Text = enlarge.finaltext;
@@ -1810,7 +1809,7 @@ namespace appCore
 		void Button28Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox8.Text,label46.Text,true);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox8.Text,label46.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox8.Text = enlarge.finaltext;
@@ -1995,7 +1994,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox31.Text)) {
 				if (!Tools.IsAllDigits(textBox31.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BCF can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BCF can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2304,7 +2303,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox32.Text)) {
 				if (!Tools.IsAllDigits(textBox32.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2320,7 +2319,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox33.Text)) {
 				if (!Tools.IsAllDigits(textBox33.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2336,7 +2335,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox34.Text)) {
 				if (!Tools.IsAllDigits(textBox34.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2352,7 +2351,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox35.Text)) {
 				if (!Tools.IsAllDigits(textBox35.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2368,7 +2367,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox32.Text)) {
 				if (!Tools.IsAllDigits(textBox36.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2384,7 +2383,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox37.Text)) {
 				if (!Tools.IsAllDigits(textBox37.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2400,7 +2399,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox38.Text)) {
 				if (!Tools.IsAllDigits(textBox38.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2416,7 +2415,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox39.Text)) {
 				if (!Tools.IsAllDigits(textBox39.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2432,7 +2431,7 @@ namespace appCore
 			if (!string.IsNullOrEmpty(textBox40.Text)) {
 				if (!Toolbox.Tools.IsAllDigits(textBox40.Text)) {
 					Action action = new Action(delegate {
-					                           	MessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           	FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           });
 					Toolbox.Tools.darkenBackgroundForm(action,false,this);
 					return;
@@ -2510,7 +2509,7 @@ namespace appCore
 		void Button37Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	LargeTextForm enlarge = new LargeTextForm(richTextBox9.Text,groupBox6.Text,false);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox9.Text,groupBox6.Text,false);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox9.Text = enlarge.finaltext;
@@ -2533,7 +2532,7 @@ namespace appCore
 		void Button36Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox11.Text,label50.Text,true);
+			                           	UI.AMTLargeTextForm enlarge = new UI.AMTLargeTextForm(richTextBox11.Text,label50.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox11.Text = enlarge.finaltext;
@@ -2556,7 +2555,7 @@ namespace appCore
 		void Button35Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox10.Text,label49.Text,true);
+			                           	UI.AMTLargeTextForm enlarge = new UI.AMTLargeTextForm(richTextBox10.Text,label49.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox10.Text = enlarge.finaltext;
@@ -2581,10 +2580,9 @@ namespace appCore
 
 		void MainFormFormClosing(object sender, FormClosingEventArgs e)
 		{
-			//FIXME:			wholeShiftsPanelDispose();
 			DialogResult ans = DialogResult.No;
 			Action action = new Action(delegate {
-			                           	ans = MessageBox.Show("Are you sure you want to quit ANOC Master Tool?","Quitting",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+			                           	ans = FlexibleMessageBox.Show("Are you sure you want to quit ANOC Master Tool?","Quitting",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 			                           });
 			Tools.darkenBackgroundForm(action,false,this);
 			if(ans == DialogResult.Yes) {
@@ -2827,7 +2825,7 @@ namespace appCore
 		void Button50Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox14.Text,label62.Text,true);
+			                           	UI.AMTLargeTextForm enlarge = new UI.AMTLargeTextForm(richTextBox14.Text,label62.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox14.Text = enlarge.finaltext;
@@ -2838,7 +2836,7 @@ namespace appCore
 		void Button51Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	UI.LargeTextForm enlarge = new UI.LargeTextForm(richTextBox15.Text,label63.Text,true);
+			                           	UI.AMTLargeTextForm enlarge = new UI.AMTLargeTextForm(richTextBox15.Text,label63.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox15.Text = enlarge.finaltext;

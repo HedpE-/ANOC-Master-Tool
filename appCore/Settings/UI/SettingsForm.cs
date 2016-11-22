@@ -39,15 +39,15 @@ namespace appCore.Settings.UI
 
 			var fnv = FileVersionInfo.GetVersionInfo(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll");
 
-			label3.Text = "Version: " + fnv.FileVersion;
-			label4.Text = "Release date: " + File.GetLastWriteTime(fnv.FileName).ToString("dd-MM-yyyy");
+			label3.Text = "Version: " + GlobalProperties.AssemblyFileVersionInfo.FileVersion;
+			label4.Text = "Release date: " + File.GetLastWriteTime(GlobalProperties.AssemblyFileVersionInfo.FileName).ToString("dd-MM-yyyy");
 
 			textBox1.Text = UserFolder.FullName;
 
 
 			if (!CurrentUser.hasOICredentials)
 			{
-				DialogResult ans = MessageBox.Show("No OI credentials stored, do you want to store your logon credentials now?", "OI Login", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult ans = FlexibleMessageBox.Show("No OI credentials stored, do you want to store your logon credentials now?", "OI Login", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (ans == DialogResult.Yes)
 					Button4Click(null, null);
 			}
@@ -93,9 +93,9 @@ namespace appCore.Settings.UI
 		{
 			Action action = new Action(delegate
 			                           {
-			                           	Toolbox.ScrollableMessageBox msgBox = new Toolbox.ScrollableMessageBox();
-			                           	msgBox.StartPosition = FormStartPosition.CenterParent;
-			                           	msgBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK, "Changelog", false);
+//			                           	FlexibleMessageBox msgBox = new FlexibleMessageBox();
+//			                           	msgBox.StartPosition = FormStartPosition.CenterParent;
+			                           	FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
 			                           });
 			Toolbox.Tools.darkenBackgroundForm(action, false, this);
 		}

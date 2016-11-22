@@ -16,6 +16,7 @@ using System.Linq;
 using appCore.Templates;
 using appCore.Templates.UI;
 using appCore.Templates.Types;
+using appCore.UI;
 
 namespace appCore.Logs.UI
 {
@@ -402,7 +403,7 @@ namespace appCore.Logs.UI
 		void Button14Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox10.Text,label33.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox10.Text,label33.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox10.Text = enlarge.finaltext;
@@ -418,7 +419,7 @@ namespace appCore.Logs.UI
 		void Button1Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox11.Text,label32.Text,true);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox11.Text,label32.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox11.Text = enlarge.finaltext;
@@ -428,7 +429,6 @@ namespace appCore.Logs.UI
 		
 		void Button10Click(object sender, EventArgs e)
 		{
-			Toolbox.ScrollableMessageBox msgBox;
 			switch(button10.Text) {
 				case "Copy Outage":
 //					string[] strTofind = { "\r\n" };
@@ -451,13 +451,11 @@ namespace appCore.Logs.UI
 							Clipboard.SetText(textBox10.Text);
 						}
 						catch (Exception) {
-							MessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+							FlexibleMessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 						}
 					}
 					
-					msgBox = new Toolbox.ScrollableMessageBox();
-					msgBox.StartPosition = FormStartPosition.CenterParent;
-					msgBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK, "Outage report copied to Clipboard",true);
+					FlexibleMessageBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK);
 					break;
 				case "Copy Template":
 					////					string[] strTofind = { "\r\n" };
@@ -569,7 +567,7 @@ namespace appCore.Logs.UI
 					                           		temp[c] = Convert.ToInt32(temp[c].Replace("RBS",string.Empty)).ToString();
 					                           	}
 					                           	
-					                           	MessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+					                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
 					                           	try {
 					                           		Clipboard.SetText(string.Join(Environment.NewLine,temp));
 					                           	}
@@ -578,7 +576,7 @@ namespace appCore.Logs.UI
 					                           			Clipboard.SetText(string.Join(Environment.NewLine,temp));
 					                           		}
 					                           		catch (Exception) {
-					                           			MessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           		}
 					                           	}
 					                           });

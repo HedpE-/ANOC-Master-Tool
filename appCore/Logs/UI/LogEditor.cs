@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using appCore.Settings;
+using appCore.UI;
 
 namespace appCore.Logs.UI
 {
@@ -674,7 +675,7 @@ namespace appCore.Logs.UI
 		void Button7Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox7.Text,label11.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox7.Text,label11.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox7.Text = enlarge.finaltext;
@@ -690,7 +691,7 @@ namespace appCore.Logs.UI
 		void Button8Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox8.Text,label12.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox8.Text,label12.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox8.Text = enlarge.finaltext;
@@ -706,7 +707,7 @@ namespace appCore.Logs.UI
 		void Button9Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox9.Text,label13.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox9.Text,label13.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox9.Text = enlarge.finaltext;
@@ -722,7 +723,7 @@ namespace appCore.Logs.UI
 		void Button4Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox1.Text,label25.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox1.Text,label25.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox1.Text = enlarge.finaltext;
@@ -738,7 +739,7 @@ namespace appCore.Logs.UI
 		void Button5Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox2.Text,label26.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox2.Text,label26.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox2.Text = enlarge.finaltext;
@@ -749,7 +750,7 @@ namespace appCore.Logs.UI
 		void Button54Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox16.Text,groupBox5.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox16.Text,groupBox5.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox16.Text = enlarge.finaltext;
@@ -770,7 +771,7 @@ namespace appCore.Logs.UI
 		void Button6Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox3.Text,label27.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox3.Text,label27.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox3.Text = enlarge.finaltext;
@@ -786,7 +787,7 @@ namespace appCore.Logs.UI
 		void Button2Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox4.Text,label6.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox4.Text,label6.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox4.Text = enlarge.finaltext;
@@ -802,7 +803,7 @@ namespace appCore.Logs.UI
 		void Button3Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox5.Text,label37.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox5.Text,label37.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox5.Text = enlarge.finaltext;
@@ -818,7 +819,7 @@ namespace appCore.Logs.UI
 		void Button14Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox10.Text,label33.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox10.Text,label33.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox10.Text = enlarge.finaltext;
@@ -834,7 +835,7 @@ namespace appCore.Logs.UI
 		void Button1Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(textBox11.Text,label32.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox11.Text,label32.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox11.Text = enlarge.finaltext;
@@ -850,7 +851,7 @@ namespace appCore.Logs.UI
 		void Button39Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox13.Text,label52.Text,true);
+			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox13.Text,label52.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox13.Text = enlarge.finaltext;
@@ -866,7 +867,7 @@ namespace appCore.Logs.UI
 		void Button38Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.LargeTextForm enlarge = new appCore.UI.LargeTextForm(richTextBox12.Text,label51.Text,true);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox12.Text,label51.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	richTextBox12.Text = enlarge.finaltext;
@@ -876,7 +877,6 @@ namespace appCore.Logs.UI
 		
 		void Button10Click(object sender, EventArgs e)
 		{
-			Toolbox.ScrollableMessageBox msgBox;
 			switch(button10.Text) {
 				case "Copy Outage":
 //					string[] strTofind = { "\r\n" };
@@ -899,13 +899,13 @@ namespace appCore.Logs.UI
 							Clipboard.SetText(textBox10.Text);
 						}
 						catch (Exception) {
-							MessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+							FlexibleMessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 						}
 					}
 					
-					msgBox = new Toolbox.ScrollableMessageBox();
-					msgBox.StartPosition = FormStartPosition.CenterParent;
-					msgBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK, "Outage report copied to Clipboard",true);
+//					msgBox = new FlexibleMessageBox();
+//					msgBox.StartPosition = FormStartPosition.CenterParent;
+					FlexibleMessageBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK);
 					break;
 				case "Copy Template":
 //					string[] strTofind = { "\r\n" };
@@ -954,9 +954,9 @@ namespace appCore.Logs.UI
 					template = CurrentUser.fullName[1] + " " + CurrentUser.fullName[0] + Environment.NewLine + CurrentUser.department + Environment.NewLine + "ANOC Number: +44 163 569 206";
 					template += CurrentUser.department == "1st Line RAN Support" ? "7" : "9";
 					
-					msgBox = new Toolbox.ScrollableMessageBox();
-					msgBox.StartPosition = FormStartPosition.CenterParent;
-					msgBox.Show(template, "Success", MessageBoxButtons.OK, "Template copied to Clipboard",true);
+//					msgBox = new FlexibleMessageBox();
+//					msgBox.StartPosition = FormStartPosition.CenterParent;
+					FlexibleMessageBox.Show(template, "Success", MessageBoxButtons.OK);
 					
 					try {
 						Clipboard.SetText(template);
@@ -966,7 +966,7 @@ namespace appCore.Logs.UI
 							Clipboard.SetText(template);
 						}
 						catch (Exception) {
-							MessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+							FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 						}
 					}
 					
@@ -1013,7 +1013,7 @@ namespace appCore.Logs.UI
 					                           		temp[c] = Convert.ToInt32(temp[c].Replace("RBS",string.Empty)).ToString();
 					                           	}
 					                           	
-					                           	MessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+					                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
 					                           	try {
 					                           		Clipboard.SetText(string.Join(Environment.NewLine,temp));
 					                           	}
@@ -1022,7 +1022,7 @@ namespace appCore.Logs.UI
 					                           			Clipboard.SetText(string.Join(Environment.NewLine,temp));
 					                           		}
 					                           		catch (Exception) {
-					                           			MessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+					                           			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					                           		}
 					                           	}
 					                           });
