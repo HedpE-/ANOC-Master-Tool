@@ -187,7 +187,7 @@ namespace appCore.UI {
 		///
 		///- New Error Handling should prevent a lot of crashes due to IO errors
 		///- Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
-		///- Tweaked the Whole Shift Popup 
+		///- Tweaked the Whole Shift Popup
 		///- Implemented the Menu bar on all Templates, off with the old buttons
 		///- All Message boxes have the same look now
 		///
@@ -195,7 +195,7 @@ namespace appCore.UI {
 		///
 		///- Fixed BCP Form
 		///- Fixed BCP Email subject for a more intuitive description
-		///- Added new [rest of string was truncated]&quot;;.
+		///- Added new  [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
