@@ -133,6 +133,9 @@
     <Compile Include="Netcool\Alarm.cs" />
     <Compile Include="Netcool\Parser.cs" />
     <Compile Include="Netcool\outage_parser.cs" />
+    <Compile Include="OssScripts\UI\Ericsson.cs" />
+    <Compile Include="OssScripts\UI\HuaweiScriptsControls.cs" />
+    <Compile Include="OssScripts\UI\Nokia.cs" />
     <Compile Include="Permissions\permCheck.cs" />
     <Compile Include="Settings\GlobalProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />

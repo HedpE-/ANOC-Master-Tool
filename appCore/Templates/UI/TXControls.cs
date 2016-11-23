@@ -19,11 +19,6 @@ namespace appCore.Templates.UI
     /// </summary>
     public class TXControls : Panel
 	{
-//		public Button Button_OuterRight = new Button();
-//		public Button Button_OuterLeft = new Button();
-//		public Button Button_InnerLeft = new Button();
-//		public Button Button_InnerRight = new Button();
-		
 		Button SitesLargeTextButton = new Button();
 		Button DetailedRanTroubleshootLargeTextButton = new Button();
 		Button PerformanceOutageDetailsLargeTextButton = new Button();
@@ -192,19 +187,6 @@ namespace appCore.Templates.UI
 //			tb2.SelectTab(4);
 		}
 
-		void ClearAllControls(object sender, EventArgs e)
-		{
-			SitesTextBox.Text = string.Empty;
-			ServiceAffectedComboBox.Text = string.Empty;
-			Repeat_IntermittentCheckBox.Checked = false;
-			TxTypeComboBox.Text = string.Empty;
-			IpRanPortConfigTextBox.Text = string.Empty;
-			PerformanceOutageDetailsTextBox.Text = string.Empty;
-			DetailedRanTroubleshootTextBox.Text = string.Empty;
-			IpRanPortConfigTextBox.ReadOnly = true;
-			IpRanPortConfigTextBox.Text = string.Empty;
-		}
-
 		void TxTypeComboBoxSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (TxTypeComboBox.SelectedIndex == 0)
@@ -261,6 +243,19 @@ namespace appCore.Templates.UI
 			tb.Text = enlarge.finaltext;
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+		}
+
+		void ClearAllControls(object sender, EventArgs e)
+		{
+			SitesTextBox.Text = string.Empty;
+			ServiceAffectedComboBox.Text = string.Empty;
+			Repeat_IntermittentCheckBox.Checked = false;
+			TxTypeComboBox.Text = string.Empty;
+			IpRanPortConfigTextBox.Text = string.Empty;
+			PerformanceOutageDetailsTextBox.Text = string.Empty;
+			DetailedRanTroubleshootTextBox.Text = string.Empty;
+			IpRanPortConfigTextBox.ReadOnly = true;
+			IpRanPortConfigTextBox.Text = string.Empty;
 		}
 		
 		void InitializeComponent()

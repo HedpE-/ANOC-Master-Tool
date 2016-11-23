@@ -25,6 +25,7 @@ using appCore.Templates.UI;
 using appCore.Toolbox;
 using appCore.UI;
 using appCore.Shifts;
+using appCore.OssScripts.UI;
 
 namespace appCore
 {
@@ -54,6 +55,8 @@ namespace appCore
 		public static LogsCollection<Template> logFile = new LogsCollection<Template>();
 		public static ShiftsCalendar shiftsCalendar;
 		static Label TicketCountLabel = new Label();
+		
+		static HuaweiScriptsControls huaweiScriptsControls = new HuaweiScriptsControls();
 		
 		bool CheckLogFileExists(string logtype)
 		{
@@ -487,21 +490,6 @@ namespace appCore
 			toolTip.SetToolTip(button25, "To paste on Site Lopedia's bulk search");
 		}
 		
-		void buttClick(object sender, EventArgs e) {
-			Button bt = (Button)sender;
-			if(bt.Name == "butt") {
-				if(OutageUI != null)
-					OutageUI.Dispose();
-				tabControl1.SelectTab(6);
-				OutageUI = new OutageControls();
-				tabPage17.Controls.Add(OutageUI);
-			}
-			else {
-				Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
-				t.Start();
-			}
-		}
-		
 		public MainForm(NotifyIcon tray)
 		{
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -575,16 +563,33 @@ namespace appCore
 				butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
 				butt2.Text = "Update OI DB Files";
 				butt2.AutoSize = true;
-				butt2.Click += buttClick;
+				butt2.Click += delegate {
+					Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
+					t.Start();
+				};
 				tabPage1.Controls.Add(butt2);
 				if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos") {
 					Button butt = new Button();
 					butt.Name = "butt";
 					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
-					butt.Click += buttClick;
+					butt.Click += delegate {
+//						if(OutageUI != null)
+//							OutageUI.Dispose();
+//						tabControl1.SelectTab(6);
+//						OutageUI = new OutageControls();
+//						tabPage17.Controls.Add(OutageUI);
+						
+//						if(huaweiScriptsControls != null)
+//							huaweiScriptsControls.Dispose();
+//						huaweiScriptsControls = new HuaweiScriptsControls();
+//						huaweiScriptsControls.PaddingLeftRight = 7;
+//						tabPage17.Controls.Add(huaweiScriptsControls);
+						tabControl1.SelectTab(6);
+					};
 					tabPage1.Controls.Add(butt);
-					OutageUI.Location = new Point(1, 2);
-					tabPage17.Controls.Add(OutageUI);
+					
+//					OutageUI.Location = new Point(1, 2);
+//					tabPage17.Controls.Add(OutageUI);
 				}
 			}
 			if(CurrentUser.userName != "GONCARJ3" && CurrentUser.userName != "Caramelos") {
@@ -600,6 +605,9 @@ namespace appCore
 			tabPage6.Controls.Add(UpdateUI);
 			TXUI.Location = new Point(1, 2);
 			tabPage9.Controls.Add(TXUI);
+			
+			huaweiScriptsControls.Location = new Point(1, 2);
+			tabPage11.Controls.Add(huaweiScriptsControls);
 			
 			SplashForm.UpdateLabelText("Loading Databases");
 			
@@ -1660,41 +1668,6 @@ namespace appCore
 			Tools.darkenBackgroundForm(action,false,this);
 		}
 
-		void RadioButton1CheckedChanged(object sender, EventArgs e)
-		{
-			richTextBox6.Text = string.Empty;
-			richTextBox7.Text = string.Empty;
-			richTextBox8.Text = string.Empty;
-			textBox28.Enabled = true;
-			comboBox4.Enabled = true;
-			TextBox28TextChanged(null, null);
-		}
-
-		void RadioButton2CheckedChanged(object sender, EventArgs e)
-		{
-			richTextBox6.Text = string.Empty;
-			richTextBox7.Text = string.Empty;
-			richTextBox8.Text = string.Empty;
-			textBox28.Enabled = true;
-			comboBox4.Enabled = true;
-			TextBox28TextChanged(null, null);
-		}
-
-		void RadioButton3CheckedChanged(object sender, EventArgs e)
-		{
-			richTextBox6.Text = string.Empty;
-			richTextBox7.Text = string.Empty;
-			richTextBox8.Text = string.Empty;
-			textBox28.Enabled = true;
-			comboBox4.Enabled = false;
-			TextBox28TextChanged(null, null);
-		}
-
-		void TextBox29Click(object sender, EventArgs e)
-		{
-			textBox29.SelectAll();
-		}
-
 		void TextBox10TextChanged(object sender, EventArgs e)
 		{
 			if (textBox10.Text != string.Empty) button22.Enabled = true;
@@ -1744,189 +1717,6 @@ namespace appCore
 			                           	textBox12.Text = enlarge.finaltext;
 			                           });
 			Tools.darkenBackgroundForm(action,false,this);
-		}
-
-		void RichTextBox6TextChanged(object sender, EventArgs e)
-		{
-			if (richTextBox6.Text != string.Empty) {
-				button26.Enabled = true;
-				button29.Enabled = true;
-			}
-			else {
-				button26.Enabled = false;
-				button29.Enabled = false;
-			}
-			richTextBox7.Text = string.Empty;
-			richTextBox8.Text = string.Empty;
-		}
-
-		void Button26Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox6.Text,label44.Text,false);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox6.Text = enlarge.finaltext;
-			                           });
-			Tools.darkenBackgroundForm(action,false,this);
-		}
-
-		void RichTextBox7TextChanged(object sender, EventArgs e)
-		{
-			if (richTextBox7.Text != string.Empty) {
-				button27.Enabled = true;
-				button30.Visible = true;
-			}
-			else {
-				button27.Enabled = false;
-				button30.Visible = false;
-			}
-		}
-
-		void Button27Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox7.Text,label45.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox7.Text = enlarge.finaltext;
-			                           });
-			Tools.darkenBackgroundForm(action,false,this);
-		}
-
-		void RichTextBox8TextChanged(object sender, EventArgs e)
-		{
-			if (richTextBox8.Text != string.Empty) {
-				button28.Enabled = true;
-				button31.Visible = true;
-			}
-			else {
-				button28.Enabled = false;
-				button31.Visible = false;
-			}
-		}
-
-		void Button28Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox8.Text,label46.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox8.Text = enlarge.finaltext;
-			                           });
-			Tools.darkenBackgroundForm(action,false,this);
-		}
-
-		void TextBox28TextChanged(object sender, EventArgs e)
-		{
-			if (textBox28.Text != string.Empty) {
-				int radioch = 0;
-				foreach (Control radio in groupBox4.Controls) {
-					RadioButton rb = radio as RadioButton;
-					if (rb.Checked) break;
-					radioch++;
-				}
-				switch (radioch) {
-					case 0:
-						textBox29.Text = "LST GCELL:IDTYPE=BYNAME,BTSNAME=" + '"' + "GSM" + textBox28.Text + comboBox4.Text + '"' + ";";
-						break;
-					case 1:
-						string site = textBox28.Text;
-						while (site.Length < 5) {
-							site = '0' + site;
-						}
-						textBox29.Text = "DSP UCELL:DSPT=BYNODEB,NODEBNAME=" + '"' + "UMTS" + site + comboBox4.Text + '"' + ";";
-						break;
-					case 2:
-						textBox29.Text = "LST CELL:;";
-						break;
-				}
-				richTextBox6.Enabled = true;
-			}
-			else {
-				textBox29.Text = string.Empty;
-				richTextBox6.Enabled = false;
-				comboBox4.SelectedIndex = 0;
-			}
-			richTextBox6.Text = string.Empty;
-			richTextBox7.Text = string.Empty;
-			richTextBox8.Text = string.Empty;
-		}
-
-		void Button29Click(object sender, EventArgs e)
-		{
-			int radioch = 0;
-			foreach (Control radio in groupBox4.Controls) {
-				RadioButton rb = radio as RadioButton;
-				if (rb.Checked) break;
-				radioch++;
-			}
-			
-			richTextBox7.Text = string.Empty;
-			richTextBox8.Text = string.Empty;
-			string[] cells = richTextBox6.Text.Split('\n');
-			switch (radioch) {
-				case 0:
-					if (richTextBox6.Text.Contains("GSM")) {
-						foreach (string row in cells) {
-							if (!string.IsNullOrEmpty(row)) {
-								string cell = string.Empty;
-								string row2 = row.TrimStart(' ');
-								foreach (char ch in row2) {
-									if (!Char.IsDigit(ch)) break;
-									cell += ch;
-								}
-								if (!string.IsNullOrEmpty(cell)) {
-									richTextBox7.Text += "SET GCELLADMSTAT:IDTYPE=BYID,CELLID=" + cell + ",ADMSTAT=LOCK;\r\n";
-									richTextBox8.Text += "SET GCELLADMSTAT:IDTYPE=BYID,CELLID=" + cell + ",ADMSTAT=UNLOCK;\r\n";
-								}
-							}
-						}
-					}
-					break;
-				case 1:
-					foreach (string row in cells) {
-						if (!string.IsNullOrEmpty(row)) {
-							string cell = string.Empty;
-							string row2 = row.TrimStart(' ');
-							foreach (char ch in row2) {
-								if (!Char.IsDigit(ch)) break;
-								cell += ch;
-							}
-							richTextBox7.Text += "BLK UCELL:CELLID=" + cell + ",PRIORITY=HIGH;\r\n";
-							richTextBox8.Text += "UBL UCELL:CELLID=" + cell + ";\r\n";
-						}
-					}
-					break;
-				case 2:
-					foreach (string row in cells) {
-						if (!string.IsNullOrEmpty(row)) {
-							string cell = string.Empty;
-							string row2 = row.TrimStart(' ');
-							foreach (char ch in row2) {
-								if (!Char.IsDigit(ch)) break;
-								cell += ch;
-							}
-
-							richTextBox7.Text += "BLK CELL:LOCALCELLID=" + cell + ",CELLADMINSTATE=CELL_HIGH_BLOCK;\r\n";
-							richTextBox8.Text += "UBL CELL:LOCALCELLID=" + cell + ";\r\n";
-						}
-					}
-					//}
-					break;
-			}
-			if (!string.IsNullOrEmpty(richTextBox7.Text)) richTextBox7.Text = richTextBox7.Text.Remove(richTextBox7.Text.Length - 1,1);
-			if (!string.IsNullOrEmpty(richTextBox8.Text)) richTextBox8.Text = richTextBox8.Text.Remove(richTextBox8.Text.Length - 1,1);
-		}
-
-		void Button30Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(richTextBox7.Text);
-		}
-
-		void Button31Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(richTextBox8.Text);
 		}
 
 		void RadioButton4CheckedChanged(object sender, EventArgs e)
@@ -2571,11 +2361,6 @@ namespace appCore
 		void Button33Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(richTextBox11.Text);
-		}
-
-		void ComboBox4SelectedIndexChanged(object sender, EventArgs e)
-		{
-			TextBox28TextChanged(null, null);
 		}
 
 		void MainFormFormClosing(object sender, FormClosingEventArgs e)

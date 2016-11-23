@@ -188,14 +188,14 @@ namespace appCore.UI {
 		///- New Error Handling should prevent a lot of crashes due to IO errors
 		///- Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
 		///- Tweaked the Whole Shift Popup
-		///- Implemented the Menu bar on all Templates, off with the old buttons
+		///- Implemented the Menu bar on all Templates and Scripts, off with the old buttons
+		///- Tweaked all scripts panels
 		///- All Message boxes have the same look now
 		///
 		///####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
 		///
 		///- Fixed BCP Form
-		///- Fixed BCP Email subject for a more intuitive description
-		///- Added new  [rest of string was truncated]&quot;;.
+		///- Fixed BCP Email subject for  [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

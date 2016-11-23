@@ -60,29 +60,9 @@ namespace appCore
 		private System.Windows.Forms.TabPage tabPage12;
 		private System.Windows.Forms.TabPage tabPage13;
 		private System.Windows.Forms.TabPage tabPage14;
-		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.RadioButton radioButton1;
-		private System.Windows.Forms.RadioButton radioButton2;
-		private System.Windows.Forms.RadioButton radioButton3;
-		private System.Windows.Forms.Label label43;
-		private System.Windows.Forms.Label label42;
-		private System.Windows.Forms.TextBox textBox29;
-		private System.Windows.Forms.TextBox textBox28;
-		private appCore.UI.AMTRichTextBox richTextBox8;
-		private appCore.UI.AMTRichTextBox richTextBox7;
-		private appCore.UI.AMTRichTextBox richTextBox6;
-		private System.Windows.Forms.Label label46;
-		private System.Windows.Forms.Label label45;
-		private System.Windows.Forms.Label label44;
 		private System.Windows.Forms.Button button23;
 		private System.Windows.Forms.Button button22;
 		private System.Windows.Forms.Button button24;
-		private System.Windows.Forms.Button button28;
-		private System.Windows.Forms.Button button27;
-		private System.Windows.Forms.Button button26;
-		private System.Windows.Forms.Button button29;
-		private System.Windows.Forms.Button button31;
-		private System.Windows.Forms.Button button30;
 		private System.Windows.Forms.Button button32;
 		private System.Windows.Forms.Button button33;
 		private System.Windows.Forms.Button button34;
@@ -122,8 +102,6 @@ namespace appCore
 		private System.Windows.Forms.GroupBox groupBox6;
 		private appCore.UI.AMTRichTextBox richTextBox9;
 		private System.Windows.Forms.Button button37;
-		private System.Windows.Forms.ComboBox comboBox4;
-		private System.Windows.Forms.Label label53;
 		private System.Windows.Forms.TabControl tabControl4;
 		private System.Windows.Forms.TabPage tabPage15;
 		private System.Windows.Forms.TabPage tabPage16;
@@ -202,28 +180,6 @@ namespace appCore
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
 			this.tabPage11 = new System.Windows.Forms.TabPage();
-			this.comboBox4 = new System.Windows.Forms.ComboBox();
-			this.label53 = new System.Windows.Forms.Label();
-			this.button31 = new System.Windows.Forms.Button();
-			this.button30 = new System.Windows.Forms.Button();
-			this.button29 = new System.Windows.Forms.Button();
-			this.button28 = new System.Windows.Forms.Button();
-			this.button27 = new System.Windows.Forms.Button();
-			this.button26 = new System.Windows.Forms.Button();
-			this.label46 = new System.Windows.Forms.Label();
-			this.label45 = new System.Windows.Forms.Label();
-			this.label44 = new System.Windows.Forms.Label();
-			this.richTextBox8 = new appCore.UI.AMTRichTextBox();
-			this.richTextBox7 = new appCore.UI.AMTRichTextBox();
-			this.richTextBox6 = new appCore.UI.AMTRichTextBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.radioButton2 = new System.Windows.Forms.RadioButton();
-			this.radioButton3 = new System.Windows.Forms.RadioButton();
-			this.label43 = new System.Windows.Forms.Label();
-			this.label42 = new System.Windows.Forms.Label();
-			this.textBox29 = new System.Windows.Forms.TextBox();
-			this.textBox28 = new System.Windows.Forms.TextBox();
 			this.tabPage12 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.button37 = new System.Windows.Forms.Button();
@@ -344,8 +300,6 @@ namespace appCore
 			this.tabControl2.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.tabControl3.SuspendLayout();
-			this.tabPage11.SuspendLayout();
-			this.groupBox4.SuspendLayout();
 			this.tabPage12.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -559,271 +513,12 @@ namespace appCore
 			// tabPage11
 			// 
 			this.tabPage11.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage11.Controls.Add(this.comboBox4);
-			this.tabPage11.Controls.Add(this.label53);
-			this.tabPage11.Controls.Add(this.button31);
-			this.tabPage11.Controls.Add(this.button30);
-			this.tabPage11.Controls.Add(this.button29);
-			this.tabPage11.Controls.Add(this.button28);
-			this.tabPage11.Controls.Add(this.button27);
-			this.tabPage11.Controls.Add(this.button26);
-			this.tabPage11.Controls.Add(this.label46);
-			this.tabPage11.Controls.Add(this.label45);
-			this.tabPage11.Controls.Add(this.label44);
-			this.tabPage11.Controls.Add(this.richTextBox8);
-			this.tabPage11.Controls.Add(this.richTextBox7);
-			this.tabPage11.Controls.Add(this.richTextBox6);
-			this.tabPage11.Controls.Add(this.groupBox4);
-			this.tabPage11.Controls.Add(this.label43);
-			this.tabPage11.Controls.Add(this.label42);
-			this.tabPage11.Controls.Add(this.textBox29);
-			this.tabPage11.Controls.Add(this.textBox28);
 			this.tabPage11.Location = new System.Drawing.Point(4, 25);
 			this.tabPage11.Name = "tabPage11";
 			this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage11.Size = new System.Drawing.Size(519, 631);
 			this.tabPage11.TabIndex = 0;
 			this.tabPage11.Text = "Huawei";
-			// 
-			// comboBox4
-			// 
-			this.comboBox4.Enabled = false;
-			this.comboBox4.FormattingEnabled = true;
-			this.comboBox4.ItemHeight = 13;
-			this.comboBox4.Items.AddRange(new object[] {
-			"A",
-			"B",
-			"C"});
-			this.comboBox4.Location = new System.Drawing.Point(473, 3);
-			this.comboBox4.Name = "comboBox4";
-			this.comboBox4.Size = new System.Drawing.Size(40, 21);
-			this.comboBox4.TabIndex = 15;
-			this.comboBox4.Text = "A";
-			this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.ComboBox4SelectedIndexChanged);
-			// 
-			// label53
-			// 
-			this.label53.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label53.Location = new System.Drawing.Point(422, 4);
-			this.label53.Name = "label53";
-			this.label53.Size = new System.Drawing.Size(45, 20);
-			this.label53.TabIndex = 14;
-			this.label53.Text = "Cabinet";
-			this.label53.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// button31
-			// 
-			this.button31.Location = new System.Drawing.Point(263, 605);
-			this.button31.Name = "button31";
-			this.button31.Size = new System.Drawing.Size(112, 23);
-			this.button31.TabIndex = 13;
-			this.button31.Text = "Copy unlock script";
-			this.button31.UseVisualStyleBackColor = true;
-			this.button31.Visible = false;
-			this.button31.Click += new System.EventHandler(this.Button31Click);
-			// 
-			// button30
-			// 
-			this.button30.Location = new System.Drawing.Point(142, 605);
-			this.button30.Name = "button30";
-			this.button30.Size = new System.Drawing.Size(112, 23);
-			this.button30.TabIndex = 12;
-			this.button30.Text = "Copy lock script";
-			this.button30.UseVisualStyleBackColor = true;
-			this.button30.Visible = false;
-			this.button30.Click += new System.EventHandler(this.Button30Click);
-			// 
-			// button29
-			// 
-			this.button29.Enabled = false;
-			this.button29.Location = new System.Drawing.Point(4, 605);
-			this.button29.Name = "button29";
-			this.button29.Size = new System.Drawing.Size(112, 23);
-			this.button29.TabIndex = 11;
-			this.button29.Text = "Generate scripts";
-			this.button29.UseVisualStyleBackColor = true;
-			this.button29.Click += new System.EventHandler(this.Button29Click);
-			// 
-			// button28
-			// 
-			this.button28.Enabled = false;
-			this.button28.Location = new System.Drawing.Point(489, 304);
-			this.button28.Name = "button28";
-			this.button28.Size = new System.Drawing.Size(24, 20);
-			this.button28.TabIndex = 10;
-			this.button28.Text = "...";
-			this.button28.UseVisualStyleBackColor = true;
-			this.button28.Click += new System.EventHandler(this.Button28Click);
-			// 
-			// button27
-			// 
-			this.button27.Enabled = false;
-			this.button27.Location = new System.Drawing.Point(231, 304);
-			this.button27.Name = "button27";
-			this.button27.Size = new System.Drawing.Size(24, 20);
-			this.button27.TabIndex = 8;
-			this.button27.Text = "...";
-			this.button27.UseVisualStyleBackColor = true;
-			this.button27.Click += new System.EventHandler(this.Button27Click);
-			// 
-			// button26
-			// 
-			this.button26.Enabled = false;
-			this.button26.Location = new System.Drawing.Point(489, 58);
-			this.button26.Name = "button26";
-			this.button26.Size = new System.Drawing.Size(24, 20);
-			this.button26.TabIndex = 6;
-			this.button26.Text = "...";
-			this.button26.UseVisualStyleBackColor = true;
-			this.button26.Click += new System.EventHandler(this.Button26Click);
-			// 
-			// label46
-			// 
-			this.label46.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label46.Location = new System.Drawing.Point(263, 304);
-			this.label46.Name = "label46";
-			this.label46.Size = new System.Drawing.Size(76, 20);
-			this.label46.TabIndex = 13;
-			this.label46.Text = "Unlock cells";
-			this.label46.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label45
-			// 
-			this.label45.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label45.Location = new System.Drawing.Point(4, 304);
-			this.label45.Name = "label45";
-			this.label45.Size = new System.Drawing.Size(76, 20);
-			this.label45.TabIndex = 12;
-			this.label45.Text = "Lock cells";
-			this.label45.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label44
-			// 
-			this.label44.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label44.Location = new System.Drawing.Point(4, 58);
-			this.label44.Name = "label44";
-			this.label44.Size = new System.Drawing.Size(114, 20);
-			this.label44.TabIndex = 11;
-			this.label44.Text = "Paste cells list here";
-			this.label44.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// richTextBox8
-			// 
-			this.richTextBox8.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox8.Location = new System.Drawing.Point(263, 325);
-			this.richTextBox8.Name = "richTextBox8";
-			this.richTextBox8.ReadOnly = true;
-			this.richTextBox8.Size = new System.Drawing.Size(250, 274);
-			this.richTextBox8.TabIndex = 9;
-			this.richTextBox8.Text = "";
-			this.richTextBox8.TextChanged += new System.EventHandler(this.RichTextBox8TextChanged);
-			// 
-			// richTextBox7
-			// 
-			this.richTextBox7.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox7.Location = new System.Drawing.Point(4, 327);
-			this.richTextBox7.Name = "richTextBox7";
-			this.richTextBox7.ReadOnly = true;
-			this.richTextBox7.Size = new System.Drawing.Size(250, 272);
-			this.richTextBox7.TabIndex = 7;
-			this.richTextBox7.Text = "";
-			this.richTextBox7.TextChanged += new System.EventHandler(this.RichTextBox7TextChanged);
-			// 
-			// richTextBox6
-			// 
-			this.richTextBox6.Enabled = false;
-			this.richTextBox6.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox6.Location = new System.Drawing.Point(4, 80);
-			this.richTextBox6.Name = "richTextBox6";
-			this.richTextBox6.Size = new System.Drawing.Size(509, 221);
-			this.richTextBox6.TabIndex = 5;
-			this.richTextBox6.Text = "";
-			this.richTextBox6.TextChanged += new System.EventHandler(this.RichTextBox6TextChanged);
-			// 
-			// groupBox4
-			// 
-			this.groupBox4.Controls.Add(this.radioButton1);
-			this.groupBox4.Controls.Add(this.radioButton2);
-			this.groupBox4.Controls.Add(this.radioButton3);
-			this.groupBox4.Location = new System.Drawing.Point(4, 3);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(189, 49);
-			this.groupBox4.TabIndex = 7;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Technology";
-			// 
-			// radioButton1
-			// 
-			this.radioButton1.Location = new System.Drawing.Point(6, 19);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(60, 24);
-			this.radioButton1.TabIndex = 0;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "GSM";
-			this.radioButton1.UseVisualStyleBackColor = true;
-			this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton1CheckedChanged);
-			// 
-			// radioButton2
-			// 
-			this.radioButton2.Location = new System.Drawing.Point(72, 19);
-			this.radioButton2.Name = "radioButton2";
-			this.radioButton2.Size = new System.Drawing.Size(60, 24);
-			this.radioButton2.TabIndex = 1;
-			this.radioButton2.TabStop = true;
-			this.radioButton2.Text = "UMTS";
-			this.radioButton2.UseVisualStyleBackColor = true;
-			this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton2CheckedChanged);
-			// 
-			// radioButton3
-			// 
-			this.radioButton3.Location = new System.Drawing.Point(138, 19);
-			this.radioButton3.Name = "radioButton3";
-			this.radioButton3.Size = new System.Drawing.Size(46, 24);
-			this.radioButton3.TabIndex = 2;
-			this.radioButton3.TabStop = true;
-			this.radioButton3.Text = "LTE";
-			this.radioButton3.UseVisualStyleBackColor = true;
-			this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton3CheckedChanged);
-			// 
-			// label43
-			// 
-			this.label43.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label43.Location = new System.Drawing.Point(199, 32);
-			this.label43.Name = "label43";
-			this.label43.Size = new System.Drawing.Size(52, 20);
-			this.label43.TabIndex = 6;
-			this.label43.Text = "List cells";
-			this.label43.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label42
-			// 
-			this.label42.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label42.Location = new System.Drawing.Point(199, 3);
-			this.label42.Name = "label42";
-			this.label42.Size = new System.Drawing.Size(26, 20);
-			this.label42.TabIndex = 5;
-			this.label42.Text = "Site";
-			this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// textBox29
-			// 
-			this.textBox29.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox29.Location = new System.Drawing.Point(257, 33);
-			this.textBox29.Name = "textBox29";
-			this.textBox29.ReadOnly = true;
-			this.textBox29.Size = new System.Drawing.Size(256, 20);
-			this.textBox29.TabIndex = 4;
-			this.textBox29.Click += new System.EventHandler(this.TextBox29Click);
-			// 
-			// textBox28
-			// 
-			this.textBox28.Enabled = false;
-			this.textBox28.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox28.Location = new System.Drawing.Point(257, 4);
-			this.textBox28.Name = "textBox28";
-			this.textBox28.Size = new System.Drawing.Size(100, 20);
-			this.textBox28.TabIndex = 3;
-			this.textBox28.TextChanged += new System.EventHandler(this.TextBox28TextChanged);
 			// 
 			// tabPage12
 			// 
@@ -2019,20 +1714,20 @@ namespace appCore
 			// 
 			// tabPage17
 			// 
+			this.tabPage17.BackColor = System.Drawing.Color.DimGray;
 			this.tabPage17.Location = new System.Drawing.Point(4, 22);
 			this.tabPage17.Name = "tabPage17";
 			this.tabPage17.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage17.Size = new System.Drawing.Size(525, 656);
 			this.tabPage17.TabIndex = 6;
 			this.tabPage17.Text = "tabPage17";
-			this.tabPage17.UseVisualStyleBackColor = true;
 			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(183, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(192, 26);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -2040,20 +1735,20 @@ namespace appCore
 			this.toolStripMenuItem3,
 			this.toolStripMenuItem2});
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
 			this.toolStripMenuItem1.Text = "Change background...";
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(179, 22);
 			this.toolStripMenuItem3.Text = "Default background";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.ToolStripMenuItem3Click);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 22);
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
 			// 
@@ -2082,9 +1777,6 @@ namespace appCore
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl3.ResumeLayout(false);
-			this.tabPage11.ResumeLayout(false);
-			this.tabPage11.PerformLayout();
-			this.groupBox4.ResumeLayout(false);
 			this.tabPage12.ResumeLayout(false);
 			this.tabPage12.PerformLayout();
 			this.groupBox6.ResumeLayout(false);
