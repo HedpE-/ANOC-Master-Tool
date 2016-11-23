@@ -329,13 +329,13 @@ namespace appCore.Templates.Types
 						if(cases.Rows.Count > 0) {
 							temp += Environment.NewLine;
 							string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INC + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-								"Status NOT LIKE 'Closed'"; // AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+								"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
 							List<DataRow> filteredCases = cases.Select(query).ToList();
 							if(type == "CRQ" && filteredCases.Count > 0) {
 								for(int c = 0;c < filteredCases.Count;c++) {
 									DataRow row = filteredCases[c];
 									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-										if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+										if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
 											filteredCases.RemoveAt(c);
 											c--;
 										}
