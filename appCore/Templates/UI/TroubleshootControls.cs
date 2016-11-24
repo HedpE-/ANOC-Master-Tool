@@ -169,7 +169,6 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
-				Size = new Size(TroubleshootTextBox.Right + PaddingLeftRight, TroubleshootTextBox.Bottom + PaddingTopBottom);
 			}
 		}
 		
@@ -1584,6 +1583,8 @@ namespace appCore.Templates.UI
 			
 			TroubleshootLargeTextButton.Size = new Size(24, 20);
 			TroubleshootLargeTextButton.Location = new Point(TroubleshootTextBox.Right - TroubleshootLargeTextButton.Width, TroubleshootLabel.Top);
+			
+			Size = new Size(TroubleshootTextBox.Right + PaddingLeftRight, TroubleshootTextBox.Bottom + PaddingTopBottom);
 		}
 	}
 }

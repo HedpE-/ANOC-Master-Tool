@@ -68,10 +68,6 @@
       <HintPath>Extensions\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>Extensions\log4net.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -394,14 +390,13 @@
     <EmbeddedResource Include="Extensions\RestSharp.dll" />
     <EmbeddedResource Include="Extensions\Transitions.dll" />
     <EmbeddedResource Include="Extensions\Excel.dll" />
-    <EmbeddedResource Include="Extensions\ICSharpCode.SharpZipLib.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Extensions\log4net.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.Core.dll" />
     <EmbeddedResource Include="GMap.NET\Lib\GMap.NET.WindowsForms.dll" />
     <EmbeddedResource Include="Extensions\Outlook.dll" />
     <EmbeddedResource Include="Extensions\BMC.ARSystem.dll" />
+    <EmbeddedResource Include="Extensions\ICSharpCode.SharpZipLib.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
     <None Include="Web\HtmlAgilityPack\HtmlAgilityPack.snk" />
   </ItemGroup>

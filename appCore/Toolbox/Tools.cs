@@ -298,7 +298,6 @@ namespace appCore.Toolbox
 			EmbeddedAssembly.Load("appCore.Extensions.Excel.dll", "Excel.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.Outlook.dll", "Outlook.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.log4net.dll", "log4net.dll");
 			EmbeddedAssembly.Load("appCore.Extensions.BMC.ARSystem.dll", "BMC.ARSystem.dll");
 			
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
