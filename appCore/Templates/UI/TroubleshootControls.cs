@@ -82,13 +82,19 @@ namespace appCore.Templates.UI
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
 			get { return paddingLeftRight; }
-			set { paddingLeftRight = value; }
+			set {
+				paddingLeftRight = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		int paddingTopBottom = 1;
 		public int PaddingTopBottom {
 			get { return paddingTopBottom; }
-			set { paddingTopBottom = value; }
+			set {
+				paddingTopBottom = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		bool toggled;
@@ -1042,9 +1048,9 @@ namespace appCore.Templates.UI
 			// 
 			// SiteIdLabel
 			// 
-			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			SiteIdLabel.Size = new Size(67, 20);
 			SiteIdLabel.Name = "SiteIdLabel";
-			SiteIdLabel.Size = new Size(67, 20);
 			SiteIdLabel.TabIndex = 56;
 			SiteIdLabel.Text = "Site ID";
 			SiteIdLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1052,35 +1058,35 @@ namespace appCore.Templates.UI
 			// SiteIdTextBox
 			// 
 			SiteIdTextBox.Font = new Font("Courier New", 8.25F);
-			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
-			SiteIdTextBox.Size = new Size(58, 20);
+//			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
+//			SiteIdTextBox.Size = new Size(58, 20);
 			SiteIdTextBox.MaxLength = 6;
 			SiteIdTextBox.Name = "SiteIdTextBox";
 			SiteIdTextBox.TabIndex = 2;
 			// 
 			// RegionLabel
 			// 
-			RegionLabel.Location = new Point(SiteIdTextBox.Right + 2, MainMenu.Bottom + 4);
+//			RegionLabel.Location = new Point(SiteIdTextBox.Right + 2, MainMenu.Bottom + 4);
+//			RegionLabel.Size = new Size(43, 20);
 			RegionLabel.Name = "RegionLabel";
-			RegionLabel.Size = new Size(43, 20);
 			RegionLabel.Text = "Region";
 			RegionLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// RegionTextBox
 			// 
 			RegionTextBox.Font = new Font("Courier New", 8.25F);
-			RegionTextBox.Location = new Point(RegionLabel.Right + 2, MainMenu.Bottom + 4);
+//			RegionTextBox.Location = new Point(RegionLabel.Right + 2, MainMenu.Bottom + 4);
+//			RegionTextBox.Size = new Size(78, 20);
 			RegionTextBox.MaxLength = 5;
 			RegionTextBox.Name = "RegionTextBox";
 			RegionTextBox.ReadOnly = true;
-			RegionTextBox.Size = new Size(78, 20);
 			RegionTextBox.TabIndex = 78;
 			// 
 			// SiteOwnerLabel
 			// 
-			SiteOwnerLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
+//			SiteOwnerLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
+//			SiteOwnerLabel.Size = new Size(67, 20);
 			SiteOwnerLabel.Name = "SiteOwnerLabel";
-			SiteOwnerLabel.Size = new Size(67, 20);
 			SiteOwnerLabel.TabIndex = 59;
 			SiteOwnerLabel.Text = "Site Owner";
 			SiteOwnerLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1092,17 +1098,17 @@ namespace appCore.Templates.UI
 			SiteOwnerComboBox.Items.AddRange(new object[] {
 			                                 	"VF",
 			                                 	"TF"});
-			SiteOwnerComboBox.Location = new Point(SiteOwnerLabel.Right + 2, SiteOwnerLabel.Top);
+//			SiteOwnerComboBox.Location = new Point(SiteOwnerLabel.Right + 2, SiteOwnerLabel.Top);
+//			SiteOwnerComboBox.Size = new Size(43, 21);
 			SiteOwnerComboBox.Name = "SiteOwnerComboBox";
-			SiteOwnerComboBox.Size = new Size(43, 21);
 			SiteOwnerComboBox.TabIndex = 3;
 			SiteOwnerComboBox.SelectedIndexChanged += SiteOwnerComboBoxSelectedIndexChanged;
 			// 
 			// TefSiteLabel
 			// 
-			TefSiteLabel.Location = new Point(SiteOwnerComboBox.Right + 2, SiteOwnerLabel.Top);
+//			TefSiteLabel.Location = new Point(SiteOwnerComboBox.Right + 2, SiteOwnerLabel.Top);
+//			TefSiteLabel.Size = new Size(43, 20);
 			TefSiteLabel.Name = "TefSiteLabel";
-			TefSiteLabel.Size = new Size(43, 20);
 			TefSiteLabel.TabIndex = 67;
 			TefSiteLabel.Text = "TF Site";
 			TefSiteLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1111,17 +1117,17 @@ namespace appCore.Templates.UI
 			// TefSiteTextBox
 			// 
 			TefSiteTextBox.Font = new Font("Courier New", 8.25F);
-			TefSiteTextBox.Location = new Point(TefSiteLabel.Right + 2, SiteOwnerLabel.Top);
+//			TefSiteTextBox.Location = new Point(TefSiteLabel.Right + 2, SiteOwnerLabel.Top);
+//			TefSiteTextBox.Size = new Size(91, 20);
 			TefSiteTextBox.Name = "TefSiteTextBox";
-			TefSiteTextBox.Size = new Size(91, 20);
 			TefSiteTextBox.TabIndex = 4;
 			TefSiteTextBox.Visible = false;
 			// 
 			// AddressLabel
 			// 
-			AddressLabel.Location = new Point(PaddingLeftRight, SiteOwnerLabel.Bottom + 4);
+//			AddressLabel.Location = new Point(PaddingLeftRight, SiteOwnerLabel.Bottom + 4);
+//			AddressLabel.Size = new Size(67, 40);
 			AddressLabel.Name = "AddressLabel";
-			AddressLabel.Size = new Size(67, 40);
 			AddressLabel.TabIndex = 61;
 			AddressLabel.Text = "Address";
 			AddressLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1130,9 +1136,9 @@ namespace appCore.Templates.UI
 			// 
 			AddressTextBox.DetectUrls = false;
 			AddressTextBox.Font = new Font("Courier New", 8.25F);
-			AddressTextBox.Location = new Point(AddressLabel.Right + 2, AddressLabel.Top);
+//			AddressTextBox.Location = new Point(AddressLabel.Right + 2, AddressLabel.Top);
+//			AddressTextBox.Size = new Size(157, 40);
 			AddressTextBox.Name = "AddressTextBox";
-			AddressTextBox.Size = new Size(157, 40);
 			AddressTextBox.TabIndex = 78;
 			AddressTextBox.Text = "";
 			AddressTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -1140,9 +1146,9 @@ namespace appCore.Templates.UI
 			// AddressLargeTextButton
 			// 
 			AddressLargeTextButton.Enabled = false;
-			AddressLargeTextButton.Location = new Point(AddressTextBox.Right, AddressTextBox.Top);
+//			AddressLargeTextButton.Location = new Point(AddressTextBox.Right, AddressTextBox.Top);
+//			AddressLargeTextButton.Size = new Size(24, 20);
 			AddressLargeTextButton.Name = "AddressLargeTextButton";
-			AddressLargeTextButton.Size = new Size(24, 20);
 			AddressLargeTextButton.TabIndex = 75;
 			AddressLargeTextButton.Text = "...";
 			AddressLargeTextButton.UseVisualStyleBackColor = true;
@@ -1151,9 +1157,9 @@ namespace appCore.Templates.UI
 			// MTXAddressButton
 			// 
 			MTXAddressButton.Font = new Font("Microsoft Sans Serif", 3.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-			MTXAddressButton.Location = new Point(AddressTextBox.Right, AddressLargeTextButton.Bottom);
+//			MTXAddressButton.Location = new Point(AddressTextBox.Right, AddressLargeTextButton.Bottom);
+//			MTXAddressButton.Size = new Size(24, 20);
 			MTXAddressButton.Name = "MTXAddressButton";
-			MTXAddressButton.Size = new Size(24, 20);
 			MTXAddressButton.TabIndex = 6;
 			MTXAddressButton.Text = "MTX";
 			MTXAddressButton.UseVisualStyleBackColor = true;
@@ -1161,9 +1167,9 @@ namespace appCore.Templates.UI
 			// 
 			// CCTRefLabel
 			// 
-			CCTRefLabel.Location = new Point(PaddingLeftRight, AddressLabel.Bottom + 4);
+//			CCTRefLabel.Location = new Point(PaddingLeftRight, AddressLabel.Bottom + 4);
+//			CCTRefLabel.Size = new Size(67, 20);
 			CCTRefLabel.Name = "CCTRefLabel";
-			CCTRefLabel.Size = new Size(67, 20);
 			CCTRefLabel.TabIndex = 62;
 			CCTRefLabel.Text = "CCT ref.";
 			CCTRefLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1171,16 +1177,16 @@ namespace appCore.Templates.UI
 			// CCTRefTextBox
 			// 
 			CCTRefTextBox.Font = new Font("Courier New", 8.25F);
-			CCTRefTextBox.Location = new Point(CCTRefLabel.Right + 2, CCTRefLabel.Top);
+//			CCTRefTextBox.Location = new Point(CCTRefLabel.Right + 2, CCTRefLabel.Top);
+//			CCTRefTextBox.Size = new Size(181, 20);
 			CCTRefTextBox.Name = "CCTRefTextBox";
-			CCTRefTextBox.Size = new Size(181, 20);
 			CCTRefTextBox.TabIndex = 7;
 			// 
 			// PowerCompanyLabel
 			// 
-			PowerCompanyLabel.Location = new Point(PaddingLeftRight, CCTRefLabel.Bottom + 4);
+//			PowerCompanyLabel.Location = new Point(PaddingLeftRight, CCTRefLabel.Bottom + 4);
+//			PowerCompanyLabel.Size = new Size(67, 20);
 			PowerCompanyLabel.Name = "PowerCompanyLabel";
-			PowerCompanyLabel.Size = new Size(67, 20);
 			PowerCompanyLabel.TabIndex = 74;
 			PowerCompanyLabel.Text = "Power Comp";
 			PowerCompanyLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1188,18 +1194,18 @@ namespace appCore.Templates.UI
 			// PowerCompanyTextBox
 			// 
 			PowerCompanyTextBox.Font = new Font("Courier New", 8.25F);
-			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, PowerCompanyLabel.Top);
+//			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, PowerCompanyLabel.Top);
+//			PowerCompanyTextBox.Size = new Size(181, 20);
 			PowerCompanyTextBox.MaxLength = 5;
 			PowerCompanyTextBox.Name = "PowerCompanyTextBox";
 			PowerCompanyTextBox.ReadOnly = true;
-			PowerCompanyTextBox.Size = new Size(181, 20);
 			PowerCompanyTextBox.TabIndex = 73;
 			// 
 			// INCLabel
 			// 
-			INCLabel.Location = new Point(PaddingLeftRight + 250 + 10, MainMenu.Bottom + 4);
+//			INCLabel.Location = new Point(PaddingLeftRight + 250 + 10, MainMenu.Bottom + 4);
+//			INCLabel.Size = new Size(67, 20);
 			INCLabel.Name = "INCLabel";
-			INCLabel.Size = new Size(67, 20);
 			INCLabel.TabIndex = 54;
 			INCLabel.Text = "INC";
 			INCLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1208,18 +1214,18 @@ namespace appCore.Templates.UI
 			// 
 			INCTextBox.AcceptsTab = true;
 			INCTextBox.Font = new Font("Courier New", 8.25F);
-			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
+//			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
+//			INCTextBox.Size = new Size(181, 20);
 			INCTextBox.MaxLength = 15;
 			INCTextBox.Name = "INCTextBox";
-			INCTextBox.Size = new Size(181, 20);
 			INCTextBox.TabIndex = 1;
 			// 
 			// OtherSitesImpactedCheckBox
 			// 
-			OtherSitesImpactedCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, INCLabel.Bottom + 2);
+//			OtherSitesImpactedCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, INCLabel.Bottom + 2);
+//			OtherSitesImpactedCheckBox.Size = new Size(123, 23);
 			OtherSitesImpactedCheckBox.Name = "OtherSitesImpactedCheckBox";
 			OtherSitesImpactedCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			OtherSitesImpactedCheckBox.Size = new Size(123, 23);
 			OtherSitesImpactedCheckBox.TabIndex = 8;
 			OtherSitesImpactedCheckBox.Text = "Other sites impacted";
 			OtherSitesImpactedCheckBox.TextAlign = ContentAlignment.MiddleRight;
@@ -1227,10 +1233,10 @@ namespace appCore.Templates.UI
 			// 
 			// COOSCheckBox
 			// 
-			COOSCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, OtherSitesImpactedCheckBox.Bottom);
+//			COOSCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, OtherSitesImpactedCheckBox.Bottom);
+//			COOSCheckBox.Size = new Size(123, 23);
 			COOSCheckBox.Name = "COOSCheckBox";
 			COOSCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			COOSCheckBox.Size = new Size(123, 23);
 			COOSCheckBox.TabIndex = 9;
 			COOSCheckBox.Text = "COOS";
 			COOSCheckBox.TextAlign = ContentAlignment.MiddleRight;
@@ -1240,10 +1246,10 @@ namespace appCore.Templates.UI
 			// FullSiteOutageCheckBox
 			// 
 			FullSiteOutageCheckBox.CheckAlign = ContentAlignment.MiddleRight;
-			FullSiteOutageCheckBox.Location = new Point(OtherSitesImpactedCheckBox.Right + 10, OtherSitesImpactedCheckBox.Top);
+//			FullSiteOutageCheckBox.Location = new Point(OtherSitesImpactedCheckBox.Right + 10, OtherSitesImpactedCheckBox.Top);
+//			FullSiteOutageCheckBox.Size = new Size(103, 23);
 			FullSiteOutageCheckBox.Name = "FullSiteOutageCheckBox";
 			FullSiteOutageCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			FullSiteOutageCheckBox.Size = new Size(103, 23);
 			FullSiteOutageCheckBox.TabIndex = 80;
 			FullSiteOutageCheckBox.Text = "Full site outage";
 			FullSiteOutageCheckBox.TextAlign = ContentAlignment.MiddleRight;
@@ -1252,10 +1258,10 @@ namespace appCore.Templates.UI
 			// 
 			// COOS2GLabel
 			// 
-			COOS2GLabel.Location = new Point(COOSCheckBox.Right + 5, FullSiteOutageCheckBox.Bottom);
+//			COOS2GLabel.Location = new Point(COOSCheckBox.Right + 5, FullSiteOutageCheckBox.Bottom);
+//			COOS2GLabel.Size = new Size(63, 20);
 			COOS2GLabel.Name = "COOS2GLabel";
 			COOS2GLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			COOS2GLabel.Size = new Size(63, 20);
 			COOS2GLabel.TabIndex = 68;
 			COOS2GLabel.Text = "2G cells";
 			COOS2GLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1263,23 +1269,23 @@ namespace appCore.Templates.UI
 			// 
 			// COOS2GNumericUpDown
 			// 
-			COOS2GNumericUpDown.Location = new Point(COOS2GLabel.Right + 2, COOS2GLabel.Top);
+//			COOS2GNumericUpDown.Location = new Point(COOS2GLabel.Right + 2, COOS2GLabel.Top);
+//			COOS2GNumericUpDown.Size = new Size(59, 20);
 			COOS2GNumericUpDown.Maximum = new decimal(new int[] {
 			                                          	999,
 			                                          	0,
 			                                          	0,
 			                                          	0});
 			COOS2GNumericUpDown.Name = "COOS2GNumericUpDown";
-			COOS2GNumericUpDown.Size = new Size(59, 20);
 			COOS2GNumericUpDown.TabIndex = 10;
 			COOS2GNumericUpDown.Visible = false;
 			// 
 			// COOS3GLabel
 			// 
-			COOS3GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS2GLabel.Bottom + 4);
+//			COOS3GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS2GLabel.Bottom + 4);
+//			COOS3GLabel.Size = new Size(63, 20);
 			COOS3GLabel.Name = "COOS3GLabel";
 			COOS3GLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			COOS3GLabel.Size = new Size(63, 20);
 			COOS3GLabel.TabIndex = 69;
 			COOS3GLabel.Text = "3G cells";
 			COOS3GLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1287,23 +1293,23 @@ namespace appCore.Templates.UI
 			// 
 			// COOS3GNumericUpDown
 			// 
-			COOS3GNumericUpDown.Location = new Point(COOS3GLabel.Right + 2, COOS3GLabel.Top);
+//			COOS3GNumericUpDown.Location = new Point(COOS3GLabel.Right + 2, COOS3GLabel.Top);
+//			COOS3GNumericUpDown.Size = new Size(59, 20);
 			COOS3GNumericUpDown.Maximum = new decimal(new int[] {
 			                                          	999,
 			                                          	0,
 			                                          	0,
 			                                          	0});
 			COOS3GNumericUpDown.Name = "COOS3GNumericUpDown";
-			COOS3GNumericUpDown.Size = new Size(59, 20);
 			COOS3GNumericUpDown.TabIndex = 11;
 			COOS3GNumericUpDown.Visible = false;
 			// 
 			// COOS4GLabel
 			// 
-			COOS4GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS3GLabel.Bottom + 4);
+//			COOS4GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS3GLabel.Bottom + 4);
+//			COOS4GLabel.Size = new Size(63, 20);
 			COOS4GLabel.Name = "COOS4GLabel";
 			COOS4GLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			COOS4GLabel.Size = new Size(63, 20);
 			COOS4GLabel.TabIndex = 70;
 			COOS4GLabel.Text = "4G cells";
 			COOS4GLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1311,23 +1317,23 @@ namespace appCore.Templates.UI
 			// 
 			// COOS4GNumericUpDown
 			// 
-			COOS4GNumericUpDown.Location = new Point(COOS4GLabel.Right + 2, COOS4GLabel.Top);
+//			COOS4GNumericUpDown.Location = new Point(COOS4GLabel.Right + 2, COOS4GLabel.Top);
+//			COOS4GNumericUpDown.Size = new Size(59, 20);
 			COOS4GNumericUpDown.Maximum = new decimal(new int[] {
 			                                          	999,
 			                                          	0,
 			                                          	0,
 			                                          	0});
 			COOS4GNumericUpDown.Name = "COOS4GNumericUpDown";
-			COOS4GNumericUpDown.Size = new Size(59, 20);
 			COOS4GNumericUpDown.TabIndex = 12;
 			COOS4GNumericUpDown.Visible = false;
 			// 
 			// PerformanceIssueCheckBox
 			// 
-			PerformanceIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, COOSCheckBox.Bottom);
+//			PerformanceIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, COOSCheckBox.Bottom);
+//			PerformanceIssueCheckBox.Size = new Size(123, 23);
 			PerformanceIssueCheckBox.Name = "PerformanceIssueCheckBox";
 			PerformanceIssueCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			PerformanceIssueCheckBox.Size = new Size(123, 23);
 			PerformanceIssueCheckBox.TabIndex = 13;
 			PerformanceIssueCheckBox.Text = "Performance Issue";
 			PerformanceIssueCheckBox.TextAlign = ContentAlignment.MiddleRight;
@@ -1335,10 +1341,10 @@ namespace appCore.Templates.UI
 			// 
 			// IntermittentIssueCheckBox
 			// 
-			IntermittentIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, PerformanceIssueCheckBox.Bottom);
+//			IntermittentIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, PerformanceIssueCheckBox.Bottom);
+//			IntermittentIssueCheckBox.Size = new Size(123, 23);
 			IntermittentIssueCheckBox.Name = "IntermittentIssueCheckBox";
 			IntermittentIssueCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			IntermittentIssueCheckBox.Size = new Size(123, 23);
 			IntermittentIssueCheckBox.TabIndex = 14;
 			IntermittentIssueCheckBox.Text = "Intermittent Issue";
 			IntermittentIssueCheckBox.TextAlign = ContentAlignment.MiddleRight;
@@ -1346,9 +1352,9 @@ namespace appCore.Templates.UI
 			// 
 			// RelatedINC_CRQLabel
 			// 
-			RelatedINC_CRQLabel.Location = new Point(PaddingLeftRight + 250 + 10, IntermittentIssueCheckBox.Bottom + 2);
+//			RelatedINC_CRQLabel.Location = new Point(PaddingLeftRight + 250 + 10, IntermittentIssueCheckBox.Bottom + 2);
+//			RelatedINC_CRQLabel.Size = new Size(105, 20);
 			RelatedINC_CRQLabel.Name = "RealatedINC_CRQLabel";
-			RelatedINC_CRQLabel.Size = new Size(105, 20);
 			RelatedINC_CRQLabel.TabIndex = 63;
 			RelatedINC_CRQLabel.Text = "Related INC/CRQ";
 			RelatedINC_CRQLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1356,16 +1362,17 @@ namespace appCore.Templates.UI
 			// RelatedINC_CRQTextBox
 			// 
 			RelatedINC_CRQTextBox.Font = new Font("Courier New", 8.25F);
-			RelatedINC_CRQTextBox.Location = new Point(RelatedINC_CRQLabel.Right + 2, IntermittentIssueCheckBox.Bottom + 2);
+//			RelatedINC_CRQTextBox.Location = new Point(RelatedINC_CRQLabel.Right + 2, IntermittentIssueCheckBox.Bottom + 2);
+//			RelatedINC_CRQTextBox.Size = new Size(143, 20);
 			RelatedINC_CRQTextBox.Name = "RelatedINC_CRQTextBox";
 			RelatedINC_CRQTextBox.Size = new Size(143, 20);
 			RelatedINC_CRQTextBox.TabIndex = 15;
 			// 
 			// ActiveAlarmsLabel
 			// 
-			ActiveAlarmsLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
+//			ActiveAlarmsLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
+//			ActiveAlarmsLabel.Size = new Size(77, 20);
 			ActiveAlarmsLabel.Name = "ActiveAlarmsLabel";
-			ActiveAlarmsLabel.Size = new Size(77, 20);
 			ActiveAlarmsLabel.TabIndex = 64;
 			ActiveAlarmsLabel.Text = "Active Alarms";
 			ActiveAlarmsLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1374,9 +1381,9 @@ namespace appCore.Templates.UI
 			// 
 			ActiveAlarmsTextBox.DetectUrls = false;
 			ActiveAlarmsTextBox.Font = new Font("Courier New", 8.25F);
-			ActiveAlarmsTextBox.Location = new Point(PaddingLeftRight, ActiveAlarmsLabel.Bottom + 4);
+//			ActiveAlarmsTextBox.Location = new Point(PaddingLeftRight, ActiveAlarmsLabel.Bottom + 4);
+//			ActiveAlarmsTextBox.Size = new Size(250, 194);
 			ActiveAlarmsTextBox.Name = "ActiveAlarmsTextBox";
-			ActiveAlarmsTextBox.Size = new Size(250, 194);
 			ActiveAlarmsTextBox.TabIndex = 16;
 			ActiveAlarmsTextBox.Text = "";
 			ActiveAlarmsTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -1384,8 +1391,8 @@ namespace appCore.Templates.UI
 			// ActiveAlarmsLargeTextButton
 			// 
 			ActiveAlarmsLargeTextButton.Enabled = false;
-			ActiveAlarmsLargeTextButton.Size = new Size(24, 20);
-			ActiveAlarmsLargeTextButton.Location = new Point(ActiveAlarmsTextBox.Right - ActiveAlarmsLargeTextButton.Width, ActiveAlarmsLabel.Top);
+//			ActiveAlarmsLargeTextButton.Size = new Size(24, 20);
+//			ActiveAlarmsLargeTextButton.Location = new Point(ActiveAlarmsTextBox.Right - ActiveAlarmsLargeTextButton.Width, ActiveAlarmsLabel.Top);
 			ActiveAlarmsLargeTextButton.Name = "ActiveAlarmsLargeTextButton";
 			ActiveAlarmsLargeTextButton.TabIndex = 17;
 			ActiveAlarmsLargeTextButton.Text = "...";
@@ -1394,9 +1401,9 @@ namespace appCore.Templates.UI
 			// 
 			// AlarmHistoryLabel
 			// 
-			AlarmHistoryLabel.Location = new Point(ActiveAlarmsTextBox.Right + 10, ActiveAlarmsLabel.Top);
+//			AlarmHistoryLabel.Location = new Point(ActiveAlarmsTextBox.Right + 10, ActiveAlarmsLabel.Top);
+//			AlarmHistoryLabel.Size = new Size(109, 20);
 			AlarmHistoryLabel.Name = "AlarmHistoryLabel";
-			AlarmHistoryLabel.Size = new Size(109, 20);
 			AlarmHistoryLabel.TabIndex = 65;
 			AlarmHistoryLabel.Text = "Alarm History";
 			AlarmHistoryLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1405,9 +1412,9 @@ namespace appCore.Templates.UI
 			// 
 			AlarmHistoryTextBox.DetectUrls = false;
 			AlarmHistoryTextBox.Font = new Font("Courier New", 8.25F);
-			AlarmHistoryTextBox.Location = new Point(ActiveAlarmsTextBox.Right + 10, AlarmHistoryLabel.Bottom + 3);
+//			AlarmHistoryTextBox.Location = new Point(ActiveAlarmsTextBox.Right + 10, AlarmHistoryLabel.Bottom + 3);
+//			AlarmHistoryTextBox.Size = new Size(250, 194);
 			AlarmHistoryTextBox.Name = "AlarmHistoryTextBox";
-			AlarmHistoryTextBox.Size = new Size(250, 194);
 			AlarmHistoryTextBox.TabIndex = 18;
 			AlarmHistoryTextBox.Text = "";
 			AlarmHistoryTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -1415,8 +1422,8 @@ namespace appCore.Templates.UI
 			// AlarmHistoryLargeTextButton
 			// 
 			AlarmHistoryLargeTextButton.Enabled = false;
-			AlarmHistoryLargeTextButton.Size = new Size(24, 20);
-			AlarmHistoryLargeTextButton.Location = new Point(AlarmHistoryTextBox.Right - AlarmHistoryLargeTextButton.Width, AlarmHistoryLabel.Top);
+//			AlarmHistoryLargeTextButton.Size = new Size(24, 20);
+//			AlarmHistoryLargeTextButton.Location = new Point(AlarmHistoryTextBox.Right - AlarmHistoryLargeTextButton.Width, AlarmHistoryLabel.Top);
 			AlarmHistoryLargeTextButton.Name = "AlarmHistoryLargeTextButton";
 			AlarmHistoryLargeTextButton.TabIndex = 19;
 			AlarmHistoryLargeTextButton.Text = "...";
@@ -1425,9 +1432,9 @@ namespace appCore.Templates.UI
 			// 
 			// TroubleshootLabel
 			// 
-			TroubleshootLabel.Location = new Point(PaddingLeftRight, ActiveAlarmsTextBox.Bottom + 4);
+//			TroubleshootLabel.Location = new Point(PaddingLeftRight, ActiveAlarmsTextBox.Bottom + 4);
+//			TroubleshootLabel.Size = new Size(109, 20);
 			TroubleshootLabel.Name = "TroubleshootLabel";
-			TroubleshootLabel.Size = new Size(109, 20);
 			TroubleshootLabel.TabIndex = 66;
 			TroubleshootLabel.Text = "Troubleshoot";
 			TroubleshootLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1436,8 +1443,8 @@ namespace appCore.Templates.UI
 			// 
 			TroubleshootTextBox.DetectUrls = false;
 			TroubleshootTextBox.Font = new Font("Courier New", 8.25F);
-			TroubleshootTextBox.Size = new Size(510, 203);
-			TroubleshootTextBox.Location = new Point(PaddingLeftRight, TroubleshootLabel.Bottom + 3);
+//			TroubleshootTextBox.Size = new Size(510, 203);
+//			TroubleshootTextBox.Location = new Point(PaddingLeftRight, TroubleshootLabel.Bottom + 3);
 			TroubleshootTextBox.Name = "TroubleshootTextBox";
 			TroubleshootTextBox.TabIndex = 20;
 			TroubleshootTextBox.Text = "";
@@ -1446,13 +1453,137 @@ namespace appCore.Templates.UI
 			// TroubleshootLargeTextButton
 			// 
 			TroubleshootLargeTextButton.Enabled = false;
-			TroubleshootLargeTextButton.Size = new Size(24, 20);
-			TroubleshootLargeTextButton.Location = new Point(TroubleshootTextBox.Right - TroubleshootLargeTextButton.Width, TroubleshootLabel.Top);
+//			TroubleshootLargeTextButton.Size = new Size(24, 20);
+//			TroubleshootLargeTextButton.Location = new Point(TroubleshootTextBox.Right - TroubleshootLargeTextButton.Width, TroubleshootLabel.Top);
 			TroubleshootLargeTextButton.Name = "TroubleshootLargeTextButton";
 			TroubleshootLargeTextButton.TabIndex = 21;
 			TroubleshootLargeTextButton.Text = "...";
 			TroubleshootLargeTextButton.UseVisualStyleBackColor = true;
 			TroubleshootLargeTextButton.Click += LargeTextButtonsClick;
+			
+			DynamicControlsSizesLocations();
+		}
+		
+		void DynamicControlsSizesLocations() {
+			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+			SiteIdLabel.Size = new Size(67, 20);
+			
+			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
+			SiteIdTextBox.Size = new Size(58, 20);
+			
+			RegionLabel.Location = new Point(SiteIdTextBox.Right + 2, MainMenu.Bottom + 4);
+			RegionLabel.Size = new Size(43, 20);
+			
+			RegionTextBox.Location = new Point(RegionLabel.Right + 2, MainMenu.Bottom + 4);
+			RegionTextBox.Size = new Size(78, 20);
+			
+			SiteOwnerLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
+			SiteOwnerLabel.Size = new Size(67, 20);
+			
+			SiteOwnerComboBox.Location = new Point(SiteOwnerLabel.Right + 2, SiteOwnerLabel.Top);
+			SiteOwnerComboBox.Size = new Size(43, 21);
+			
+			TefSiteLabel.Location = new Point(SiteOwnerComboBox.Right + 2, SiteOwnerLabel.Top);
+			TefSiteLabel.Size = new Size(43, 20);
+			
+			TefSiteTextBox.Location = new Point(TefSiteLabel.Right + 2, SiteOwnerLabel.Top);
+			TefSiteTextBox.Size = new Size(91, 20);
+			
+			AddressLabel.Location = new Point(PaddingLeftRight, SiteOwnerLabel.Bottom + 4);
+			AddressLabel.Size = new Size(67, 40);
+			
+			AddressTextBox.Location = new Point(AddressLabel.Right + 2, AddressLabel.Top);
+			AddressTextBox.Size = new Size(157, 40);
+			
+			AddressLargeTextButton.Location = new Point(AddressTextBox.Right, AddressTextBox.Top);
+			AddressLargeTextButton.Size = new Size(24, 20);
+			
+			MTXAddressButton.Location = new Point(AddressTextBox.Right, AddressLargeTextButton.Bottom);
+			MTXAddressButton.Size = new Size(24, 20);
+			
+			CCTRefLabel.Location = new Point(PaddingLeftRight, AddressLabel.Bottom + 4);
+			CCTRefLabel.Size = new Size(67, 20);
+			
+			CCTRefTextBox.Location = new Point(CCTRefLabel.Right + 2, CCTRefLabel.Top);
+			CCTRefTextBox.Size = new Size(181, 20);
+			
+			PowerCompanyLabel.Location = new Point(PaddingLeftRight, CCTRefLabel.Bottom + 4);
+			PowerCompanyLabel.Size = new Size(67, 20);
+			
+			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, PowerCompanyLabel.Top);
+			PowerCompanyTextBox.Size = new Size(181, 20);
+			
+			INCLabel.Location = new Point(PaddingLeftRight + 250 + 10, MainMenu.Bottom + 4);
+			INCLabel.Size = new Size(67, 20);
+			
+			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
+			INCTextBox.Size = new Size(181, 20);
+			
+			OtherSitesImpactedCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, INCLabel.Bottom + 2);
+			OtherSitesImpactedCheckBox.Size = new Size(123, 23);
+			
+			COOSCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, OtherSitesImpactedCheckBox.Bottom);
+			COOSCheckBox.Size = new Size(123, 23);
+			
+			FullSiteOutageCheckBox.Location = new Point(OtherSitesImpactedCheckBox.Right + 10, OtherSitesImpactedCheckBox.Top);
+			FullSiteOutageCheckBox.Size = new Size(103, 23);
+			
+			COOS2GLabel.Location = new Point(COOSCheckBox.Right + 5, FullSiteOutageCheckBox.Bottom);
+			COOS2GLabel.Size = new Size(63, 20);
+			
+			COOS2GNumericUpDown.Location = new Point(COOS2GLabel.Right + 2, COOS2GLabel.Top);
+			COOS2GNumericUpDown.Size = new Size(59, 20);
+			
+			COOS3GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS2GLabel.Bottom + 4);
+			COOS3GLabel.Size = new Size(63, 20);
+			
+			COOS3GNumericUpDown.Location = new Point(COOS3GLabel.Right + 2, COOS3GLabel.Top);
+			COOS3GNumericUpDown.Size = new Size(59, 20);
+			
+			COOS4GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS3GLabel.Bottom + 4);
+			COOS4GLabel.Size = new Size(63, 20);
+			
+			COOS4GNumericUpDown.Location = new Point(COOS4GLabel.Right + 2, COOS4GLabel.Top);
+			COOS4GNumericUpDown.Size = new Size(59, 20);
+			
+			PerformanceIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, COOSCheckBox.Bottom);
+			PerformanceIssueCheckBox.Size = new Size(123, 23);
+			
+			IntermittentIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, PerformanceIssueCheckBox.Bottom);
+			IntermittentIssueCheckBox.Size = new Size(123, 23);
+			
+			RelatedINC_CRQLabel.Location = new Point(PaddingLeftRight + 250 + 10, IntermittentIssueCheckBox.Bottom + 2);
+			RelatedINC_CRQLabel.Size = new Size(105, 20);
+			
+			RelatedINC_CRQTextBox.Location = new Point(RelatedINC_CRQLabel.Right + 2, IntermittentIssueCheckBox.Bottom + 2);
+			RelatedINC_CRQTextBox.Size = new Size(143, 20);
+			
+			ActiveAlarmsLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
+			ActiveAlarmsLabel.Size = new Size(77, 20);
+			
+			ActiveAlarmsTextBox.Location = new Point(PaddingLeftRight, ActiveAlarmsLabel.Bottom + 4);
+			ActiveAlarmsTextBox.Size = new Size(250, 194);
+			
+			ActiveAlarmsLargeTextButton.Size = new Size(24, 20);
+			ActiveAlarmsLargeTextButton.Location = new Point(ActiveAlarmsTextBox.Right - ActiveAlarmsLargeTextButton.Width, ActiveAlarmsLabel.Top);
+			
+			AlarmHistoryLabel.Location = new Point(ActiveAlarmsTextBox.Right + 10, ActiveAlarmsLabel.Top);
+			AlarmHistoryLabel.Size = new Size(109, 20);
+			
+			AlarmHistoryTextBox.Location = new Point(ActiveAlarmsTextBox.Right + 10, AlarmHistoryLabel.Bottom + 3);
+			AlarmHistoryTextBox.Size = new Size(250, 194);
+			
+			AlarmHistoryLargeTextButton.Size = new Size(24, 20);
+			AlarmHistoryLargeTextButton.Location = new Point(AlarmHistoryTextBox.Right - AlarmHistoryLargeTextButton.Width, AlarmHistoryLabel.Top);
+			
+			TroubleshootLabel.Location = new Point(PaddingLeftRight, ActiveAlarmsTextBox.Bottom + 4);
+			TroubleshootLabel.Size = new Size(109, 20);
+			
+			TroubleshootTextBox.Size = new Size(510, 203);
+			TroubleshootTextBox.Location = new Point(PaddingLeftRight, TroubleshootLabel.Bottom + 3);
+			
+			TroubleshootLargeTextButton.Size = new Size(24, 20);
+			TroubleshootLargeTextButton.Location = new Point(TroubleshootTextBox.Right - TroubleshootLargeTextButton.Width, TroubleshootLabel.Top);
 		}
 	}
 }

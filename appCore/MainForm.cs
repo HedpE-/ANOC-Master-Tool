@@ -584,7 +584,10 @@ namespace appCore
 //						huaweiScriptsControls = new HuaweiScriptsControls();
 //						huaweiScriptsControls.PaddingLeftRight = 7;
 //						tabPage17.Controls.Add(huaweiScriptsControls);
-						tabControl1.SelectTab(6);
+//						tabControl1.SelectTab(6);
+						
+						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
+						wb.Show();
 					};
 					tabPage1.Controls.Add(butt);
 					
@@ -643,7 +646,6 @@ namespace appCore
 			string thisfn = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll";
 			
 			SplashForm.CloseForm();
-			BringToFront();
 			
 			if (SettingsFile.LastRunVersion != GlobalProperties.AssemblyFileVersionInfo.FileVersion) {
 				SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;

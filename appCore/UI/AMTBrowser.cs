@@ -6,13 +6,14 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using appCore.Web;
 using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Net;
 using System.Collections.Generic;
 
-namespace appCore.Web
+namespace appCore.UI
 {
 	/// <summary>
 	/// Description of AMTBrowser.
@@ -43,14 +44,7 @@ namespace appCore.Web
 		}
 		
 		public void ResumeSession(Uri uri, CookieContainer container) {
-			string cookie_string = string.Empty;
-			List<Cookie> cookies = container.ToList();
-			foreach (Cookie cookie in cookies)
-			{
-				cookie_string += cookie + ";";
-				InternetSetCookie(uri.AbsoluteUri, cookie.Name, cookie.Value);
-			}
-			Navigate(uri, "", null, "Cookie: " + cookie_string + Environment.NewLine);
+			ResumeSession(uri.AbsoluteUri, container);
 		}
 		
 		public void DisplayHtml(string html)
@@ -64,6 +58,6 @@ namespace appCore.Web
 		}
 		
 		[DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern bool InternetSetCookie(string lpszUrlName, string lbszCookieName, string lpszCookieData);
+		static extern bool InternetSetCookie(string lpszUrlName, string lbszCookieName, string lpszCookieData);
 	}
 }

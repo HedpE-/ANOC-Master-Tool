@@ -13,10 +13,10 @@ using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
 {
-    /// <summary>
-    /// Description of OiSiteTablesForm.
-    /// </summary>
-    public partial class OiSiteTablesForm : Form
+	/// <summary>
+	/// Description of OiSiteTablesForm.
+	/// </summary>
+	public partial class OiSiteTablesForm : Form
 	{
 		DataTable Datatable;
 		string filter = "all";
@@ -111,6 +111,27 @@ namespace appCore.SiteFinder.UI
 					}
 					catch(Exception) {}
 				}
+			}
+		}
+		
+		void ListView1DoubleClick(object sender, EventArgs e)
+		{
+			if(listView1.SelectedItems.Count > 0) {
+			}
+			string columnName = string.Empty;
+			switch(DataType) {
+				case "INCs":
+					columnName = "Incident Ref";
+					break;
+				case "CRQs":
+					columnName = "Change Ref";
+					break;
+				case "BookIns":
+					columnName = "Engineer";
+					break;
+				case "ActiveAlarms":
+					columnName = "Group";
+					break;
 			}
 		}
 	}

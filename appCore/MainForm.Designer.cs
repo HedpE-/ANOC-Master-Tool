@@ -70,8 +70,8 @@ namespace appCore
 		private System.Windows.Forms.Button button36;
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.Label label50;
-		private appCore.UI.AMTRichTextBox richTextBox10;
-		private appCore.UI.AMTRichTextBox richTextBox11;
+		private System.Windows.Forms.RichTextBox richTextBox10;
+		private System.Windows.Forms.RichTextBox richTextBox11;
 		private System.Windows.Forms.TextBox textBox41;
 		private System.Windows.Forms.TextBox textBox40;
 		private System.Windows.Forms.TextBox textBox39;
@@ -211,8 +211,8 @@ namespace appCore
 			this.button36 = new System.Windows.Forms.Button();
 			this.label49 = new System.Windows.Forms.Label();
 			this.label50 = new System.Windows.Forms.Label();
-			this.richTextBox10 = new appCore.UI.AMTRichTextBox();
-			this.richTextBox11 = new appCore.UI.AMTRichTextBox();
+			this.richTextBox10 = new System.Windows.Forms.RichTextBox();
+			this.richTextBox11 = new System.Windows.Forms.RichTextBox();
 			this.label47 = new System.Windows.Forms.Label();
 			this.label48 = new System.Windows.Forms.Label();
 			this.textBox30 = new System.Windows.Forms.TextBox();

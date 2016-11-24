@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using appCore.UI;
 using System;
 using System.IO;
 using System.Linq;
@@ -14,9 +15,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Threading;
-using mshtml;
-using RestSharp;
+//using System.Threading;
+//using mshtml;
+//using RestSharp;
 
 namespace appCore.Web.UI
 {

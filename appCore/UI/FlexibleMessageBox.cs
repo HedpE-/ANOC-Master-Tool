@@ -860,6 +860,7 @@ namespace appCore.UI
                 SetDialogStartPosition(flexibleMessageBoxForm, owner);
 
                 //Show the dialog
+                flexibleMessageBoxForm.BringToFront();
                 return flexibleMessageBoxForm.ShowDialog(owner);
             }
 
