@@ -19,15 +19,15 @@ using appCore.UI;
 
 namespace appCore.Templates.UI
 {
-    /// <summary>
-    /// Description of OutageControls.
-    /// </summary>
-    public class OutageControls : Panel
+	/// <summary>
+	/// Description of OutageControls.
+	/// </summary>
+	public class OutageControls : Panel
 	{
-		public Button Button_OuterRight = new Button();
-		public Button Button_OuterLeft = new Button();
-		public Button Button_InnerLeft = new Button();
-		public Button Button_InnerRight = new Button();
+//		public Button Button_OuterRight = new Button();
+//		public Button Button_OuterLeft = new Button();
+//		public Button Button_InnerLeft = new Button();
+//		public Button Button_InnerRight = new Button();
 		
 		Button button3 = new Button();
 		Button button4 = new Button();
@@ -44,19 +44,33 @@ namespace appCore.Templates.UI
 		Label label32 = new Label(); // BulkCILabel
 		AMTRichTextBox textBox11 = new AMTRichTextBox(); // BulkCITextBox
 		AMTRichTextBox textBox10 = new AMTRichTextBox(); // Alarms_ReportTextBox
-		
 
 		Outage currentOutage;
+		
+		AMTMenuStrip MainMenu = new AMTMenuStrip();
+		ToolStripMenuItem generateReportToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem copyToClipboardToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem generateSitesListToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem outageFollowUpToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem generateFromSitesListToolStripMenuItem = new ToolStripMenuItem();
+		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
 			get { return paddingLeftRight; }
-			set { paddingLeftRight = value; }
+			set {
+				paddingLeftRight = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		int paddingTopBottom = 1;
 		public int PaddingTopBottom {
 			get { return paddingTopBottom; }
-			set { paddingTopBottom = value; }
+			set {
+				paddingTopBottom = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 //		bool toggle;
@@ -80,79 +94,69 @@ namespace appCore.Templates.UI
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					textBox11.ReadOnly = true;
-					// 
-					// Button_OuterRight
-					// 
-					Button_OuterRight.Name = "Button_OuterRight";
-					Button_OuterRight.Size = new Size(183, 23);
-					Button_OuterRight.TabIndex = 24;
-					Button_OuterRight.Text = "Copy Outage";
-//					Button_OuterRight.Click += CopyOutageReport;
-					// 
-					// Button_OuterLeft
-					// 
-					Button_OuterLeft.Name = "Button_OuterLeft";
-					Button_OuterLeft.Size = new Size(112, 23);
-					Button_OuterLeft.TabIndex = 22;
-					Button_OuterLeft.Text = "Generate sites list";
-//					Button_OuterLeft.Click += GenerateSitesList;
-					// 
-					// Button_InnerLeft
-					// 
-					Button_InnerLeft.Name = "Button_InnerLeft";
-					Button_InnerLeft.Size = new Size(121, 23);
-					Button_InnerLeft.TabIndex = 23;
-					Button_InnerLeft.Text = "Outage Follow Up";
-//					Button_InnerLeft.Click += OutageFollowUp;
+					
+					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(copyToClipboardToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(generateSitesListToolStripMenuItem);
 				}
 				else {
 					InitializeComponent();
 //					TxTypeComboBox.SelectedIndexChanged += TxTypeComboBoxSelectedIndexChanged;
+					
+					MainMenu.MainMenu.DropDownItems.Add(generateReportToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(generateFromSitesListToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(generateSitesListToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(copyToClipboardToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 					// 
 					// Button_OuterLeft
 					// 
-					Button_OuterLeft.Name = "Button_OuterLeft";
-					Button_OuterLeft.Size = new Size(97, 23);
-					Button_OuterLeft.TabIndex = 22;
-					Button_OuterLeft.Text = "Generate Report";
-					Button_OuterLeft.Click += GenerateReport;
-					// 
-					// Button_InnerLeft
-					// 
-					Button_InnerLeft.Name = "Button_InnerLeft";
-					Button_InnerLeft.Size = new Size(133, 23);
-					Button_InnerLeft.TabIndex = 23;
-					Button_InnerLeft.Text = "Generate from sites list";
-					Button_InnerLeft.Click += GenerateFromSitesList;
-					// 
-					// Button_OuterRight
-					// 
-					Button_OuterRight.Size = new Size(62, 23);
-					Button_OuterRight.Name = "Button_OuterRight";
-					Button_OuterRight.TabIndex = 24;
-					Button_OuterRight.Text = "Clear";
-					Button_OuterRight.Click += ClearAllControls;
-					// 
-					// Button_InnerRight
-					// 
-//					Button_InnerRight.Enabled = false;
-					Button_InnerRight.Name = "Button_InnerRight";
-					Button_InnerRight.Size = new Size(121, 23);
-					Button_InnerRight.TabIndex = 72;
-					Button_InnerRight.Text = "Copy to Clipboard";
-					Button_InnerRight.Visible = false;
-//					Button_InnerRight.Click += SendBCPForm;
-					Controls.Add(Button_InnerRight);
+//					Button_OuterLeft.Name = "Button_OuterLeft";
+//					Button_OuterLeft.Size = new Size(97, 23);
+//					Button_OuterLeft.TabIndex = 22;
+//					Button_OuterLeft.Text = "Generate Report";
+//					Button_OuterLeft.Click += GenerateReport;
+//					// 
+//					// Button_InnerLeft
+//					// 
+//					Button_InnerLeft.Name = "Button_InnerLeft";
+//					Button_InnerLeft.Size = new Size(133, 23);
+//					Button_InnerLeft.TabIndex = 23;
+//					Button_InnerLeft.Text = "Generate from sites list";
+//					Button_InnerLeft.Click += GenerateFromSitesList;
+//					// 
+//					// Button_OuterRight
+//					// 
+//					Button_OuterRight.Size = new Size(62, 23);
+//					Button_OuterRight.Name = "Button_OuterRight";
+//					Button_OuterRight.TabIndex = 24;
+//					Button_OuterRight.Text = "Clear";
+//					Button_OuterRight.Click += ClearAllControls;
+//					// 
+//					// Button_InnerRight
+//					// 
+					////					Button_InnerRight.Enabled = false;
+//					Button_InnerRight.Name = "Button_InnerRight";
+//					Button_InnerRight.Size = new Size(121, 23);
+//					Button_InnerRight.TabIndex = 72;
+//					Button_InnerRight.Text = "Copy to Clipboard";
+//					Button_InnerRight.Visible = false;
+					////					Button_InnerRight.Click += SendBCPForm;
+//					Controls.Add(Button_InnerRight);
 				}
-				Controls.Add(Button_OuterLeft);
-				Controls.Add(Button_InnerLeft);
-				Controls.Add(Button_OuterRight);
+//				Controls.Add(Button_OuterLeft);
+//				Controls.Add(Button_InnerLeft);
+//				Controls.Add(Button_OuterRight);
 				
-				Button_OuterLeft.Location = new Point(PaddingLeftRight, textBox11.Bottom + 5);
-				Button_InnerLeft.Location = new Point(Button_OuterLeft.Right + 3, textBox11.Bottom + 5);
-				Button_OuterRight.Location = new Point(textBox11.Right - Button_OuterRight.Width, textBox11.Bottom + 5);
-				Button_InnerRight.Location = new Point(Button_OuterRight.Left - Button_InnerRight.Width - 3, textBox11.Bottom + 5);
-				Size = new Size(textBox11.Right + PaddingLeftRight, Button_OuterLeft.Bottom + PaddingTopBottom);
+//				Button_OuterLeft.Location = new Point(PaddingLeftRight, textBox11.Bottom + 5);
+//				Button_InnerLeft.Location = new Point(Button_OuterLeft.Right + 3, textBox11.Bottom + 5);
+//				Button_OuterRight.Location = new Point(textBox11.Right - Button_OuterRight.Width, textBox11.Bottom + 5);
+//				Button_InnerRight.Location = new Point(Button_OuterRight.Left - Button_InnerRight.Width - 3, textBox11.Bottom + 5);
 			}
 		}
 		
@@ -832,11 +836,51 @@ namespace appCore.Templates.UI
 //			Controls.Add(button3);
 //			Controls.Add(button4);
 			// 
+			// MainMenu
+			// 
+			MainMenu.Location = new Point(paddingLeftRight, 0);
+			// 
+			// generateReportToolStripMenuItem
+			// 
+			generateReportToolStripMenuItem.Name = "generateReportToolStripMenuItem";
+			generateReportToolStripMenuItem.Text = "Generate Report";
+			generateReportToolStripMenuItem.Click += GenerateReport;
+			// 
+			// clearToolStripMenuItem
+			// 
+			clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			clearToolStripMenuItem.Text = "Clear";
+			clearToolStripMenuItem.Click += ClearAllControls;
+			// 
+			// copyToClipboardToolStripMenuItem
+			// 
+			copyToClipboardToolStripMenuItem.Name = "copyToClipboardToolStripMenuItem";
+			copyToClipboardToolStripMenuItem.Text = "Copy to Clipboard";
+//			copyToClipboardToolStripMenuItem.Click += LoadTemplateFromLog;
+			// 
+			// generateSitesListToolStripMenuItem
+			// 
+			generateSitesListToolStripMenuItem.Name = "generateSitesListToolStripMenuItem";
+			generateSitesListToolStripMenuItem.Text = "Generate sites list";
+//			generateSitesListToolStripMenuItem.Click += GenerateFromSitesList;
+			// 
+			// generateFromSitesListToolStripMenuItem
+			// 
+			generateFromSitesListToolStripMenuItem.Name = "generateFromSitesListToolStripMenuItem";
+			generateFromSitesListToolStripMenuItem.Text = "Generate Report from sites list";
+			generateFromSitesListToolStripMenuItem.Click += GenerateFromSitesList;
+			// 
+			// outageFollowUpToolStripMenuItem
+			// 
+			outageFollowUpToolStripMenuItem.Name = "outageFollowUpToolStripMenuItem";
+			outageFollowUpToolStripMenuItem.Text = "Outage Follow Up";
+//			outageFollowUpToolStripMenuItem.Click += OutageFollowUp;generateFromSitesListToolStripMenuItem
+			// 
 			// Alarms_ReportLabel
 			// 
-			label33.Location = new Point(PaddingLeftRight, PaddingTopBottom);
+//			label33.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			label33.Size = new Size(179, 20);
 			label33.Name = "Alarms_ReportLabel";
-			label33.Size = new Size(179, 20);
 			label33.TabIndex = 30;
 			label33.Text = "Copy Outage alarms from Netcool";
 			label33.TextAlign = ContentAlignment.MiddleLeft;
@@ -845,9 +889,9 @@ namespace appCore.Templates.UI
 			// 
 			textBox10.DetectUrls = false;
 			textBox10.Font = new Font("Courier New", 8.25F);
-			textBox10.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
+//			textBox10.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
+//			textBox10.Size = new Size(510, 368);
 			textBox10.Name = "Alarms_ReportTextBox";
-			textBox10.Size = new Size(510, 368);
 			textBox10.TabIndex = 1;
 			textBox10.Text = "";
 			textBox10.WordWrap = false;
@@ -856,8 +900,8 @@ namespace appCore.Templates.UI
 			// Alarms_ReportLargeTextButton
 			// 
 			button22.Enabled = false;
-			button22.Size = new Size(24, 20);
-			button22.Location = new Point(textBox10.Right - button22.Width, PaddingTopBottom);
+//			button22.Size = new Size(24, 20);
+//			button22.Location = new Point(textBox10.Right - button22.Width, MainMenu.Bottom + 4);
 			button22.Name = "Alarms_ReportLargeTextButton";
 			button22.TabIndex = 2;
 			button22.Text = "...";
@@ -869,8 +913,8 @@ namespace appCore.Templates.UI
 			tabControl4.Appearance = TabAppearance.Buttons;
 			tabControl4.Controls.Add(tabPage15);
 			tabControl4.Controls.Add(tabPage16);
-			tabControl4.Size = new Size(127, 24);
-			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, PaddingTopBottom);
+//			tabControl4.Size = new Size(127, 24);
+//			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
 			tabControl4.Name = "VFTFReportTabControl";
 			tabControl4.SelectedIndex = 0;
 			tabControl4.TabIndex = 31;
@@ -890,18 +934,18 @@ namespace appCore.Templates.UI
 			// TFReportTabPage
 			// 
 			tabPage16.Location = new Point(0, 25); // 4, 25
+			tabPage16.Size = new Size(119, 0);
 			tabPage16.Name = "TFReportTabPage";
 			tabPage16.Padding = new Padding(3);
-			tabPage16.Size = new Size(119, 0);
 			tabPage16.TabIndex = 1;
 			tabPage16.Text = "TF Report";
 			tabPage16.UseVisualStyleBackColor = true;
 			// 
 			// BulkCILabel
 			// 
-			label32.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
+//			label32.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
+//			label32.Size = new Size(198, 20);
 			label32.Name = "BulkCILabel";
-			label32.Size = new Size(198, 20);
 			label32.Text = "BulkCI (Divided into 50 sites chunks)";
 			label32.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -909,10 +953,10 @@ namespace appCore.Templates.UI
 			// 
 			textBox11.DetectUrls = false;
 			textBox11.Font = new Font("Courier New", 8.25F);
-			textBox11.Location = new Point(PaddingLeftRight, label32.Bottom + 4);
+//			textBox11.Location = new Point(PaddingLeftRight, label32.Bottom + 4);
+//			textBox11.Size = new Size(510, 203);
 			textBox11.Name = "BulkCITextBox";
 			textBox11.ReadOnly = true;
-			textBox11.Size = new Size(510, 203);
 			textBox11.TabIndex = 3;
 			textBox11.Text = "";
 			textBox11.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -920,8 +964,8 @@ namespace appCore.Templates.UI
 			// BulkCILargeTextButton
 			// 
 			button23.Enabled = false;
-			button23.Size = new Size(24, 20);
-			button23.Location = new Point(textBox11.Right - button23.Width, label32.Top);
+//			button23.Size = new Size(24, 20);
+//			button23.Location = new Point(textBox11.Right - button23.Width, label32.Top);
 			button23.Name = "BulkCILargeTextButton";
 			button23.TabIndex = 4;
 			button23.Text = "...";
@@ -983,19 +1027,46 @@ namespace appCore.Templates.UI
 			// 
 			// Button_OuterLeft
 			// 
-			Button_OuterLeft.UseVisualStyleBackColor = true;
-			// 
-			// Button_OuterRight
-			// 
-			Button_OuterRight.UseVisualStyleBackColor = true;
-			// 
-			// Button_InnerLeft
-			// 
-			Button_InnerLeft.UseVisualStyleBackColor = true;
-			// 
-			// Button_InnerRight
-			// 
-			Button_InnerRight.UseVisualStyleBackColor = true;
+//			Button_OuterLeft.UseVisualStyleBackColor = true;
+//			// 
+//			// Button_OuterRight
+//			// 
+//			Button_OuterRight.UseVisualStyleBackColor = true;
+//			// 
+//			// Button_InnerLeft
+//			// 
+//			Button_InnerLeft.UseVisualStyleBackColor = true;
+//			// 
+//			// Button_InnerRight
+//			// 
+//			Button_InnerRight.UseVisualStyleBackColor = true;
+			
+			DynamicControlsSizesLocations();
+		}
+		
+		void DynamicControlsSizesLocations() {
+			label33.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+			label33.Size = new Size(179, 20);
+			
+			textBox10.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
+			textBox10.Size = new Size(510, 368);
+			
+			button22.Size = new Size(24, 20);
+			button22.Location = new Point(textBox10.Right - button22.Width, MainMenu.Bottom + 4);
+			
+			tabControl4.Size = new Size(127, 24);
+			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
+			
+			label32.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
+			label32.Size = new Size(198, 20);
+			
+			textBox11.Location = new Point(PaddingLeftRight, label32.Bottom + 4);
+			textBox11.Size = new Size(510, 203);
+			
+			button23.Size = new Size(24, 20);
+			button23.Location = new Point(textBox11.Right - button23.Width, label32.Top);
+			
+			Size = new Size(textBox11.Right + PaddingLeftRight, textBox11.Bottom + PaddingTopBottom);
 		}
 	}
 }

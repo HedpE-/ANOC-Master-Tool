@@ -73,16 +73,23 @@ namespace appCore.Templates.UI
 		public Site currentSite { get; private set; }
 		FailedCRQ currentTemplate;
 		FailedCRQ prevTemp = new FailedCRQ();
+		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
 			get { return paddingLeftRight; }
-			set { paddingLeftRight = value; }
+			set {
+				paddingLeftRight = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		int paddingTopBottom = 1;
 		public int PaddingTopBottom {
 			get { return paddingTopBottom; }
-			set { paddingTopBottom = value; }
+			set {
+				paddingTopBottom = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		bool toggle;
@@ -150,7 +157,6 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
-				Size = new Size(ObservationsTextBox.Right + PaddingLeftRight, ObservationsTextBox.Bottom + PaddingTopBottom);
 			}
 		}
 		
@@ -630,7 +636,7 @@ namespace appCore.Templates.UI
 				}
 				if(openForm != null)
 					openForm.Close();
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id);
 				OiTable.Show();
 			}
 		}
@@ -705,9 +711,9 @@ namespace appCore.Templates.UI
 			// 
 			// INCLabel
 			// 
-			INCLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			INCLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			INCLabel.Size = new Size(50, 20);
 			INCLabel.Name = "INCLabel";
-			INCLabel.Size = new Size(50, 20);
 			INCLabel.Text = "INC";
 			INCLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -715,32 +721,33 @@ namespace appCore.Templates.UI
 			// 
 			INCTextBox.AcceptsTab = true;
 			INCTextBox.Font = new Font("Courier New", 8.25F);
-			INCTextBox.Location = new Point(INCLabel.Right + 5, MainMenu.Bottom + 4);
+//			INCTextBox.Location = new Point(INCLabel.Right + 5, MainMenu.Bottom + 4);
+//			INCTextBox.Size = new Size(125, 20);
 			INCTextBox.MaxLength = 15;
 			INCTextBox.Name = "INCTextBox";
-			INCTextBox.Size = new Size(125, 20);
 			INCTextBox.TabIndex = 1;
 			// 
 			// CRQLabel
 			// 
-			CRQLabel.Location = new Point(PaddingLeftRight, INCLabel.Bottom + 4);
+//			CRQLabel.Location = new Point(PaddingLeftRight, INCLabel.Bottom + 4);
+//			CRQLabel.Size = new Size(50, 20);
 			CRQLabel.Name = "CRQLabel";
-			CRQLabel.Size = new Size(50, 20);
 			CRQLabel.Text = "CRQ";
 			CRQLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// CRQTextBox
 			// 
 			CRQTextBox.Font = new Font("Courier New", 8.25F);
-			CRQTextBox.Location = new Point(CRQLabel.Right + 5, CRQLabel.Top);
+//			CRQTextBox.Location = new Point(CRQLabel.Right + 5, CRQLabel.Top);
+//			CRQTextBox.Size = new Size(125, 20);
 			CRQTextBox.MaxLength = 15;
 			CRQTextBox.Name = "CRQTextBox";
-			CRQTextBox.Size = new Size(125, 20);
 			CRQTextBox.TabIndex = 3;
 			// 
 			// SiteIdLabel
 			// 
-			SiteIdLabel.Location = new Point(INCTextBox.Right + 15, MainMenu.Bottom + 4);
+//			SiteIdLabel.Location = new Point(INCTextBox.Right + 15, MainMenu.Bottom + 4);
+//			SiteIdLabel.Size = new Size(60, 20);
 			SiteIdLabel.Name = "SiteIdLabel";
 			SiteIdLabel.Size = new Size(60, 20);
 			SiteIdLabel.Text = "Site";
@@ -750,46 +757,46 @@ namespace appCore.Templates.UI
 			// 
 			SiteIdTextBox.AcceptsTab = true;
 			SiteIdTextBox.Font = new Font("Courier New", 8.25F);
-			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 5, MainMenu.Bottom + 4);
+//			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 5, MainMenu.Bottom + 4);
+//			SiteIdTextBox.Size = new Size(90, 20);
 			SiteIdTextBox.MaxLength = 6;
 			SiteIdTextBox.Name = "SiteIdTextBox";
-			SiteIdTextBox.Size = new Size(90, 20);
 			SiteIdTextBox.TabIndex = 2;
 			SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 			// 
 			// RegionLabel
 			// 
-			RegionLabel.Location = new Point(CRQTextBox.Right + 15, SiteIdLabel.Bottom + 4);
+//			RegionLabel.Location = new Point(CRQTextBox.Right + 15, SiteIdLabel.Bottom + 4);
+//			RegionLabel.Size = new Size(60, 20);
 			RegionLabel.Name = "RegionLabel";
-			RegionLabel.Size = new Size(60, 20);
 			RegionLabel.Text = "Region";
 			RegionLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// RegionTextBox
 			// 
 			RegionTextBox.Font = new Font("Courier New", 8.25F);
-			RegionTextBox.Location = new Point(RegionLabel.Right + 5, RegionLabel.Top);
+//			RegionTextBox.Location = new Point(RegionLabel.Right + 5, RegionLabel.Top);
+//			RegionTextBox.Size = new Size(250, 20);
 			RegionTextBox.MaxLength = 5;
 			RegionTextBox.Name = "RegionTextBox";
 			RegionTextBox.ReadOnly = true;
-			RegionTextBox.Size = new Size(250, 20);
 			RegionTextBox.TabIndex = 78;
 			// 
 			// PriorityLabel
 			// 
-			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 10, MainMenu.Bottom + 4);
+//			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 10, MainMenu.Bottom + 4);
+//			PriorityLabel.Size = new Size(45, 20);
 			PriorityLabel.Name = "PriorityLabel";
-			PriorityLabel.Size = new Size(45, 20);
 			PriorityLabel.Text = "Priority";
 			PriorityLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// PriorityTextBox
 			// 
 			PriorityTextBox.Font = new Font("Courier New", 8.25F);
-			PriorityTextBox.Location = new Point(PriorityLabel.Right + 10, MainMenu.Bottom + 4);
+//			PriorityTextBox.Location = new Point(PriorityLabel.Right + 10, MainMenu.Bottom + 4);
+//			PriorityTextBox.Size = new Size(95, 20);
 			PriorityTextBox.Name = "PriorityTextBox";
 			PriorityTextBox.ReadOnly = true;
-			PriorityTextBox.Size = new Size(95, 20);
 			PriorityTextBox.TabIndex = 80;
 			// 
 			// FEBookedInGroupBox
@@ -799,18 +806,18 @@ namespace appCore.Templates.UI
 			FEBookedInGroupBox.Controls.Add(FEBookedIn_PhoneNumberTextBox);
 			FEBookedInGroupBox.Controls.Add(FEBookedIn_NameLabel);
 			FEBookedInGroupBox.Controls.Add(FEBookedIn_NameTextBox);
-			FEBookedInGroupBox.Location = new Point(PaddingLeftRight, CRQLabel.Bottom + 4);
+//			FEBookedInGroupBox.Location = new Point(PaddingLeftRight, CRQLabel.Bottom + 4);
+//			FEBookedInGroupBox.Size = new Size(250, 100);
 			FEBookedInGroupBox.Name = "FEBookedInGroupBox";
-			FEBookedInGroupBox.Size = new Size(250, 100);
 			FEBookedInGroupBox.TabIndex = 4;
 			FEBookedInGroupBox.TabStop = false;
 			FEBookedInGroupBox.Text = "FE Booked In";
 			// 
-			// label1
+			// CRQContactsLabel
 			// 
-			CRQContactsLabel.Location = new Point(FEBookedInGroupBox.Right + 10, FEBookedInGroupBox.Top);
+//			CRQContactsLabel.Location = new Point(FEBookedInGroupBox.Right + 10, FEBookedInGroupBox.Top);
+//			CRQContactsLabel.Size = new Size(210, 20);
 			CRQContactsLabel.Name = "CRQContactsLabel";
-			CRQContactsLabel.Size = new Size(210, 20);
 			CRQContactsLabel.Text = "CRQ Contacts (Name/Phone #/E-mail)";
 			CRQContactsLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -818,17 +825,17 @@ namespace appCore.Templates.UI
 			// 
 			CRQContactsTextBox.DetectUrls = false;
 			CRQContactsTextBox.Font = new Font("Courier New", 8.25F);
-			CRQContactsTextBox.Location = new Point(FEBookedInGroupBox.Right + 10, CRQContactsLabel.Bottom + 3);
+//			CRQContactsTextBox.Location = new Point(FEBookedInGroupBox.Right + 10, CRQContactsLabel.Bottom + 3);
+//			CRQContactsTextBox.Size = new Size(250, 77);
 			CRQContactsTextBox.Name = "CRQContactsTextBox";
-			CRQContactsTextBox.Size = new Size(250, 77);
 			CRQContactsTextBox.TabIndex = 82;
 			CRQContactsTextBox.Text = "";
 			// 
 			// CRQContactsLargeTextButton
 			// 
 			CRQContactsLargeTextButton.Enabled = false;
-			CRQContactsLargeTextButton.Size = new Size(24, 20);
-			CRQContactsLargeTextButton.Location = new Point(CRQContactsTextBox.Right - CRQContactsLargeTextButton.Width, CRQContactsLabel.Top);
+//			CRQContactsLargeTextButton.Size = new Size(24, 20);
+//			CRQContactsLargeTextButton.Location = new Point(CRQContactsTextBox.Right - CRQContactsLargeTextButton.Width, CRQContactsLabel.Top);
 			CRQContactsLargeTextButton.Name = "CRQContactsLargeTextButton";
 			CRQContactsLargeTextButton.TabIndex = 83;
 			CRQContactsLargeTextButton.Text = "...";
@@ -836,9 +843,9 @@ namespace appCore.Templates.UI
 			// 
 			// WorkPerformedByFELabel
 			// 
-			WorkPerformedByFELabel.Location = new Point(PaddingLeftRight, FEBookedInGroupBox.Bottom + 4);
+//			WorkPerformedByFELabel.Location = new Point(PaddingLeftRight, FEBookedInGroupBox.Bottom + 4);
+//			WorkPerformedByFELabel.Size = new Size(219, 20);
 			WorkPerformedByFELabel.Name = "WorkPerformedByFELabel";
-			WorkPerformedByFELabel.Size = new Size(219, 20);
 			WorkPerformedByFELabel.Text = "Work performed by FE(as described by eng)";
 			WorkPerformedByFELabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -846,17 +853,17 @@ namespace appCore.Templates.UI
 			// 
 			WorkPerformedByFETextBox.DetectUrls = false;
 			WorkPerformedByFETextBox.Font = new Font("Courier New", 8.25F);
-			WorkPerformedByFETextBox.Location = new Point(PaddingLeftRight, WorkPerformedByFELabel.Bottom + 4);
+//			WorkPerformedByFETextBox.Location = new Point(PaddingLeftRight, WorkPerformedByFELabel.Bottom + 4);
+//			WorkPerformedByFETextBox.Size = new Size(250, 158);
 			WorkPerformedByFETextBox.Name = "WorkPerformedByFETextBox";
-			WorkPerformedByFETextBox.Size = new Size(250, 158);
 			WorkPerformedByFETextBox.TabIndex = 10;
 			WorkPerformedByFETextBox.Text = "";
 			// 
 			// WorkPerformedByFELargeTextButton
 			// 
 			WorkPerformedByFELargeTextButton.Enabled = false;
-			WorkPerformedByFELargeTextButton.Size = new Size(24, 20);
-			WorkPerformedByFELargeTextButton.Location = new Point(WorkPerformedByFETextBox.Right - WorkPerformedByFELargeTextButton.Width, WorkPerformedByFELabel.Top);
+//			WorkPerformedByFELargeTextButton.Size = new Size(24, 20);
+//			WorkPerformedByFELargeTextButton.Location = new Point(WorkPerformedByFETextBox.Right - WorkPerformedByFELargeTextButton.Width, WorkPerformedByFELabel.Top);
 			WorkPerformedByFELargeTextButton.Name = "WorkPerformedByFELargeTextButton";
 			WorkPerformedByFELargeTextButton.TabIndex = 11;
 			WorkPerformedByFELargeTextButton.Text = "...";
@@ -864,9 +871,9 @@ namespace appCore.Templates.UI
 			// 
 			// TroubleshootingDoneLabel
 			// 
-			TroubleshootingDoneLabel.Location = new Point(WorkPerformedByFELargeTextButton.Right + 10, WorkPerformedByFELabel.Top);
+//			TroubleshootingDoneLabel.Location = new Point(WorkPerformedByFELargeTextButton.Right + 10, WorkPerformedByFELabel.Top);
+//			TroubleshootingDoneLabel.Size = new Size(220, 20);
 			TroubleshootingDoneLabel.Name = "TroubleshootingDoneLabel";
-			TroubleshootingDoneLabel.Size = new Size(220, 20);
 			TroubleshootingDoneLabel.Text = "Troubleshooting done with FE on site";
 			TroubleshootingDoneLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -874,17 +881,17 @@ namespace appCore.Templates.UI
 			// 
 			TroubleshootingDoneTextBox.DetectUrls = false;
 			TroubleshootingDoneTextBox.Font = new Font("Courier New", 8.25F);
-			TroubleshootingDoneTextBox.Location = new Point(WorkPerformedByFETextBox.Right + 10, TroubleshootingDoneLabel.Bottom + 4);
+//			TroubleshootingDoneTextBox.Location = new Point(WorkPerformedByFETextBox.Right + 10, TroubleshootingDoneLabel.Bottom + 4);
+//			TroubleshootingDoneTextBox.Size = new Size(250, 158);
 			TroubleshootingDoneTextBox.Name = "TroubleshootingDoneTextBox";
-			TroubleshootingDoneTextBox.Size = new Size(250, 158);
 			TroubleshootingDoneTextBox.TabIndex = 12;
 			TroubleshootingDoneTextBox.Text = "";
 			// 
 			// TroubleshootingDoneLargeTextButton
 			// 
 			TroubleshootingDoneLargeTextButton.Enabled = false;
-			TroubleshootingDoneLargeTextButton.Size = new Size(24, 20);
-			TroubleshootingDoneLargeTextButton.Location = new Point(TroubleshootingDoneTextBox.Right - TroubleshootingDoneLargeTextButton.Width, TroubleshootingDoneLabel.Top);
+//			TroubleshootingDoneLargeTextButton.Size = new Size(24, 20);
+//			TroubleshootingDoneLargeTextButton.Location = new Point(TroubleshootingDoneTextBox.Right - TroubleshootingDoneLargeTextButton.Width, TroubleshootingDoneLabel.Top);
 			TroubleshootingDoneLargeTextButton.Name = "TroubleshootingDoneLargeTextButton";
 			TroubleshootingDoneLargeTextButton.TabIndex = 13;
 			TroubleshootingDoneLargeTextButton.Text = "...";
@@ -898,18 +905,18 @@ namespace appCore.Templates.UI
 			ContractorToFixFaultGroupBox.Controls.Add(ContractorToFixFault_PhoneNumberTextBox);
 			ContractorToFixFaultGroupBox.Controls.Add(ContractorToFixFault_NameLabel);
 			ContractorToFixFaultGroupBox.Controls.Add(ContractorToFixFault_NameTextBox);
-			ContractorToFixFaultGroupBox.Location = new Point(PaddingLeftRight, WorkPerformedByFETextBox.Bottom + 4);
+//			ContractorToFixFaultGroupBox.Location = new Point(PaddingLeftRight, WorkPerformedByFETextBox.Bottom + 4);
+//			ContractorToFixFaultGroupBox.Size = new Size(510, 69);
 			ContractorToFixFaultGroupBox.Name = "ContractorToFixFaultGroupBox";
-			ContractorToFixFaultGroupBox.Size = new Size(510, 69);
 			ContractorToFixFaultGroupBox.TabIndex = 12;
 			ContractorToFixFaultGroupBox.TabStop = false;
 			ContractorToFixFaultGroupBox.Text = "Contractor to fix the fault";
 			// 
 			// ObservationsLabel
 			// 
-			ObservationsLabel.Location = new Point(PaddingLeftRight, ContractorToFixFaultGroupBox.Bottom + 4);
+//			ObservationsLabel.Location = new Point(PaddingLeftRight, ContractorToFixFaultGroupBox.Bottom + 4);
+//			ObservationsLabel.Size = new Size(75, 20);
 			ObservationsLabel.Name = "ObservationsLabel";
-			ObservationsLabel.Size = new Size(75, 20);
 			ObservationsLabel.Text = "Observations";
 			ObservationsLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -917,17 +924,17 @@ namespace appCore.Templates.UI
 			// 
 			ObservationsTextBox.DetectUrls = false;
 			ObservationsTextBox.Font = new Font("Courier New", 8.25F);
-			ObservationsTextBox.Location = new Point(PaddingLeftRight, ObservationsLabel.Bottom + 4);
+//			ObservationsTextBox.Location = new Point(PaddingLeftRight, ObservationsLabel.Bottom + 4);
+//			ObservationsTextBox.Size = new Size(510, 153);
 			ObservationsTextBox.Name = "ObservationsTextBox";
-			ObservationsTextBox.Size = new Size(510, 153);
 			ObservationsTextBox.TabIndex = 18;
 			ObservationsTextBox.Text = "";
 			// 
 			// ObservationsLargeTextButton
 			// 
 			ObservationsLargeTextButton.Enabled = false;
-			ObservationsLargeTextButton.Size = new Size(24, 20);
-			ObservationsLargeTextButton.Location = new Point(ObservationsTextBox.Right - ObservationsLargeTextButton.Width, ObservationsLabel.Top);
+//			ObservationsLargeTextButton.Size = new Size(24, 20);
+//			ObservationsLargeTextButton.Location = new Point(ObservationsTextBox.Right - ObservationsLargeTextButton.Width, ObservationsLabel.Top);
 			ObservationsLargeTextButton.Name = "ObservationsLargeTextButton";
 			ObservationsLargeTextButton.TabIndex = 19;
 			ObservationsLargeTextButton.Text = "...";
@@ -1029,10 +1036,10 @@ namespace appCore.Templates.UI
 			ContractorToFixFault_WillReturnDateTimePicker.CustomFormat = "dd/MM/yyyy HH:mm";
 			ContractorToFixFault_WillReturnDateTimePicker.Format = DateTimePickerFormat.Custom;
 			ContractorToFixFault_WillReturnDateTimePicker.Location = new Point(334, 42);
+			ContractorToFixFault_WillReturnDateTimePicker.Size = new Size(168, 20);
 			ContractorToFixFault_WillReturnDateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
 			ContractorToFixFault_WillReturnDateTimePicker.Name = "ContractorToFixFault_WillReturnDateTimePicker";
 			ContractorToFixFault_WillReturnDateTimePicker.RightToLeft = RightToLeft.No;
-			ContractorToFixFault_WillReturnDateTimePicker.Size = new Size(168, 20);
 			ContractorToFixFault_WillReturnDateTimePicker.TabIndex = 17;
 			ContractorToFixFault_WillReturnDateTimePicker.Value = DateTime.Now;
 			ContractorToFixFault_WillReturnDateTimePicker.Visible = false;
@@ -1042,6 +1049,84 @@ namespace appCore.Templates.UI
 			FEBookedInGroupBox.PerformLayout();
 			SuspendLayout();
 			ResumeLayout(false);
+			
+			DynamicControlsSizesLocations();
+		}
+		
+		void DynamicControlsSizesLocations() {
+			INCLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+			INCLabel.Size = new Size(50, 20);
+			
+			INCTextBox.Location = new Point(INCLabel.Right + 5, MainMenu.Bottom + 4);
+			INCTextBox.Size = new Size(125, 20);
+			
+			CRQLabel.Location = new Point(PaddingLeftRight, INCLabel.Bottom + 4);
+			CRQLabel.Size = new Size(50, 20);
+			
+			CRQTextBox.Location = new Point(CRQLabel.Right + 5, CRQLabel.Top);
+			CRQTextBox.Size = new Size(125, 20);
+			
+			SiteIdLabel.Location = new Point(INCTextBox.Right + 15, MainMenu.Bottom + 4);
+			SiteIdLabel.Size = new Size(60, 20);
+			
+			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 5, MainMenu.Bottom + 4);
+			SiteIdTextBox.Size = new Size(90, 20);
+			
+			RegionLabel.Location = new Point(CRQTextBox.Right + 15, SiteIdLabel.Bottom + 4);
+			RegionLabel.Size = new Size(60, 20);
+			
+			RegionTextBox.Location = new Point(RegionLabel.Right + 5, RegionLabel.Top);
+			RegionTextBox.Size = new Size(250, 20);
+			
+			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 10, MainMenu.Bottom + 4);
+			PriorityLabel.Size = new Size(45, 20);
+			
+			PriorityTextBox.Location = new Point(PriorityLabel.Right + 10, MainMenu.Bottom + 4);
+			PriorityTextBox.Size = new Size(95, 20);
+			
+			FEBookedInGroupBox.Location = new Point(PaddingLeftRight, CRQLabel.Bottom + 4);
+			FEBookedInGroupBox.Size = new Size(250, 100);
+			
+			CRQContactsLabel.Location = new Point(FEBookedInGroupBox.Right + 10, FEBookedInGroupBox.Top);
+			CRQContactsLabel.Size = new Size(210, 20);
+			
+			CRQContactsTextBox.Location = new Point(FEBookedInGroupBox.Right + 10, CRQContactsLabel.Bottom + 3);
+			CRQContactsTextBox.Size = new Size(250, 77);
+			
+			CRQContactsLargeTextButton.Size = new Size(24, 20);
+			CRQContactsLargeTextButton.Location = new Point(CRQContactsTextBox.Right - CRQContactsLargeTextButton.Width, CRQContactsLabel.Top);
+			
+			WorkPerformedByFELabel.Location = new Point(PaddingLeftRight, FEBookedInGroupBox.Bottom + 4);
+			WorkPerformedByFELabel.Size = new Size(219, 20);
+			
+			WorkPerformedByFETextBox.Location = new Point(PaddingLeftRight, WorkPerformedByFELabel.Bottom + 4);
+			WorkPerformedByFETextBox.Size = new Size(250, 158);
+			
+			WorkPerformedByFELargeTextButton.Size = new Size(24, 20);
+			WorkPerformedByFELargeTextButton.Location = new Point(WorkPerformedByFETextBox.Right - WorkPerformedByFELargeTextButton.Width, WorkPerformedByFELabel.Top);
+			
+			TroubleshootingDoneLabel.Location = new Point(WorkPerformedByFELargeTextButton.Right + 10, WorkPerformedByFELabel.Top);
+			TroubleshootingDoneLabel.Size = new Size(220, 20);
+			
+			TroubleshootingDoneTextBox.Location = new Point(WorkPerformedByFETextBox.Right + 10, TroubleshootingDoneLabel.Bottom + 4);
+			TroubleshootingDoneTextBox.Size = new Size(250, 158);
+			
+			TroubleshootingDoneLargeTextButton.Size = new Size(24, 20);
+			TroubleshootingDoneLargeTextButton.Location = new Point(TroubleshootingDoneTextBox.Right - TroubleshootingDoneLargeTextButton.Width, TroubleshootingDoneLabel.Top);
+			
+			ContractorToFixFaultGroupBox.Location = new Point(PaddingLeftRight, WorkPerformedByFETextBox.Bottom + 4);
+			ContractorToFixFaultGroupBox.Size = new Size(510, 69);
+			
+			ObservationsLabel.Location = new Point(PaddingLeftRight, ContractorToFixFaultGroupBox.Bottom + 4);
+			ObservationsLabel.Size = new Size(75, 20);
+			
+			ObservationsTextBox.Location = new Point(PaddingLeftRight, ObservationsLabel.Bottom + 4);
+			ObservationsTextBox.Size = new Size(510, 153);
+			
+			ObservationsLargeTextButton.Size = new Size(24, 20);
+			ObservationsLargeTextButton.Location = new Point(ObservationsTextBox.Right - ObservationsLargeTextButton.Width, ObservationsLabel.Top);
+			
+			Size = new Size(ObservationsTextBox.Right + PaddingLeftRight, ObservationsTextBox.Bottom + PaddingTopBottom);
 		}
 	}
 }

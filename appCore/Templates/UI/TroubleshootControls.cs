@@ -948,7 +948,7 @@ namespace appCore.Templates.UI
 				}
 				if(openForm != null)
 					openForm.Close();
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id);
 				OiTable.Show();
 			}
 		}

@@ -63,45 +63,6 @@ namespace appCore
 		private System.Windows.Forms.Button button23;
 		private System.Windows.Forms.Button button22;
 		private System.Windows.Forms.Button button24;
-		private System.Windows.Forms.Button button32;
-		private System.Windows.Forms.Button button33;
-		private System.Windows.Forms.Button button34;
-		private System.Windows.Forms.Button button35;
-		private System.Windows.Forms.Button button36;
-		private System.Windows.Forms.Label label49;
-		private System.Windows.Forms.Label label50;
-		private System.Windows.Forms.RichTextBox richTextBox10;
-		private System.Windows.Forms.RichTextBox richTextBox11;
-		private System.Windows.Forms.TextBox textBox41;
-		private System.Windows.Forms.TextBox textBox40;
-		private System.Windows.Forms.TextBox textBox39;
-		private System.Windows.Forms.TextBox textBox38;
-		private System.Windows.Forms.TextBox textBox37;
-		private System.Windows.Forms.TextBox textBox36;
-		private System.Windows.Forms.TextBox textBox35;
-		private System.Windows.Forms.TextBox textBox34;
-		private System.Windows.Forms.TextBox textBox33;
-		private System.Windows.Forms.TextBox textBox32;
-		private System.Windows.Forms.CheckBox checkBox17;
-		private System.Windows.Forms.CheckBox checkBox16;
-		private System.Windows.Forms.CheckBox checkBox15;
-		private System.Windows.Forms.CheckBox checkBox14;
-		private System.Windows.Forms.CheckBox checkBox13;
-		private System.Windows.Forms.CheckBox checkBox12;
-		private System.Windows.Forms.CheckBox checkBox11;
-		private System.Windows.Forms.CheckBox checkBox10;
-		private System.Windows.Forms.CheckBox checkBox9;
-		private System.Windows.Forms.CheckBox checkBox8;
-		private System.Windows.Forms.Label label47;
-		private System.Windows.Forms.Label label48;
-		private System.Windows.Forms.TextBox textBox30;
-		private System.Windows.Forms.TextBox textBox31;
-		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.RadioButton radioButton4;
-		private System.Windows.Forms.RadioButton radioButton5;
-		private System.Windows.Forms.GroupBox groupBox6;
-		private appCore.UI.AMTRichTextBox richTextBox9;
-		private System.Windows.Forms.Button button37;
 		private System.Windows.Forms.TabControl tabControl4;
 		private System.Windows.Forms.TabPage tabPage15;
 		private System.Windows.Forms.TabPage tabPage16;
@@ -116,8 +77,8 @@ namespace appCore
 		private System.Windows.Forms.Button button51;
 		private System.Windows.Forms.Label label62;
 		private System.Windows.Forms.Label label63;
-		private appCore.UI.AMTRichTextBox richTextBox14;
-		private appCore.UI.AMTRichTextBox richTextBox15;
+		private System.Windows.Forms.RichTextBox richTextBox14;
+		private System.Windows.Forms.RichTextBox richTextBox15;
 		private System.Windows.Forms.GroupBox groupBox7;
 		private System.Windows.Forms.RadioButton radioButton6;
 		private System.Windows.Forms.RadioButton radioButton7;
@@ -179,47 +140,6 @@ namespace appCore
 			this.tabPage9 = new System.Windows.Forms.TabPage();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
-			this.tabPage11 = new System.Windows.Forms.TabPage();
-			this.tabPage12 = new System.Windows.Forms.TabPage();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.button37 = new System.Windows.Forms.Button();
-			this.checkBox8 = new System.Windows.Forms.CheckBox();
-			this.richTextBox9 = new appCore.UI.AMTRichTextBox();
-			this.checkBox9 = new System.Windows.Forms.CheckBox();
-			this.checkBox10 = new System.Windows.Forms.CheckBox();
-			this.checkBox11 = new System.Windows.Forms.CheckBox();
-			this.checkBox12 = new System.Windows.Forms.CheckBox();
-			this.checkBox13 = new System.Windows.Forms.CheckBox();
-			this.checkBox14 = new System.Windows.Forms.CheckBox();
-			this.checkBox15 = new System.Windows.Forms.CheckBox();
-			this.checkBox16 = new System.Windows.Forms.CheckBox();
-			this.checkBox17 = new System.Windows.Forms.CheckBox();
-			this.textBox32 = new System.Windows.Forms.TextBox();
-			this.textBox41 = new System.Windows.Forms.TextBox();
-			this.textBox33 = new System.Windows.Forms.TextBox();
-			this.textBox40 = new System.Windows.Forms.TextBox();
-			this.textBox34 = new System.Windows.Forms.TextBox();
-			this.textBox39 = new System.Windows.Forms.TextBox();
-			this.textBox35 = new System.Windows.Forms.TextBox();
-			this.textBox38 = new System.Windows.Forms.TextBox();
-			this.textBox36 = new System.Windows.Forms.TextBox();
-			this.textBox37 = new System.Windows.Forms.TextBox();
-			this.button32 = new System.Windows.Forms.Button();
-			this.button33 = new System.Windows.Forms.Button();
-			this.button34 = new System.Windows.Forms.Button();
-			this.button35 = new System.Windows.Forms.Button();
-			this.button36 = new System.Windows.Forms.Button();
-			this.label49 = new System.Windows.Forms.Label();
-			this.label50 = new System.Windows.Forms.Label();
-			this.richTextBox10 = new System.Windows.Forms.RichTextBox();
-			this.richTextBox11 = new System.Windows.Forms.RichTextBox();
-			this.label47 = new System.Windows.Forms.Label();
-			this.label48 = new System.Windows.Forms.Label();
-			this.textBox30 = new System.Windows.Forms.TextBox();
-			this.textBox31 = new System.Windows.Forms.TextBox();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.radioButton4 = new System.Windows.Forms.RadioButton();
-			this.radioButton5 = new System.Windows.Forms.RadioButton();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
 			this.label68 = new System.Windows.Forms.Label();
 			this.button53 = new System.Windows.Forms.Button();
@@ -245,13 +165,15 @@ namespace appCore
 			this.button51 = new System.Windows.Forms.Button();
 			this.label62 = new System.Windows.Forms.Label();
 			this.label63 = new System.Windows.Forms.Label();
-			this.richTextBox14 = new appCore.UI.AMTRichTextBox();
-			this.richTextBox15 = new appCore.UI.AMTRichTextBox();
+			this.richTextBox14 = new System.Windows.Forms.RichTextBox();
+			this.richTextBox15 = new System.Windows.Forms.RichTextBox();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.radioButton6 = new System.Windows.Forms.RadioButton();
 			this.radioButton7 = new System.Windows.Forms.RadioButton();
 			this.radioButton8 = new System.Windows.Forms.RadioButton();
 			this.textBox50 = new System.Windows.Forms.TextBox();
+			this.tabPage12 = new System.Windows.Forms.TabPage();
+			this.tabPage11 = new System.Windows.Forms.TabPage();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.label31 = new System.Windows.Forms.Label();
@@ -300,9 +222,6 @@ namespace appCore
 			this.tabControl2.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.tabControl3.SuspendLayout();
-			this.tabPage12.SuspendLayout();
-			this.groupBox6.SuspendLayout();
-			this.groupBox5.SuspendLayout();
 			this.tabPage13.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
 			this.groupBox7.SuspendLayout();
@@ -500,520 +419,15 @@ namespace appCore
 			// tabControl3
 			// 
 			this.tabControl3.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-			this.tabControl3.Controls.Add(this.tabPage11);
-			this.tabControl3.Controls.Add(this.tabPage12);
 			this.tabControl3.Controls.Add(this.tabPage13);
+			this.tabControl3.Controls.Add(this.tabPage12);
+			this.tabControl3.Controls.Add(this.tabPage11);
 			this.tabControl3.Controls.Add(this.tabPage14);
 			this.tabControl3.Location = new System.Drawing.Point(0, 0);
 			this.tabControl3.Name = "tabControl3";
 			this.tabControl3.SelectedIndex = 0;
 			this.tabControl3.Size = new System.Drawing.Size(527, 660);
 			this.tabControl3.TabIndex = 1;
-			// 
-			// tabPage11
-			// 
-			this.tabPage11.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage11.Location = new System.Drawing.Point(4, 25);
-			this.tabPage11.Name = "tabPage11";
-			this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage11.Size = new System.Drawing.Size(519, 631);
-			this.tabPage11.TabIndex = 0;
-			this.tabPage11.Text = "Huawei";
-			// 
-			// tabPage12
-			// 
-			this.tabPage12.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage12.Controls.Add(this.groupBox6);
-			this.tabPage12.Controls.Add(this.button32);
-			this.tabPage12.Controls.Add(this.button33);
-			this.tabPage12.Controls.Add(this.button34);
-			this.tabPage12.Controls.Add(this.button35);
-			this.tabPage12.Controls.Add(this.button36);
-			this.tabPage12.Controls.Add(this.label49);
-			this.tabPage12.Controls.Add(this.label50);
-			this.tabPage12.Controls.Add(this.richTextBox10);
-			this.tabPage12.Controls.Add(this.richTextBox11);
-			this.tabPage12.Controls.Add(this.label47);
-			this.tabPage12.Controls.Add(this.label48);
-			this.tabPage12.Controls.Add(this.textBox30);
-			this.tabPage12.Controls.Add(this.textBox31);
-			this.tabPage12.Controls.Add(this.groupBox5);
-			this.tabPage12.Location = new System.Drawing.Point(4, 25);
-			this.tabPage12.Name = "tabPage12";
-			this.tabPage12.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.tabPage12.Size = new System.Drawing.Size(519, 631);
-			this.tabPage12.TabIndex = 2;
-			this.tabPage12.Text = "NSN";
-			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.button37);
-			this.groupBox6.Controls.Add(this.checkBox8);
-			this.groupBox6.Controls.Add(this.richTextBox9);
-			this.groupBox6.Controls.Add(this.checkBox9);
-			this.groupBox6.Controls.Add(this.checkBox10);
-			this.groupBox6.Controls.Add(this.checkBox11);
-			this.groupBox6.Controls.Add(this.checkBox12);
-			this.groupBox6.Controls.Add(this.checkBox13);
-			this.groupBox6.Controls.Add(this.checkBox14);
-			this.groupBox6.Controls.Add(this.checkBox15);
-			this.groupBox6.Controls.Add(this.checkBox16);
-			this.groupBox6.Controls.Add(this.checkBox17);
-			this.groupBox6.Controls.Add(this.textBox32);
-			this.groupBox6.Controls.Add(this.textBox41);
-			this.groupBox6.Controls.Add(this.textBox33);
-			this.groupBox6.Controls.Add(this.textBox40);
-			this.groupBox6.Controls.Add(this.textBox34);
-			this.groupBox6.Controls.Add(this.textBox39);
-			this.groupBox6.Controls.Add(this.textBox35);
-			this.groupBox6.Controls.Add(this.textBox38);
-			this.groupBox6.Controls.Add(this.textBox36);
-			this.groupBox6.Controls.Add(this.textBox37);
-			this.groupBox6.Location = new System.Drawing.Point(4, 58);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.groupBox6.Size = new System.Drawing.Size(511, 244);
-			this.groupBox6.TabIndex = 89;
-			this.groupBox6.TabStop = false;
-			// 
-			// button37
-			// 
-			this.button37.Enabled = false;
-			this.button37.Location = new System.Drawing.Point(481, 10);
-			this.button37.Name = "button37";
-			this.button37.Size = new System.Drawing.Size(24, 20);
-			this.button37.TabIndex = 25;
-			this.button37.Text = "...";
-			this.button37.UseVisualStyleBackColor = true;
-			this.button37.Visible = false;
-			this.button37.Click += new System.EventHandler(this.Button37Click);
-			// 
-			// checkBox8
-			// 
-			this.checkBox8.Enabled = false;
-			this.checkBox8.Location = new System.Drawing.Point(64, 49);
-			this.checkBox8.Name = "checkBox8";
-			this.checkBox8.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox8.Size = new System.Drawing.Size(53, 24);
-			this.checkBox8.TabIndex = 4;
-			this.checkBox8.Text = "BTS";
-			this.checkBox8.UseVisualStyleBackColor = true;
-			this.checkBox8.Visible = false;
-			this.checkBox8.CheckedChanged += new System.EventHandler(this.CheckBox8CheckedChanged);
-			// 
-			// richTextBox9
-			// 
-			this.richTextBox9.Enabled = false;
-			this.richTextBox9.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox9.Location = new System.Drawing.Point(234, 141);
-			this.richTextBox9.Name = "richTextBox9";
-			this.richTextBox9.Size = new System.Drawing.Size(79, 73);
-			this.richTextBox9.TabIndex = 24;
-			this.richTextBox9.Text = "";
-			this.richTextBox9.Visible = false;
-			this.richTextBox9.TextChanged += new System.EventHandler(this.RichTextBox9TextChanged);
-			// 
-			// checkBox9
-			// 
-			this.checkBox9.Enabled = false;
-			this.checkBox9.Location = new System.Drawing.Point(64, 79);
-			this.checkBox9.Name = "checkBox9";
-			this.checkBox9.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox9.Size = new System.Drawing.Size(53, 24);
-			this.checkBox9.TabIndex = 6;
-			this.checkBox9.Text = "BTS";
-			this.checkBox9.UseVisualStyleBackColor = true;
-			this.checkBox9.Visible = false;
-			this.checkBox9.CheckedChanged += new System.EventHandler(this.CheckBox9CheckedChanged);
-			// 
-			// checkBox10
-			// 
-			this.checkBox10.Enabled = false;
-			this.checkBox10.Location = new System.Drawing.Point(64, 109);
-			this.checkBox10.Name = "checkBox10";
-			this.checkBox10.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox10.Size = new System.Drawing.Size(53, 24);
-			this.checkBox10.TabIndex = 8;
-			this.checkBox10.Text = "BTS";
-			this.checkBox10.UseVisualStyleBackColor = true;
-			this.checkBox10.Visible = false;
-			this.checkBox10.CheckedChanged += new System.EventHandler(this.CheckBox10CheckedChanged);
-			// 
-			// checkBox11
-			// 
-			this.checkBox11.Enabled = false;
-			this.checkBox11.Location = new System.Drawing.Point(64, 139);
-			this.checkBox11.Name = "checkBox11";
-			this.checkBox11.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox11.Size = new System.Drawing.Size(53, 24);
-			this.checkBox11.TabIndex = 10;
-			this.checkBox11.Text = "BTS";
-			this.checkBox11.UseVisualStyleBackColor = true;
-			this.checkBox11.Visible = false;
-			this.checkBox11.CheckedChanged += new System.EventHandler(this.CheckBox11CheckedChanged);
-			// 
-			// checkBox12
-			// 
-			this.checkBox12.Enabled = false;
-			this.checkBox12.Location = new System.Drawing.Point(64, 169);
-			this.checkBox12.Name = "checkBox12";
-			this.checkBox12.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox12.Size = new System.Drawing.Size(53, 24);
-			this.checkBox12.TabIndex = 12;
-			this.checkBox12.Text = "BTS";
-			this.checkBox12.UseVisualStyleBackColor = true;
-			this.checkBox12.Visible = false;
-			this.checkBox12.CheckedChanged += new System.EventHandler(this.CheckBox12CheckedChanged);
-			// 
-			// checkBox13
-			// 
-			this.checkBox13.Enabled = false;
-			this.checkBox13.Location = new System.Drawing.Point(319, 49);
-			this.checkBox13.Name = "checkBox13";
-			this.checkBox13.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox13.Size = new System.Drawing.Size(53, 24);
-			this.checkBox13.TabIndex = 14;
-			this.checkBox13.Text = "BTS";
-			this.checkBox13.UseVisualStyleBackColor = true;
-			this.checkBox13.Visible = false;
-			this.checkBox13.CheckedChanged += new System.EventHandler(this.CheckBox13CheckedChanged);
-			// 
-			// checkBox14
-			// 
-			this.checkBox14.Enabled = false;
-			this.checkBox14.Location = new System.Drawing.Point(319, 79);
-			this.checkBox14.Name = "checkBox14";
-			this.checkBox14.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox14.Size = new System.Drawing.Size(53, 24);
-			this.checkBox14.TabIndex = 16;
-			this.checkBox14.Text = "BTS";
-			this.checkBox14.UseVisualStyleBackColor = true;
-			this.checkBox14.Visible = false;
-			this.checkBox14.CheckedChanged += new System.EventHandler(this.CheckBox14CheckedChanged);
-			// 
-			// checkBox15
-			// 
-			this.checkBox15.Enabled = false;
-			this.checkBox15.Location = new System.Drawing.Point(319, 109);
-			this.checkBox15.Name = "checkBox15";
-			this.checkBox15.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox15.Size = new System.Drawing.Size(53, 24);
-			this.checkBox15.TabIndex = 18;
-			this.checkBox15.Text = "BTS";
-			this.checkBox15.UseVisualStyleBackColor = true;
-			this.checkBox15.Visible = false;
-			this.checkBox15.CheckedChanged += new System.EventHandler(this.CheckBox15CheckedChanged);
-			// 
-			// checkBox16
-			// 
-			this.checkBox16.Enabled = false;
-			this.checkBox16.Location = new System.Drawing.Point(319, 139);
-			this.checkBox16.Name = "checkBox16";
-			this.checkBox16.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox16.Size = new System.Drawing.Size(53, 24);
-			this.checkBox16.TabIndex = 20;
-			this.checkBox16.Text = "BTS";
-			this.checkBox16.UseVisualStyleBackColor = true;
-			this.checkBox16.Visible = false;
-			this.checkBox16.CheckedChanged += new System.EventHandler(this.CheckBox16CheckedChanged);
-			// 
-			// checkBox17
-			// 
-			this.checkBox17.Enabled = false;
-			this.checkBox17.Location = new System.Drawing.Point(319, 169);
-			this.checkBox17.Name = "checkBox17";
-			this.checkBox17.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.checkBox17.Size = new System.Drawing.Size(53, 24);
-			this.checkBox17.TabIndex = 22;
-			this.checkBox17.Text = "BTS";
-			this.checkBox17.UseVisualStyleBackColor = true;
-			this.checkBox17.Visible = false;
-			this.checkBox17.CheckedChanged += new System.EventHandler(this.CheckBox17CheckedChanged);
-			// 
-			// textBox32
-			// 
-			this.textBox32.Enabled = false;
-			this.textBox32.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox32.Location = new System.Drawing.Point(125, 51);
-			this.textBox32.Name = "textBox32";
-			this.textBox32.Size = new System.Drawing.Size(79, 20);
-			this.textBox32.TabIndex = 5;
-			this.textBox32.Visible = false;
-			this.textBox32.TextChanged += new System.EventHandler(this.TextBox32TextChanged);
-			// 
-			// textBox41
-			// 
-			this.textBox41.Enabled = false;
-			this.textBox41.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox41.Location = new System.Drawing.Point(380, 169);
-			this.textBox41.Name = "textBox41";
-			this.textBox41.Size = new System.Drawing.Size(79, 20);
-			this.textBox41.TabIndex = 23;
-			this.textBox41.Visible = false;
-			// 
-			// textBox33
-			// 
-			this.textBox33.Enabled = false;
-			this.textBox33.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox33.Location = new System.Drawing.Point(125, 79);
-			this.textBox33.Name = "textBox33";
-			this.textBox33.Size = new System.Drawing.Size(79, 20);
-			this.textBox33.TabIndex = 7;
-			this.textBox33.Visible = false;
-			this.textBox33.TextChanged += new System.EventHandler(this.TextBox33TextChanged);
-			// 
-			// textBox40
-			// 
-			this.textBox40.Enabled = false;
-			this.textBox40.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox40.Location = new System.Drawing.Point(380, 139);
-			this.textBox40.Name = "textBox40";
-			this.textBox40.Size = new System.Drawing.Size(79, 20);
-			this.textBox40.TabIndex = 21;
-			this.textBox40.Visible = false;
-			this.textBox40.TextChanged += new System.EventHandler(this.TextBox40TextChanged);
-			// 
-			// textBox34
-			// 
-			this.textBox34.Enabled = false;
-			this.textBox34.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox34.Location = new System.Drawing.Point(125, 109);
-			this.textBox34.Name = "textBox34";
-			this.textBox34.Size = new System.Drawing.Size(79, 20);
-			this.textBox34.TabIndex = 9;
-			this.textBox34.Visible = false;
-			this.textBox34.TextChanged += new System.EventHandler(this.TextBox34TextChanged);
-			// 
-			// textBox39
-			// 
-			this.textBox39.Enabled = false;
-			this.textBox39.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox39.Location = new System.Drawing.Point(380, 109);
-			this.textBox39.Name = "textBox39";
-			this.textBox39.Size = new System.Drawing.Size(79, 20);
-			this.textBox39.TabIndex = 19;
-			this.textBox39.Visible = false;
-			this.textBox39.TextChanged += new System.EventHandler(this.TextBox39TextChanged);
-			// 
-			// textBox35
-			// 
-			this.textBox35.Enabled = false;
-			this.textBox35.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox35.Location = new System.Drawing.Point(125, 139);
-			this.textBox35.Name = "textBox35";
-			this.textBox35.Size = new System.Drawing.Size(79, 20);
-			this.textBox35.TabIndex = 11;
-			this.textBox35.Visible = false;
-			this.textBox35.TextChanged += new System.EventHandler(this.TextBox35TextChanged);
-			// 
-			// textBox38
-			// 
-			this.textBox38.Enabled = false;
-			this.textBox38.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox38.Location = new System.Drawing.Point(380, 79);
-			this.textBox38.Name = "textBox38";
-			this.textBox38.Size = new System.Drawing.Size(79, 20);
-			this.textBox38.TabIndex = 17;
-			this.textBox38.Visible = false;
-			this.textBox38.TextChanged += new System.EventHandler(this.TextBox38TextChanged);
-			// 
-			// textBox36
-			// 
-			this.textBox36.Enabled = false;
-			this.textBox36.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox36.Location = new System.Drawing.Point(125, 169);
-			this.textBox36.Name = "textBox36";
-			this.textBox36.Size = new System.Drawing.Size(79, 20);
-			this.textBox36.TabIndex = 13;
-			this.textBox36.Visible = false;
-			this.textBox36.TextChanged += new System.EventHandler(this.TextBox36TextChanged);
-			// 
-			// textBox37
-			// 
-			this.textBox37.Enabled = false;
-			this.textBox37.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox37.Location = new System.Drawing.Point(380, 49);
-			this.textBox37.Name = "textBox37";
-			this.textBox37.Size = new System.Drawing.Size(79, 20);
-			this.textBox37.TabIndex = 15;
-			this.textBox37.Visible = false;
-			this.textBox37.TextChanged += new System.EventHandler(this.TextBox37TextChanged);
-			// 
-			// button32
-			// 
-			this.button32.Location = new System.Drawing.Point(261, 583);
-			this.button32.Name = "button32";
-			this.button32.Size = new System.Drawing.Size(112, 23);
-			this.button32.TabIndex = 32;
-			this.button32.Text = "Copy unlock script";
-			this.button32.UseVisualStyleBackColor = true;
-			this.button32.Visible = false;
-			this.button32.Click += new System.EventHandler(this.Button32Click);
-			// 
-			// button33
-			// 
-			this.button33.Location = new System.Drawing.Point(142, 583);
-			this.button33.Name = "button33";
-			this.button33.Size = new System.Drawing.Size(112, 23);
-			this.button33.TabIndex = 31;
-			this.button33.Text = "Copy lock script";
-			this.button33.UseVisualStyleBackColor = true;
-			this.button33.Visible = false;
-			this.button33.Click += new System.EventHandler(this.Button33Click);
-			// 
-			// button34
-			// 
-			this.button34.Enabled = false;
-			this.button34.Location = new System.Drawing.Point(4, 583);
-			this.button34.Name = "button34";
-			this.button34.Size = new System.Drawing.Size(112, 23);
-			this.button34.TabIndex = 30;
-			this.button34.Text = "Generate scripts";
-			this.button34.UseVisualStyleBackColor = true;
-			this.button34.Click += new System.EventHandler(this.Button34Click);
-			// 
-			// button35
-			// 
-			this.button35.Enabled = false;
-			this.button35.Location = new System.Drawing.Point(487, 305);
-			this.button35.Name = "button35";
-			this.button35.Size = new System.Drawing.Size(24, 20);
-			this.button35.TabIndex = 29;
-			this.button35.Text = "...";
-			this.button35.UseVisualStyleBackColor = true;
-			this.button35.Click += new System.EventHandler(this.Button35Click);
-			// 
-			// button36
-			// 
-			this.button36.Enabled = false;
-			this.button36.Location = new System.Drawing.Point(229, 305);
-			this.button36.Name = "button36";
-			this.button36.Size = new System.Drawing.Size(24, 20);
-			this.button36.TabIndex = 27;
-			this.button36.Text = "...";
-			this.button36.UseVisualStyleBackColor = true;
-			this.button36.Click += new System.EventHandler(this.Button36Click);
-			// 
-			// label49
-			// 
-			this.label49.AutoSize = true;
-			this.label49.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label49.Location = new System.Drawing.Point(261, 308);
-			this.label49.Name = "label49";
-			this.label49.Size = new System.Drawing.Size(0, 13);
-			this.label49.TabIndex = 82;
-			this.label49.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label50
-			// 
-			this.label50.AutoSize = true;
-			this.label50.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label50.Location = new System.Drawing.Point(4, 308);
-			this.label50.Name = "label50";
-			this.label50.Size = new System.Drawing.Size(0, 13);
-			this.label50.TabIndex = 81;
-			this.label50.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// richTextBox10
-			// 
-			this.richTextBox10.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox10.Location = new System.Drawing.Point(261, 326);
-			this.richTextBox10.Name = "richTextBox10";
-			this.richTextBox10.ReadOnly = true;
-			this.richTextBox10.Size = new System.Drawing.Size(250, 254);
-			this.richTextBox10.TabIndex = 28;
-			this.richTextBox10.Text = "";
-			this.richTextBox10.TextChanged += new System.EventHandler(this.RichTextBox10TextChanged);
-			// 
-			// richTextBox11
-			// 
-			this.richTextBox11.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox11.Location = new System.Drawing.Point(4, 326);
-			this.richTextBox11.Name = "richTextBox11";
-			this.richTextBox11.ReadOnly = true;
-			this.richTextBox11.Size = new System.Drawing.Size(250, 254);
-			this.richTextBox11.TabIndex = 26;
-			this.richTextBox11.Text = "";
-			this.richTextBox11.TextChanged += new System.EventHandler(this.RichTextBox11TextChanged);
-			// 
-			// label47
-			// 
-			this.label47.AutoSize = true;
-			this.label47.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label47.Location = new System.Drawing.Point(142, 36);
-			this.label47.Name = "label47";
-			this.label47.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.label47.Size = new System.Drawing.Size(0, 13);
-			this.label47.TabIndex = 12;
-			this.label47.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label48
-			// 
-			this.label48.AutoSize = true;
-			this.label48.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label48.Location = new System.Drawing.Point(144, 10);
-			this.label48.Name = "label48";
-			this.label48.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.label48.Size = new System.Drawing.Size(0, 13);
-			this.label48.TabIndex = 11;
-			this.label48.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// textBox30
-			// 
-			this.textBox30.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox30.Location = new System.Drawing.Point(238, 33);
-			this.textBox30.Name = "textBox30";
-			this.textBox30.ReadOnly = true;
-			this.textBox30.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.textBox30.Size = new System.Drawing.Size(275, 20);
-			this.textBox30.TabIndex = 3;
-			// 
-			// textBox31
-			// 
-			this.textBox31.Enabled = false;
-			this.textBox31.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox31.Location = new System.Drawing.Point(238, 7);
-			this.textBox31.Name = "textBox31";
-			this.textBox31.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.textBox31.Size = new System.Drawing.Size(100, 20);
-			this.textBox31.TabIndex = 2;
-			this.textBox31.TextChanged += new System.EventHandler(this.TextBox31TextChanged);
-			// 
-			// groupBox5
-			// 
-			this.groupBox5.Controls.Add(this.radioButton4);
-			this.groupBox5.Controls.Add(this.radioButton5);
-			this.groupBox5.Location = new System.Drawing.Point(4, 3);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.groupBox5.Size = new System.Drawing.Size(134, 49);
-			this.groupBox5.TabIndex = 8;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Equipment";
-			// 
-			// radioButton4
-			// 
-			this.radioButton4.Location = new System.Drawing.Point(6, 19);
-			this.radioButton4.Name = "radioButton4";
-			this.radioButton4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.radioButton4.Size = new System.Drawing.Size(60, 24);
-			this.radioButton4.TabIndex = 0;
-			this.radioButton4.TabStop = true;
-			this.radioButton4.Text = "BCF";
-			this.radioButton4.UseVisualStyleBackColor = true;
-			this.radioButton4.CheckedChanged += new System.EventHandler(this.RadioButton4CheckedChanged);
-			// 
-			// radioButton5
-			// 
-			this.radioButton5.Location = new System.Drawing.Point(72, 19);
-			this.radioButton5.Name = "radioButton5";
-			this.radioButton5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.radioButton5.Size = new System.Drawing.Size(60, 24);
-			this.radioButton5.TabIndex = 1;
-			this.radioButton5.TabStop = true;
-			this.radioButton5.Text = "PCM";
-			this.radioButton5.UseVisualStyleBackColor = true;
-			this.radioButton5.CheckedChanged += new System.EventHandler(this.RadioButton5CheckedChanged);
 			// 
 			// tabPage13
 			// 
@@ -1352,6 +766,26 @@ namespace appCore
 			this.textBox50.TabIndex = 14;
 			this.textBox50.TextChanged += new System.EventHandler(this.TextBox50TextChanged);
 			this.textBox50.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
+			// 
+			// tabPage12
+			// 
+			this.tabPage12.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage12.Location = new System.Drawing.Point(4, 25);
+			this.tabPage12.Name = "tabPage12";
+			this.tabPage12.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.tabPage12.Size = new System.Drawing.Size(519, 631);
+			this.tabPage12.TabIndex = 2;
+			this.tabPage12.Text = "Nokia";
+			// 
+			// tabPage11
+			// 
+			this.tabPage11.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage11.Location = new System.Drawing.Point(4, 25);
+			this.tabPage11.Name = "tabPage11";
+			this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage11.Size = new System.Drawing.Size(519, 631);
+			this.tabPage11.TabIndex = 0;
+			this.tabPage11.Text = "Huawei";
 			// 
 			// tabPage14
 			// 
@@ -1777,11 +1211,6 @@ namespace appCore
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl3.ResumeLayout(false);
-			this.tabPage12.ResumeLayout(false);
-			this.tabPage12.PerformLayout();
-			this.groupBox6.ResumeLayout(false);
-			this.groupBox6.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
 			this.tabPage13.ResumeLayout(false);
 			this.tabPage13.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();

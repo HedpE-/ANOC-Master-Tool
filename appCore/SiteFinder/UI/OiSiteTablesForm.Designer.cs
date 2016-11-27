@@ -62,6 +62,7 @@ namespace appCore.SiteFinder.UI
 			this.ClientSize = new System.Drawing.Size(896, 236);
 			this.Controls.Add(this.listView1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
 			this.Name = "OiSiteTablesForm";
 			this.Text = "OiSiteTablesForm";
 			this.ResumeLayout(false);

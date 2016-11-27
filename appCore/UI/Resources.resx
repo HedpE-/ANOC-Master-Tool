@@ -15954,7 +15954,11 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha7 28/11/2016 #######
+
+- Tweaked the INCs/CRQs/BookIns/Alarms details window
+
+####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
 
 - New Error Handling should prevent a lot of crashes due to IO errors
 - Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash

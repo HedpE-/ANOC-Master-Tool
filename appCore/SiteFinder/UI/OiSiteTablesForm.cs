@@ -22,30 +22,30 @@ namespace appCore.SiteFinder.UI
 		string filter = "all";
 		public string DataType { get; private set; }
 		
-		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow)
+		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID)
 		{
 			Datatable = inputDataTable;
 			InitializeComponent();
 			switch(dataToShow) {
 				case "INCs":
-					this.Name = "INCsOiDataTableForm";
+					Name = "INCsOiDataTableForm";
 					DataType = "INCs";
 					break;
 				case "CRQs":
-					this.Name = "CRQsOiDataTableForm";
+					Name = "CRQsOiDataTableForm";
 					DataType = "CRQs";
 					break;
 				case "ActiveAlarms":
-					this.Name = "ActiveAlarmsOiDataTableForm";
+					Name = "ActiveAlarmsOiDataTableForm";
 					DataType = "ActiveAlarms";
 					break;
 				case "BookIns":
-					this.Name = "BookInsOiDataTableForm";
+					Name = "BookInsOiDataTableForm";
 					DataType = "BookIns";
 					break;
 			}
 			populateListView();
-			this.Text = DataType;
+			Text = "Site " + siteID + " " + DataType;
 		}
 		
 		void populateListView() {

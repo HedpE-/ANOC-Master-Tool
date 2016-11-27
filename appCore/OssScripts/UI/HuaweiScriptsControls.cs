@@ -34,9 +34,9 @@ namespace appCore.OssScripts.UI
 		Button CellsListLargeTextButton = new Button();
 		TextBox ListCellsTextBox = new TextBox();
 		TextBox SiteTextBox = new TextBox();
-		AMTRichTextBox CellsListRichTextBox = new AMTRichTextBox();
-		AMTRichTextBox LockScriptRichTextBox = new AMTRichTextBox();
-		AMTRichTextBox UnlockScriptRichTextBox = new AMTRichTextBox();
+		AMTRichTextBox CellsListTextBox = new AMTRichTextBox();
+		AMTRichTextBox LockScriptTextBox = new AMTRichTextBox();
+		AMTRichTextBox UnlockScriptTextBox = new AMTRichTextBox();
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip();
 		ToolStripMenuItem generateScriptsToolStripMenuItem = new ToolStripMenuItem();
@@ -99,9 +99,9 @@ namespace appCore.OssScripts.UI
 				}
 				clearToolStripMenuItem.Enabled = true;
 			}
-			CellsListRichTextBox.Text = string.Empty;
-			LockScriptRichTextBox.Text = string.Empty;
-			UnlockScriptRichTextBox.Text = string.Empty;
+			CellsListTextBox.Text = string.Empty;
+			LockScriptTextBox.Text = string.Empty;
+			UnlockScriptTextBox.Text = string.Empty;
 			SiteTextBox.Enabled = true;
 			CabinetComboBox.Enabled = false;
 			SiteTextBoxTextChanged(null, null);
@@ -130,32 +130,32 @@ namespace appCore.OssScripts.UI
 						ListCellsTextBox.Text = "LST CELL:;";
 						break;
 				}
-				CellsListRichTextBox.Enabled = true;
+				CellsListTextBox.Enabled = true;
 				CabinetComboBox.Enabled = true;
 			}
 			else {
 				ListCellsTextBox.Text = string.Empty;
-				CellsListRichTextBox.Enabled = false;
+				CellsListTextBox.Enabled = false;
 				CabinetComboBox.Enabled = false;
 				CabinetComboBox.SelectedIndex = 0;
 			}
-			CellsListRichTextBox.Text = string.Empty;
-			LockScriptRichTextBox.Text = string.Empty;
-			UnlockScriptRichTextBox.Text = string.Empty;
+			CellsListTextBox.Text = string.Empty;
+			LockScriptTextBox.Text = string.Empty;
+			UnlockScriptTextBox.Text = string.Empty;
 		}
 
 		void RichTextBoxesTextChanged(object sender, EventArgs e)
 		{
 			TextBoxBase tb = (TextBoxBase)sender;
 			switch(tb.Name) {
-				case "CellsListRichTextBox":
-					LockScriptRichTextBox.Text = UnlockScriptRichTextBox.Text = string.Empty;
+				case "CellsListTextBox":
+					LockScriptTextBox.Text = UnlockScriptTextBox.Text = string.Empty;
 					CellsListLargeTextButton.Enabled = generateScriptsToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text);
 					break;
-				case "LockScriptRichTextBox":
+				case "LockScriptTextBox":
 					LockScriptLargeTextButton.Enabled = copyLockScriptToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text);
 					break;
-				case "UnlockScriptRichTextBox":
+				case "UnlockScriptTextBox":
 					UnlockScriptLargeTextButton.Enabled = copyUnlockScriptToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text);
 					break;
 			}
@@ -163,11 +163,11 @@ namespace appCore.OssScripts.UI
 
 		void generateScripts(object sender, EventArgs e)
 		{
-			LockScriptRichTextBox.Text = UnlockScriptRichTextBox.Text = string.Empty;
-			string[] cells = CellsListRichTextBox.Text.Split('\n');
+			LockScriptTextBox.Text = UnlockScriptTextBox.Text = string.Empty;
+			string[] cells = CellsListTextBox.Text.Split('\n');
 			switch (SelectedTech) {
 				case 0:
-					if (CellsListRichTextBox.Text.Contains("GSM")) {
+					if (CellsListTextBox.Text.Contains("GSM")) {
 						foreach (string row in cells) {
 							if (!string.IsNullOrEmpty(row)) {
 								string cell = string.Empty;
@@ -178,8 +178,8 @@ namespace appCore.OssScripts.UI
 									cell += ch;
 								}
 								if (!string.IsNullOrEmpty(cell)) {
-									LockScriptRichTextBox.Text += "SET GCELLADMSTAT:IDTYPE=BYID,CELLID=" + cell + ",ADMSTAT=LOCK;\r\n";
-									UnlockScriptRichTextBox.Text += "SET GCELLADMSTAT:IDTYPE=BYID,CELLID=" + cell + ",ADMSTAT=UNLOCK;\r\n";
+									LockScriptTextBox.Text += "SET GCELLADMSTAT:IDTYPE=BYID,CELLID=" + cell + ",ADMSTAT=LOCK;\r\n";
+									UnlockScriptTextBox.Text += "SET GCELLADMSTAT:IDTYPE=BYID,CELLID=" + cell + ",ADMSTAT=UNLOCK;\r\n";
 								}
 							}
 						}
@@ -194,8 +194,8 @@ namespace appCore.OssScripts.UI
 								if (!Char.IsDigit(ch)) break;
 								cell += ch;
 							}
-							LockScriptRichTextBox.Text += "BLK UCELL:CELLID=" + cell + ",PRIORITY=HIGH;\r\n";
-							UnlockScriptRichTextBox.Text += "UBL UCELL:CELLID=" + cell + ";\r\n";
+							LockScriptTextBox.Text += "BLK UCELL:CELLID=" + cell + ",PRIORITY=HIGH;\r\n";
+							UnlockScriptTextBox.Text += "UBL UCELL:CELLID=" + cell + ";\r\n";
 						}
 					}
 					break;
@@ -209,27 +209,27 @@ namespace appCore.OssScripts.UI
 								cell += ch;
 							}
 
-							LockScriptRichTextBox.Text += "BLK CELL:LOCALCELLID=" + cell + ",CELLADMINSTATE=CELL_HIGH_BLOCK;\r\n";
-							UnlockScriptRichTextBox.Text += "UBL CELL:LOCALCELLID=" + cell + ";\r\n";
+							LockScriptTextBox.Text += "BLK CELL:LOCALCELLID=" + cell + ",CELLADMINSTATE=CELL_HIGH_BLOCK;\r\n";
+							UnlockScriptTextBox.Text += "UBL CELL:LOCALCELLID=" + cell + ";\r\n";
 						}
 					}
 					//}
 					break;
 			}
-			if (!string.IsNullOrEmpty(LockScriptRichTextBox.Text))
-				LockScriptRichTextBox.Text = LockScriptRichTextBox.Text.Remove(LockScriptRichTextBox.Text.Length - 1,1);
-			if (!string.IsNullOrEmpty(UnlockScriptRichTextBox.Text))
-				UnlockScriptRichTextBox.Text = UnlockScriptRichTextBox.Text.Remove(UnlockScriptRichTextBox.Text.Length - 1,1);
+			if (!string.IsNullOrEmpty(LockScriptTextBox.Text))
+				LockScriptTextBox.Text = LockScriptTextBox.Text.Remove(LockScriptTextBox.Text.Length - 1,1);
+			if (!string.IsNullOrEmpty(UnlockScriptTextBox.Text))
+				UnlockScriptTextBox.Text = UnlockScriptTextBox.Text.Remove(UnlockScriptTextBox.Text.Length - 1,1);
 		}
 
 		void copyLockScript(object sender, EventArgs e)
 		{
-			Clipboard.SetText(LockScriptRichTextBox.Text);
+			Clipboard.SetText(LockScriptTextBox.Text);
 		}
 
 		void copyUnlockScript(object sender, EventArgs e)
 		{
-			Clipboard.SetText(UnlockScriptRichTextBox.Text);
+			Clipboard.SetText(UnlockScriptTextBox.Text);
 		}
 		
 		void LargeTextButtonsClick(object sender, EventArgs e)
@@ -240,15 +240,15 @@ namespace appCore.OssScripts.UI
 			TextBoxBase tb = null;
 			switch(btn.Name) {
 				case "CellsListLargeTextButton":
-					tb = (TextBoxBase)CellsListRichTextBox;
+					tb = (TextBoxBase)CellsListTextBox;
 					lbl = CellsListLabel.Text;
 					break;
 				case "LockScriptLargeTextButton":
-					tb = (TextBoxBase)LockScriptRichTextBox;
+					tb = (TextBoxBase)LockScriptTextBox;
 					lbl = LockScriptLabel.Text;
 					break;
 				case "UnlockScriptLargeTextButton":
-					tb = (TextBoxBase)UnlockScriptRichTextBox;
+					tb = (TextBoxBase)UnlockScriptTextBox;
 					lbl = UnlockScriptLabel.Text;
 					break;
 			}
@@ -276,9 +276,9 @@ namespace appCore.OssScripts.UI
 			BackColor = SystemColors.Control;
 			Name = "Huawei Scripts GUI";
 			Controls.Add(MainMenu);
-			Controls.Add(UnlockScriptRichTextBox);
-			Controls.Add(LockScriptRichTextBox);
-			Controls.Add(CellsListRichTextBox);
+			Controls.Add(UnlockScriptTextBox);
+			Controls.Add(LockScriptTextBox);
+			Controls.Add(CellsListTextBox);
 			Controls.Add(CabinetComboBox);
 			Controls.Add(CabinetLabel);
 			Controls.Add(UnlockScriptLargeTextButton);
@@ -445,14 +445,14 @@ namespace appCore.OssScripts.UI
 			CellsListLabel.Text = "Paste cells list here";
 			CellsListLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
-			// CellsListRichTextBox
+			// CellsListTextBox
 			// 
-			CellsListRichTextBox.Enabled = false;
-			CellsListRichTextBox.Name = "CellsListRichTextBox";
-//			CellsListRichTextBox.Size = new Size(509, 221);
-			CellsListRichTextBox.TabIndex = 32;
-			CellsListRichTextBox.Text = "";
-			CellsListRichTextBox.TextChanged += RichTextBoxesTextChanged;
+			CellsListTextBox.Enabled = false;
+			CellsListTextBox.Name = "CellsListTextBox";
+//			CellsListTextBox.Size = new Size(509, 221);
+			CellsListTextBox.TabIndex = 32;
+			CellsListTextBox.Text = "";
+			CellsListTextBox.TextChanged += RichTextBoxesTextChanged;
 			// 
 			// CellsListLargeTextButton
 			// 
@@ -475,12 +475,12 @@ namespace appCore.OssScripts.UI
 			// 
 			// LockScriptRichTextBox
 			// 
-			LockScriptRichTextBox.Enabled = false;
-			LockScriptRichTextBox.Name = "LockScriptRichTextBox";
-//			LockScriptRichTextBox.Size = new Size(250, 272);
-			LockScriptRichTextBox.TabIndex = 33;
-			LockScriptRichTextBox.Text = "";
-			LockScriptRichTextBox.TextChanged += RichTextBoxesTextChanged;
+			LockScriptTextBox.Enabled = false;
+			LockScriptTextBox.Name = "LockScriptTextBox";
+//			LockScriptTextBox.Size = new Size(250, 272);
+			LockScriptTextBox.TabIndex = 33;
+			LockScriptTextBox.Text = "";
+			LockScriptTextBox.TextChanged += RichTextBoxesTextChanged;
 			// 
 			// LockScriptLargeTextButton
 			// 
@@ -501,14 +501,14 @@ namespace appCore.OssScripts.UI
 			UnlockScriptLabel.Text = "Unlock cells";
 			UnlockScriptLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
-			// UnlockScriptRichTextBox
+			// UnlockScriptTextBox
 			// 
-			UnlockScriptRichTextBox.Enabled = false;
-			UnlockScriptRichTextBox.Name = "UnlockScriptRichTextBox";
-//			UnlockScriptRichTextBox.Size = new Size(250, 272);
-			UnlockScriptRichTextBox.TabIndex = 34;
-			UnlockScriptRichTextBox.Text = "";
-			UnlockScriptRichTextBox.TextChanged += RichTextBoxesTextChanged;
+			UnlockScriptTextBox.Enabled = false;
+			UnlockScriptTextBox.Name = "UnlockScriptTextBox";
+//			UnlockScriptTextBox.Size = new Size(250, 272);
+			UnlockScriptTextBox.TabIndex = 34;
+			UnlockScriptTextBox.Text = "";
+			UnlockScriptTextBox.TextChanged += RichTextBoxesTextChanged;
 			// 
 			// UnlockScriptLargeTextButton
 			// 
@@ -552,31 +552,31 @@ namespace appCore.OssScripts.UI
 			CellsListLabel.Location = new Point(paddingLeftRight, TechnologyGroupBox.Bottom + 2);
 			CellsListLabel.Size = new Size(120, 20);
 			
-			CellsListRichTextBox.Location = new Point(paddingLeftRight, CellsListLabel.Bottom + 2);
-			CellsListRichTextBox.Size = new Size(510, 221);
+			CellsListTextBox.Location = new Point(paddingLeftRight, CellsListLabel.Bottom + 2);
+			CellsListTextBox.Size = new Size(510, 221);
 			
 			CellsListLargeTextButton.Size = new Size(24, 20);
-			CellsListLargeTextButton.Location = new Point(CellsListRichTextBox.Right - CellsListLargeTextButton.Width, CellsListLabel.Top);
+			CellsListLargeTextButton.Location = new Point(CellsListTextBox.Right - CellsListLargeTextButton.Width, CellsListLabel.Top);
 			
-			LockScriptLabel.Location = new Point(paddingLeftRight, CellsListRichTextBox.Bottom + 2);
+			LockScriptLabel.Location = new Point(paddingLeftRight, CellsListTextBox.Bottom + 2);
 			LockScriptLabel.Size = new Size(80, 20);
 			
-			LockScriptRichTextBox.Location = new Point(paddingLeftRight, LockScriptLabel.Bottom + 2);
-			LockScriptRichTextBox.Size = new Size(250, 269);
+			LockScriptTextBox.Location = new Point(paddingLeftRight, LockScriptLabel.Bottom + 2);
+			LockScriptTextBox.Size = new Size(250, 269);
 			
 			LockScriptLargeTextButton.Size = new Size(24, 20);
-			LockScriptLargeTextButton.Location = new Point(LockScriptRichTextBox.Right - LockScriptLargeTextButton.Width, LockScriptLabel.Top);
+			LockScriptLargeTextButton.Location = new Point(LockScriptTextBox.Right - LockScriptLargeTextButton.Width, LockScriptLabel.Top);
 			
-			UnlockScriptLabel.Location = new Point(LockScriptLargeTextButton.Right + 10, CellsListRichTextBox.Bottom + 2);
+			UnlockScriptLabel.Location = new Point(LockScriptLargeTextButton.Right + 10, CellsListTextBox.Bottom + 2);
 			UnlockScriptLabel.Size = new Size(80, 20);
 			
-			UnlockScriptRichTextBox.Location = new Point(LockScriptRichTextBox.Right + 10, UnlockScriptLabel.Bottom + 2);
-			UnlockScriptRichTextBox.Size = new Size(250, 269);
+			UnlockScriptTextBox.Location = new Point(LockScriptTextBox.Right + 10, UnlockScriptLabel.Bottom + 2);
+			UnlockScriptTextBox.Size = new Size(250, 269);
 			
 			UnlockScriptLargeTextButton.Size = new Size(24, 20);
-			UnlockScriptLargeTextButton.Location = new Point(UnlockScriptRichTextBox.Right - UnlockScriptLargeTextButton.Width, UnlockScriptLabel.Top);
+			UnlockScriptLargeTextButton.Location = new Point(UnlockScriptTextBox.Right - UnlockScriptLargeTextButton.Width, UnlockScriptLabel.Top);
 			
-			Size = new Size(UnlockScriptRichTextBox.Right + PaddingLeftRight, UnlockScriptRichTextBox.Bottom + PaddingTopBottom);
+			Size = new Size(UnlockScriptTextBox.Right + PaddingLeftRight, UnlockScriptTextBox.Bottom + PaddingTopBottom);
 		}
 	}
 }

@@ -14,10 +14,10 @@ using appCore.UI;
 
 namespace appCore.Templates.UI
 {
-    /// <summary>
-    /// Description of TXControls.
-    /// </summary>
-    public class TXControls : Panel
+	/// <summary>
+	/// Description of TXControls.
+	/// </summary>
+	public class TXControls : Panel
 	{
 		Button SitesLargeTextButton = new Button();
 		Button DetailedRanTroubleshootLargeTextButton = new Button();
@@ -46,13 +46,19 @@ namespace appCore.Templates.UI
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
 			get { return paddingLeftRight; }
-			set { paddingLeftRight = value; }
+			set {
+				paddingLeftRight = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		int paddingTopBottom = 1;
 		public int PaddingTopBottom {
 			get { return paddingTopBottom; }
-			set { paddingTopBottom = value; }
+			set {
+				paddingTopBottom = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 //		bool toggle;
@@ -95,7 +101,6 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
-				Size = new Size(DetailedRanTroubleshootTextBox.Right + PaddingLeftRight, DetailedRanTroubleshootTextBox.Bottom + PaddingTopBottom);
 			}
 		}
 		
@@ -304,26 +309,26 @@ namespace appCore.Templates.UI
 			// 
 			// SitesLabel
 			// 
-			SitesLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			SitesLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			SitesLabel.Size = new Size(245, 20);
 			SitesLabel.Name = "SitesLabel";
-			SitesLabel.Size = new Size(245, 20);
 			SitesLabel.Text = "Site(s) reference(s)";
 			SitesLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// SitesTextBox
 			// 
 			SitesTextBox.Font = new Font("Courier New", 8.25F);
-			SitesTextBox.Location = new Point(PaddingLeftRight, SitesLabel.Bottom + 4);
+//			SitesTextBox.Location = new Point(PaddingLeftRight, SitesLabel.Bottom + 4);
+//			SitesTextBox.Size = new Size(300, 60);
 			SitesTextBox.Name = "SitesTextBox";
-			SitesTextBox.Size = new Size(300, 60);
 			SitesTextBox.TabIndex = 1;
 			SitesTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// SitesLargeTextButton
 			// 
 			SitesLargeTextButton.Enabled = false;
-			SitesLargeTextButton.Size = new Size(24, 20);
-			SitesLargeTextButton.Location = new Point(SitesTextBox.Right + 2, SitesTextBox.Top);
+//			SitesLargeTextButton.Size = new Size(24, 20);
+//			SitesLargeTextButton.Location = new Point(SitesTextBox.Right + 2, SitesTextBox.Top);
 			SitesLargeTextButton.Name = "SitesLargeTextButton";
 			SitesLargeTextButton.TabIndex = 2;
 			SitesLargeTextButton.Text = "...";
@@ -333,26 +338,26 @@ namespace appCore.Templates.UI
 			// ServiceAffectedLabel
 			// 
 			ServiceAffectedLabel.Name = "ServiceAffectedLabel";
-			ServiceAffectedLabel.Size = new Size(100, 20);
-			ServiceAffectedLabel.Location = new Point(SitesTextBox.Right + 48, SitesTextBox.Top);
+//			ServiceAffectedLabel.Size = new Size(100, 20);
+//			ServiceAffectedLabel.Location = new Point(SitesTextBox.Right + 48, SitesTextBox.Top);
 			ServiceAffectedLabel.Text = "Service Affected";
 			ServiceAffectedLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// ServiceAffectedComboBox
 			// 
-			ServiceAffectedComboBox.Size = new Size(58, 20);
+//			ServiceAffectedComboBox.Size = new Size(58, 20);
+//			ServiceAffectedComboBox.Location = new Point(ServiceAffectedLabel.Right + 2, SitesTextBox.Top);
 			ServiceAffectedComboBox.FormattingEnabled = true;
 			ServiceAffectedComboBox.Items.AddRange(new object[] {
 			                                       	"Yes",
 			                                       	"No"});
-			ServiceAffectedComboBox.Location = new Point(ServiceAffectedLabel.Right + 2, SitesTextBox.Top);
 			ServiceAffectedComboBox.Name = "ServiceAffectedComboBox";
 			ServiceAffectedComboBox.TabIndex = 2;
 			// 
 			// Repeat_IntermittentCheckBox
 			// 
-			Repeat_IntermittentCheckBox.Size = new Size(163, 24);
-			Repeat_IntermittentCheckBox.Location = new Point(SitesTextBox.Right + 46, SitesTextBox.Bottom - Repeat_IntermittentCheckBox.Height);
+//			Repeat_IntermittentCheckBox.Size = new Size(163, 24);
+//			Repeat_IntermittentCheckBox.Location = new Point(SitesTextBox.Right + 46, SitesTextBox.Bottom - Repeat_IntermittentCheckBox.Height);
 			Repeat_IntermittentCheckBox.Name = "Repeat_IntermittentCheckBox";
 			Repeat_IntermittentCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			Repeat_IntermittentCheckBox.TabIndex = 3;
@@ -362,9 +367,9 @@ namespace appCore.Templates.UI
 			// 
 			// TxTypeLabel
 			// 
-			TxTypeLabel.Location = new Point(PaddingLeftRight, SitesTextBox.Bottom + 4);
+//			TxTypeLabel.Location = new Point(PaddingLeftRight, SitesTextBox.Bottom + 4);
+//			TxTypeLabel.Size = new Size(58, 20);
 			TxTypeLabel.Name = "TxTypeLabel";
-			TxTypeLabel.Size = new Size(58, 20);
 			TxTypeLabel.Text = "TX type";
 			TxTypeLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -374,16 +379,16 @@ namespace appCore.Templates.UI
 			TxTypeComboBox.Items.AddRange(new object[] {
 			                              	"IPRAN",
 			                              	"TDM"});
-			TxTypeComboBox.Location = new Point(TxTypeLabel.Right + 2, TxTypeLabel.Top);
+//			TxTypeComboBox.Location = new Point(TxTypeLabel.Right + 2, TxTypeLabel.Top);
+//			TxTypeComboBox.Size = new Size(90, 21);
 			TxTypeComboBox.Name = "TxTypeComboBox";
-			TxTypeComboBox.Size = new Size(90, 21);
 			TxTypeComboBox.TabIndex = 4;
 			// 
 			// IpRanPortConfigLabel
 			// 
-			IpRanPortConfigLabel.Location = new Point(TxTypeComboBox.Right + 10, TxTypeLabel.Top);
+//			IpRanPortConfigLabel.Location = new Point(TxTypeComboBox.Right + 10, TxTypeLabel.Top);
+//			IpRanPortConfigLabel.Size = new Size(130, 20);
 			IpRanPortConfigLabel.Name = "IpRanPortConfigLabel";
-			IpRanPortConfigLabel.Size = new Size(130, 20);
 			IpRanPortConfigLabel.Text = "IPRAN port configuration";
 			IpRanPortConfigLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -391,16 +396,16 @@ namespace appCore.Templates.UI
 			// 
 			IpRanPortConfigTextBox.ReadOnly = true;
 			IpRanPortConfigTextBox.Font = new Font("Courier New", 8.25F);
-			IpRanPortConfigTextBox.Location = new Point(IpRanPortConfigLabel.Right + 2, IpRanPortConfigLabel.Top);
+//			IpRanPortConfigTextBox.Location = new Point(IpRanPortConfigLabel.Right + 2, IpRanPortConfigLabel.Top);
+//			IpRanPortConfigTextBox.Size = new Size(218, 20);
 			IpRanPortConfigTextBox.Name = "IpRanPortConfigTextBox";
-			IpRanPortConfigTextBox.Size = new Size(218, 20);
 			IpRanPortConfigTextBox.TabIndex = 5;
 			// 
 			// PerformanceOutageDetailsLabel
 			// 
-			PerformanceOutageDetailsLabel.Location = new Point(PaddingLeftRight, TxTypeLabel.Bottom + 4);
+//			PerformanceOutageDetailsLabel.Location = new Point(PaddingLeftRight, TxTypeLabel.Bottom + 4);
+//			PerformanceOutageDetailsLabel.Size = new Size(245, 20);
 			PerformanceOutageDetailsLabel.Name = "PerformanceOutageDetailsLabel";
-			PerformanceOutageDetailsLabel.Size = new Size(245, 20);
 			PerformanceOutageDetailsLabel.Text = "Performance/Outage detailed issue";
 			PerformanceOutageDetailsLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -408,17 +413,17 @@ namespace appCore.Templates.UI
 			// 
 			PerformanceOutageDetailsTextBox.DetectUrls = false;
 			PerformanceOutageDetailsTextBox.Font = new Font("Courier New", 8.25F);
-			PerformanceOutageDetailsTextBox.Location = new Point(PaddingLeftRight, PerformanceOutageDetailsLabel.Bottom + 4);
+//			PerformanceOutageDetailsTextBox.Location = new Point(PaddingLeftRight, PerformanceOutageDetailsLabel.Bottom + 4);
+//			PerformanceOutageDetailsTextBox.Size = new Size(510, 212);
 			PerformanceOutageDetailsTextBox.Name = "PerformanceOutageDetailsTextBox";
-			PerformanceOutageDetailsTextBox.Size = new Size(510, 212);
 			PerformanceOutageDetailsTextBox.TabIndex = 6;
 			PerformanceOutageDetailsTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// PerformanceOutageDetailsLargeTextButton
 			// 
 			PerformanceOutageDetailsLargeTextButton.Enabled = false;
-			PerformanceOutageDetailsLargeTextButton.Size = new Size(24, 20);
-			PerformanceOutageDetailsLargeTextButton.Location = new Point(PerformanceOutageDetailsTextBox.Right - PerformanceOutageDetailsLargeTextButton.Width, PerformanceOutageDetailsLabel.Top);
+//			PerformanceOutageDetailsLargeTextButton.Size = new Size(24, 20);
+//			PerformanceOutageDetailsLargeTextButton.Location = new Point(PerformanceOutageDetailsTextBox.Right - PerformanceOutageDetailsLargeTextButton.Width, PerformanceOutageDetailsLabel.Top);
 			PerformanceOutageDetailsLargeTextButton.Name = "PerformanceOutageDetailsLargeTextButton";
 			PerformanceOutageDetailsLargeTextButton.TabIndex = 7;
 			PerformanceOutageDetailsLargeTextButton.Text = "...";
@@ -427,9 +432,9 @@ namespace appCore.Templates.UI
 			// 
 			// DetailedRanTroubleshootLabel
 			// 
-			DetailedRanTroubleshootLabel.Location = new Point(PaddingLeftRight, PerformanceOutageDetailsTextBox.Bottom + 4);
+//			DetailedRanTroubleshootLabel.Location = new Point(PaddingLeftRight, PerformanceOutageDetailsTextBox.Bottom + 4);
+//			DetailedRanTroubleshootLabel.Size = new Size(509, 20);
 			DetailedRanTroubleshootLabel.Name = "DetailedRanTroubleshootLabel";
-			DetailedRanTroubleshootLabel.Size = new Size(509, 20);
 			DetailedRanTroubleshootLabel.Text = "Detailed RAN troubleshooting (RAN findings, HW replaced, Field visits troubleshooting)";
 			DetailedRanTroubleshootLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -437,22 +442,76 @@ namespace appCore.Templates.UI
 			// 
 			DetailedRanTroubleshootTextBox.DetectUrls = false;
 			DetailedRanTroubleshootTextBox.Font = new Font("Courier New", 8.25F);
-			DetailedRanTroubleshootTextBox.Location = new Point(PaddingLeftRight, DetailedRanTroubleshootLabel.Bottom + 4);
+//			DetailedRanTroubleshootTextBox.Location = new Point(PaddingLeftRight, DetailedRanTroubleshootLabel.Bottom + 4);
+//			DetailedRanTroubleshootTextBox.Size = new Size(510, 212);
 			DetailedRanTroubleshootTextBox.Name = "DetailedRanTroubleshootTextBox";
-			DetailedRanTroubleshootTextBox.Size = new Size(510, 212);
 			DetailedRanTroubleshootTextBox.TabIndex = 8;
 			DetailedRanTroubleshootTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// DetailedRanTroubleshootLargeTextButton
 			// 
 			DetailedRanTroubleshootLargeTextButton.Enabled = false;
-			DetailedRanTroubleshootLargeTextButton.Size = new Size(24, 20);
-			DetailedRanTroubleshootLargeTextButton.Location = new Point(DetailedRanTroubleshootTextBox.Right - DetailedRanTroubleshootLargeTextButton.Width, DetailedRanTroubleshootLabel.Top);
+//			DetailedRanTroubleshootLargeTextButton.Size = new Size(24, 20);
+//			DetailedRanTroubleshootLargeTextButton.Location = new Point(DetailedRanTroubleshootTextBox.Right - DetailedRanTroubleshootLargeTextButton.Width, DetailedRanTroubleshootLabel.Top);
 			DetailedRanTroubleshootLargeTextButton.Name = "DetailedRanTroubleshootLargeTextButton";
 			DetailedRanTroubleshootLargeTextButton.TabIndex = 9;
 			DetailedRanTroubleshootLargeTextButton.Text = "...";
 			DetailedRanTroubleshootLargeTextButton.Click += LargeTextButtonsClick;
 			DetailedRanTroubleshootLargeTextButton.UseVisualStyleBackColor = true;
+			
+			DynamicControlsSizesLocations();
+		}
+		
+		void DynamicControlsSizesLocations() {
+			SitesLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+			SitesLabel.Size = new Size(245, 20);
+			
+			SitesTextBox.Location = new Point(PaddingLeftRight, SitesLabel.Bottom + 4);
+			SitesTextBox.Size = new Size(300, 60);
+			
+			SitesLargeTextButton.Size = new Size(24, 20);
+			SitesLargeTextButton.Location = new Point(SitesTextBox.Right + 2, SitesTextBox.Top);
+			
+			ServiceAffectedLabel.Size = new Size(100, 20);
+			ServiceAffectedLabel.Location = new Point(SitesTextBox.Right + 48, SitesTextBox.Top);
+			
+			ServiceAffectedComboBox.Size = new Size(58, 20);
+			ServiceAffectedComboBox.Location = new Point(ServiceAffectedLabel.Right + 2, SitesTextBox.Top);
+			
+			Repeat_IntermittentCheckBox.Size = new Size(163, 24);
+			Repeat_IntermittentCheckBox.Location = new Point(SitesTextBox.Right + 46, SitesTextBox.Bottom - Repeat_IntermittentCheckBox.Height);
+			
+			TxTypeLabel.Location = new Point(PaddingLeftRight, SitesTextBox.Bottom + 4);
+			TxTypeLabel.Size = new Size(58, 20);
+			
+			TxTypeComboBox.Location = new Point(TxTypeLabel.Right + 2, TxTypeLabel.Top);
+			TxTypeComboBox.Size = new Size(90, 21);
+			
+			IpRanPortConfigLabel.Location = new Point(TxTypeComboBox.Right + 10, TxTypeLabel.Top);
+			IpRanPortConfigLabel.Size = new Size(130, 20);
+			
+			IpRanPortConfigTextBox.Location = new Point(IpRanPortConfigLabel.Right + 2, IpRanPortConfigLabel.Top);
+			IpRanPortConfigTextBox.Size = new Size(218, 20);
+			
+			PerformanceOutageDetailsLabel.Location = new Point(PaddingLeftRight, TxTypeLabel.Bottom + 4);
+			PerformanceOutageDetailsLabel.Size = new Size(245, 20);
+			
+			PerformanceOutageDetailsTextBox.Location = new Point(PaddingLeftRight, PerformanceOutageDetailsLabel.Bottom + 4);
+			PerformanceOutageDetailsTextBox.Size = new Size(510, 212);
+			
+			PerformanceOutageDetailsLargeTextButton.Size = new Size(24, 20);
+			PerformanceOutageDetailsLargeTextButton.Location = new Point(PerformanceOutageDetailsTextBox.Right - PerformanceOutageDetailsLargeTextButton.Width, PerformanceOutageDetailsLabel.Top);
+			
+			DetailedRanTroubleshootLabel.Location = new Point(PaddingLeftRight, PerformanceOutageDetailsTextBox.Bottom + 4);
+			DetailedRanTroubleshootLabel.Size = new Size(509, 20);
+			
+			DetailedRanTroubleshootTextBox.Location = new Point(PaddingLeftRight, DetailedRanTroubleshootLabel.Bottom + 4);
+			DetailedRanTroubleshootTextBox.Size = new Size(510, 212);
+			
+			DetailedRanTroubleshootLargeTextButton.Size = new Size(24, 20);
+			DetailedRanTroubleshootLargeTextButton.Location = new Point(DetailedRanTroubleshootTextBox.Right - DetailedRanTroubleshootLargeTextButton.Width, DetailedRanTroubleshootLabel.Top);
+			
+			Size = new Size(DetailedRanTroubleshootTextBox.Right + PaddingLeftRight, DetailedRanTroubleshootTextBox.Bottom + PaddingTopBottom);
 		}
 	}
 }

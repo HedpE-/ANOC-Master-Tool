@@ -18,10 +18,10 @@ using appCore.UI;
 
 namespace appCore.Templates.UI
 {
-    /// <summary>
-    /// Description of UpdateControls.
-    /// </summary>
-    public class UpdateControls : Panel
+	/// <summary>
+	/// Description of UpdateControls.
+	/// </summary>
+	public class UpdateControls : Panel
 	{
 		public Button NextActionsLargeTextButton = new Button();
 		public Button UpdateLargeTextButton = new Button();
@@ -51,16 +51,23 @@ namespace appCore.Templates.UI
 		public Site currentSite { get; private set; }
 		Update currentTemplate;
 		Update prevTemp = new Update();
+		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
 			get { return paddingLeftRight; }
-			set { paddingLeftRight = value; }
+			set {
+				paddingLeftRight = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		int paddingTopBottom = 1;
 		public int PaddingTopBottom {
 			get { return paddingTopBottom; }
-			set { paddingTopBottom = value; }
+			set {
+				paddingTopBottom = value;
+				DynamicControlsSizesLocations();
+			}
 		}
 		
 		bool toggle;
@@ -109,7 +116,6 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 				}
-				Size = new Size(NextActionsTextBox.Right + PaddingLeftRight, NextActionsTextBox.Bottom + PaddingTopBottom);
 			}
 		}
 		
@@ -480,7 +486,7 @@ namespace appCore.Templates.UI
 				}
 				if(openForm != null)
 					openForm.Close();
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow);
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id);
 				OiTable.Show();
 			}
 		}
@@ -543,61 +549,61 @@ namespace appCore.Templates.UI
 			// 
 			// SiteIdLabel
 			// 
-			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			SiteIdLabel.Size = new Size(90, 20);
 			SiteIdLabel.Name = "SiteIdLabel";
-			SiteIdLabel.Size = new Size(90, 20);
 			SiteIdLabel.Text = "Site ID";
 			SiteIdLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// SiteIdTextBox
 			// 
 			SiteIdTextBox.Font = new Font("Courier New", 8.25F);
-			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
+//			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
+//			SiteIdTextBox.Size = new Size(68, 20);
 			SiteIdTextBox.MaxLength = 6;
 			SiteIdTextBox.Name = "SiteIdTextBox";
-			SiteIdTextBox.Size = new Size(68, 20);
 			SiteIdTextBox.TabIndex = 2;
 			// 
 			// PriorityLabel
 			// 
-			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 5, MainMenu.Bottom + 4);
+//			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 5, MainMenu.Bottom + 4);
+//			PriorityLabel.Size = new Size(40, 20);
 			PriorityLabel.Name = "PriorityLabel";
-			PriorityLabel.Size = new Size(40, 20);
 			PriorityLabel.Text = "Priority";
 			PriorityLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// PriorityTextBox
 			// 
 			PriorityTextBox.Font = new Font("Courier New", 8.25F);
-			PriorityTextBox.Location = new Point(PriorityLabel.Right + 2, MainMenu.Bottom + 4);
+//			PriorityTextBox.Location = new Point(PriorityLabel.Right + 2, MainMenu.Bottom + 4);
+//			PriorityTextBox.Size = new Size(73, 20);
 			PriorityTextBox.Name = "PriorityTextBox";
 			PriorityTextBox.ReadOnly = true;
-			PriorityTextBox.Size = new Size(73, 20);
 			PriorityTextBox.TabIndex = 89;
 			// 
 			// PowerCompanyLabel
 			// 
-			PowerCompanyLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
+//			PowerCompanyLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
+//			PowerCompanyLabel.Size = new Size(90, 20);
 			PowerCompanyLabel.Name = "PowerCompanyLabel";
-			PowerCompanyLabel.Size = new Size(90, 20);
 			PowerCompanyLabel.Text = "Power Company";
 			PowerCompanyLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// PowerCompanyTextBox
 			// 
 			PowerCompanyTextBox.Font = new Font("Courier New", 8.25F);
-			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, SiteIdTextBox.Bottom + 4);
+//			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, SiteIdTextBox.Bottom + 4);
+//			PowerCompanyTextBox.Size = new Size(188, 20);
 			PowerCompanyTextBox.MaxLength = 5;
 			PowerCompanyTextBox.Name = "PowerCompanyTextBox";
 			PowerCompanyTextBox.ReadOnly = true;
-			PowerCompanyTextBox.Size = new Size(188, 20);
 			PowerCompanyTextBox.TabIndex = 87;
 			// 
 			// INCLabel
 			// 
-			INCLabel.Location = new Point(PriorityTextBox.Right + 5, MainMenu.Bottom + 4);
+//			INCLabel.Location = new Point(PriorityTextBox.Right + 5, MainMenu.Bottom + 4);
+//			INCLabel.Size = new Size(43, 20);
 			INCLabel.Name = "INCLabel";
-			INCLabel.Size = new Size(43, 20);
 			INCLabel.Text = "INC";
 			INCLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -605,17 +611,17 @@ namespace appCore.Templates.UI
 			// 
 			INCTextBox.AcceptsTab = true;
 			INCTextBox.Font = new Font("Courier New", 8.25F);
-			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
+//			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
+//			INCTextBox.Size = new Size(180, 20);
 			INCTextBox.MaxLength = 15;
 			INCTextBox.Name = "INCTextBox";
-			INCTextBox.Size = new Size(180, 20);
 			INCTextBox.TabIndex = 1;
 			// 
 			// RegionLabel
 			// 
-			RegionLabel.Location = new Point(PowerCompanyTextBox.Right + 5, INCLabel.Bottom + 4);
+//			RegionLabel.Location = new Point(PowerCompanyTextBox.Right + 5, INCLabel.Bottom + 4);
+//			RegionLabel.Size = new Size(43, 20);
 			RegionLabel.Name = "RegionLabel";
-			RegionLabel.Size = new Size(43, 20);
 			RegionLabel.Text = "Region";
 			RegionLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -623,17 +629,17 @@ namespace appCore.Templates.UI
 			// 
 			RegionTextBox.AcceptsTab = true;
 			RegionTextBox.Font = new Font("Courier New", 8.25F);
-			RegionTextBox.Location = new Point(RegionLabel.Right + 2, INCTextBox.Bottom + 4);
+//			RegionTextBox.Location = new Point(RegionLabel.Right + 2, INCTextBox.Bottom + 4);
+//			RegionTextBox.Size = new Size(180, 20);
 			RegionTextBox.Name = "RegionTextBox";
 			RegionTextBox.ReadOnly = true;
-			RegionTextBox.Size = new Size(180, 20);
 			RegionTextBox.TabIndex = 91;
 			// 
 			// UpdateLabel
 			// 
-			UpdateLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
+//			UpdateLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
+//			UpdateLabel.Size = new Size(100, 20);
 			UpdateLabel.Name = "UpdateLabel";
-			UpdateLabel.Size = new Size(100, 20);
 			UpdateLabel.Text = "Update";
 			UpdateLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -641,9 +647,9 @@ namespace appCore.Templates.UI
 			// 
 			UpdateTextBox.DetectUrls = false;
 			UpdateTextBox.Font = new Font("Courier New", 8.25F);
-			UpdateTextBox.Location = new Point(PaddingLeftRight, UpdateLabel.Bottom + 4);
+//			UpdateTextBox.Location = new Point(PaddingLeftRight, UpdateLabel.Bottom + 4);
+//			UpdateTextBox.Size = new Size(510, 253);
 			UpdateTextBox.Name = "UpdateTextBox";
-			UpdateTextBox.Size = new Size(510, 253);
 			UpdateTextBox.TabIndex = 3;
 			UpdateTextBox.Text = "";
 			UpdateTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -651,8 +657,8 @@ namespace appCore.Templates.UI
 			// UpdateLargeTextButton
 			// 
 			UpdateLargeTextButton.Enabled = false;
-			UpdateLargeTextButton.Size = new Size(24, 20);
-			UpdateLargeTextButton.Location = new Point(UpdateTextBox.Right - UpdateLargeTextButton.Width, UpdateLabel.Top);
+//			UpdateLargeTextButton.Size = new Size(24, 20);
+//			UpdateLargeTextButton.Location = new Point(UpdateTextBox.Right - UpdateLargeTextButton.Width, UpdateLabel.Top);
 			UpdateLargeTextButton.Name = "UpdateLargeTextButton";
 			UpdateLargeTextButton.TabIndex = 4;
 			UpdateLargeTextButton.Text = "...";
@@ -661,9 +667,9 @@ namespace appCore.Templates.UI
 			// 
 			// NextActionsLabel
 			// 
-			NextActionsLabel.Location = new Point(PaddingLeftRight, UpdateTextBox.Bottom + 4);
+//			NextActionsLabel.Location = new Point(PaddingLeftRight, UpdateTextBox.Bottom + 4);
+//			NextActionsLabel.Size = new Size(109, 20);
 			NextActionsLabel.Name = "NextActionsLabel";
-			NextActionsLabel.Size = new Size(109, 20);
 			NextActionsLabel.TabIndex = 86;
 			NextActionsLabel.Text = "Next actions";
 			NextActionsLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -672,9 +678,9 @@ namespace appCore.Templates.UI
 			// 
 			NextActionsTextBox.DetectUrls = false;
 			NextActionsTextBox.Font = new Font("Courier New", 8.25F);
-			NextActionsTextBox.Location = new Point(PaddingLeftRight, NextActionsLabel.Bottom + 4);
+//			NextActionsTextBox.Location = new Point(PaddingLeftRight, NextActionsLabel.Bottom + 4);
+//			NextActionsTextBox.Size = new Size(510, 235);
 			NextActionsTextBox.Name = "NextActionsTextBox";
-			NextActionsTextBox.Size = new Size(510, 235);
 			NextActionsTextBox.TabIndex = 5;
 			NextActionsTextBox.Text = "";
 			NextActionsTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -682,13 +688,67 @@ namespace appCore.Templates.UI
 			// NextActionsLargeTextButton
 			// 
 			NextActionsLargeTextButton.Enabled = false;
-			NextActionsLargeTextButton.Size = new Size(24, 20);
-			NextActionsLargeTextButton.Location = new Point(NextActionsTextBox.Right - NextActionsLargeTextButton.Width, NextActionsLabel.Top);
+//			NextActionsLargeTextButton.Size = new Size(24, 20);
+//			NextActionsLargeTextButton.Location = new Point(NextActionsTextBox.Right - NextActionsLargeTextButton.Width, NextActionsLabel.Top);
 			NextActionsLargeTextButton.Name = "NextActionsLargeTextButton";
 			NextActionsLargeTextButton.TabIndex = 6;
 			NextActionsLargeTextButton.Text = "...";
 			NextActionsLargeTextButton.UseVisualStyleBackColor = true;
 			NextActionsLargeTextButton.Click += LargeTextButtonsClick;
+			
+			DynamicControlsSizesLocations();
+		}
+		
+		void DynamicControlsSizesLocations() {
+			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+			SiteIdLabel.Size = new Size(90, 20);
+			
+			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
+			SiteIdTextBox.Size = new Size(68, 20);
+			
+			PriorityLabel.Location = new Point(SiteIdTextBox.Right + 5, MainMenu.Bottom + 4);
+			PriorityLabel.Size = new Size(40, 20);
+			
+			PriorityTextBox.Location = new Point(PriorityLabel.Right + 2, MainMenu.Bottom + 4);
+			PriorityTextBox.Size = new Size(73, 20);
+			
+			PowerCompanyLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
+			PowerCompanyLabel.Size = new Size(90, 20);
+			
+			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, SiteIdTextBox.Bottom + 4);
+			PowerCompanyTextBox.Size = new Size(188, 20);
+			
+			INCLabel.Location = new Point(PriorityTextBox.Right + 5, MainMenu.Bottom + 4);
+			INCLabel.Size = new Size(43, 20);
+			
+			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
+			INCTextBox.Size = new Size(180, 20);
+			
+			RegionLabel.Location = new Point(PowerCompanyTextBox.Right + 5, INCLabel.Bottom + 4);
+			RegionLabel.Size = new Size(43, 20);
+			
+			RegionTextBox.Location = new Point(RegionLabel.Right + 2, INCTextBox.Bottom + 4);
+			RegionTextBox.Size = new Size(180, 20);
+			
+			UpdateLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
+			UpdateLabel.Size = new Size(100, 20);
+			
+			UpdateTextBox.Location = new Point(PaddingLeftRight, UpdateLabel.Bottom + 4);
+			UpdateTextBox.Size = new Size(510, 253);
+			
+			UpdateLargeTextButton.Size = new Size(24, 20);
+			UpdateLargeTextButton.Location = new Point(UpdateTextBox.Right - UpdateLargeTextButton.Width, UpdateLabel.Top);
+			
+			NextActionsLabel.Location = new Point(PaddingLeftRight, UpdateTextBox.Bottom + 4);
+			NextActionsLabel.Size = new Size(109, 20);
+			
+			NextActionsTextBox.Location = new Point(PaddingLeftRight, NextActionsLabel.Bottom + 4);
+			NextActionsTextBox.Size = new Size(510, 235);
+			
+			NextActionsLargeTextButton.Size = new Size(24, 20);
+			NextActionsLargeTextButton.Location = new Point(NextActionsTextBox.Right - NextActionsLargeTextButton.Width, NextActionsLabel.Top);
+			
+			Size = new Size(NextActionsTextBox.Right + PaddingLeftRight, NextActionsTextBox.Bottom + PaddingTopBottom);
 		}
 	}
 }

@@ -183,16 +183,17 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha7 28/11/2016 #######
+		///
+		///- Tweaked the INCs/CRQs/BookIns/Alarms details window
+		///
+		///####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
 		///
 		///- New Error Handling should prevent a lot of crashes due to IO errors
 		///- Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
 		///- Tweaked the Whole Shift Popup
 		///- Implemented the Menu bar on all Templates, off with the old buttons
-		///- Ongoing CRQs on Troubleshoot Template will only display valid CRQs with status Scheduled and Implementation In Progress
-		///- All Message boxes have the same look now
-		///
-		///####### ANOC Master Tool [rest of string was truncated]&quot;;.
+		///- Ongoing CRQs on Troubleshoot Template will only display valid CRQs with statu [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
