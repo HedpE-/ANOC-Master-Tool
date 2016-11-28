@@ -246,7 +246,7 @@ namespace appCore.Templates.UI
 //				Stopwatch sw = new Stopwatch();
 //
 //				sw.Start();
-				TextBox tb =(TextBox)sender;
+				TextBox tb = (TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
 				currentSite = Finder.getSite(tb.Text);

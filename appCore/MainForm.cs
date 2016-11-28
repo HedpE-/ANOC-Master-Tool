@@ -584,7 +584,7 @@ namespace appCore
 						if(ericssonScriptsControls != null)
 							ericssonScriptsControls.Dispose();
 						ericssonScriptsControls = new EricssonScriptsControls();
-						ericssonScriptsControls.PaddingLeftRight = 7;
+//						ericssonScriptsControls.PaddingLeftRight = 7;
 						tabPage17.Controls.Add(ericssonScriptsControls);
 						tabControl1.SelectTab(6);
 						
@@ -596,7 +596,7 @@ namespace appCore
 //					OutageUI.Location = new Point(1, 2);
 //					tabPage17.Controls.Add(OutageUI);
 					ericssonScriptsControls = new EricssonScriptsControls();
-					ericssonScriptsControls.PaddingLeftRight = 7;
+//					ericssonScriptsControls.PaddingLeftRight = 7;
 					tabPage17.Controls.Add(ericssonScriptsControls);
 				}
 			}
@@ -1765,15 +1765,6 @@ namespace appCore
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false, "textBox50");
 		}
-		
-//		public static void shiftsPanelPaint(object sender, PaintEventArgs e)
-//		{
-//			MainForm.shiftsCalendar.Invalidate(true);
-		////			shiftsSnap.Save(UserFolderPath + @"\bmp.png");
-//			MainForm.shiftsCalendar.Size = new Size(MainForm.shiftsBodySnap.Width, MainForm.shiftsBodySnap.Height);
-//			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-//			e.Graphics.DrawImageUnscaled(MainForm.shiftsBodySnap, Point.Empty);
-//		}
 		
 		void RadioButton6CheckedChanged(object sender, EventArgs e)
 		{
