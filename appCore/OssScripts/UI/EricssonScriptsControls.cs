@@ -114,15 +114,9 @@ namespace appCore.OssScripts.UI
 					RegionTextBox.Text = currentSite.Region;
 					
 					CellsSummaryPictureBox.UpdateCells(filteredCells);
-//					eScriptCellsGlobal.RowFilter = "BEARER = '2G' AND VENDOR LIKE 'ERIC*'";
 					GsmRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_2G).Count > 0;
-//					eScriptCellsGlobal.RowFilter = "BEARER = '3G' AND VENDOR LIKE 'ERIC*'";
 					UmtsRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_3G).Count > 0;
-//					eScriptCellsGlobal.RowFilter = "BEARER = '4G' AND VENDOR LIKE 'ERIC*'";
 					LteRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_4G).Count > 0;
-					
-//					cellsRows.RowFilter = string.Empty;
-//					eScriptCellsGlobal = cellsRows;
 				}
 				else {
 					PriorityTextBox.Text = string.Empty;
@@ -139,20 +133,16 @@ namespace appCore.OssScripts.UI
 			}
 		}
 
-		void TextBox50TextChanged(object sender, EventArgs e)
+		void SiteTextBoxTextChanged(object sender, EventArgs e)
 		{
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false);
+			PriorityTextBox.Text = RegionTextBox.Text = string.Empty;
+			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteTextBox.Text);
 		}
 
 		void siteFinder_Toggle(bool toggle, bool siteFound)
 		{
-//			if(sender == "textBox50") {
-//				List<Control> parentControls = new List<Control>();
-//				if(sender == "textBox43" || sender == "All")
-//					parentControls.AddRange(tabPage6.Controls.OfType<Control>());
-//				if(sender == "textBox50" || sender == "All")
-//					parentControls.AddRange(tabPage13.Controls.OfType<Control>());
 			foreach (object ctrl in Controls) {
 				switch(ctrl.GetType().ToString())
 				{
@@ -204,7 +194,7 @@ namespace appCore.OssScripts.UI
 					CellsListView.Items.Add(new ListViewItem(new[]{cell.Bearer, cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, cell.Noc}));
 				foreach (ColumnHeader col in CellsListView.Columns)
 					col.Width = -2;
-				SelectAllButton.Enabled = SelectNoneButton.Enabled = true;
+				SelectAllButton.Enabled = SelectNoneButton.Enabled = CellsListView.Enabled = true;
 				if(rb.Name == "UmtsRadioButton") {
 					WarningLabel.Text += "\nIt\'s not possible to lock 3G cells via amos on site, log on to the RNC " + CellsListView.Items[0].SubItems[4].Text + " and follow the instructions";
 					WarningLabel.Visible = true;
@@ -216,7 +206,7 @@ namespace appCore.OssScripts.UI
 					WarningLabel.Visible = false;
 					WarningLabel.Text = "WARNING:";
 				}
-				SelectAllButton.Enabled = SelectNoneButton.Enabled = false;
+				SelectAllButton.Enabled = SelectNoneButton.Enabled = CellsListView.Enabled = false;
 			}
 		}
 		
@@ -271,11 +261,6 @@ namespace appCore.OssScripts.UI
 							cellUnlock += Environment.NewLine;
 						}
 					}
-					
-//					foreach(ListViewItem cell in listView2.CheckedItems) {
-//						cellLock += "RLSTC:CELL=" + cell.SubItems[1].Text + ",STATE=HALTED;" + Environment.NewLine;
-//						cellUnlock += "RLSTC:CELL=" + cell.SubItems[1].Text + ",STATE=ACTIVE;" + Environment.NewLine;
-//					}
 					break;
 				case 1:
 					foreach(ListViewItem cell in CellsListView.CheckedItems) {
@@ -341,11 +326,7 @@ namespace appCore.OssScripts.UI
 
 		void ClearAllControls(object sender, EventArgs e)
 		{
-//			SiteTextBox.Text = string.Empty;
-//			CabinetComboBox.SelectedIndex = 0;
-//			GsmRadioButton.Checked = UmtsRadioButton.Checked = LteRadioButton.Checked = false;
-//			SiteTextBox.Enabled = false;
-			clearToolStripMenuItem.Enabled = false;
+			SiteTextBox.Text = string.Empty;
 		}
 		
 		void InitializeComponent() {
@@ -424,7 +405,7 @@ namespace appCore.OssScripts.UI
 			SiteTextBox.Font = new Font("Courier New", 8.25F);
 			SiteTextBox.Name = "SiteTextBox";
 			SiteTextBox.TabIndex = 136;
-			SiteTextBox.TextChanged += TextBox50TextChanged;
+			SiteTextBox.TextChanged += SiteTextBoxTextChanged;
 			SiteTextBox.KeyPress += siteFinder;
 			// 
 			// PriorityLabel
@@ -688,7 +669,7 @@ namespace appCore.OssScripts.UI
 			CellsLabel.Size = new Size(72, 20);
 			
 			CellsListView.Location = new Point(CellsLabel.Right + 5, CellsSummaryPictureBox.Bottom + 6);
-			CellsListView.Size = new Size(347, 186);
+			CellsListView.Size = new Size(347, 185);
 			
 			SelectAllButton.Location = new Point(TechnologyGroupBox.Right + 5, CellsLabel.Bottom + 4);
 			SelectAllButton.Size = new Size(72, 23);
@@ -699,7 +680,7 @@ namespace appCore.OssScripts.UI
 			WarningLabel.Location = new Point(paddingLeftRight, TechnologyGroupBox.Bottom + 2);
 			WarningLabel.Size = new Size(159, 70);
 			
-			LockScriptLabel.Location = new Point(paddingLeftRight, WarningLabel.Bottom + 4);
+			LockScriptLabel.Location = new Point(paddingLeftRight, WarningLabel.Bottom + 2);
 			LockScriptLabel.Size = new Size(76, 20);
 			
 			LockScriptTextBox.Location = new Point(paddingLeftRight, LockScriptLabel.Bottom + 2);
@@ -708,11 +689,11 @@ namespace appCore.OssScripts.UI
 			LockScriptLargeTextButton.Size = new Size(24, 20);
 			LockScriptLargeTextButton.Location = new Point(LockScriptTextBox.Right - LockScriptLargeTextButton.Width, LockScriptLabel.Top);
 			
-			UnlockScriptLabel.Location = new Point(paddingLeftRight, WarningLabel.Bottom + 4);
+			UnlockScriptLabel.Location = new Point(paddingLeftRight, WarningLabel.Bottom + 2);
 			UnlockScriptLabel.Size = new Size(76, 20);
 			
 			UnlockScriptTextBox.Location = new Point(LockScriptTextBox.Right + 10, UnlockScriptLabel.Bottom + 2);
-			UnlockScriptTextBox.Size = new Size(250, 274);
+			UnlockScriptTextBox.Size = new Size(250, 272);
 			
 			UnlockScriptLargeTextButton.Size = new Size(24, 20);
 			UnlockScriptLargeTextButton.Location = new Point(UnlockScriptTextBox.Right - UnlockScriptLargeTextButton.Width, UnlockScriptLabel.Top);

@@ -15957,6 +15957,8 @@ ZK - LTE2100 Pico</value>
     <value>####### ANOC Master Tool 7.0alpha7 28/11/2016 #######
 
 - Tweaked the INCs/CRQs/BookIns/Alarms details window
+- Tweaked all Scripts to include the new Menubar instead of the old buttons
+
 
 ####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
 

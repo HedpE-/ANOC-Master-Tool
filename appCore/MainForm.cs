@@ -18,7 +18,6 @@ using System.Windows.Forms;
 using appCore.DB;
 using appCore.Logs;
 using appCore.Settings;
-using appCore.SiteFinder;
 using appCore.SiteFinder.UI;
 using appCore.Templates;
 using appCore.Templates.UI;
@@ -450,20 +449,26 @@ namespace appCore
 				TicketCountLabel.Text = logFile.FilterCounts(Template.Filters.TicketCount).ToString();
 		}
 
-		void TicketCountLabelClick(object sender, EventArgs e) {
-			if(logFile.Exists) {
-				if(string.IsNullOrEmpty(TicketCountLabel.Text)) {
-					logFile.CheckLogFileIntegrity();
-					UpdateTicketCountLabel(true);
-				}
-				else
-					TicketCountLabel.Text = string.Empty;
+		void TicketCountLabelMouseClick(object sender, MouseEventArgs e) {
+			switch(e.Button) {
+				case MouseButtons.Left:
+					if(logFile.Exists) {
+						if(string.IsNullOrEmpty(TicketCountLabel.Text)) {
+							logFile.CheckLogFileIntegrity();
+							UpdateTicketCountLabel(true);
+						}
+						else
+							TicketCountLabel.Text = string.Empty;
+					}
+					else {
+						TicketCountLabel.Text = string.IsNullOrEmpty(TicketCountLabel.Text) ? 0.ToString() : string.Empty;
+					}
+					break;
+				case MouseButtons.Right:
+					TicketCountLabel.ForeColor = TicketCountLabel.ForeColor == Color.Black ? Color.White : Color.Black;
+					break;
 			}
-			else
-				if(string.IsNullOrEmpty(TicketCountLabel.Text))
-					TicketCountLabel.Text = 0.ToString();
-				else
-					TicketCountLabel.Text = string.Empty;
+			
 		}
 		
 		void toolTipDeploy() {
@@ -556,7 +561,7 @@ namespace appCore
 			TicketCountLabel.Name = "TicketCountLabel";
 			TicketCountLabel.TabIndex = 5;
 			TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
-			TicketCountLabel.Click += TicketCountLabelClick;
+			TicketCountLabel.MouseClick += TicketCountLabelMouseClick;
 			
 			// UNDONE: Developer specific action
 			if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos" || CurrentUser.userName == "SANTOSS2") {
@@ -581,13 +586,6 @@ namespace appCore
 //						OutageUI = new OutageControls();
 //						tabPage17.Controls.Add(OutageUI);
 						
-						if(ericssonScriptsControls != null)
-							ericssonScriptsControls.Dispose();
-						ericssonScriptsControls = new EricssonScriptsControls();
-//						ericssonScriptsControls.PaddingLeftRight = 7;
-						tabPage17.Controls.Add(ericssonScriptsControls);
-						tabControl1.SelectTab(6);
-						
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
 					};
@@ -595,9 +593,6 @@ namespace appCore
 					
 //					OutageUI.Location = new Point(1, 2);
 //					tabPage17.Controls.Add(OutageUI);
-					ericssonScriptsControls = new EricssonScriptsControls();
-//					ericssonScriptsControls.PaddingLeftRight = 7;
-					tabPage17.Controls.Add(ericssonScriptsControls);
 				}
 			}
 			if(CurrentUser.userName != "GONCARJ3" && CurrentUser.userName != "Caramelos") {
@@ -618,6 +613,8 @@ namespace appCore
 			tabPage12.Controls.Add(nokiaScriptsControls);
 			huaweiScriptsControls.Location = new Point(1, 2);
 			tabPage11.Controls.Add(huaweiScriptsControls);
+			ericssonScriptsControls.Location = new Point(1, 2);
+			tabPage13.Controls.Add(ericssonScriptsControls);
 			
 			SplashForm.UpdateLabelText("Loading Databases");
 			
@@ -652,66 +649,6 @@ namespace appCore
 			if (SettingsFile.LastRunVersion != GlobalProperties.AssemblyFileVersionInfo.FileVersion) {
 				SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;
 				FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
-			}
-		}
-
-		public void siteFinder(object sender, KeyPressEventArgs e)
-		{
-			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
-				Action action = new Action(delegate {
-//				                           	Stopwatch sw = new Stopwatch();
-//
-//				                           	sw.Start();
-				                           	TextBoxBase tb = (TextBoxBase)sender;
-				                           	DataRowView siteRow = null;
-				                           	DataView cellsRows = null;
-				                           	
-				                           	if(!string.IsNullOrEmpty(tb.Text)) {
-				                           		siteRow = findSite(tb.Text);
-				                           		cellsRows = findCells(tb.Text);
-				                           	}
-				                           	else
-				                           		return;
-				                           	
-				                           	bool siteFound = siteRow != null;
-				                           	
-				                           	Site site = new Site(siteRow, cellsRows);
-				                           	switch (tb.Name) {
-				                           		case "textBox50":
-				                           			if(siteRow != null) {
-				                           				cellsRows.RowFilter = "VENDOR LIKE 'ERIC*'";
-				                           				if(cellsRows.Count == 0){
-				                           					trayIcon.showBalloon("Error",String.Format("Site {0} is not E///",tb.Text));
-				                           					return;
-				                           				}
-				                           				cellsRows.RowFilter = string.Empty;
-				                           				eScriptCellsGlobal = cellsRows;
-				                           				textBox51.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("PRIORITY")].ToString();
-				                           				textBox52.Text = siteRow[siteRow.Row.Table.Columns.IndexOf("VF_REGION")].ToString();
-				                           				
-				                           				pictureBox7.UpdateCells(eScriptCellsGlobal);
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '2G' AND VENDOR LIKE 'ERIC*'";
-				                           				radioButton6.Enabled |= eScriptCellsGlobal.Count > 0;
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '3G' AND VENDOR LIKE 'ERIC*'";
-				                           				radioButton7.Enabled |= eScriptCellsGlobal.Count > 0;
-				                           				eScriptCellsGlobal.RowFilter = "BEARER = '4G' AND VENDOR LIKE 'ERIC*'";
-				                           				radioButton8.Enabled |= eScriptCellsGlobal.Count > 0;
-				                           				
-				                           				eScriptCellsGlobal.RowFilter = string.Empty;
-				                           			}
-				                           			else {
-				                           				textBox51.Text = string.Empty;
-				                           				textBox52.Text = "No site found";
-				                           			}
-				                           			break;
-				                           	}
-//				                           	sw.Stop();
-//
-//				                           	FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				                           	siteFinder_Toggle(true, siteFound, tb.Name);
-				                           });
-				Tools.darkenBackgroundForm(action,true,this);
 			}
 		}
 
@@ -751,57 +688,6 @@ namespace appCore
 			}
 			
 			return new DataView(dt);
-		}
-
-		void MainFormShown(object sender, EventArgs e)
-		{
-			this.BeginInvoke(new Action(delegate {
-			                            	if(GlobalProperties.siteFinder_mainswitch)
-			                            		siteFinder_Toggle(false, false, "All");
-			                            	else
-			                            		siteFinder_Toggle(true, false, "All");
-			                            }));
-			
-			this.Shown -= MainFormShown;
-		}
-
-		void siteFinder_Toggle(bool toggle, bool siteFound, string sender)
-		{
-			if(sender == "textBox50") {
-				List<Control> parentControls = new List<Control>();
-				if(sender == "textBox43" || sender == "All")
-					parentControls.AddRange(tabPage6.Controls.OfType<Control>());
-				if(sender == "textBox50" || sender == "All")
-					parentControls.AddRange(tabPage13.Controls.OfType<Control>());
-				foreach (object ctrl in parentControls) {
-					switch(ctrl.GetType().ToString())
-					{
-						case "System.Windows.Forms.ListView":
-							ListView lv = ctrl as ListView;
-							if(lv.Name == "listView2")
-								lv.Enabled = toggle;
-							break;
-						case "System.Windows.Forms.GroupBox":
-							GroupBox grb = ctrl as GroupBox;
-							foreach(Control ctr in grb.Controls) {
-								if(ctr.GetType().ToString() == "System.Windows.Forms.RadioButton") {
-									if(!toggle) {
-										RadioButton rb = ctr as RadioButton;
-										rb.Enabled = toggle;
-										rb.Checked = toggle;
-									}
-								}
-							}
-							break;
-						case "System.Windows.Forms.RichTextBox": case "System.Windows.Forms.TextBox":
-							TextBoxBase tb = ctrl as TextBoxBase;
-							if(tb.Name != "textBox43" && tb.Name != "textBox45" && !(Convert.ToInt16(tb.Name.Substring(tb.Name.Length - 2)) >= 48 && Convert.ToInt16(tb.Name.Substring(tb.Name.Length - 2)) <= 52))
-								tb.Enabled = toggle;
-							break;
-					}
-					ListView2ItemChecked(null,null);
-				}
-			}
 		}
 
 		void TextBox13TextChanged(object sender, EventArgs e)
@@ -1758,237 +1644,6 @@ namespace appCore
 					break;
 				}
 			}
-		}
-
-		void TextBox50TextChanged(object sender, EventArgs e)
-		{
-			if(GlobalProperties.siteFinder_mainswitch)
-				siteFinder_Toggle(false, false, "textBox50");
-		}
-		
-		void RadioButton6CheckedChanged(object sender, EventArgs e)
-		{
-			if(radioButton6.Checked) {
-				string bearer;
-				string cellName;
-				string cellID;
-				string lactac;
-				string Switch;
-				string noc;
-				
-				eScriptCellsGlobal.RowFilter = "BEARER = '2G' AND VENDOR LIKE 'ERIC*'";
-				foreach(DataRowView dr in eScriptCellsGlobal) {
-					bearer = dr[dr.Row.Table.Columns.IndexOf("BEARER")].ToString();
-					cellName = dr[dr.Row.Table.Columns.IndexOf("CELL_NAME")].ToString();
-					cellID = dr[dr.Row.Table.Columns.IndexOf("CELL_ID")].ToString();
-					lactac = dr[dr.Row.Table.Columns.IndexOf("LAC_TAC")].ToString();
-					Switch = dr[dr.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString();
-					noc = dr[dr.Row.Table.Columns.IndexOf("NOC")].ToString();
-					
-					listView2.Items.Add(new ListViewItem(new[]{bearer, cellName, cellID, lactac, Switch, noc}));
-				}
-				foreach (ColumnHeader col in listView2.Columns)
-					col.Width = -2;
-				
-				eScriptCellsGlobal.RowFilter = string.Empty;
-			}
-			else
-				listView2.Items.Clear();
-		}
-		
-		void RadioButton7CheckedChanged(object sender, EventArgs e)
-		{
-			if(radioButton7.Checked) {
-				string bearer;
-				string cellName;
-				string cellID;
-				string lactac;
-				string Switch;
-				string noc;
-				
-				eScriptCellsGlobal.RowFilter = "BEARER = '3G' AND VENDOR LIKE 'ERIC*'";
-				foreach(DataRowView dr in eScriptCellsGlobal) {
-					bearer = dr[dr.Row.Table.Columns.IndexOf("BEARER")].ToString();
-					cellName = dr[dr.Row.Table.Columns.IndexOf("CELL_NAME")].ToString();
-					cellID = dr[dr.Row.Table.Columns.IndexOf("CELL_ID")].ToString();
-					lactac = dr[dr.Row.Table.Columns.IndexOf("LAC_TAC")].ToString();
-					Switch = dr[dr.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString();
-					noc = dr[dr.Row.Table.Columns.IndexOf("NOC")].ToString();
-					
-					listView2.Items.Add(new ListViewItem(new[]{bearer, cellName,cellID,lactac, Switch, noc}));
-				}
-				foreach (ColumnHeader col in listView2.Columns)
-					col.Width = -2;
-				
-				eScriptCellsGlobal.RowFilter = string.Empty;
-				label68.Text += "\nIt\'s not possible to lock 3G cells via amos on site, log on to the RNC " + listView2.Items[0].SubItems[4].Text + " and follow the instructions";
-				label68.Visible = true;
-			}
-			else {
-				label68.Visible = false;
-				label68.Text = "WARNING:";
-				listView2.Items.Clear();
-			}
-		}
-		
-		void RadioButton8CheckedChanged(object sender, EventArgs e)
-		{
-			if(radioButton8.Checked) {
-				string bearer;
-				string cellName;
-				string cellID;
-				string lactac;
-				string Switch;
-				string noc;
-				
-				eScriptCellsGlobal.RowFilter = "BEARER = '4G' AND VENDOR LIKE 'ERIC*'";
-				foreach(DataRowView dr in eScriptCellsGlobal) {
-					bearer = dr[dr.Row.Table.Columns.IndexOf("BEARER")].ToString();
-					cellName = dr[dr.Row.Table.Columns.IndexOf("CELL_NAME")].ToString();
-					cellID = dr[dr.Row.Table.Columns.IndexOf("CELL_ID")].ToString();
-					lactac = dr[dr.Row.Table.Columns.IndexOf("LAC_TAC")].ToString();
-					Switch = dr[dr.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString();
-					noc = dr[dr.Row.Table.Columns.IndexOf("NOC")].ToString();
-					
-					listView2.Items.Add(new ListViewItem(new[]{bearer, cellName,cellID,lactac, Switch, noc}));
-				}
-				foreach (ColumnHeader col in listView2.Columns)
-					col.Width = -2;
-				
-				eScriptCellsGlobal.RowFilter = string.Empty;
-			}
-			else
-				listView2.Items.Clear();
-		}
-		
-		void ListView2ItemChecked(object sender, ItemCheckedEventArgs e)
-		{
-			richTextBox14.Text = string.Empty;
-			richTextBox15.Text = string.Empty;
-			button52.Enabled = listView2.CheckedItems.Count != listView2.Items.Count;
-			if(listView2.CheckedItems.Count > 0) {
-				button53.Enabled = true;
-				button49.Enabled = true;
-			}
-			else {
-				button53.Enabled = false;
-				button49.Enabled = false;
-			}
-		}
-		
-		void Button52Click(object sender, EventArgs e)
-		{
-			if(listView2.CheckedItems.Count < listView2.Items.Count) {
-				foreach (ListViewItem cell in listView2.Items)
-					cell.Checked = true;
-			}
-		}
-		
-		void Button53Click(object sender, EventArgs e)
-		{
-			if(listView2.CheckedItems.Count > 0) {
-				foreach (ListViewItem cell in listView2.Items)
-					cell.Checked = false;
-			}
-		}
-
-		void Button49Click(object sender, EventArgs e)
-		{
-			int radioch = 0;
-			foreach (Control radio in groupBox7.Controls) {
-				RadioButton rb = radio as RadioButton;
-				if (rb.Checked) break;
-				radioch++;
-			}
-			string cellLock = string.Empty;
-			string cellUnlock = string.Empty;
-			switch(radioch) {
-				case 0:
-					for(int c = 0;c < listView2.CheckedItems.Count;c++) {
-						cellLock += "RLSTC:CELL=" + listView2.CheckedItems[c].SubItems[1].Text + ",STATE=HALTED;";
-						cellUnlock += "RLSTC:CELL=" + listView2.CheckedItems[c].SubItems[1].Text + ",STATE=ACTIVE;";
-						if(c != listView2.CheckedItems.Count - 1) {
-							cellLock += Environment.NewLine;
-							cellUnlock += Environment.NewLine;
-						}
-					}
-					
-//					foreach(ListViewItem cell in listView2.CheckedItems) {
-//						cellLock += "RLSTC:CELL=" + cell.SubItems[1].Text + ",STATE=HALTED;" + Environment.NewLine;
-//						cellUnlock += "RLSTC:CELL=" + cell.SubItems[1].Text + ",STATE=ACTIVE;" + Environment.NewLine;
-//					}
-					break;
-				case 1:
-					foreach(ListViewItem cell in listView2.CheckedItems) {
-						cellLock += "bl UtranCell=" + cell.SubItems[2].Text + Environment.NewLine;
-						cellUnlock += "deb UtranCell=" + cell.SubItems[2].Text + Environment.NewLine;
-					}
-					break;
-				case 2:
-					foreach(ListViewItem cell in listView2.CheckedItems) {
-						cellLock += "bl ENodeBFunction=1,EUtranCellFDD=" + cell.SubItems[1].Text + Environment.NewLine;
-						cellUnlock += "deb ENodeBFunction=1,EUtranCellFDD=" + cell.SubItems[1].Text + Environment.NewLine;
-					}
-					break;
-			}
-			richTextBox14.Text = cellUnlock;
-			richTextBox15.Text = cellLock;
-		}
-
-		void RichTextBox14TextChanged(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrEmpty(richTextBox14.Text)) {
-				button50.Enabled = true;
-				button47.Visible = true;
-			}
-			else {
-				button50.Enabled = false;
-				button47.Visible = false;
-			}
-		}
-
-		void RichTextBox15TextChanged(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrEmpty(richTextBox15.Text)) {
-				button51.Enabled = true;
-				button48.Visible = true;
-			}
-			else {
-				button51.Enabled = false;
-				button48.Visible = false;
-			}
-		}
-
-		void Button50Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	UI.AMTLargeTextForm enlarge = new UI.AMTLargeTextForm(richTextBox14.Text,label62.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox14.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-
-		void Button51Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	UI.AMTLargeTextForm enlarge = new UI.AMTLargeTextForm(richTextBox15.Text,label63.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox15.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-
-		void Button47Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(richTextBox14.Text);
-		}
-
-		void Button48Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(richTextBox15.Text);
 		}
 		
 		public static void openSettings() {

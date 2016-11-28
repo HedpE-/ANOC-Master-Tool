@@ -562,7 +562,7 @@ namespace appCore.OssScripts.UI
 			LockScriptLabel.Size = new Size(80, 20);
 			
 			LockScriptTextBox.Location = new Point(paddingLeftRight, LockScriptLabel.Bottom + 2);
-			LockScriptTextBox.Size = new Size(250, 269);
+			LockScriptTextBox.Size = new Size(250, 268);
 			
 			LockScriptLargeTextButton.Size = new Size(24, 20);
 			LockScriptLargeTextButton.Location = new Point(LockScriptTextBox.Right - LockScriptLargeTextButton.Width, LockScriptLabel.Top);
@@ -571,7 +571,7 @@ namespace appCore.OssScripts.UI
 			UnlockScriptLabel.Size = new Size(80, 20);
 			
 			UnlockScriptTextBox.Location = new Point(LockScriptTextBox.Right + 10, UnlockScriptLabel.Bottom + 2);
-			UnlockScriptTextBox.Size = new Size(250, 269);
+			UnlockScriptTextBox.Size = new Size(250, 268);
 			
 			UnlockScriptLargeTextButton.Size = new Size(24, 20);
 			UnlockScriptLargeTextButton.Location = new Point(UnlockScriptTextBox.Right - UnlockScriptLargeTextButton.Width, UnlockScriptLabel.Top);

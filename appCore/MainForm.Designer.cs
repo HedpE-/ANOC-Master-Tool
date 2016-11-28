@@ -69,38 +69,13 @@ namespace appCore
 		private System.Windows.Forms.Button button25;
 		private System.Windows.Forms.Button button46;
 		private System.Windows.Forms.PictureBox pictureBox6;
-		private System.Windows.Forms.Label label64;
-		private System.Windows.Forms.Button button47;
-		private System.Windows.Forms.Button button48;
-		private System.Windows.Forms.Button button49;
-		private System.Windows.Forms.Button button50;
-		private System.Windows.Forms.Button button51;
-		private System.Windows.Forms.Label label62;
-		private System.Windows.Forms.Label label63;
-		private System.Windows.Forms.RichTextBox richTextBox14;
-		private System.Windows.Forms.RichTextBox richTextBox15;
-		private System.Windows.Forms.GroupBox groupBox7;
-		private System.Windows.Forms.RadioButton radioButton6;
-		private System.Windows.Forms.RadioButton radioButton7;
-		private System.Windows.Forms.RadioButton radioButton8;
-		private System.Windows.Forms.TextBox textBox50;
-		private System.Windows.Forms.Label label65;
-		private System.Windows.Forms.ListView listView2;
-		private System.Windows.Forms.Label label66;
-		private System.Windows.Forms.TextBox textBox51;
-		private System.Windows.Forms.Label label67;
-		private System.Windows.Forms.TextBox textBox52;
-		private appCore.SiteFinder.UI.CellDetailsPictureBox pictureBox7;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.ColumnHeader columnHeader4;
-		private System.Windows.Forms.ColumnHeader columnHeader5;
-		private System.Windows.Forms.ColumnHeader columnHeader6;
-		private System.Windows.Forms.Button button53;
-		private System.Windows.Forms.Button button52;
-		private System.Windows.Forms.Label label68;
 		private System.Windows.Forms.TabPage tabPage17;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.PictureBox pictureBox5;
+		private System.Windows.Forms.PictureBox pictureBox7;
+		private System.Windows.Forms.PictureBox pictureBox8;
+		private System.Windows.Forms.PictureBox pictureBox9;
+		private System.Windows.Forms.PictureBox pictureBox10;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -124,9 +99,14 @@ namespace appCore
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.pictureBox5 = new System.Windows.Forms.PictureBox();
+			this.pictureBox7 = new System.Windows.Forms.PictureBox();
+			this.pictureBox8 = new System.Windows.Forms.PictureBox();
+			this.pictureBox9 = new System.Windows.Forms.PictureBox();
+			this.pictureBox10 = new System.Windows.Forms.PictureBox();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -141,37 +121,6 @@ namespace appCore
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
 			this.tabPage13 = new System.Windows.Forms.TabPage();
-			this.label68 = new System.Windows.Forms.Label();
-			this.button53 = new System.Windows.Forms.Button();
-			this.button52 = new System.Windows.Forms.Button();
-			this.label66 = new System.Windows.Forms.Label();
-			this.textBox51 = new System.Windows.Forms.TextBox();
-			this.label67 = new System.Windows.Forms.Label();
-			this.textBox52 = new System.Windows.Forms.TextBox();
-			this.pictureBox7 = new appCore.SiteFinder.UI.CellDetailsPictureBox();
-			this.label65 = new System.Windows.Forms.Label();
-			this.listView2 = new System.Windows.Forms.ListView();
-			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
-			this.label64 = new System.Windows.Forms.Label();
-			this.button47 = new System.Windows.Forms.Button();
-			this.button48 = new System.Windows.Forms.Button();
-			this.button49 = new System.Windows.Forms.Button();
-			this.button50 = new System.Windows.Forms.Button();
-			this.button51 = new System.Windows.Forms.Button();
-			this.label62 = new System.Windows.Forms.Label();
-			this.label63 = new System.Windows.Forms.Label();
-			this.richTextBox14 = new System.Windows.Forms.RichTextBox();
-			this.richTextBox15 = new System.Windows.Forms.RichTextBox();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.radioButton6 = new System.Windows.Forms.RadioButton();
-			this.radioButton7 = new System.Windows.Forms.RadioButton();
-			this.radioButton8 = new System.Windows.Forms.RadioButton();
-			this.textBox50 = new System.Windows.Forms.TextBox();
 			this.tabPage12 = new System.Windows.Forms.TabPage();
 			this.tabPage11 = new System.Windows.Forms.TabPage();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
@@ -213,6 +162,12 @@ namespace appCore
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			this.panel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -222,9 +177,6 @@ namespace appCore
 			this.tabControl2.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.tabControl3.SuspendLayout();
-			this.tabPage13.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-			this.groupBox7.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			this.tabControl4.SuspendLayout();
@@ -255,6 +207,7 @@ namespace appCore
 			this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
 			this.tabPage1.BackgroundImage = global::appCore.UI.Resources.zoozoo_wallpaper_15;
 			this.tabPage1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.tabPage1.Controls.Add(this.panel1);
 			this.tabPage1.Controls.Add(this.pictureBox6);
 			this.tabPage1.Controls.Add(this.pictureBox4);
 			this.tabPage1.Controls.Add(this.pictureBox3);
@@ -267,6 +220,79 @@ namespace appCore
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Start";
 			this.tabPage1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabPage1MouseClick);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.pictureBox5);
+			this.panel1.Controls.Add(this.pictureBox7);
+			this.panel1.Controls.Add(this.pictureBox8);
+			this.panel1.Controls.Add(this.pictureBox9);
+			this.panel1.Controls.Add(this.pictureBox10);
+			this.panel1.Location = new System.Drawing.Point(144, 76);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(95, 139);
+			this.panel1.TabIndex = 10;
+			// 
+			// pictureBox5
+			// 
+			this.pictureBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox5.Image = global::appCore.UI.Resources.Business_Planner_icon;
+			this.pictureBox5.Location = new System.Drawing.Point(3, 95);
+			this.pictureBox5.Name = "pictureBox5";
+			this.pictureBox5.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox5.TabIndex = 14;
+			this.pictureBox5.TabStop = false;
+			this.pictureBox5.Visible = false;
+			// 
+			// pictureBox7
+			// 
+			this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox7.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox7.Image = global::appCore.UI.Resources._lock;
+			this.pictureBox7.Location = new System.Drawing.Point(3, 49);
+			this.pictureBox7.Name = "pictureBox7";
+			this.pictureBox7.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox7.TabIndex = 13;
+			this.pictureBox7.TabStop = false;
+			// 
+			// pictureBox8
+			// 
+			this.pictureBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox8.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox8.Image = global::appCore.UI.Resources.Book_512;
+			this.pictureBox8.Location = new System.Drawing.Point(3, 3);
+			this.pictureBox8.Name = "pictureBox8";
+			this.pictureBox8.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox8.TabIndex = 12;
+			this.pictureBox8.TabStop = false;
+			// 
+			// pictureBox9
+			// 
+			this.pictureBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox9.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox9.Image = global::appCore.UI.Resources.globe;
+			this.pictureBox9.Location = new System.Drawing.Point(46, 3);
+			this.pictureBox9.Name = "pictureBox9";
+			this.pictureBox9.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox9.TabIndex = 11;
+			this.pictureBox9.TabStop = false;
+			// 
+			// pictureBox10
+			// 
+			this.pictureBox10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox10.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox10.Image = global::appCore.UI.Resources.Settings_normal;
+			this.pictureBox10.Location = new System.Drawing.Point(46, 95);
+			this.pictureBox10.Name = "pictureBox10";
+			this.pictureBox10.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox10.TabIndex = 10;
+			this.pictureBox10.TabStop = false;
 			// 
 			// pictureBox6
 			// 
@@ -432,340 +458,12 @@ namespace appCore
 			// tabPage13
 			// 
 			this.tabPage13.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage13.Controls.Add(this.label68);
-			this.tabPage13.Controls.Add(this.button53);
-			this.tabPage13.Controls.Add(this.button52);
-			this.tabPage13.Controls.Add(this.label66);
-			this.tabPage13.Controls.Add(this.textBox51);
-			this.tabPage13.Controls.Add(this.label67);
-			this.tabPage13.Controls.Add(this.textBox52);
-			this.tabPage13.Controls.Add(this.pictureBox7);
-			this.tabPage13.Controls.Add(this.label65);
-			this.tabPage13.Controls.Add(this.listView2);
-			this.tabPage13.Controls.Add(this.label64);
-			this.tabPage13.Controls.Add(this.button47);
-			this.tabPage13.Controls.Add(this.button48);
-			this.tabPage13.Controls.Add(this.button49);
-			this.tabPage13.Controls.Add(this.button50);
-			this.tabPage13.Controls.Add(this.button51);
-			this.tabPage13.Controls.Add(this.label62);
-			this.tabPage13.Controls.Add(this.label63);
-			this.tabPage13.Controls.Add(this.richTextBox14);
-			this.tabPage13.Controls.Add(this.richTextBox15);
-			this.tabPage13.Controls.Add(this.groupBox7);
-			this.tabPage13.Controls.Add(this.textBox50);
 			this.tabPage13.Location = new System.Drawing.Point(4, 25);
 			this.tabPage13.Name = "tabPage13";
 			this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage13.Size = new System.Drawing.Size(519, 631);
 			this.tabPage13.TabIndex = 1;
 			this.tabPage13.Text = "Ericsson";
-			// 
-			// label68
-			// 
-			this.label68.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label68.ForeColor = System.Drawing.Color.Red;
-			this.label68.Location = new System.Drawing.Point(6, 228);
-			this.label68.Name = "label68";
-			this.label68.Size = new System.Drawing.Size(159, 70);
-			this.label68.TabIndex = 135;
-			this.label68.Text = "WARNING:";
-			this.label68.Visible = false;
-			// 
-			// button53
-			// 
-			this.button53.Location = new System.Drawing.Point(93, 160);
-			this.button53.Name = "button53";
-			this.button53.Size = new System.Drawing.Size(72, 23);
-			this.button53.TabIndex = 134;
-			this.button53.Text = "Select none";
-			this.button53.UseVisualStyleBackColor = true;
-			this.button53.Click += new System.EventHandler(this.Button53Click);
-			// 
-			// button52
-			// 
-			this.button52.Location = new System.Drawing.Point(93, 131);
-			this.button52.Name = "button52";
-			this.button52.Size = new System.Drawing.Size(72, 23);
-			this.button52.TabIndex = 133;
-			this.button52.Text = "Select all";
-			this.button52.UseVisualStyleBackColor = true;
-			this.button52.Click += new System.EventHandler(this.Button52Click);
-			// 
-			// label66
-			// 
-			this.label66.Location = new System.Drawing.Point(124, 3);
-			this.label66.Name = "label66";
-			this.label66.Size = new System.Drawing.Size(41, 20);
-			this.label66.TabIndex = 132;
-			this.label66.Text = "Priority";
-			this.label66.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// textBox51
-			// 
-			this.textBox51.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox51.Location = new System.Drawing.Point(171, 4);
-			this.textBox51.Name = "textBox51";
-			this.textBox51.ReadOnly = true;
-			this.textBox51.Size = new System.Drawing.Size(91, 20);
-			this.textBox51.TabIndex = 131;
-			// 
-			// label67
-			// 
-			this.label67.Location = new System.Drawing.Point(268, 3);
-			this.label67.Name = "label67";
-			this.label67.Size = new System.Drawing.Size(43, 20);
-			this.label67.TabIndex = 130;
-			this.label67.Text = "Region";
-			this.label67.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// textBox52
-			// 
-			this.textBox52.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox52.Location = new System.Drawing.Point(320, 4);
-			this.textBox52.MaxLength = 5;
-			this.textBox52.Name = "textBox52";
-			this.textBox52.ReadOnly = true;
-			this.textBox52.Size = new System.Drawing.Size(194, 20);
-			this.textBox52.TabIndex = 129;
-			// 
-			// pictureBox7
-			// 
-			this.pictureBox7.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox7.Image")));
-			this.pictureBox7.Location = new System.Drawing.Point(58, 31);
-			this.pictureBox7.Name = "pictureBox7";
-			this.pictureBox7.Size = new System.Drawing.Size(403, 75);
-			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.pictureBox7.TabIndex = 118;
-			this.pictureBox7.TabStop = false;
-			// 
-			// label65
-			// 
-			this.label65.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label65.Location = new System.Drawing.Point(125, 112);
-			this.label65.Name = "label65";
-			this.label65.Size = new System.Drawing.Size(40, 20);
-			this.label65.TabIndex = 117;
-			this.label65.Text = "Cells";
-			this.label65.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// listView2
-			// 
-			this.listView2.AutoArrange = false;
-			this.listView2.CheckBoxes = true;
-			this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnHeader1,
-			this.columnHeader2,
-			this.columnHeader3,
-			this.columnHeader4,
-			this.columnHeader5,
-			this.columnHeader6});
-			this.listView2.Enabled = false;
-			this.listView2.FullRowSelect = true;
-			this.listView2.GridLines = true;
-			this.listView2.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listView2.Location = new System.Drawing.Point(171, 112);
-			this.listView2.Name = "listView2";
-			this.listView2.Size = new System.Drawing.Size(343, 186);
-			this.listView2.TabIndex = 116;
-			this.listView2.UseCompatibleStateImageBehavior = false;
-			this.listView2.View = System.Windows.Forms.View.Details;
-			this.listView2.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListView2ItemChecked);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "Tech";
-			this.columnHeader1.Width = 43;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Cell Name";
-			this.columnHeader2.Width = 75;
-			// 
-			// columnHeader3
-			// 
-			this.columnHeader3.Text = "Cell ID";
-			this.columnHeader3.Width = 43;
-			// 
-			// columnHeader4
-			// 
-			this.columnHeader4.Text = "LAC TAC";
-			this.columnHeader4.Width = 56;
-			// 
-			// columnHeader5
-			// 
-			this.columnHeader5.Text = "Switch";
-			this.columnHeader5.Width = 71;
-			// 
-			// columnHeader6
-			// 
-			this.columnHeader6.Text = "NOC";
-			this.columnHeader6.Width = 49;
-			// 
-			// label64
-			// 
-			this.label64.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label64.Location = new System.Drawing.Point(5, 3);
-			this.label64.Name = "label64";
-			this.label64.Size = new System.Drawing.Size(26, 20);
-			this.label64.TabIndex = 25;
-			this.label64.Text = "Site";
-			this.label64.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// button47
-			// 
-			this.button47.Location = new System.Drawing.Point(264, 605);
-			this.button47.Name = "button47";
-			this.button47.Size = new System.Drawing.Size(112, 23);
-			this.button47.TabIndex = 23;
-			this.button47.Text = "Copy unlock script";
-			this.button47.UseVisualStyleBackColor = true;
-			this.button47.Visible = false;
-			this.button47.Click += new System.EventHandler(this.Button47Click);
-			// 
-			// button48
-			// 
-			this.button48.Location = new System.Drawing.Point(143, 605);
-			this.button48.Name = "button48";
-			this.button48.Size = new System.Drawing.Size(112, 23);
-			this.button48.TabIndex = 21;
-			this.button48.Text = "Copy lock script";
-			this.button48.UseVisualStyleBackColor = true;
-			this.button48.Visible = false;
-			this.button48.Click += new System.EventHandler(this.Button48Click);
-			// 
-			// button49
-			// 
-			this.button49.Enabled = false;
-			this.button49.Location = new System.Drawing.Point(5, 605);
-			this.button49.Name = "button49";
-			this.button49.Size = new System.Drawing.Size(112, 23);
-			this.button49.TabIndex = 20;
-			this.button49.Text = "Generate scripts";
-			this.button49.UseVisualStyleBackColor = true;
-			this.button49.Click += new System.EventHandler(this.Button49Click);
-			// 
-			// button50
-			// 
-			this.button50.Enabled = false;
-			this.button50.Location = new System.Drawing.Point(490, 304);
-			this.button50.Name = "button50";
-			this.button50.Size = new System.Drawing.Size(24, 20);
-			this.button50.TabIndex = 19;
-			this.button50.Text = "...";
-			this.button50.UseVisualStyleBackColor = true;
-			this.button50.Click += new System.EventHandler(this.Button50Click);
-			// 
-			// button51
-			// 
-			this.button51.Enabled = false;
-			this.button51.Location = new System.Drawing.Point(232, 304);
-			this.button51.Name = "button51";
-			this.button51.Size = new System.Drawing.Size(24, 20);
-			this.button51.TabIndex = 17;
-			this.button51.Text = "...";
-			this.button51.UseVisualStyleBackColor = true;
-			this.button51.Click += new System.EventHandler(this.Button51Click);
-			// 
-			// label62
-			// 
-			this.label62.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label62.Location = new System.Drawing.Point(264, 304);
-			this.label62.Name = "label62";
-			this.label62.Size = new System.Drawing.Size(76, 20);
-			this.label62.TabIndex = 24;
-			this.label62.Text = "Unlock cells";
-			this.label62.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label63
-			// 
-			this.label63.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.label63.Location = new System.Drawing.Point(5, 304);
-			this.label63.Name = "label63";
-			this.label63.Size = new System.Drawing.Size(76, 20);
-			this.label63.TabIndex = 22;
-			this.label63.Text = "Lock cells";
-			this.label63.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// richTextBox14
-			// 
-			this.richTextBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox14.Location = new System.Drawing.Point(264, 327);
-			this.richTextBox14.Name = "richTextBox14";
-			this.richTextBox14.ReadOnly = true;
-			this.richTextBox14.Size = new System.Drawing.Size(250, 274);
-			this.richTextBox14.TabIndex = 18;
-			this.richTextBox14.Text = "";
-			this.richTextBox14.TextChanged += new System.EventHandler(this.RichTextBox14TextChanged);
-			// 
-			// richTextBox15
-			// 
-			this.richTextBox15.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.richTextBox15.Location = new System.Drawing.Point(5, 327);
-			this.richTextBox15.Name = "richTextBox15";
-			this.richTextBox15.ReadOnly = true;
-			this.richTextBox15.Size = new System.Drawing.Size(250, 272);
-			this.richTextBox15.TabIndex = 15;
-			this.richTextBox15.Text = "";
-			this.richTextBox15.TextChanged += new System.EventHandler(this.RichTextBox15TextChanged);
-			// 
-			// groupBox7
-			// 
-			this.groupBox7.Controls.Add(this.radioButton6);
-			this.groupBox7.Controls.Add(this.radioButton7);
-			this.groupBox7.Controls.Add(this.radioButton8);
-			this.groupBox7.Location = new System.Drawing.Point(6, 112);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(81, 113);
-			this.groupBox7.TabIndex = 16;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "Technology";
-			// 
-			// radioButton6
-			// 
-			this.radioButton6.Enabled = false;
-			this.radioButton6.Location = new System.Drawing.Point(18, 19);
-			this.radioButton6.Name = "radioButton6";
-			this.radioButton6.Size = new System.Drawing.Size(45, 24);
-			this.radioButton6.TabIndex = 0;
-			this.radioButton6.TabStop = true;
-			this.radioButton6.Text = "2G";
-			this.radioButton6.UseVisualStyleBackColor = true;
-			this.radioButton6.CheckedChanged += new System.EventHandler(this.RadioButton6CheckedChanged);
-			// 
-			// radioButton7
-			// 
-			this.radioButton7.Enabled = false;
-			this.radioButton7.Location = new System.Drawing.Point(18, 49);
-			this.radioButton7.Name = "radioButton7";
-			this.radioButton7.Size = new System.Drawing.Size(45, 24);
-			this.radioButton7.TabIndex = 1;
-			this.radioButton7.TabStop = true;
-			this.radioButton7.Text = "3G";
-			this.radioButton7.UseVisualStyleBackColor = true;
-			this.radioButton7.CheckedChanged += new System.EventHandler(this.RadioButton7CheckedChanged);
-			// 
-			// radioButton8
-			// 
-			this.radioButton8.Enabled = false;
-			this.radioButton8.Location = new System.Drawing.Point(18, 79);
-			this.radioButton8.Name = "radioButton8";
-			this.radioButton8.Size = new System.Drawing.Size(45, 24);
-			this.radioButton8.TabIndex = 2;
-			this.radioButton8.TabStop = true;
-			this.radioButton8.Text = "4G";
-			this.radioButton8.UseVisualStyleBackColor = true;
-			this.radioButton8.CheckedChanged += new System.EventHandler(this.RadioButton8CheckedChanged);
-			// 
-			// textBox50
-			// 
-			this.textBox50.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox50.Location = new System.Drawing.Point(37, 4);
-			this.textBox50.Name = "textBox50";
-			this.textBox50.Size = new System.Drawing.Size(81, 20);
-			this.textBox50.TabIndex = 14;
-			this.textBox50.TextChanged += new System.EventHandler(this.TextBox50TextChanged);
-			this.textBox50.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
 			// 
 			// tabPage12
 			// 
@@ -1161,7 +859,7 @@ namespace appCore
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(192, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(183, 26);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -1169,20 +867,20 @@ namespace appCore
 			this.toolStripMenuItem3,
 			this.toolStripMenuItem2});
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 22);
 			this.toolStripMenuItem1.Text = "Change background...";
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(179, 22);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItem3.Text = "Default background";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.ToolStripMenuItem3Click);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
 			// 
@@ -1199,9 +897,14 @@ namespace appCore
 			this.Name = "MainForm";
 			this.Text = "ANOC Master Tool";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormFormClosing);
-			this.Shown += new System.EventHandler(this.MainFormShown);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
+			this.panel1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -1211,10 +914,6 @@ namespace appCore
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);
 			this.tabControl3.ResumeLayout(false);
-			this.tabPage13.ResumeLayout(false);
-			this.tabPage13.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-			this.groupBox7.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
 			this.tabPage4.ResumeLayout(false);
