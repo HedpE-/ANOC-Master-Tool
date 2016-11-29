@@ -524,12 +524,12 @@ namespace appCore
 			SplashForm.UpdateLabelText("Loading UI");
 			
 			InitializeComponent();
-			panel1.BackColor = Color.FromArgb(150, Color.LightGray);
+			panel1.BackColor = Color.FromArgb(120, Color.LightGray);
 			
 			string img = SettingsFile.BackgroundImage;
 			
-			if (img != "Default") {
-				if (File.Exists(img))
+			if(img != "Default") {
+				if(File.Exists(img))
 					tabPage1.BackgroundImage = Image.FromFile(img);
 				else
 					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
