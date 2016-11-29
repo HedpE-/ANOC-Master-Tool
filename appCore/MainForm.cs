@@ -524,6 +524,7 @@ namespace appCore
 			SplashForm.UpdateLabelText("Loading UI");
 			
 			InitializeComponent();
+			panel1.BackColor = Color.FromArgb(150, Color.LightGray);
 			
 			string img = SettingsFile.BackgroundImage;
 			

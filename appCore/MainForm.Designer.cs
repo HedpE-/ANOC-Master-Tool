@@ -71,11 +71,6 @@ namespace appCore
 		private System.Windows.Forms.PictureBox pictureBox6;
 		private System.Windows.Forms.TabPage tabPage17;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.PictureBox pictureBox5;
-		private System.Windows.Forms.PictureBox pictureBox7;
-		private System.Windows.Forms.PictureBox pictureBox8;
-		private System.Windows.Forms.PictureBox pictureBox9;
-		private System.Windows.Forms.PictureBox pictureBox10;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -102,11 +97,6 @@ namespace appCore
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.pictureBox5 = new System.Windows.Forms.PictureBox();
-			this.pictureBox7 = new System.Windows.Forms.PictureBox();
-			this.pictureBox8 = new System.Windows.Forms.PictureBox();
-			this.pictureBox9 = new System.Windows.Forms.PictureBox();
-			this.pictureBox10 = new System.Windows.Forms.PictureBox();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -163,11 +153,6 @@ namespace appCore
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -208,11 +193,6 @@ namespace appCore
 			this.tabPage1.BackgroundImage = global::appCore.UI.Resources.zoozoo_wallpaper_15;
 			this.tabPage1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.tabPage1.Controls.Add(this.panel1);
-			this.tabPage1.Controls.Add(this.pictureBox6);
-			this.tabPage1.Controls.Add(this.pictureBox4);
-			this.tabPage1.Controls.Add(this.pictureBox3);
-			this.tabPage1.Controls.Add(this.pictureBox2);
-			this.tabPage1.Controls.Add(this.pictureBox1);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(0);
 			this.tabPage1.Name = "tabPage1";
@@ -223,76 +203,16 @@ namespace appCore
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.pictureBox5);
-			this.panel1.Controls.Add(this.pictureBox7);
-			this.panel1.Controls.Add(this.pictureBox8);
-			this.panel1.Controls.Add(this.pictureBox9);
-			this.panel1.Controls.Add(this.pictureBox10);
-			this.panel1.Location = new System.Drawing.Point(144, 76);
+			this.panel1.BackColor = System.Drawing.Color.Transparent;
+			this.panel1.Controls.Add(this.pictureBox2);
+			this.panel1.Controls.Add(this.pictureBox6);
+			this.panel1.Controls.Add(this.pictureBox1);
+			this.panel1.Controls.Add(this.pictureBox4);
+			this.panel1.Controls.Add(this.pictureBox3);
+			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(95, 139);
+			this.panel1.Size = new System.Drawing.Size(98, 138);
 			this.panel1.TabIndex = 10;
-			// 
-			// pictureBox5
-			// 
-			this.pictureBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox5.Image = global::appCore.UI.Resources.Business_Planner_icon;
-			this.pictureBox5.Location = new System.Drawing.Point(3, 95);
-			this.pictureBox5.Name = "pictureBox5";
-			this.pictureBox5.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox5.TabIndex = 14;
-			this.pictureBox5.TabStop = false;
-			this.pictureBox5.Visible = false;
-			// 
-			// pictureBox7
-			// 
-			this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox7.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox7.Image = global::appCore.UI.Resources._lock;
-			this.pictureBox7.Location = new System.Drawing.Point(3, 49);
-			this.pictureBox7.Name = "pictureBox7";
-			this.pictureBox7.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox7.TabIndex = 13;
-			this.pictureBox7.TabStop = false;
-			// 
-			// pictureBox8
-			// 
-			this.pictureBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox8.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox8.Image = global::appCore.UI.Resources.Book_512;
-			this.pictureBox8.Location = new System.Drawing.Point(3, 3);
-			this.pictureBox8.Name = "pictureBox8";
-			this.pictureBox8.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox8.TabIndex = 12;
-			this.pictureBox8.TabStop = false;
-			// 
-			// pictureBox9
-			// 
-			this.pictureBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox9.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox9.Image = global::appCore.UI.Resources.globe;
-			this.pictureBox9.Location = new System.Drawing.Point(46, 3);
-			this.pictureBox9.Name = "pictureBox9";
-			this.pictureBox9.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox9.TabIndex = 11;
-			this.pictureBox9.TabStop = false;
-			// 
-			// pictureBox10
-			// 
-			this.pictureBox10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox10.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox10.Image = global::appCore.UI.Resources.Settings_normal;
-			this.pictureBox10.Location = new System.Drawing.Point(46, 95);
-			this.pictureBox10.Name = "pictureBox10";
-			this.pictureBox10.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox10.TabIndex = 10;
-			this.pictureBox10.TabStop = false;
 			// 
 			// pictureBox6
 			// 
@@ -859,7 +779,7 @@ namespace appCore
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.toolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(183, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(192, 26);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -867,20 +787,20 @@ namespace appCore
 			this.toolStripMenuItem3,
 			this.toolStripMenuItem2});
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(182, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
 			this.toolStripMenuItem1.Text = "Change background...";
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(179, 22);
 			this.toolStripMenuItem3.Text = "Default background";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.ToolStripMenuItem3Click);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 22);
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
 			// 
@@ -900,11 +820,6 @@ namespace appCore
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
