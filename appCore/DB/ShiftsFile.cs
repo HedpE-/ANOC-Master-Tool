@@ -185,7 +185,10 @@ namespace appCore.DB
 				for (int c = 0; c < TableB.Columns.Count; c++)
 				{
 					if (!string.IsNullOrEmpty(TableB.Rows[2][TableB.Columns[c].ColumnName].ToString()))
-						TableB.Columns[c].ColumnName = "Day" + TableB.Rows[2][TableB.Columns[c].ColumnName];
+						if(!(curMonth == Tools.Months.December.ToString() && TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() == "1" && c > 4))
+							TableB.Columns[c].ColumnName = "Day" + TableB.Rows[2][TableB.Columns[c].ColumnName];
+//					else
+//							UI.FlexibleMessageBox.Show("Dia " + TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() + "\nMês " + curMonth + "\ncounter " + c);
 				}
 				TableB.TableName = curMonth;
 				dtTablesList.Add(TableB);

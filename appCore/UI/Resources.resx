@@ -15954,11 +15954,11 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha7 28/11/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha7 01/12/2016 #######
 
 - Tweaked the INCs/CRQs/BookIns/Alarms details window
 - Tweaked all Scripts to include the new Menubar instead of the old buttons
-
+- Fixed issue with December shifts excel sheet that caused the application to crash because the month had duplicate day 1, December and January's
 
 ####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
 
