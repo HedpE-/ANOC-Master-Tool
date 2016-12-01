@@ -524,7 +524,7 @@ namespace appCore
 			SplashForm.UpdateLabelText("Loading UI");
 			
 			InitializeComponent();
-			panel1.BackColor = Color.FromArgb(120, Color.LightGray);
+			panel1.BackColor = CurrentUser.userName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
 			
 			string img = SettingsFile.BackgroundImage;
 			
@@ -535,7 +535,7 @@ namespace appCore
 					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
 			}
 			
-			tabPage1.Controls.Add(SiteDetailsPictureBox);
+			panel1.Controls.Add(SiteDetailsPictureBox);
 			// 
 			// SiteDetailsPictureBox
 			// 
