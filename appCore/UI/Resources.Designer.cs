@@ -183,7 +183,7 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha8 02/12/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha8 03/12/2016 #######
 		///
 		///- Made the INCs/CRQs/BookIns/Alarms details window resizable
 		///- Fixed VF/TF 2G cells identification issue where W &amp; Y cells were being identified as VF and not TF

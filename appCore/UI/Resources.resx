@@ -15954,7 +15954,7 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha8 02/12/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha8 03/12/2016 #######
 
 - Made the INCs/CRQs/BookIns/Alarms details window resizable
 - Fixed VF/TF 2G cells identification issue where W &amp; Y cells were being identified as VF and not TF
