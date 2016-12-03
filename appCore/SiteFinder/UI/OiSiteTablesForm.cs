@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
@@ -21,6 +22,7 @@ namespace appCore.SiteFinder.UI
 		DataTable Datatable;
 		string filter = "all";
 		public string DataType { get; private set; }
+		int maxWidth;
 		
 		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID)
 		{
@@ -46,6 +48,8 @@ namespace appCore.SiteFinder.UI
 			}
 			populateListView();
 			Text = "Site " + siteID + " " + DataType;
+			
+//			MaximumSize = new Size(maxWidth, int.MaxValue);
 		}
 		
 		void populateListView() {
@@ -69,8 +73,11 @@ namespace appCore.SiteFinder.UI
 				listView1.Items.Add(new ListViewItem(rowList.ToArray()));
 			}
 			
-			foreach (ColumnHeader col in listView1.Columns)
+			maxWidth = 0;
+			foreach (ColumnHeader col in listView1.Columns) {
 				col.Width = -2;
+//				maxWidth += col.Width;
+			}
 			
 			listView1.ResumeLayout();
 		}

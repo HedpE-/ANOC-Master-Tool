@@ -185,14 +185,15 @@ namespace appCore.UI {
 		/// <summary>
 		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha8 02/12/2016 #######
 		///
-		///- Fixed VF/TF cells identification issue where W &amp; Y cells were being identified as VF and not TF
+		///- Made the INCs/CRQs/BookIns/Alarms details window resizable
+		///- Fixed VF/TF 2G cells identification issue where W &amp; Y cells were being identified as VF and not TF
 		///- Fixed Outage parser crash containing alarms with empty Element column(cell name)
+		///- Fixed Netcool parsing alarms with empty Element column(cell name)
 		///
 		///####### ANOC Master Tool 7.0alpha7 01/12/2016 #######
 		///
 		///- Tweaked the INCs/CRQs/BookIns/Alarms details window
-		///- Tweaked all Scripts to include the new Menubar instead of the old buttons
-		///- Fixed issue with December shifts excel sheet that caused the application to cra [rest of string was truncated]&quot;;.
+		///- Tweaked all Scripts to [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

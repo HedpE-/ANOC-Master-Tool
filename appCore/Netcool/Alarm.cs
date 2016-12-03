@@ -331,11 +331,19 @@ namespace appCore.Netcool
 						Element = elementID;
 						break;
 					case Site.Vendors.Ericsson:
-						string EricssonCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
-						List<Cell> results = Finder.queryAllCellsDB("CELL_ID", EricssonCellId);
-						foreach(Cell cell in results)
-							if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
-								Element = cell.Name;
+						switch(RncBsc.Substring(0,1)) {
+							case "B":
+								string GCellId = Summary.Substring(Summary.IndexOf("CELL =  ") + 8);
+								Element = GCellId.Substring(0, GCellId.IndexOf(" ("));
+								break;
+							case "R":
+								string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
+								List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
+								foreach(Cell cell in results)
+									if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
+										Element = cell.Name;
+								break;
+						}
 						break;
 				}
 			}
