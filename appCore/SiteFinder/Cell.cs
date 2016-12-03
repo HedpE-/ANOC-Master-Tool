@@ -52,7 +52,7 @@ namespace appCore.SiteFinder
 		public string Operator {
 			get {
 				if(string.IsNullOrEmpty(celloperator))
-					celloperator = Name.StartsWith("T") || Name.EndsWith("X") || Name.EndsWith("X") || Name.EndsWith("X") ? "TEF" : "VF";
+					celloperator = Name.StartsWith("T") || Name.EndsWith("W") || Name.EndsWith("X") || Name.EndsWith("Y") ? "TEF" : "VF";
 				return celloperator;
 			}
 			private set { celloperator = value;}

@@ -15954,7 +15954,12 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha7 01/12/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha8 02/12/2016 #######
+
+- Fixed VF/TF cells identification issue where W &amp; Y cells were being identified as VF and not TF
+- Fixed Outage parser crash containing alarms with empty Element column(cell name)
+
+####### ANOC Master Tool 7.0alpha7 01/12/2016 #######
 
 - Tweaked the INCs/CRQs/BookIns/Alarms details window
 - Tweaked all Scripts to include the new Menubar instead of the old buttons

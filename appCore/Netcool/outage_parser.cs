@@ -10,6 +10,7 @@ using System.Data;
 using System.Linq; // Preciso para usar o Distinct() para remover duplicados
 using System.Text;
 using appCore.Settings;
+using appCore.SiteFinder;
 
 
 namespace appCore.Netcool
@@ -76,11 +77,13 @@ namespace appCore.Netcool
 			int elementIndex = parserTable.Columns["Element"].Ordinal;
 			int nodeIndex = parserTable.Columns["Node"].Ordinal;
 			int locationIndex = parserTable.Columns["Location"].Ordinal;
+			int summaryIndex = parserTable.Columns["Summary"].Ordinal;
+			int switchIndex = parserTable.Columns["RNC/BSC"].Ordinal;
 			foreach (string row in rows)
 			{
 				string[] dividedRow = row.Split('\t'); // Dividir a row em colunas, uma por string no array
 				if(string.IsNullOrEmpty(dividedRow[elementIndex])) {
-					switch(dividedRow[vendorIndex]) {
+					switch(dividedRow[vendorIndex].ToUpper()) {
 						case "HUAWEI":
 							dividedRow[elementIndex] = dividedRow[nodeIndex];
 							break;
@@ -97,10 +100,31 @@ namespace appCore.Netcool
 								elementID += "0";
 							else
 								elementID += nodeNSNcellID[2];
-							elementID += nodeNSNcellID[0].ToString() + nodeNSNcellID[1].ToString();
+							elementID += nodeNSNcellID[0] + nodeNSNcellID[1].ToString();
 							dividedRow[elementIndex] = elementID;
 							break;
+						case "ERICSSON":
+							switch(dividedRow[switchIndex].Substring(0,1)) {
+								case "R":
+									string UCellId = dividedRow[summaryIndex].Substring(dividedRow[summaryIndex].IndexOf("UtranCell=") + 10);
+									List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
+									foreach(Cell cell in results) {
+										if(cell.BscRnc_Id == dividedRow[switchIndex] && cell.Vendor.ToString().ToUpper() == dividedRow[vendorIndex].ToUpper()) {
+											dividedRow[elementIndex] = cell.Name;
+											break;
+										}
+									}
+									break;
+								case "B":
+									string GCellId = dividedRow[summaryIndex].Substring(dividedRow[summaryIndex].IndexOf("CELL =  ") + 8);
+									dividedRow[elementIndex] = GCellId.Substring(0, GCellId.IndexOf(" ("));
+									break;
+							}
+							break;
 					}
+				}
+				if(string.IsNullOrEmpty(dividedRow[elementIndex])) {
+					
 				}
 				DataRow DR = parserTable.NewRow(); // Criar a Row com o formato da DataTable
 				int a = 0;
