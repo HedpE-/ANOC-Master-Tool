@@ -813,7 +813,12 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void LockUnlockCells(object sender, EventArgs e) {
-			
+			if(Settings.CurrentUser.userName == "GONCARJ3") {
+				if(currentSite.Exists) {
+					LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
+					lucf.ShowDialog();
+				}
+			}
 		}
 		
 		void InitializeToolStripMenuItems() {

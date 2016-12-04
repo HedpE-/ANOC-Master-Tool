@@ -157,6 +157,10 @@
     <Compile Include="SiteFinder\UI\CellDetailsPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SiteFinder\UI\LockUnlockCellsForm.cs" />
+    <Compile Include="SiteFinder\UI\LockUnlockCellsForm.Designer.cs">
+      <DependentUpon>LockUnlockCellsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SiteFinder\UI\siteDetails.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -342,6 +346,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\UI\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SiteFinder\UI\LockUnlockCellsForm.resx">
+      <DependentUpon>LockUnlockCellsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\OiSiteTablesForm.resx">
       <DependentUpon>OiSiteTablesForm.Designer.cs</DependentUpon>
