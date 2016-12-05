@@ -8,7 +8,9 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
@@ -22,6 +24,8 @@ namespace appCore.SiteFinder.UI
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
+			currentSite.UpdateLockedCells();
+			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
 			radioButton1.Select();
 		}
@@ -33,11 +37,16 @@ namespace appCore.SiteFinder.UI
 			
 			if(rb.Checked) {
 				foreach (Cell cell in currentSite.Cells) {
+					string ossID;
+					if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+						ossID = cell.ENodeB_Id;
+					else
+						ossID = cell.WBTS_BCF;
 					ListViewItem lvi = new ListViewItem(
 						new[]{ cell.Bearer,
 							cell.Name,
-							cell.Id,
 							cell.BscRnc_Id,
+							ossID,
 							cell.Vendor.ToString(),
 							cell.Noc,
 							cell.Locked ? "YES" : "No"
@@ -62,12 +71,45 @@ namespace appCore.SiteFinder.UI
 				foreach (ColumnHeader col in listView1.Columns)
 					col.Width = -2;
 				
-				button1.Text = rb.Text.StartsWith("Lock") ? "Lock\nCells" : "Unlock\nCells";
-				checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Count > 0;
-				checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Count > 0;
-				checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Count > 0;
+				if(rb.Text.StartsWith("Lock")) {
+					button1.Text = "Lock\nCells";
+					checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => !s.Locked).Count() > 0;
+					checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => !s.Locked).Count() > 0;
+					checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => !s.Locked).Count() > 0;
+					
+					foreach(string type in new []{"CRQ","INC"}) {
+						DataTable cases;
+						cases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
+						string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+							"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+						List<DataRow> filteredCases = cases.Select(query).ToList();
+						if(type == "CRQ" && filteredCases.Count > 0) {
+							for(int c = 0;c < filteredCases.Count;c++) {
+								DataRow row = filteredCases[c];
+								if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
+									if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+										filteredCases.RemoveAt(c);
+										c--;
+									}
+								}
+							}
+						}
+						foreach(DataRow row in filteredCases) {
+							if(type == "INC")
+								comboBox1.Items.Add(row["Incident Ref"]);
+							else
+								comboBox1.Items.Add(row["Change Ref"]);
+						}
+					}
+				}
+				else {
+					button1.Text = "Unlock\nCells";
+					checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => s.Locked).Count() > 0;
+					checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => s.Locked).Count() > 0;
+					checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => s.Locked).Count() > 0;
+				}
 			}
-			
+			checkBox1.Checked = checkBox2.Checked = checkBox3.Checked = false;
 			listView1.ResumeLayout();
 		}
 		
@@ -77,7 +119,19 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
-			button1.Enabled = listView1.CheckedItems.Count > 0;
+			if(listView1.CheckedItems.Count > 0) {
+				button1.Enabled = amtRichTextBox1.Enabled = true;
+				comboBox1.Enabled = radioButton1.Checked;
+			}
+			else
+				button1.Enabled = amtRichTextBox1.Enabled = comboBox1.Enabled = false;
+		}
+		
+		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
+			CheckBox cb = sender as CheckBox;
+			var filtered = listView1.Items.Cast<ListViewItem>().Where(s => s.Text == cb.Text);
+			foreach(ListViewItem lvi in filtered)
+				lvi.Checked = cb.Checked;
 		}
 	}
 }

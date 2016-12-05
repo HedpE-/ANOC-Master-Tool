@@ -19,7 +19,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.ListView listView1;
 		private System.Windows.Forms.ColumnHeader Tech;
 		private System.Windows.Forms.ColumnHeader CellName;
-		private System.Windows.Forms.ColumnHeader CellId;
+		private System.Windows.Forms.ColumnHeader OssId;
 		private System.Windows.Forms.ColumnHeader Switch;
 		private System.Windows.Forms.ColumnHeader Vendor;
 		private System.Windows.Forms.ColumnHeader NOC;
@@ -60,8 +60,8 @@ namespace appCore.SiteFinder.UI
 			this.listView1 = new System.Windows.Forms.ListView();
 			this.Tech = new System.Windows.Forms.ColumnHeader();
 			this.CellName = new System.Windows.Forms.ColumnHeader();
-			this.CellId = new System.Windows.Forms.ColumnHeader();
 			this.Switch = new System.Windows.Forms.ColumnHeader();
+			this.OssId = new System.Windows.Forms.ColumnHeader();
 			this.Vendor = new System.Windows.Forms.ColumnHeader();
 			this.NOC = new System.Windows.Forms.ColumnHeader();
 			this.Locked = new System.Windows.Forms.ColumnHeader();
@@ -79,7 +79,7 @@ namespace appCore.SiteFinder.UI
 			// radioButton2
 			// 
 			this.radioButton2.Appearance = System.Windows.Forms.Appearance.Button;
-			this.radioButton2.Location = new System.Drawing.Point(84, 2);
+			this.radioButton2.Location = new System.Drawing.Point(88, 2);
 			this.radioButton2.Name = "radioButton2";
 			this.radioButton2.Size = new System.Drawing.Size(76, 24);
 			this.radioButton2.TabIndex = 34;
@@ -92,7 +92,7 @@ namespace appCore.SiteFinder.UI
 			// radioButton1
 			// 
 			this.radioButton1.Appearance = System.Windows.Forms.Appearance.Button;
-			this.radioButton1.Location = new System.Drawing.Point(2, 2);
+			this.radioButton1.Location = new System.Drawing.Point(6, 2);
 			this.radioButton1.Name = "radioButton1";
 			this.radioButton1.Size = new System.Drawing.Size(76, 24);
 			this.radioButton1.TabIndex = 35;
@@ -108,14 +108,15 @@ namespace appCore.SiteFinder.UI
 			this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
 			this.Tech,
 			this.CellName,
-			this.CellId,
 			this.Switch,
+			this.OssId,
 			this.Vendor,
 			this.NOC,
 			this.Locked});
-			this.listView1.Location = new System.Drawing.Point(2, 32);
+			this.listView1.GridLines = true;
+			this.listView1.Location = new System.Drawing.Point(6, 32);
 			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(399, 364);
+			this.listView1.Size = new System.Drawing.Size(437, 364);
 			this.listView1.TabIndex = 36;
 			this.listView1.UseCompatibleStateImageBehavior = false;
 			this.listView1.View = System.Windows.Forms.View.Details;
@@ -131,15 +132,15 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.CellName.Text = "Cell Name";
 			// 
-			// CellId
-			// 
-			this.CellId.Text = "Cell ID";
-			this.CellId.Width = 43;
-			// 
 			// Switch
 			// 
 			this.Switch.Text = "Switch";
 			this.Switch.Width = 45;
+			// 
+			// OssId
+			// 
+			this.OssId.Text = "OSS ID";
+			this.OssId.Width = 51;
 			// 
 			// Vendor
 			// 
@@ -160,36 +161,39 @@ namespace appCore.SiteFinder.UI
 			// checkBox1
 			// 
 			this.checkBox1.Enabled = false;
-			this.checkBox1.Location = new System.Drawing.Point(407, 53);
+			this.checkBox1.Location = new System.Drawing.Point(449, 53);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(67, 24);
 			this.checkBox1.TabIndex = 37;
 			this.checkBox1.Text = "2G";
 			this.checkBox1.UseVisualStyleBackColor = true;
+			this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBoxesCheckedChanged);
 			// 
 			// checkBox2
 			// 
 			this.checkBox2.Enabled = false;
-			this.checkBox2.Location = new System.Drawing.Point(407, 83);
+			this.checkBox2.Location = new System.Drawing.Point(449, 83);
 			this.checkBox2.Name = "checkBox2";
 			this.checkBox2.Size = new System.Drawing.Size(67, 24);
 			this.checkBox2.TabIndex = 38;
 			this.checkBox2.Text = "3G";
 			this.checkBox2.UseVisualStyleBackColor = true;
+			this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBoxesCheckedChanged);
 			// 
 			// checkBox3
 			// 
 			this.checkBox3.Enabled = false;
-			this.checkBox3.Location = new System.Drawing.Point(407, 113);
+			this.checkBox3.Location = new System.Drawing.Point(449, 113);
 			this.checkBox3.Name = "checkBox3";
 			this.checkBox3.Size = new System.Drawing.Size(67, 24);
 			this.checkBox3.TabIndex = 39;
 			this.checkBox3.Text = "4G";
 			this.checkBox3.UseVisualStyleBackColor = true;
+			this.checkBox3.CheckedChanged += new System.EventHandler(this.CheckBoxesCheckedChanged);
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(407, 32);
+			this.label1.Location = new System.Drawing.Point(449, 32);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(67, 18);
 			this.label1.TabIndex = 40;
@@ -198,7 +202,7 @@ namespace appCore.SiteFinder.UI
 			// amtRichTextBox1
 			// 
 			this.amtRichTextBox1.Enabled = false;
-			this.amtRichTextBox1.Location = new System.Drawing.Point(480, 113);
+			this.amtRichTextBox1.Location = new System.Drawing.Point(522, 113);
 			this.amtRichTextBox1.Name = "amtRichTextBox1";
 			this.amtRichTextBox1.Size = new System.Drawing.Size(254, 283);
 			this.amtRichTextBox1.TabIndex = 41;
@@ -208,14 +212,14 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.comboBox1.Enabled = false;
 			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(480, 53);
+			this.comboBox1.Location = new System.Drawing.Point(522, 53);
 			this.comboBox1.Name = "comboBox1";
 			this.comboBox1.Size = new System.Drawing.Size(254, 21);
 			this.comboBox1.TabIndex = 42;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(480, 32);
+			this.label2.Location = new System.Drawing.Point(522, 32);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(77, 18);
 			this.label2.TabIndex = 43;
@@ -223,7 +227,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(480, 88);
+			this.label3.Location = new System.Drawing.Point(522, 88);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(77, 18);
 			this.label3.TabIndex = 44;
@@ -232,7 +236,7 @@ namespace appCore.SiteFinder.UI
 			// button1
 			// 
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(407, 143);
+			this.button1.Location = new System.Drawing.Point(449, 143);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(67, 51);
 			this.button1.TabIndex = 45;
@@ -243,7 +247,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(735, 400);
+			this.ClientSize = new System.Drawing.Size(783, 403);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
