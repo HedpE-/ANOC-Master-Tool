@@ -207,6 +207,8 @@ namespace appCore.SiteFinder.UI
 			this.amtRichTextBox1.Size = new System.Drawing.Size(254, 283);
 			this.amtRichTextBox1.TabIndex = 41;
 			this.amtRichTextBox1.Text = "";
+			this.amtRichTextBox1.EnabledChanged += new System.EventHandler(this.AmtRichTextBox1EnabledChanged);
+			this.amtRichTextBox1.TextChanged += new System.EventHandler(this.AmtRichTextBox1TextChanged);
 			// 
 			// comboBox1
 			// 
@@ -216,6 +218,9 @@ namespace appCore.SiteFinder.UI
 			this.comboBox1.Name = "comboBox1";
 			this.comboBox1.Size = new System.Drawing.Size(254, 21);
 			this.comboBox1.TabIndex = 42;
+			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1TextUpdate);
+			this.comboBox1.TextUpdate += new System.EventHandler(this.ComboBox1TextUpdate);
+			this.comboBox1.EnabledChanged += new System.EventHandler(this.ComboBox1EnabledChanged);
 			// 
 			// label2
 			// 

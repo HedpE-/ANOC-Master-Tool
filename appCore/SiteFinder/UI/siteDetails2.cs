@@ -181,6 +181,8 @@ namespace appCore.SiteFinder.UI
 			                           		this.Text = this.Name;
 //			                           		siteFinder(sites);
 			                           	}
+			                           	else
+			                           		textBox1.Select();
 			                           });
 			
 			Toolbox.Tools.darkenBackgroundForm(action,true,this);
@@ -813,12 +815,16 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void LockUnlockCells(object sender, EventArgs e) {
-			if(Settings.CurrentUser.userName == "GONCARJ3") {
-				if(currentSite.Exists) {
-					LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
-					lucf.ShowDialog();
-				}
-			}
+			Action action = new Action(delegate {
+			                           	if(Settings.CurrentUser.userName == "GONCARJ3") {
+			                           		if(currentSite.Exists) {
+			                           			LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
+			                           			lucf.ShowDialog();
+			                           		}
+			                           	}
+			                           });
+			
+			Toolbox.Tools.darkenBackgroundForm(action,false, this);
 		}
 		
 		void InitializeToolStripMenuItems() {

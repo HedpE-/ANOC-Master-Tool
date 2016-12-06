@@ -21,6 +21,9 @@ namespace appCore.SiteFinder.UI
 	public partial class LockUnlockCellsForm : Form
 	{
 		Site currentSite;
+		int selectable2gCells;
+		int selectable3gCells;
+		int selectable4gCells;
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
@@ -34,6 +37,9 @@ namespace appCore.SiteFinder.UI
 			RadioButton rb = sender as RadioButton;
 			listView1.Items.Clear();
 			listView1.SuspendLayout();
+			selectable2gCells = 0;
+			selectable3gCells = 0;
+			selectable4gCells = 0;
 			
 			if(rb.Checked) {
 				foreach (Cell cell in currentSite.Cells) {
@@ -80,25 +86,27 @@ namespace appCore.SiteFinder.UI
 					foreach(string type in new []{"CRQ","INC"}) {
 						DataTable cases;
 						cases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
-						string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-							"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
-						List<DataRow> filteredCases = cases.Select(query).ToList();
-						if(type == "CRQ" && filteredCases.Count > 0) {
-							for(int c = 0;c < filteredCases.Count;c++) {
-								DataRow row = filteredCases[c];
-								if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-									if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
-										filteredCases.RemoveAt(c);
-										c--;
+						if(cases.Rows.Count > 0) {
+							string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+								"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+							List<DataRow> filteredCases = cases.Select(query).ToList();
+							if(type == "CRQ" && filteredCases.Count > 0) {
+								for(int c = 0;c < filteredCases.Count;c++) {
+									DataRow row = filteredCases[c];
+									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
+										if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+											filteredCases.RemoveAt(c);
+											c--;
+										}
 									}
 								}
 							}
-						}
-						foreach(DataRow row in filteredCases) {
-							if(type == "INC")
-								comboBox1.Items.Add(row["Incident Ref"]);
-							else
-								comboBox1.Items.Add(row["Change Ref"]);
+							foreach(DataRow row in filteredCases) {
+								if(type == "INC")
+									comboBox1.Items.Add(row["Incident Ref"]);
+								else
+									comboBox1.Items.Add(row["Change Ref"]);
+							}
 						}
 					}
 				}
@@ -119,12 +127,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
-			if(listView1.CheckedItems.Count > 0) {
-				button1.Enabled = amtRichTextBox1.Enabled = true;
-				comboBox1.Enabled = radioButton1.Checked;
-			}
-			else
-				button1.Enabled = amtRichTextBox1.Enabled = comboBox1.Enabled = false;
+			comboBox1.Enabled = listView1.CheckedItems.Count > 0 && radioButton1.Checked;
 		}
 		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
@@ -132,6 +135,22 @@ namespace appCore.SiteFinder.UI
 			var filtered = listView1.Items.Cast<ListViewItem>().Where(s => s.Text == cb.Text);
 			foreach(ListViewItem lvi in filtered)
 				lvi.Checked = cb.Checked;
+		}
+		
+		void ComboBox1TextUpdate(object sender, EventArgs e) {
+			amtRichTextBox1.Enabled = !string.IsNullOrEmpty(comboBox1.Text);
+		}
+		
+		void ComboBox1EnabledChanged(object sender, EventArgs e) {
+			amtRichTextBox1.Enabled = !string.IsNullOrEmpty(comboBox1.Text) && comboBox1.Enabled;
+		}
+		
+		void AmtRichTextBox1TextChanged(object sender, EventArgs e) {
+			button1.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text);
+		}
+		
+		void AmtRichTextBox1EnabledChanged(object sender, EventArgs e) {
+			button1.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text) && amtRichTextBox1.Enabled;
 		}
 	}
 }
