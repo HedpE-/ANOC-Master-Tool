@@ -21,9 +21,9 @@ namespace appCore.SiteFinder.UI
 	public partial class LockUnlockCellsForm : Form
 	{
 		Site currentSite;
-		int selectable2gCells;
-		int selectable3gCells;
-		int selectable4gCells;
+//		int selectable2gCells;
+//		int selectable3gCells;
+//		int selectable4gCells;
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
