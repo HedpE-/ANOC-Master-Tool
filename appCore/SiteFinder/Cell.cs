@@ -111,16 +111,6 @@ namespace appCore.SiteFinder
 //			try { VENDOR_4G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
 		}
 		
-		void Lock() {
-			// TODO: Cell lock method
-			string OiCheckboxName = "checkbox" + Name;
-			
-		}
-		
-		void Unlock() {
-			// TODO: Cell unlock method
-		}
-		
 		Site.Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":

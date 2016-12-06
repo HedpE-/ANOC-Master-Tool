@@ -135,7 +135,7 @@ namespace appCore.Web
 			if(CheckAvailability(OldOiPortal) == HttpStatusCode.OK) { // Check server availability
 				// Check Login status
 				bool loginState = OldOiPortal ? LoggedOnOldOiPortal : LoggedOn;
-				if(!loginState) { 
+				if(!loginState) {
 					Logon(OldOiPortal);
 				}
 				else {
@@ -260,8 +260,11 @@ namespace appCore.Web
 		/// </summary>
 		/// <param name="phpFile">"enterlock"</param>
 		/// <param name="site">Site number</param>
-		/// <param name="cell">Cell number</param>
-		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string INC_CRQ_Ref, string comments, bool toggle)
+		/// <param name="cellsList">List containing Cells to lock</param>
+		/// <param name="Reference">Reference used for lockdown</param>
+		/// <param name="comments">Lock comments</param>
+		/// <param name="ManRef">Manual reference</param>
+		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string Reference, string comments, bool ManRef)
 		{
 			InitiateOiConnection();
 			if(LoggedOn) {
@@ -269,11 +272,48 @@ namespace appCore.Web
 				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				foreach(string cell in cellsList)
-					request.AddParameter("checkbox" + cell, toggle ? "on" : "off");
+					request.AddParameter("checkbox" + cell, "on");
 				
-				request.AddParameter("ManRef", INC_CRQ_Ref);
+				if(ManRef) {
+					request.AddParameter("Ref", string.Empty);
+					request.AddParameter("ManRef", Reference);
+				}
+				else {
+					request.AddParameter("Ref", Reference);
+					request.AddParameter("ManRef", string.Empty);
+				}
 				request.AddParameter("Comment", comments);
 				request.AddParameter("Site", site);
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"cellslocked"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="cellsList">List containing Cells to unlock</param>
+		/// <param name="comments">Unlock comments</param>
+		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string comments)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
+				foreach(string cell in cellsList)
+					request.AddParameter("checkbox" + cell, "on");
+				
+				request.AddParameter("Comment", comments);
+				request.AddParameter("FromTime", string.Empty);
+				request.AddParameter("ToTime", string.Empty);
+				request.AddParameter("SiteNo", site);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
 				IRestResponse response = client.Execute(request);

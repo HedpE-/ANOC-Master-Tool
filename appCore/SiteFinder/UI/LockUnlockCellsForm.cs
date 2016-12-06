@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using appCore.Web;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,9 +22,12 @@ namespace appCore.SiteFinder.UI
 	public partial class LockUnlockCellsForm : Form
 	{
 		Site currentSite;
-//		int selectable2gCells;
-//		int selectable3gCells;
-//		int selectable4gCells;
+		int selectable2gCells;
+		int selectable3gCells;
+		int selectable4gCells;
+		int selected2gCells;
+		int selected3gCells;
+		int selected4gCells;
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
@@ -40,6 +44,9 @@ namespace appCore.SiteFinder.UI
 			selectable2gCells = 0;
 			selectable3gCells = 0;
 			selectable4gCells = 0;
+			selected2gCells = 0;
+			selected3gCells = 0;
+			selected4gCells = 0;
 			
 			if(rb.Checked) {
 				foreach (Cell cell in currentSite.Cells) {
@@ -63,11 +70,37 @@ namespace appCore.SiteFinder.UI
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
 						}
+						else {
+							switch(cell.Bearer) {
+								case "2G":
+									selectable2gCells++;
+									break;
+								case "3G":
+									selectable3gCells++;
+									break;
+								case "4G":
+									selectable4gCells++;
+									break;
+							}
+						}
 					}
 					else {
 						if(!cell.Locked) {
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
+						}
+						else {
+							switch(cell.Bearer) {
+								case "2G":
+									selectable2gCells++;
+									break;
+								case "3G":
+									selectable3gCells++;
+									break;
+								case "4G":
+									selectable4gCells++;
+									break;
+							}
 						}
 					}
 					
@@ -128,6 +161,29 @@ namespace appCore.SiteFinder.UI
 		
 		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
 			comboBox1.Enabled = listView1.CheckedItems.Count > 0 && radioButton1.Checked;
+//			switch(e.Item.Text) {
+//				case "2G":
+//					if(e.Item.Checked)
+//						selected2gCells++;
+//					else
+//						selected2gCells--;
+//					break;
+//				case "3G":
+//					if(e.Item.Checked)
+//						selected3gCells++;
+//					else
+//						selected3gCells--;
+//					break;
+//				case "4G":
+//					if(e.Item.Checked)
+//						selected4gCells++;
+//					else
+//						selected4gCells--;
+//					break;
+//			}
+//				checkBox1.Checked = selected2gCells == selectable2gCells;
+//				checkBox2.Checked = selected3gCells == selectable3gCells;
+//				checkBox3.Checked = selected4gCells == selectable4gCells;
 		}
 		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
@@ -151,6 +207,36 @@ namespace appCore.SiteFinder.UI
 		
 		void AmtRichTextBox1EnabledChanged(object sender, EventArgs e) {
 			button1.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text) && amtRichTextBox1.Enabled;
+		}
+		
+		void Button1Click(object sender, EventArgs e) {
+			var filtered = listView1.Items.Cast<ListViewItem>().Where(s => s.Checked);
+			List<string> cellsList = new List<string>();
+			foreach(ListViewItem lvi in filtered)
+				cellsList.Add(lvi.SubItems[1].Text);
+			if(button1.Text.StartsWith("Lock"))
+				sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
+			else
+				sendUnlockCellsRequest(cellsList, amtRichTextBox1.Text);
+		}
+		
+		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
+			bool manRef = true;
+			foreach(string rf in comboBox1.Items) {
+				if(reference == rf) {
+					manRef = false;
+					break;
+				}
+			}
+			OIConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
+			currentSite.UpdateLockedCells();
+			RadioButtonsCheckedChanged(radioButton1, null);
+		}
+		
+		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
+			OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
+			currentSite.UpdateLockedCells();
+			RadioButtonsCheckedChanged(radioButton2, null);
 		}
 	}
 }

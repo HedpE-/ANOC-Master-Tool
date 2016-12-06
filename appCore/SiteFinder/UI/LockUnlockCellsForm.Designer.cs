@@ -247,6 +247,7 @@ namespace appCore.SiteFinder.UI
 			this.button1.TabIndex = 45;
 			this.button1.Text = "Unlock Cells";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
 			// LockUnlockCellsForm
 			// 
