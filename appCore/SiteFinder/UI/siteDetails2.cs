@@ -825,6 +825,7 @@ namespace appCore.SiteFinder.UI
 			                           });
 			
 			Toolbox.Tools.darkenBackgroundForm(action,false, this);
+			selectedSiteDetailsPopulate(currentSite);
 		}
 		
 		void InitializeToolStripMenuItems() {

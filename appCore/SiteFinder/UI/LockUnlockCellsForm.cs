@@ -160,7 +160,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
-			comboBox1.Enabled = listView1.CheckedItems.Count > 0 && radioButton1.Checked;
+			comboBox1.Enabled = listView1.CheckedItems.Count > 0; // && radioButton1.Checked;
 //			switch(e.Item.Text) {
 //				case "2G":
 //					if(e.Item.Checked)
