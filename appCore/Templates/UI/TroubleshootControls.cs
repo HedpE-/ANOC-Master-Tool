@@ -779,9 +779,9 @@ namespace appCore.Templates.UI
 					if (IntermittentIssueCheckBox.Checked && prevTemp.IntermittentIssue) {
 						errmsg += "         - Intermittent issue\n";
 					}
-//					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
-//						errmsg += "         - Related INC/CRQ\n";
-//					}
+					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
+						errmsg += "         - Related INC/CRQ\n";
+					}
 					if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms) {
 						errmsg += "         - Active Alarms\n";
 					}
@@ -823,6 +823,63 @@ namespace appCore.Templates.UI
 				MainForm.logFile.HandleLog(currentTemplate);
 			}
 		}
+		
+//		//// <summary>
+//		//// Gets INC's or CRQ's from site class
+//		//// </summary>
+//		//// <param name="type">"INC", "CRQ"</param>
+//		//// <param name="update">Forces data update</param>
+//		//// <returns></returns>
+//		string getCurrentCases(string type, bool update = false) {
+//			string temp = string.Empty;
+//			temp = type == "INC" ? OngoingINCs : OngoingCRQs;
+//			if(string.IsNullOrWhiteSpace(temp) || update) {
+//				temp = string.Empty;
+//				if(MainForm.TroubleshootUI.currentSite != null) {
+//					DataTable cases;
+//					cases = type == "INC" ? MainForm.TroubleshootUI.currentSite.INCs : MainForm.TroubleshootUI.currentSite.CRQs;
+//					if(cases == null) {
+//						MainForm.TroubleshootUI.currentSite.requestOIData(type);
+//						cases = type == "INC" ? MainForm.TroubleshootUI.currentSite.INCs : MainForm.TroubleshootUI.currentSite.CRQs;
+//					}
+//					if(cases != null) {
+//						if(cases.Rows.Count > 0) {
+//							temp += Environment.NewLine;
+//							string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INC + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+//								"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+//							List<DataRow> filteredCases = cases.Select(query).ToList();
+//							if(type == "CRQ" && filteredCases.Count > 0) {
+//								for(int c = 0;c < filteredCases.Count;c++) {
+//									DataRow row = filteredCases[c];
+//									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
+//										if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+//											filteredCases.RemoveAt(c);
+//											c--;
+//										}
+//									}
+//								}
+//							}
+//							foreach(DataRow row in filteredCases) {
+//								string rowString = string.Empty;
+//								if(type == "INC")
+//									rowString = row["Incident Ref"] + " - " + row["Summary"] + " - " + ((DateTime)row["Submit Date"]).ToString("dd-MM-yyyy HH:mm") + Environment.NewLine;
+//								else {
+//									string startDate = string.Empty;
+//									string endDate = string.Empty;
+//									try { startDate = Convert.ToDateTime(row["Scheduled Start"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
+//									try { endDate = Convert.ToDateTime(row["Scheduled End"]).ToString("dd-MM-yyyy HH:mm"); } catch(Exception) {}
+//									rowString = row["Change Ref"] + " - " + row["Status"] + " - " + row["Summary"] + " - " + startDate + " until " + endDate + Environment.NewLine;
+//								}
+//								temp += rowString;
+//							}
+//						}
+//					}
+//				}
+//			}
+//			if(string.IsNullOrWhiteSpace(temp))
+//				temp = " None" + Environment.NewLine;
+//			return temp;
+//		}
 		
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {

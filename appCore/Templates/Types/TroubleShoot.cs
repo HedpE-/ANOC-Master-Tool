@@ -294,11 +294,11 @@ namespace appCore.Templates.Types
 			template += IntermittentIssue ? "YES" : "No";
 			template += Environment.NewLine;
 			template += "CCT Reference: " + CCTReference + Environment.NewLine;
-//			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
+			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
 			
-			template += Environment.NewLine;
-			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine;
-			template += "Ongoing CRQs:" + getCurrentCases("CRQ", true) + Environment.NewLine;
+//			template += Environment.NewLine;
+//			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine;
+//			template += "Ongoing CRQs:" + getCurrentCases("CRQ", true) + Environment.NewLine;
 			
 			template += "Active Alarms:" + Environment.NewLine + ActiveAlarms + Environment.NewLine + Environment.NewLine;
 			template += "Alarm History:" + Environment.NewLine + AlarmHistory + Environment.NewLine + Environment.NewLine;
@@ -307,6 +307,7 @@ namespace appCore.Templates.Types
 			
 			return template;
 		}
+		
 		/// <summary>
 		/// Gets INC's or CRQ's from site class
 		/// </summary>

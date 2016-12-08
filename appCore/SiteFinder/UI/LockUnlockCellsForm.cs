@@ -31,6 +31,7 @@ namespace appCore.SiteFinder.UI
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
+			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
 			currentSite.UpdateLockedCells();
 			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
@@ -66,7 +67,7 @@ namespace appCore.SiteFinder.UI
 						});
 					
 					if(rb.Text.StartsWith("Lock")) {
-						if(cell.Locked) {
+						if(cell.Locked || !cell.Noc.Contains("ANOC")) {
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
 						}
@@ -85,7 +86,7 @@ namespace appCore.SiteFinder.UI
 						}
 					}
 					else {
-						if(!cell.Locked) {
+						if(!cell.Locked || !cell.Noc.Contains("ANOC")) {
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
 						}
@@ -127,7 +128,7 @@ namespace appCore.SiteFinder.UI
 								for(int c = 0;c < filteredCases.Count;c++) {
 									DataRow row = filteredCases[c];
 									if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-										if (Convert.ToDateTime(row["Scheduled Start"]) < DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+										if (!(Convert.ToDateTime(row["Scheduled Start"]) <=  DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
 											filteredCases.RemoveAt(c);
 											c--;
 										}
@@ -151,6 +152,7 @@ namespace appCore.SiteFinder.UI
 				}
 			}
 			checkBox1.Checked = checkBox2.Checked = checkBox3.Checked = false;
+			comboBox1.Text = amtRichTextBox1.Text = string.Empty;
 			listView1.ResumeLayout();
 		}
 		
@@ -221,13 +223,14 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
-			bool manRef = true;
-			foreach(string rf in comboBox1.Items) {
-				if(reference == rf) {
-					manRef = false;
-					break;
-				}
-			}
+//			bool manRef = true;
+//			foreach(string rf in comboBox1.Items) {
+//				if(reference == rf) {
+//					manRef = false;
+//					break;
+//				}
+//			}
+			bool manRef = !comboBox1.Items.Contains(reference);
 			OIConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
 			currentSite.UpdateLockedCells();
 			RadioButtonsCheckedChanged(radioButton1, null);

@@ -265,7 +265,8 @@ namespace appCore.SiteFinder.UI
 				textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
 				textBox9.Text = currentSite.Priority;
 				textBox10.Text = currentSite.SharedOperator;
-				lockUnlockCellsToolStripMenuItem.Enabled = true;
+				if(Settings.CurrentUser.userName == "GONCARJ3")
+					lockUnlockCellsToolStripMenuItem.Enabled = true;
 				
 				listboxFilter_Changed(checkBox1, null);
 			}
