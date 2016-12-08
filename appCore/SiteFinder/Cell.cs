@@ -117,7 +117,7 @@ namespace appCore.SiteFinder
 					return Site.Vendors.Ericsson;
 				case "HUAWEI":
 					return Site.Vendors.Huawei;
-				case "ALU":
+				case "ALU": case "ALCATEL":
 					return Site.Vendors.ALU;
 				case "NSN":
 					return Site.Vendors.NSN;
