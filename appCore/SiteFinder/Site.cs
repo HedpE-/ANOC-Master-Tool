@@ -17,7 +17,6 @@ using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
-using appCore.Settings;
 using appCore.Toolbox;
 using HtmlAgilityPack;
 
@@ -294,7 +293,8 @@ namespace appCore.SiteFinder
 					BookIns = FetchBookIns();
 				
 				if(dataToRequest.Contains("PWR")) {
-					try { PowerCompany = getPowerCompany(); } catch {}
+					if(string.IsNullOrWhiteSpace(PowerCompany))
+						try { PowerCompany = getPowerCompany(); } catch {}
 				}
 //				}
 //				else {
@@ -411,8 +411,9 @@ namespace appCore.SiteFinder
 			return dt;
 		}
 		
-		string getPowerCompany() {
-			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
+		string getPowerCompany(string response = "") {
+			if(string.IsNullOrEmpty(response))
+				response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
 			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
 				HtmlDocument doc = new HtmlDocument();
 				doc.Load(new StringReader(response));
@@ -432,6 +433,8 @@ namespace appCore.SiteFinder
 		
 		string getOiCellsLockedState() {
 			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
+			if(string.IsNullOrWhiteSpace(PowerCompany))
+				try { PowerCompany = getPowerCompany(response); } catch {}
 			
 			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
 				HtmlDocument doc = new HtmlDocument();

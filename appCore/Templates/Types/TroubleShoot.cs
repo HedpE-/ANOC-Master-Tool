@@ -65,8 +65,10 @@ namespace appCore.Templates.Types
 			LogType = "Troubleshoot";
 		}
 		
-		public TroubleShoot(Control.ControlCollection controlsCollection)
+		public TroubleShoot(Control.ControlCollection controlsCollection, List<string> relatedCases = null)
 		{
+			if(relatedCases != null)
+				RelatedINC_CRQ = String.Join(Environment.NewLine, relatedCases);
 			try { INC = controlsCollection["INCTextBox"].Text; } catch (Exception) { }
 			try { SiteId = controlsCollection["SiteIdTextBox"].Text; } catch (Exception) { }
 			try {

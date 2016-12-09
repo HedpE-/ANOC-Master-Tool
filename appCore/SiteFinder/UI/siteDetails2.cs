@@ -271,11 +271,20 @@ namespace appCore.SiteFinder.UI
 				listboxFilter_Changed(checkBox1, null);
 			}
 			else {
-				textBox4.Text = "Site not found";
 				foreach(Control ctr in Controls) {
-					if(ctr.Name.StartsWith("label_"))
-						ctr.Text = "0";
+					if(ctr.Name != "textBox1" && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
+						if(ctr.Name == "listView1")
+							listView1.Items.Clear();
+						else {
+							TextBoxBase tb = ctr as TextBoxBase;
+							if(tb != null)
+								tb.Text = string.Empty;
+						}
+					}
 				}
+				textBox4.Text = "Site not found";
+				myMap.SetPositionByKeywords("UK");
+				myMap.Zoom = 4;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
 			}
 			pictureBox1.UpdateCells(currentSite.Cells);
@@ -576,7 +585,7 @@ namespace appCore.SiteFinder.UI
 				                           	currentSite = Finder.getSite(tb.Text);
 				                           	currentSite.UpdateLockedCells();
 				                           	
-				                           	selectedSiteDetailsPopulate(currentSite);
+//				                           	selectedSiteDetailsPopulate(currentSite);
 				                           	
 //				                           	if(textBox4.Text != "Site not found") {
 				                           	if(currentSite.Exists) {
