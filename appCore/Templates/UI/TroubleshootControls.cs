@@ -738,6 +738,7 @@ namespace appCore.Templates.UI
 			List<DataRow> OngoingINCs = getCurrentCases("INC");
 			List<DataRow> OngoingCRQs = getCurrentCases("CRQ");
 			// TODO: request related cases selection
+			
 //			if(currentTemplate != null)
 //				currentTemplate = null;
 			currentTemplate = new TroubleShoot(Controls);
@@ -852,9 +853,6 @@ namespace appCore.Templates.UI
 							}
 						}
 					}
-					currentCases = new DataTable();
-					if(filteredCases.Count > 0)
-						currentCases = filteredCases.CopyToDataTable();
 				}
 			}
 			return filteredCases;
