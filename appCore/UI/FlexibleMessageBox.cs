@@ -750,6 +750,7 @@ namespace appCore.UI
                 }
 
                 buttonToFocus.Focus();
+                this.BringToFront();
             }
 
             /// <summary>

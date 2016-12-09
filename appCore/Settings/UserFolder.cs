@@ -196,19 +196,32 @@ namespace appCore.Settings
 								
 								newFolder = new DirectoryInfo(newFolder.FullName);
 							}
+							else {
+								if(!isPrevFallbackFolder) {
+									DialogResult ans = FlexibleMessageBox.Show("You chose not to copy the previous UserFolder, do you want to delete it and all it's contents?" +
+									                                           Environment.NewLine + Environment.NewLine +
+									                                           "WARNING: ANY EXISTING FILES WILL BE DELETED WITHOUT RECOVERY!",
+									                                           "Delete previous UserFolder",
+									                                           MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+									if(ans == DialogResult.Yes)
+										prevFolder.Delete(true);
+								}
+							}
 						}
 						
 						prevFolder = new DirectoryInfo(prevFolder.FullName);
-						if(!isPrevFallbackFolder) {
-							DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
-							if(prevSettingsFolder.Exists) {
-								prevSettingsFolder.Delete(true);
-								prevFolder = new DirectoryInfo(prevFolder.FullName);
+						if(prevFolder.Exists) {
+							if(!isPrevFallbackFolder) {
+								DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
+								if(prevSettingsFolder.Exists) {
+									prevSettingsFolder.Delete(true);
+									prevFolder = new DirectoryInfo(prevFolder.FullName);
+								}
 							}
+							else
+								if(prevFolder.GetDirectories().Length < 1)
+									prevFolder.Delete(true);
 						}
-						else
-							if(prevFolder.GetDirectories().Length < 1)
-								prevFolder.Delete(true);
 					}
 				}
 				
