@@ -788,6 +788,9 @@ namespace appCore
 				foundSite = findSite(site);
 				foundCells = findCells(site);
 				
+				if(foundSite == null)
+					continue;
+				
 				List<string> VFcells2Gtemp = new List<string>();
 				List<string> VFcells3Gtemp = new List<string>();
 				List<string> VFcells4Gtemp = new List<string>();
