@@ -67,15 +67,14 @@ namespace appCore.Templates.Types
 		
 		public TroubleShoot(Control.ControlCollection controlsCollection, List<string> relatedCases = null)
 		{
-			if(relatedCases != null)
-				RelatedINC_CRQ = String.Join(Environment.NewLine, relatedCases);
+//			if(relatedCases != null)
+//				RelatedINC_CRQ = String.Join(Environment.NewLine, relatedCases);
 			try { INC = controlsCollection["INCTextBox"].Text; } catch (Exception) { }
 			try { SiteId = controlsCollection["SiteIdTextBox"].Text; } catch (Exception) { }
 			try {
 				ComboBox cb = (ComboBox)controlsCollection["SiteOwnerComboBox"];
-				if (cb.SelectedIndex == -1) {
+				if (cb.SelectedIndex == -1)
 					cb.SelectedIndex = 0;
-				}
 				SiteOwner = cb.Text;
 			} catch (Exception) { }
 			try { TefSiteId = controlsCollection["TefSiteTextBox"].Text; } catch (Exception) { }
