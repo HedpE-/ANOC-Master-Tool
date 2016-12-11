@@ -183,17 +183,18 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha8 03/12/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha9 11/12/2016 #######
+		///
+		///- Fixed crash when site isn&apos;t found on outage report build from sites list
+		///- Ask if user wants to delete previous UserFolder on change
+		///- Site Details tweaks and optimizations
+		///- Fixed Cell Vendor resolver on ALU cells returning Vendor None
+		///- Revert Ongoing INC&apos;s &amp; Ongoing CRQ&apos;s as preparation for new feature
+		///
+		///####### ANOC Master Tool 7.0alpha8 03/12/2016 #######
 		///
 		///- Made the INCs/CRQs/BookIns/Alarms details window resizable
-		///- Fixed VF/TF 2G cells identification issue where W &amp; Y cells were being identified as VF and not TF
-		///- Fixed Outage parser crash containing alarms with empty Element column(cell name)
-		///- Fixed Netcool parsing alarms with empty Element column(cell name)
-		///
-		///####### ANOC Master Tool 7.0alpha7 01/12/2016 #######
-		///
-		///- Tweaked the INCs/CRQs/BookIns/Alarms details window
-		///- Tweaked all Scripts to [rest of string was truncated]&quot;;.
+		///- Fixed VF/TF 2G cel [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
