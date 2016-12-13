@@ -52,6 +52,18 @@ namespace appCore.SiteFinder.UI
 //			MaximumSize = new Size(maxWidth, int.MaxValue);
 		}
 		
+		public OiSiteTablesForm(DataTable currentCases, string siteID, out List<DataRow> selectedCases)
+		{
+			Datatable = currentCases;
+			InitializeComponent();
+			DataType = "Cases";
+			populateListView();
+			selectedCases = new List<DataRow>();
+			Text = "Select related cases - Site " + siteID;
+			
+//			MaximumSize = new Size(maxWidth, int.MaxValue);
+		}
+		
 		void populateListView() {
 			listView1.SuspendLayout();
 			listView1.Items.Clear();

@@ -735,8 +735,12 @@ namespace appCore.Templates.UI
 				}
 			}
 			
-			List<DataRow> OngoingINCs = getCurrentCases("INC");
-			List<DataRow> OngoingCRQs = getCurrentCases("CRQ");
+			List<DataRow> OngoingCases = getCurrentCases();
+			if(OngoingCases.Count > 0) {
+				OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id, out OngoingCases);
+				relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
+				relatedCasesForm.ShowDialog();
+			}
 			// TODO: request related cases selection
 			
 //			if(currentTemplate != null)
@@ -834,28 +838,32 @@ namespace appCore.Templates.UI
 		//// </summary>
 		//// <param name="type">"INC", "CRQ"</param>
 		//// <returns></returns>
-		List<DataRow> getCurrentCases(string type) {
-			DataTable currentCases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
-			List<DataRow> filteredCases = null;
-			if(currentCases != null) {
-				if(currentCases.Rows.Count > 0) {
-					string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INCTextBox.Text + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-						"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
-					filteredCases = currentCases.Select(query).ToList();
-					if(type == "CRQ" && filteredCases.Count > 0) {
-						for(int c = 0;c < filteredCases.Count;c++) {
-							DataRow row = filteredCases[c];
-							if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-								if (Convert.ToDateTime(row["Scheduled Start"]) > DateTime.Now) { // && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
-									filteredCases.RemoveAt(c);
-									c--;
+		List<DataRow> getCurrentCases() {
+			List<DataRow> currentCases = new List<DataRow>();
+			foreach(string type in new [] { "INC", "CRQ" }) {
+				DataTable allCases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
+				List<DataRow> filteredCases = null;
+				if(allCases != null) {
+					if(allCases.Rows.Count > 0) {
+						string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INCTextBox.Text + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+							"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+						filteredCases = allCases.Select(query).ToList();
+						if(type == "CRQ" && filteredCases.Count > 0) {
+							for(int c = 0;c < filteredCases.Count;c++) {
+								DataRow row = filteredCases[c];
+								if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
+									if (Convert.ToDateTime(row["Scheduled Start"]) > DateTime.Now) { // && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+										filteredCases.RemoveAt(c);
+										c--;
+									}
 								}
 							}
 						}
 					}
 				}
+				currentCases.AddRange(filteredCases);
 			}
-			return filteredCases;
+			return currentCases;
 		}
 		
 		public void siteFinderSwitch(string toState) {
