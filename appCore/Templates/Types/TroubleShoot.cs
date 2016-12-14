@@ -65,10 +65,8 @@ namespace appCore.Templates.Types
 			LogType = "Troubleshoot";
 		}
 		
-		public TroubleShoot(Control.ControlCollection controlsCollection, List<string> relatedCases = null)
+		public TroubleShoot(Control.ControlCollection controlsCollection, string relatedCases)
 		{
-//			if(relatedCases != null)
-//				RelatedINC_CRQ = String.Join(Environment.NewLine, relatedCases);
 			try { INC = controlsCollection["INCTextBox"].Text; } catch (Exception) { }
 			try { SiteId = controlsCollection["SiteIdTextBox"].Text; } catch (Exception) { }
 			try {
@@ -112,7 +110,13 @@ namespace appCore.Templates.Types
 				IntermittentIssue = cb.Checked;
 			} catch (Exception) { }
 			try { CCTReference = string.IsNullOrEmpty(controlsCollection["CCTRefTextBox"].Text) ? "None" : controlsCollection["CCTRefTextBox"].Text; } catch (Exception) { }
-			try { RelatedINC_CRQ = string.IsNullOrEmpty(controlsCollection["RelatedINC_CRQTextBox"].Text) ? "None" : controlsCollection["RelatedINC_CRQTextBox"].Text; } catch (Exception) { }
+			try {
+				if(!string.IsNullOrEmpty(relatedCases))
+					RelatedINC_CRQ = relatedCases;
+				else
+					RelatedINC_CRQ = string.IsNullOrEmpty(controlsCollection["RelatedINC_CRQTextBox"].Text) ? "None" : controlsCollection["RelatedINC_CRQTextBox"].Text;
+			}
+			catch (Exception) { }
 			try { ActiveAlarms = controlsCollection["ActiveAlarmsTextBox"].Text; } catch (Exception) { }
 			try { AlarmHistory = string.IsNullOrEmpty(controlsCollection["AlarmHistoryTextBox"].Text) ? "None related" : controlsCollection["AlarmHistoryTextBox"].Text; } catch (Exception) { }
 			try { Troubleshoot = controlsCollection["TroubleshootTextBox"].Text; } catch (Exception) { }

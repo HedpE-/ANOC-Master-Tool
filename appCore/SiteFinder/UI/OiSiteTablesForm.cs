@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
@@ -23,6 +23,7 @@ namespace appCore.SiteFinder.UI
 		string filter = "all";
 		public string DataType { get; private set; }
 		int maxWidth;
+		public List<ListViewItem> selectedCases;
 		
 		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID)
 		{
@@ -52,15 +53,14 @@ namespace appCore.SiteFinder.UI
 //			MaximumSize = new Size(maxWidth, int.MaxValue);
 		}
 		
-		public OiSiteTablesForm(DataTable currentCases, string siteID, out List<DataRow> selectedCases)
+		public OiSiteTablesForm(DataTable currentCases, string siteID)
 		{
 			Datatable = currentCases;
 			InitializeComponent();
 			DataType = "Cases";
 			populateListView();
-			selectedCases = new List<DataRow>();
 			Text = "Select related cases - Site " + siteID;
-			
+			FormClosing += OiSiteTablesFormFormClosing;
 //			MaximumSize = new Size(maxWidth, int.MaxValue);
 		}
 		
@@ -68,6 +68,7 @@ namespace appCore.SiteFinder.UI
 			listView1.SuspendLayout();
 			listView1.Items.Clear();
 			listView1.View = View.Details;
+			listView1.CheckBoxes = DataType == "Cases";
 			foreach(DataColumn col in Datatable.Columns) {
 				ColumnHeader column = listView1.Columns.Add(col.ColumnName, col.ColumnName);
 			}
@@ -151,6 +152,18 @@ namespace appCore.SiteFinder.UI
 				case "ActiveAlarms":
 					columnName = "Group";
 					break;
+			}
+		}
+		
+		void OiSiteTablesFormFormClosing(object sender, FormClosingEventArgs e) {
+			if(listView1.CheckedItems.Count > 0)
+				selectedCases = listView1.Items.Cast<ListViewItem>().Where(s => s.Checked).ToList();
+			else {
+				DialogResult ans = appCore.UI.FlexibleMessageBox.Show("You didn't select any cases to relate, is this right?", "No cases selected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if(ans == DialogResult.No)
+					e.Cancel = true;
+				else
+					selectedCases = new List<ListViewItem>();
 			}
 		}
 	}

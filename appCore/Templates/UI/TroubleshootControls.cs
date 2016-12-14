@@ -735,17 +735,25 @@ namespace appCore.Templates.UI
 				}
 			}
 			
+			string relatedCases = string.Empty;
 			List<DataRow> OngoingCases = getCurrentCases();
 			if(OngoingCases.Count > 0) {
-				OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id, out OngoingCases);
+				OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id);
 				relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
 				relatedCasesForm.ShowDialog();
+				if(relatedCasesForm.selectedCases.Count > 0) {
+					int c = 0;
+					foreach(ListViewItem lvi in relatedCasesForm.selectedCases) {
+						relatedCases += lvi.SubItems[1].Text + " - " + lvi.SubItems[2].Text + " - " + lvi.SubItems[3].Text;
+						if(++c < relatedCasesForm.selectedCases.Count)
+							relatedCases += Environment.NewLine;
+					}
+				}
 			}
-			// TODO: request related cases selection
 			
 //			if(currentTemplate != null)
 //				currentTemplate = null;
-			currentTemplate = new TroubleShoot(Controls);
+			currentTemplate = new TroubleShoot(Controls, relatedCases);
 			
 			if(UiMode == Template.UIenum.Template && prevTemp != null) {
 				// No changes since the last template warning
@@ -841,13 +849,13 @@ namespace appCore.Templates.UI
 		List<DataRow> getCurrentCases() {
 			List<DataRow> currentCases = new List<DataRow>();
 			foreach(string type in new [] { "INC", "CRQ" }) {
-				DataTable allCases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
+				DataTable tempDt = type == "INC" ? currentSite.INCs : currentSite.CRQs;
 				List<DataRow> filteredCases = null;
-				if(allCases != null) {
-					if(allCases.Rows.Count > 0) {
-						string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INCTextBox.Text + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-							"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
-						filteredCases = allCases.Select(query).ToList();
+				if(tempDt != null) {
+					if(tempDt.Rows.Count > 0) {
+						string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INCTextBox.Text + "'" : string.Empty; // + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
+						// "Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
+						filteredCases = tempDt.Select(query).ToList();
 						if(type == "CRQ" && filteredCases.Count > 0) {
 							for(int c = 0;c < filteredCases.Count;c++) {
 								DataRow row = filteredCases[c];
@@ -859,9 +867,22 @@ namespace appCore.Templates.UI
 								}
 							}
 						}
+						tempDt = new DataTable();
+						tempDt.Columns.Add("Type");
+						tempDt.Columns.Add("Reference");
+						tempDt.Columns.Add("Summary");
+						tempDt.Columns.Add("Status");
+						tempDt.Columns.Add("Start Date", typeof(DateTime));
+						tempDt.Columns.Add("End Date", typeof(DateTime));
+						foreach (DataRow dr in filteredCases) {
+							if(type == "INC")
+								tempDt.Rows.Add(type, dr["Incident Ref"], dr["Summary"], dr["Status"], dr["Submit Date"], dr["Resolved Date"]);
+							else
+								tempDt.Rows.Add(type, dr["Change Ref"], dr["Summary"], dr["Status"], dr["Scheduled Start"], dr["Scheduled End"]);
+						}
 					}
 				}
-				currentCases.AddRange(filteredCases);
+				currentCases.AddRange(tempDt.AsEnumerable());
 			}
 			return currentCases;
 		}
