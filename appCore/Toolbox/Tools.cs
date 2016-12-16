@@ -59,6 +59,16 @@ namespace appCore.Toolbox
 			return convertByteArrayToHex(hash);
 		}
 		
+		public static Form getParentForm(Control control) {
+				Form parentForm = null;
+				while(parentForm == null) {
+					control = control.Parent;
+					if(control is Form)
+						parentForm = control as Form;
+				}
+				return parentForm;
+		}
+		
 		public static string convertByteArrayToHex(byte[] hash) {
 			// step 2, convert byte array to hex string
 
@@ -129,9 +139,10 @@ namespace appCore.Toolbox
 			return (prefix + num);
 		}
 		
-		public static void darkenBackgroundForm(Action action, bool showLoading, Form parentForm )
+		public static void darkenBackgroundForm(Action action, bool showLoading, Control control)
 		{
-			// FIXME: darkenBackgroundForm on new templates
+			// Resolve Parent Form if needed
+			Form parentForm = control is Form ? control as Form : getParentForm(control);
 			// take a screenshot of the form and darken it
 			Bitmap bmp = new Bitmap(parentForm.ClientRectangle.Width, parentForm.ClientRectangle.Height);
 			using (Graphics G = Graphics.FromImage(bmp))
@@ -160,6 +171,10 @@ namespace appCore.Toolbox
 					Point loc = p.PointToScreen(Point.Empty);
 					loc.X = loc.X + ((p.Width - 32) / 2);
 					loc.Y = loc.Y + ((p.Height - 32) / 2);
+//					PictureBox loadingBox = new PictureBox();
+//					loadingBox.Image = Resources.spinner1;
+//					loadingBox.Location = loc;
+//					p.Controls.Add(loadingBox);
 					Loading.ShowLoadingForm(loc, parentForm);
 				}
 				

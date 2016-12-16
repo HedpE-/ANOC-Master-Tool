@@ -299,7 +299,8 @@ namespace appCore.Templates.Types
 			template += IntermittentIssue ? "YES" : "No";
 			template += Environment.NewLine;
 			template += "CCT Reference: " + CCTReference + Environment.NewLine;
-			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
+//			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
+			template += "Related INC/CRQ:" + Environment.NewLine + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
 			
 //			template += Environment.NewLine;
 //			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine;

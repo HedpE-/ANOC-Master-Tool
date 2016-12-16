@@ -94,17 +94,17 @@ namespace appCore.UI
 			loadingForm = null;
 //			Control.CheckForIllegalCrossThreadCalls = false; // CAUTION::: Disable illegal CrossThread operations check
 		}
-		
-		public static void UpdateLabelText(string text)
-		{
-			Label lb1 = (Label)loadingForm.Controls["label1"];
-			loadingForm.BeginInvoke(new Action(delegate {
-			                                   	lb1.Text = text + ", please wait...";
-			                                   	int labelWidth = lb1.Width;
-			                                   	int controlWidth = loadingForm.ClientSize.Width;
-			                                   	int difference = controlWidth - labelWidth;
-			                                   	lb1.Left = difference / 2;
-			                                   }));
-		}
+//		
+//		public static void UpdateLabelText(string text)
+//		{
+//			Label lb1 = (Label)loadingForm.Controls["label1"];
+//			loadingForm.BeginInvoke(new Action(delegate {
+//			                                   	lb1.Text = text + ", please wait...";
+//			                                   	int labelWidth = lb1.Width;
+//			                                   	int controlWidth = loadingForm.ClientSize.Width;
+//			                                   	int difference = controlWidth - labelWidth;
+//			                                   	lb1.Left = difference / 2;
+//			                                   }));
+//		}
 	}
 }

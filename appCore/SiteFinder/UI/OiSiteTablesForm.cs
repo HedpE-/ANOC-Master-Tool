@@ -20,15 +20,17 @@ namespace appCore.SiteFinder.UI
 	public partial class OiSiteTablesForm : Form
 	{
 		DataTable Datatable;
-		string filter = "all";
-		public string DataType { get; private set; }
+//		string filter = "all";
 		int maxWidth;
+		public bool Cancel;
+		public string DataType { get; private set; }
 		public List<ListViewItem> selectedCases;
 		
 		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID)
 		{
 			Datatable = inputDataTable;
 			InitializeComponent();
+			listView1.Dock = DockStyle.Fill;
 			switch(dataToShow) {
 				case "INCs":
 					Name = "INCsOiDataTableForm";
@@ -57,6 +59,8 @@ namespace appCore.SiteFinder.UI
 		{
 			Datatable = currentCases;
 			InitializeComponent();
+			ControlBox = false;
+			checkBox1.Visible = button1.Visible = button2.Visible = true;
 			DataType = "Cases";
 			populateListView();
 			Text = "Select related cases - Site " + siteID;
@@ -96,16 +100,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
-			if(Datatable.TableName == "table_inc") {
-				if(filter == "all") {
-					DataRow[] filteredRows = Datatable.Select("Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'");
-					filter = "filtered";
-				}
-				else {
-					populateListView();
-					filter = "all";
-				}
-			}
+			Close();
 		}
 		
 		void ListView1KeyDown(object sender, KeyEventArgs e) {
@@ -156,15 +151,37 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void OiSiteTablesFormFormClosing(object sender, FormClosingEventArgs e) {
-			if(listView1.CheckedItems.Count > 0)
-				selectedCases = listView1.Items.Cast<ListViewItem>().Where(s => s.Checked).ToList();
-			else {
-				DialogResult ans = appCore.UI.FlexibleMessageBox.Show("You didn't select any cases to relate, is this right?", "No cases selected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if(ans == DialogResult.No)
-					e.Cancel = true;
-				else
-					selectedCases = new List<ListViewItem>();
+			if(!Cancel) {
+				if(listView1.CheckedItems.Count > 0)
+					selectedCases = listView1.Items.Cast<ListViewItem>().Where(s => s.Checked).ToList();
+				else {
+					DialogResult ans = appCore.UI.FlexibleMessageBox.Show("You didn't select any cases to relate, is this right?", "No cases selected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+					if(ans == DialogResult.No)
+						e.Cancel = true;
+					else
+						selectedCases = new List<ListViewItem>();
+				}
 			}
+		}
+		
+		void CheckBox1CheckedChanged(object sender, EventArgs e) {
+			if(checkBox1.Enabled)
+				button1.Enabled = checkBox1.Checked;
+		}
+		
+		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
+			checkBox1.Enabled = listView1.CheckedItems.Count == 0;
+			button1.Enabled = listView1.CheckedItems.Count > 0;
+		}
+		
+		void CheckBox1EnabledChanged(object sender, EventArgs e) {
+			if(!checkBox1.Enabled)
+				checkBox1.Checked = false;
+		}
+		
+		void Button2Click(object sender, EventArgs e) {
+			Cancel = true;
+			Close();
 		}
 	}
 }

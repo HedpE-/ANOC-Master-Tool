@@ -244,59 +244,62 @@ namespace appCore.Templates.UI
 			// TODO: SiteFinder(s) Performance measurement
 
 			if (Convert.ToInt32(e.KeyChar) == 13) {
+				Action action = new Action(delegate {
 //				Stopwatch sw = new Stopwatch();
 //
 //				sw.Start();
-				TextBox tb = (TextBox)sender;
-				while(tb.Text.StartsWith("0"))
-					tb.Text = tb.Text.Substring(1);
-				currentSite = Finder.getSite(tb.Text);
-				if(currentSite.Exists) {
-					currentSite.requestOIData("INCCRQPWR");
-					AddressTextBox.Text = currentSite.Address;
-					RegionTextBox.Text = currentSite.Region;
-					PowerCompanyTextBox.Text = currentSite.PowerCompany;
-					if(currentSite.HostedBy.Contains("TF") || currentSite.HostedBy.Contains("O2")) {
-						SiteOwnerComboBox.Text = "TF";
-						TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
-					}
-					else {
-						SiteOwnerComboBox.Text = "VF";
-						TefSiteTextBox.Text = string.Empty;
-					}
-				}
-				else {
-					AddressTextBox.Text = string.Empty;
-					PowerCompanyTextBox.Text = "No site found";
-					COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
-					COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
-					COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
-					if(SiteOwnerComboBox.Text == "TF")
-						SiteOwnerComboBox.Text = "VF";
-					MainMenu.INCsButton.Enabled = false;
-				}
-				siteFinder_Toggle(true, currentSite.Exists);
-				generateTemplateToolStripMenuItem.Enabled = true;
-				generateTaskToolStripMenuItem.Enabled = true;
-				sendBCPToolStripMenuItem.Enabled = true;
-				
-				List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
-				COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
-				COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				COOS2GNumericUpDown.Value = 0;
-				
-				cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
-				COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
-				COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				COOS3GNumericUpDown.Value = 0;
+				                           	TextBox tb = (TextBox)sender;
+				                           	while(tb.Text.StartsWith("0"))
+				                           		tb.Text = tb.Text.Substring(1);
+				                           	currentSite = Finder.getSite(tb.Text);
+				                           	if(currentSite.Exists) {
+				                           		currentSite.requestOIData("INCCRQPWR");
+				                           		AddressTextBox.Text = currentSite.Address;
+				                           		RegionTextBox.Text = currentSite.Region;
+				                           		PowerCompanyTextBox.Text = currentSite.PowerCompany;
+				                           		if(currentSite.HostedBy.Contains("TF") || currentSite.HostedBy.Contains("O2")) {
+				                           			SiteOwnerComboBox.Text = "TF";
+				                           			TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
+				                           		}
+				                           		else {
+				                           			SiteOwnerComboBox.Text = "VF";
+				                           			TefSiteTextBox.Text = string.Empty;
+				                           		}
+				                           	}
+				                           	else {
+				                           		AddressTextBox.Text = string.Empty;
+				                           		PowerCompanyTextBox.Text = "No site found";
+				                           		COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
+				                           		COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
+				                           		COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
+				                           		if(SiteOwnerComboBox.Text == "TF")
+				                           			SiteOwnerComboBox.Text = "VF";
+				                           		MainMenu.INCsButton.Enabled = false;
+				                           	}
+				                           	siteFinder_Toggle(true, currentSite.Exists);
+				                           	generateTemplateToolStripMenuItem.Enabled = true;
+				                           	generateTaskToolStripMenuItem.Enabled = true;
+				                           	sendBCPToolStripMenuItem.Enabled = true;
+				                           	
+				                           	List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
+				                           	COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
+				                           	COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                           	COOS2GNumericUpDown.Value = 0;
+				                           	
+				                           	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
+				                           	COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
+				                           	COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                           	COOS3GNumericUpDown.Value = 0;
 
-				cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
-				COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
-				COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				COOS4GNumericUpDown.Value = 0;
-				COOSCheckBox.Checked = false;
+				                           	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
+				                           	COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
+				                           	COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                           	COOS4GNumericUpDown.Value = 0;
+				                           	COOSCheckBox.Checked = false;
 //				sw.Stop();
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
+				                           });
+				Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			}
 		}
 
@@ -742,6 +745,8 @@ namespace appCore.Templates.UI
 					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id);
 					relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
 					relatedCasesForm.ShowDialog();
+					if(relatedCasesForm.Cancel)
+						return;
 					if(relatedCasesForm.selectedCases.Count > 0) {
 						int c = 0;
 						foreach(ListViewItem lvi in relatedCasesForm.selectedCases) {
