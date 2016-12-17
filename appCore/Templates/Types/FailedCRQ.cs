@@ -62,7 +62,7 @@ namespace appCore.Templates.Types
 			try { FEBookedInName = controlsCollection["FEBookedInGroupBox"].Controls["FEBookedIn_NameTextBox"].Text; } catch (Exception) { }
 			try { FEBookedInTel = controlsCollection["FEBookedInGroupBox"].Controls["FEBookedIn_PhoneNumberTextBox"].Text; } catch (Exception) { }
 			try {
-				CheckBox cb = (CheckBox)controlsCollection["FEBookedIn_CalledANOCCheckBox"];
+				CheckBox cb = (CheckBox)controlsCollection["FEBookedInGroupBox"].Controls["FEBookedIn_CalledANOCCheckBox"];
 				FECalledANOC = cb.Checked;
 			} catch (Exception) { }
 			try { CrqContacts = controlsCollection["CRQContactsTextBox"].Text; } catch (Exception) { }
