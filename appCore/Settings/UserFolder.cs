@@ -328,10 +328,9 @@ namespace appCore.Settings
 		}
 
 		static void UpdateShiftsFile() {
-			// FIXME: FIX future issue when 2017 shifts file will be available
 			FileInfo currentShiftsFile = getDBFile("shift*.xlsx");
 			
-			typeof(GlobalProperties).GetField("ShiftsDefaultLocation").SetValue(null, new DirectoryInfo(@"C:\Users\goncarj3\Desktop\Fiddler4Portable"));
+//			typeof(GlobalProperties).GetField("ShiftsDefaultLocation").SetValue(null, new DirectoryInfo(@"C:\Users\goncarj3\Desktop\Fiddler4Portable"));
 			
 			if(GlobalProperties.shareAccess) {
 				FileInfo[] shiftsFiles = GlobalProperties.ShiftsDefaultLocation.GetFiles("shift*.xlsx");
