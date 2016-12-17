@@ -137,8 +137,6 @@ namespace appCore.Shifts
 		}
 		
 		Bitmap loadShifts(DateTime date) {
-			// FIXME: pictureBoxes UI glitches on shiftsPanel
-			
 			rectCollection.Clear();
 			byte first_weekday = (byte)(new DateTime(date.Year,date.Month,1).DayOfWeek);
 			if(first_weekday == 0) first_weekday = 6; // if month starts on Sunday, 6 because Sunday is actually weekday 0

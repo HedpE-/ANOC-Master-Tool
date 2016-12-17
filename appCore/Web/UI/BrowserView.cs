@@ -8,11 +8,9 @@
  */
 using appCore.UI;
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Collections.Generic;
 using System.Windows.Forms;
 //using System.Threading;
@@ -58,45 +56,14 @@ namespace appCore.Web.UI
 		{
 			InitializeComponent();
 			
-//			OIUsername = Settings.SettingsFile.OIUsername;
-//			OIPassword = Settings.SettingsFile.OIPassword;
-//
 			tabControl1.SelectTab(1);
 			webBrowser1.Navigate(CitrixHome);
-//
-//			string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
-//			ASCIIEncoding enc = new ASCIIEncoding();
-//			webBrowser2.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-//			webBrowser3.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-//			Thread.Sleep(1000);
 			OIConnection.InitiateOiConnection();
-//			webBrowser2.Navigate(homeAddress(webBrowser2));
-//			webBrowser3.Navigate(homeAddress(webBrowser3));
 			webBrowser2.ResumeSession(homeAddress(webBrowser2), OIConnection.OICookieContainer);
 			webBrowser3.ResumeSession(homeAddress(webBrowser3), OIConnection.OICookieContainer);
 			
 			comboBox1.SelectedIndex = 0;
 			comboBox1.SelectedIndexChanged += ComboBox1SelectedIndexChanged;
-//			HttpStatusCode statusCode = OIConnection.EstablishConnection();
-//			if(statusCode == HttpStatusCode.OK) {
-//				if(!string.IsNullOrEmpty(OIConnection.Connection.LoggedOnUsername) && !OIConnection.Connection.OICookieContainer.ToList()[0].Expired) {
-//					webBrowser2.Navigate(UrisList[0].URI);
-//					webBrowser3.Navigate(homeAddress(webBrowser3));
-			////					webBrowser2.ResumeSession(UrisList[0].URI, OIConnection.Connection.OICookieContainer);
-			////					webBrowser3.ResumeSession(homeAddress(webBrowser3), OIConnection.Connection.OICookieContainer);
-//				}
-//				else {
-//					statusCode = OIConnection.Connection.Logon();
-//
-//					// TODO: Handle errors
-//					if(statusCode == HttpStatusCode.OK) {
-//						webBrowser2.Navigate(UrisList[0].URI);
-//						webBrowser3.Navigate(homeAddress(webBrowser3));
-			////						webBrowser2.ResumeSession(UrisList[0].URI, OIConnection.Connection.OICookieContainer);
-			////						webBrowser3.ResumeSession(homeAddress(webBrowser3), OIConnection.Connection.OICookieContainer);
-//					}
-//				}
-//			}
 		}
 		
 		void WebBrowserDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -119,19 +86,6 @@ namespace appCore.Web.UI
 				
 				groupBox1.Visible &= !lockedCellsPanelEnabled;
 				if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com") || wb.Url.ToString().Contains("195.233.194.118")) {
-//					if(!checkOILogin(wb)) {
-					////						OIConnection.EstablishConnection();
-					////						OIConnection.Connection.Logon();
-					////						wb.ResumeSession(homeAddress(wb), OIConnection.OICookieContainer);
-//						string postData = string.Format("username={0}&password={1}", OIUsername, Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
-//						ASCIIEncoding enc = new ASCIIEncoding();
-//						if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com"))
-//							wb.Navigate(OILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-//						else
-//							wb.Navigate(OldOILogonScreen, "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-//						Thread.Sleep(1000);
-//						wb.Navigate(homeAddress(wb));
-//					}
 					if(wb.Url.ToString().Contains(@"://195.233.194.118/site_old") || wb.Url.ToString().Contains(@"://operationalintelligence.vf-uk.corp.vodafone.com/site/")) {
 						HtmlElement divCells = wb.Document.GetElementById("div_cells");
 						if(divCells != null) {
@@ -235,20 +189,6 @@ namespace appCore.Web.UI
 				}
 			}
 		}
-		
-//		bool checkOILogin(AMTBrowser wb) {
-//			var elements = wb.Document.GetElementsByTagName("form");
-//			bool loginform = false;
-//			HtmlElement loginfrm = null;
-//			foreach (HtmlElement elem in elements) {
-//				if(elem.GetAttribute("name") == "loginform") {
-//					loginform = true;
-//					loginfrm = elem;
-//					break;
-//				}
-//			}
-//			return !loginform;
-//		}
 		
 		string homeAddress(AMTBrowser wb)
 		{
@@ -446,17 +386,7 @@ namespace appCore.Web.UI
 		void WebBrowsersNavigating(object sender, WebBrowserNavigatingEventArgs e)
 		{
 			// FIXME: Textbox not updating address correctly sometimes
-			//WebBrowserHelper.ClearCache();
 			AMTBrowser wb = (AMTBrowser)sender;
-//			if(e.Url.AbsoluteUri.Contains("/sso/index.php")) {
-//				int status = (int)OIConnection.Connection.Logon();
-//				e.Cancel = true;
-//				if(wb.Name == "webBrowser2")
-//					wb.ResumeSession(UrisList[0].URI, OIConnection.Connection.OICookieContainer);
-//				else
-//					wb.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, OIConnection.Connection.OICookieContainer);
-//				return;
-//			}
 			TabPage tp = (TabPage)tabControl1.Controls[Convert.ToInt16(wb.Name.Substring(wb.Name.IndexOf('s') + 3)) - 1];  // webBrowserx, index of 's' + 3 to get number
 			tp.Controls["textBox" + wb.Name.Substring(wb.Name.IndexOf('s') + 3)].Text = e.Url.AbsoluteUri;
 		}
@@ -763,92 +693,6 @@ namespace appCore.Web.UI
 			Marshal.FreeHGlobal(cacheEntryInfoBuffer);
 		}
 		#endregion
-		
-		const string url = "http://195.233.194.118/SSO/?action=login";
-		static string username = string.Empty; //Tools.SettingsFileHandler("OIUsername","read",null,BrowserView.SettingsFile);
-		static string password = string.Empty; //Tools.EncryptDecryptText("Dec",Tools.SettingsFileHandler("OIPassword","read",null,BrowserView.SettingsFile));
-		const string commit = "Sign+In"; //this matches the data from Tamper Data
-
-		public static void Login()
-		{
-			StringBuilder postData = new StringBuilder();
-			postData.Append("/SSO/index.asp?url=http%3A%2F%2F195%2E233%2E194%2E118%2F username=" + username + "&password=" + password);
-
-			ASCIIEncoding ascii = new ASCIIEncoding();
-			byte[] postBytes = ascii.GetBytes(postData.ToString());
-			
-			WebRequest request = WebRequest.Create(url);
-			request.Credentials = CredentialCache.DefaultCredentials;
-			request.Method = "POST";
-			request.ContentLength = postBytes.Length;
-			Stream dataStream = request.GetRequestStream ();
-			dataStream.Write(postBytes, 0, postBytes.Length);
-			WebResponse response = request.GetResponse();
-			
-			string a = (((HttpWebResponse)response).StatusDescription);
-			
-			//WebBrowser b = new WebBrowser();
-			//b.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(b_DocumentCompleted);
-			//b.Navigate(url);
-		}
-
-		static void b_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-		{
-			AMTBrowser b = sender as AMTBrowser;
-			//try
-			//{
-			//	HTMLDocument pass = new HTMLDocument();
-			//	pass = (HTMLDocument)Web_V1.Document;
-			//	HTMLInputElement passBox = (HTMLInputElement)pass.all.item("password", 0);
-			//	passBox.value = password;
-			//	HTMLDocument log = new HTMLDocument();
-			//	log = (HTMLDocument)Web_V1.Document;
-			//	HTMLInputElement logBox = (HTMLInputElement)log.all.item("username", 0);
-			//	logBox.value = username;
-			//	HTMLInputElement submit = (HTMLInputElement)pass.all.item("SubmitButtonIDFromPageSource", 0);
-			//	submit.click();
-			//}
-			//catch { }
-			
-			string response = b.DocumentText;
-
-			// looks in the page source to find the authenticity token.
-			// could also use regular exp<b></b>ressions here.
-
-			int index = response.IndexOf("authenticity_token", StringComparison.Ordinal);
-			int startIndex = index + 41;
-			string authenticityToken = response.Substring(startIndex, 40);
-
-			// unregisters the first event handler
-			// adds a second event handler
-
-			b.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(b_DocumentCompleted2);
-			b.DocumentCompleted -= new WebBrowserDocumentCompletedEventHandler(b_DocumentCompleted);
-			b.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(b_DocumentCompleted2);
-
-			// format our data that we are going to post to the server
-			// this will include our post parameters.  They do not need to be in a specific
-			// order, as long as they are concatenated together using an ampersand ( & )
-
-			string postData = string.Format("authenticity_token={2}&session[username_or_email]={0}&session[password]={1}&commit={3}", username, password, authenticityToken, commit);
-
-			ASCIIEncoding enc = new ASCIIEncoding();
-
-			//  we are encoding the postData to a byte array
-
-			b.Navigate("https://twitter.com/sessions", "", enc.GetBytes(postData), "Content-Type: application/x-www-form-urlencoded\r\n");
-		}
-
-		static void b_DocumentCompleted2(object sender, WebBrowserDocumentCompletedEventArgs e)
-		{
-			AMTBrowser b = sender as AMTBrowser;
-			string response = b.DocumentText;
-
-			if (response.Contains("Sign out"))
-			{
-				MessageBox.Show("Login Successful");
-			}
-		}
 	}
 }
 

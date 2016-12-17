@@ -1749,25 +1749,6 @@ namespace appCore
 			thread.Start();
 		}
 		
-//		public static void toggleShiftsPanel() {
-//			// FIXME: UI glitch on shiftsPanel objects
-//			// FIXME: If shiftFile doesn't exist and share access is denied, app crashes
-//			if(shiftsCalendar.Location.Y == 0) {
-//				if(wholeShiftsPanel.Parent != null) {
-//					wholeShiftsPanel.Dispose();
-//					shiftsCalendar.Invalidate(true);
-//				}
-//				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
-//				t.add(shiftsCalendar, "Top", 0 - shiftsCalendar.Height);
-//				t.run();
-//			}
-//			else {
-//				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
-//				t.add(shiftsCalendar, "Top", 0);
-//				t.run();
-//			}
-//		}
-		
 		void PictureBoxesClick(object sender, EventArgs e) {
 			PictureBox pic = (PictureBox)sender;
 			switch(pic.Name) {
