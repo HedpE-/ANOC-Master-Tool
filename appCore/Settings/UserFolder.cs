@@ -8,6 +8,7 @@
  */
 using System;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using appCore.UI;
 using appCore.DB;
@@ -298,8 +299,24 @@ namespace appCore.Settings
 			}
 		}
 
-		public static FileInfo getDBFile(string file) {
-			return hasDBFile(file) ? userFolder.GetFiles(file)[0] : null;
+		public static FileInfo getDBFile(string pattern) {
+			if(!hasDBFile(pattern))
+				return null;
+			
+			FileInfo[] files = userFolder.GetFiles(pattern);
+			FileInfo foundFile = null;
+			if(files.Length > 1) {
+				foreach (FileInfo fi in files) {
+					if(DateTime.Now.Month == 12 && fi.Name.Contains(DateTime.Now.Year.ToString())) {
+						foundFile = fi;
+						break;
+					}
+				}
+			}
+			else
+				return files[0];
+			
+			return foundFile;
 		}
 
 		public static bool hasDBFile(string file) {
@@ -311,7 +328,10 @@ namespace appCore.Settings
 		}
 
 		static void UpdateShiftsFile() {
+			// FIXME: FIX future issue when 2017 shifts file will be available
 			FileInfo currentShiftsFile = getDBFile("shift*.xlsx");
+			
+			typeof(GlobalProperties).GetField("ShiftsDefaultLocation").SetValue(null, new DirectoryInfo(@"C:\Users\goncarj3\Desktop\Fiddler4Portable"));
 			
 			if(GlobalProperties.shareAccess) {
 				FileInfo[] shiftsFiles = GlobalProperties.ShiftsDefaultLocation.GetFiles("shift*.xlsx");
@@ -321,8 +341,10 @@ namespace appCore.Settings
 						newestFile = shiftsFiles[0];
 					else {
 						foreach (FileInfo file in shiftsFiles) {
-							if(newestFile == null && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
-								newestFile = file;
+							if(newestFile == null) {
+								if(!file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
+									newestFile = file;
+							}
 							else {
 								if(file.LastWriteTime > newestFile.LastWriteTime && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
 									newestFile = file;
@@ -333,7 +355,8 @@ namespace appCore.Settings
 					if(newestFile != null) {
 						if(currentShiftsFile != null) {
 							if(newestFile.LastWriteTime > currentShiftsFile.LastWriteTime) {
-								currentShiftsFile.Delete();
+								if(DateTime.Now.Month != 12 && !newestFile.Name.Contains((DateTime.Now.Year + 1).ToString()))
+									currentShiftsFile.Delete();
 								newestFile.CopyTo(FullName + "\\" + newestFile.Name, true);
 							}
 						}

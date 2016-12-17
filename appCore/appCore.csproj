@@ -244,6 +244,7 @@
     <Compile Include="UI\Loading.Designer.cs">
       <DependentUpon>Loading.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\LoadingPanel.cs" />
     <Compile Include="UI\NotesForm.cs">
       <SubType>Form</SubType>
     </Compile>
