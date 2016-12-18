@@ -114,8 +114,8 @@ namespace appCore.Shifts
 					previousRectBottomCoord = rectangle.Bottom;
 					drawStringFormat.Alignment = StringAlignment.Near;
 				}
-				if(CurrentUser.userName == "GONCARJ3")
-					wholeShiftSnap.Save(UserFolder.FullName + @"\wholeShiftSnap.png");
+//				if(CurrentUser.userName == "GONCARJ3")
+//					wholeShiftSnap.Save(UserFolder.FullName + @"\wholeShiftSnap.png");
 			}
 			PictureBox shiftsPictureBox = new PictureBox();
 			shiftsPictureBox.Parent = this;
@@ -144,44 +144,6 @@ namespace appCore.Shifts
 			Controls.Add(shiftsPictureBox);
 			Controls.Add(shiftsCopyButton);
 		}
-		
-//		void wholeShiftsPanelMouseWheel(object sender, MouseEventArgs e)
-//		{
-//			wholeShiftsPanel.SuspendLayout();
-//			if (e.Delta == 120)
-//			{
-//				if (wholeShiftsPanel.VerticalScroll.Value - 2 >= wholeShiftsPanel.VerticalScroll.Minimum)
-//					wholeShiftsPanel.VerticalScroll.Value -= 2;
-//				else
-//					wholeShiftsPanel.VerticalScroll.Value = wholeShiftsPanel.VerticalScroll.Minimum;
-//			}
-//			if (e.Delta == -120)
-//			{
-//				if (wholeShiftsPanel.VerticalScroll.Value + 2 <= wholeShiftsPanel.VerticalScroll.Maximum)
-//					wholeShiftsPanel.VerticalScroll.Value += 2;
-//				else
-//					wholeShiftsPanel.VerticalScroll.Value = wholeShiftsPanel.VerticalScroll.Maximum;
-//			}
-//			wholeShiftsPanel.ResumeLayout();
-//		}
-//		
-//		void wholeShiftsPanelMouseEnter(object sender, EventArgs e) {
-//			wholeShiftsPanel.Focus();
-//		}
-//		
-//		void wholeShiftsPanelMouseLeave(object sender, EventArgs e) {
-//			wholeShiftsPanel.Focus();
-//		}
-//		
-//		void wholeShiftsPanelMouseDown(object sender, MouseEventArgs e) {
-//			Rectangle wholePanelArea = Rectangle.Union(wholeShiftsPanel.ClientRectangle,new Rectangle(wholeShiftsPanel.Right, wholeShiftsPanel.Top, 23, wholeShiftsPanel.Height));
-//			if(!wholePanelArea.Contains(e.Location)) {
-//				if(wholeShiftsPanel.Parent != null) {
-//					wholeShiftsPanel.Dispose();
-//					this.Invalidate(true);
-//				}
-//			}
-//		}
 		
 		void shiftsCopyButtonClick(object sender, EventArgs e) {
 			Clipboard.SetText(wholeShiftString);
