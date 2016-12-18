@@ -26,13 +26,7 @@ namespace appCore.UI
 		}
 //		Stack<string> undoList = new Stack<string>();
 //		Stack<string> redoList = new Stack<string>();
-		
-		public AMTRichTextBox()
-		{
-			KeyDown += RichTextBox_CtrlVAZYFix;
-//			TextChanged += RichTextBox_TextChanged;
-		}
-		
+				
 		string[] stripTopBottomWhiteLinesOnArray() {
 			List<string> linesList = Lines.ToList();
 			
@@ -43,13 +37,14 @@ namespace appCore.UI
 
 			return linesList.Skip(start).Take(end - start + 1).ToArray();
 		}
+		
 		// TODO: Translate API
-//		void RichTextBox_TextChanged(object sender, EventArgs e)
+//		prtected override void OnTextChanged(EventArgs e)
 //		{
 //			undoList.Push(Text);
 //		}
 
-		void RichTextBox_CtrlVAZYFix(object sender, KeyEventArgs e)
+		void RichTextBox_CtrlVAZYFix(KeyEventArgs e)
 		{
 			if(e.Control && (e.KeyCode == Keys.A || e.KeyCode == Keys.V || e.KeyCode == Keys.Z || e.KeyCode == Keys.Y || e.KeyCode == Keys.Back)) {
 				// suspend layout to avoid blinking
@@ -59,7 +54,7 @@ namespace appCore.UI
 					case Keys.V:
 						if(!ReadOnly) {
 							if(Name.Contains("Address"))
-								MultiLineAddressFix(sender, e);
+								MultiLineAddressFix();
 							
 							// get insertion point
 							if (SelectionLength > 1) {
@@ -122,23 +117,49 @@ namespace appCore.UI
 			}
 		}
 
-		void MultiLineAddressFix(object sender, KeyEventArgs e)
-		{
-			if (e.Control && e.KeyCode == Keys.V) {
-				string clpbrd = Clipboard.GetData("Text").ToString();
-				if (clpbrd.Contains("\r\n")) {
-					string[] strTofind = { "\r\n" };
-					string[] temp = clpbrd.Split(strTofind, StringSplitOptions.None);
-					string finalAddress = string.Empty;
-					for (int c = 0; c < temp.Length; c++) {
-						if (c == temp.Length - 1) {
-							if (temp[c] != "") finalAddress += temp[c];
-							else finalAddress = finalAddress.Substring(0,finalAddress.Length - 2);
-						}
-						else finalAddress += temp[c] + ", ";
+		void MultiLineAddressFix() {
+			string clpbrd = Clipboard.GetData("Text").ToString();
+			if (clpbrd.Contains("\r\n")) {
+				string[] strTofind = { "\r\n" };
+				string[] temp = clpbrd.Split(strTofind, StringSplitOptions.None);
+				string finalAddress = string.Empty;
+				for (int c = 0; c < temp.Length; c++) {
+					if (c == temp.Length - 1) {
+						if (temp[c] != "") finalAddress += temp[c];
+						else finalAddress = finalAddress.Substring(0,finalAddress.Length - 2);
 					}
-					Clipboard.SetText(finalAddress);
+					else finalAddress += temp[c] + ", ";
 				}
+				Clipboard.SetText(finalAddress);
+			}
+		}
+		
+		protected override void OnKeyDown(KeyEventArgs e) {
+			RichTextBox_CtrlVAZYFix(e);
+		}
+		
+		protected override void OnMouseDown(MouseEventArgs e) {
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{   
+				ContextMenu contextMenu = new ContextMenu();
+				MenuItem menuItem = new MenuItem("Cut");
+				menuItem.Click += delegate { Cut(); };
+				menuItem.Enabled = SelectionLength > 0;
+				contextMenu.MenuItems.Add(menuItem);
+				menuItem = new MenuItem("Copy");
+				menuItem.Click += delegate { Copy(); };
+				menuItem.Enabled = SelectionLength > 0;
+				contextMenu.MenuItems.Add(menuItem);
+				menuItem = new MenuItem("Paste");
+				menuItem.Click += delegate { Paste(); };
+				menuItem.Enabled = Clipboard.GetDataObject().GetDataPresent(DataFormats.Text);
+				contextMenu.MenuItems.Add(menuItem);
+				menuItem = new MenuItem("Delete");
+				menuItem.Click += delegate { SelectedText = string.Empty; };
+				menuItem.Enabled = SelectionLength > 0;
+				contextMenu.MenuItems.Add(menuItem);
+
+				ContextMenu = contextMenu;
 			}
 		}
 	}
