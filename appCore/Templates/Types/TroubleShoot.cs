@@ -176,8 +176,29 @@ namespace appCore.Templates.Types
 			ind++;
 			
 			string complete = string.Empty;
-			if(log[ind].StartsWith("Related"))
-				RelatedINC_CRQ = log[ind++].Substring("Related INC/CRQ: ".Length) == "None" ? string.Empty : log[ind].Substring("Related INC/CRQ: ".Length);
+			if(log[ind].StartsWith("Related")) {
+				if(log[ind].Substring("Related INC/CRQ:".Length) == " None")
+					RelatedINC_CRQ = string.Empty;
+				else {
+					if("Related INC/CRQ:".Length < log[ind].Length && log[ind+1] == string.Empty)
+						RelatedINC_CRQ = log[ind].Substring("Related INC/CRQ: ".Length);
+					else {
+						for (ind++; ind < log.Length - 4; ind++) {
+							if(log[ind] == "") {
+								if(log[ind+1].StartsWith("Active Alarms:"))
+									break;
+							}
+							else {
+								if(string.IsNullOrEmpty(complete))
+									complete += log[ind];
+								else
+									complete += Environment.NewLine + log[ind];
+							}
+						}
+						RelatedINC_CRQ = complete;
+					}
+				}
+			}
 			else {
 				if(log[++ind].Substring("Ongoing INCs:".Length) == " None")
 					OngoingINCs = log[ind++].Substring("Ongoing INCs:".Length);
@@ -224,8 +245,10 @@ namespace appCore.Templates.Types
 					}
 				}
 				else {
-					if (string.IsNullOrEmpty(complete)) complete = log[ind];
-					else complete += Environment.NewLine + log[ind];
+					if(string.IsNullOrEmpty(complete))
+						complete = log[ind];
+					else
+						complete += Environment.NewLine + log[ind];
 				}
 			}
 			ActiveAlarms = complete;
@@ -238,7 +261,8 @@ namespace appCore.Templates.Types
 					break;
 				}
 				if (log[ind] == "") {
-					if (log[ind+1] != "Troubleshoot:") complete = complete + Environment.NewLine;
+					if (log[ind+1] != "Troubleshoot:")
+						complete += Environment.NewLine;
 					else {
 						ind++;
 						break;
@@ -256,10 +280,13 @@ namespace appCore.Templates.Types
 			complete = string.Empty;
 			ind = Array.IndexOf(log, "Troubleshoot:");
 			for (ind++; ind < log.Length - 4; ind++) {
-				if (complete == string.Empty) complete = log[ind];
-				else complete += Environment.NewLine + log[ind];
+				if(complete == string.Empty)
+					complete = log[ind];
+				else
+					complete += Environment.NewLine + log[ind];
 			}
 			Troubleshoot = complete;
+			
 			for(ind++; ind < log.Length; ind++) {
 				Signature += log[ind];
 				if(ind != log.Length - 1)
@@ -300,7 +327,12 @@ namespace appCore.Templates.Types
 			template += Environment.NewLine;
 			template += "CCT Reference: " + CCTReference + Environment.NewLine;
 //			template += "Related INC/CRQ: " + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
-			template += "Related INC/CRQ:" + Environment.NewLine + RelatedINC_CRQ + Environment.NewLine + Environment.NewLine;
+			template += "Related INC/CRQ:";
+			if(RelatedINC_CRQ == "None")
+				template += " " + RelatedINC_CRQ;
+			else
+				template += Environment.NewLine + RelatedINC_CRQ;
+			template += Environment.NewLine + Environment.NewLine;
 			
 //			template += Environment.NewLine;
 //			template += "Ongoing INCs:" + getCurrentCases("INC", true) + Environment.NewLine;
