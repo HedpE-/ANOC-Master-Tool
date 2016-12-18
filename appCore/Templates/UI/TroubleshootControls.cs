@@ -248,7 +248,7 @@ namespace appCore.Templates.UI
 //				Stopwatch sw = new Stopwatch();
 //
 //				sw.Start();
-//				                           	this.Invoke((MethodInvoker)delegate {
+				                           	this.Invoke((MethodInvoker)delegate {
 				                           	            	TextBox tb = (TextBox)sender;
 				                           	            	while(tb.Text.StartsWith("0"))
 				                           	            		tb.Text = tb.Text.Substring(1);
@@ -297,14 +297,16 @@ namespace appCore.Templates.UI
 				                           	            	COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
 				                           	            	COOS4GNumericUpDown.Value = 0;
 				                           	            	COOSCheckBox.Checked = false;
-//				                           	            });
+				                           	            });
 //				sw.Stop();
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
 				                           });
-//				LoadingPanel load = new LoadingPanel();
-//				Toolbox.Tools.getParentForm(this).Controls.Add(load);
-//				load.StartBackgroundWorker(action, true);
-				Toolbox.Tools.darkenBackgroundForm(action,true,this);
+				LoadingPanel load = new LoadingPanel();
+				Toolbox.Tools.getParentForm(this).Controls.Add(load);
+				load.Initialize(action, true);
+//				load.BringToFront();
+//				load.StartBackgroundWorker();
+//				Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			}
 		}
 
