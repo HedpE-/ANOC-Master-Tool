@@ -20,7 +20,6 @@ namespace appCore.UI
 	public class LoadingPanel : Panel
 	{
 		BackgroundWorker backgroundWorker = new BackgroundWorker();
-		PictureBox loadingBox;
         
 		int _spinnerSize = 32;
 		public int spinnerSize
@@ -43,33 +42,29 @@ namespace appCore.UI
 				_opacity = value;
 			}
 		}
-		
-		public LoadingPanel() {
-		}
-		
-		public void Initialize(Action action, bool showLoading) {
+				
+		public void Initialize(Action actionNoUI, Action actionUI, bool showLoading) {
 			// take a screenshot of the form and darken it
 			Bitmap bmp = new Bitmap(Parent.ClientRectangle.Width, Parent.ClientRectangle.Height);
-			using (Graphics G = Graphics.FromImage(bmp))
+			using (Graphics g = Graphics.FromImage(bmp))
 			{
-				G.CompositingMode = CompositingMode.SourceOver;
-				G.CopyFromScreen(Parent.PointToScreen(new Point(0, 0)), new Point(0, 0), Parent.ClientRectangle.Size);
+				g.CompositingMode = CompositingMode.SourceOver;
+				g.CopyFromScreen(Parent.PointToScreen(new Point(0, 0)), new Point(0, 0), Parent.ClientRectangle.Size);
 				Color darken = Color.FromArgb((int)(255 * Opacity), Color.Black);
 				using (Brush brsh = new SolidBrush(darken))
-				{
-					G.FillRectangle(brsh, Parent.ClientRectangle);
-				}
+					g.FillRectangle(brsh, Parent.ClientRectangle);
 			}
 
 			Location = new Point(0, 0);
 			Size = Parent.ClientRectangle.Size;
 			BackgroundImage = bmp;
 			
+			BringToFront();
 			if(showLoading) {
 				Point loc = PointToScreen(Point.Empty);
 				loc.X = (Parent.Width - spinnerSize) / 2;
 				loc.Y = (Parent.Height - spinnerSize) / 2;
-				loadingBox = new PictureBox();
+				PictureBox loadingBox = new PictureBox();
 				loadingBox.BackColor = Color.Transparent;
 				loadingBox.Image = loadingBox.InitialImage = Resources.spinner1;
 				loadingBox.Size = new Size(spinnerSize, spinnerSize);
@@ -79,12 +74,12 @@ namespace appCore.UI
 				loadingBox.BringToFront();
 			}
 			
-			backgroundWorker.DoWork += delegate { action(); };
-            backgroundWorker.RunWorkerCompleted += delegate { 
+			backgroundWorker.DoWork += delegate { actionNoUI(); };
+            backgroundWorker.RunWorkerCompleted += delegate {
+				actionUI();
 				Parent.Controls.Remove(this);
 				this.Dispose();
 			};
-			BringToFront();
             backgroundWorker.RunWorkerAsync();
 		}
 		
