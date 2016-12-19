@@ -147,7 +147,7 @@ namespace appCore.Web
 					request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
 					IRestResponse response = client.Execute(request);
 					
-					if((!OldOiPortal && !response.Content.Contains(@"<div class=""logged_in"">")) || (OldOiPortal && response.ContentLength != 167 && !response.Content.Contains("<meta http-equiv=" + '"' + "refresh" + '"' + " content=" + '"' + "0;URL='http://operationalintelligence.vf-uk.corp.vodafone.com/'" + '"' + " />"))) // Login if server kicked user out
+					if((!OldOiPortal && response.Content.Contains("Not logged in")) || (OldOiPortal && response.ContentLength != 167 && !response.Content.Contains("<meta http-equiv=" + '"' + "refresh" + '"' + " content=" + '"' + "0;URL='http://operationalintelligence.vf-uk.corp.vodafone.com/'" + '"' + " />"))) // Login if server kicked user out
 						Logon(OldOiPortal);
 				}
 			}
