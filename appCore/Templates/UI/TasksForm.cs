@@ -17,13 +17,13 @@ namespace appCore.Templates.UI
 	/// </summary>
 	public partial class TasksForm : Form
 	{
-		public static string siteID;
-		public static string siteAddress;
-		public static string cct;
-		public static string siteTEF;
-		public static string relatedINC;
-		public static string powerCompany;
-		static string _currentTask = "PWR";
+		public string siteID;
+		public string siteAddress;
+		public string cct;
+		public string siteTEF;
+		public string relatedINC;
+		public string powerCompany;
+		string _currentTask = "PWR";
 		
 		public TasksForm()
 		{
