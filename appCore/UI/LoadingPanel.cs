@@ -42,8 +42,8 @@ namespace appCore.UI
 				_opacity = value;
 			}
 		}
-				
-		public void Initialize(Action actionNoUI, Action actionUI, bool showLoading) {
+		
+		public void Initialize(Action actionThreaded, Action actionNonThreaded, bool showLoading) {
 			// take a screenshot of the form and darken it
 			Bitmap bmp = new Bitmap(Parent.ClientRectangle.Width, Parent.ClientRectangle.Height);
 			using (Graphics g = Graphics.FromImage(bmp))
@@ -74,17 +74,13 @@ namespace appCore.UI
 				loadingBox.BringToFront();
 			}
 			
-			backgroundWorker.DoWork += delegate { actionNoUI(); };
+			backgroundWorker.DoWork += delegate { actionThreaded(); };
             backgroundWorker.RunWorkerCompleted += delegate {
-				actionUI();
+				actionNonThreaded();
 				Parent.Controls.Remove(this);
 				this.Dispose();
 			};
             backgroundWorker.RunWorkerAsync();
 		}
-		
-//		public void StartBackgroundWorker() {
-//            backgroundWorker.RunWorkerAsync();
-//		}
 	}
 }
