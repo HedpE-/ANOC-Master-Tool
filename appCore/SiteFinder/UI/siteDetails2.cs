@@ -536,12 +536,6 @@ namespace appCore.SiteFinder.UI
 		void searchResultsPopulate(List<Site> foundSites) {
 			outageSites = foundSites;
 			foreach (Site site in foundSites) {
-//				string siteID = site.Id;
-//				string JVCO = site[site.Table.Columns.IndexOf("JVCO_ID")].ToString();
-//				string priority = site[site.Table.Columns.IndexOf("PRIORITY")].ToString();
-//				string host = site[site.Table.Columns.IndexOf("HOST")].ToString();
-//				string postCode = site[site.Table.Columns.IndexOf("ADDRESS")].ToString();
-//				postCode = postCode.Substring(postCode.LastIndexOf(';') + 1).Trim();
 				listView2.Items.Add(new ListViewItem(new[]{ site.Id,site.JVCO,site.Priority,site.HostedBy,site.PostCode }));
 				
 				foreach (ColumnHeader col in listView2.Columns)
@@ -549,7 +543,6 @@ namespace appCore.SiteFinder.UI
 				listView2.ResumeLayout();
 				
 				markersOverlay.Markers.Add(site.MapMarker);
-//				setSiteMarker(site.MapMarker,true);
 			}
 			
 			foreach (ColumnHeader col in listView2.Columns)
@@ -572,46 +565,52 @@ namespace appCore.SiteFinder.UI
 		{
 			TextBoxBase tb = (TextBoxBase)sender;
 			if(Convert.ToInt32(e.KeyChar) == 13 && !tb.ReadOnly) {
-				Action action = new Action(delegate {
-				                           	try {
-				                           		myMap.Overlays.Remove(markersOverlay);
-				                           		myMap.Overlays.Remove(selectedSiteOverlay);
-				                           		markersOverlay.Clear();
-				                           		selectedSiteOverlay.Clear();
-				                           	}
-				                           	catch (Exception) {
-				                           	}
-				                           	
-				                           	currentSite = Finder.getSite(tb.Text);
-				                           	currentSite.UpdateLockedCells();
-				                           	
+				Action actionThreaded = new Action(delegate {
+				                                   	try {
+				                                   		myMap.Overlays.Remove(markersOverlay);
+				                                   		myMap.Overlays.Remove(selectedSiteOverlay);
+				                                   		markersOverlay.Clear();
+				                                   		selectedSiteOverlay.Clear();
+				                                   	}
+				                                   	catch (Exception) {
+				                                   	}
+				                                   	
+				                                   	currentSite = Finder.getSite(tb.Text);
+				                                   	currentSite.UpdateLockedCells();
+				                                   	
 //				                           	selectedSiteDetailsPopulate(currentSite);
-				                           	
+				                                   	
 //				                           	if(textBox4.Text != "Site not found") {
-				                           	if(currentSite.Exists) {
-				                           		currentSite.requestOIData("INCCRQPWR");
-				                           		selectedSiteDetailsPopulate(currentSite);
-				                           		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
+				                                   	if(currentSite.Exists)
+				                                   		currentSite.requestOIData("INCCRQPWR");
+				                                   });
+				
+				Action actionNonThreaded = new Action(delegate {
+				                                      	if(currentSite.Exists) {
+				                                      		selectedSiteDetailsPopulate(currentSite);
+				                                      		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
 //				                           		setSiteMarker(site.MapMarker,false);
-				                           		myMap.Overlays.Add(selectedSiteOverlay);
-				                           		myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
-				                           	}
-				                           	else {
-				                           		selectedSiteDetailsPopulate(currentSite);
-				                           		myMap.SetPositionByKeywords("UK");
-				                           		myMap.Zoom = 6;
-				                           	}
-				                           	MainMenu.siteFinder_Toggle(currentSite.Exists);
-				                           });
-				Toolbox.Tools.darkenBackgroundForm(action,true,this);
+				                                      		myMap.Overlays.Add(selectedSiteOverlay);
+				                                      		myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
+				                                      	}
+				                                      	else {
+				                                      		selectedSiteDetailsPopulate(currentSite);
+				                                      		myMap.SetPositionByKeywords("UK");
+				                                      		myMap.Zoom = 6;
+				                                      	}
+				                                      	MainMenu.siteFinder_Toggle(currentSite.Exists);
+				                                      });
+				
+				LoadingPanel load = new LoadingPanel();
+				this.Controls.Add(load);
+				load.Initialize(actionThreaded, actionNonThreaded, true);
+//				Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			}
 		}
 		
 		void siteFinder(List<Site> sitesList)
 		{
 			Action action = new Action(delegate {
-//			                           	foundSites.Clear();
-//			                           	foundCells.Clear();
 			                           	try {
 			                           		myMap.Overlays.Remove(markersOverlay);
 			                           		myMap.Overlays.Remove(selectedSiteOverlay);
@@ -620,21 +619,6 @@ namespace appCore.SiteFinder.UI
 			                           	}
 			                           	catch (Exception) {
 			                           	}
-//			                           	foreach (string site in src) {
-//			                           		if(!string.IsNullOrEmpty(site)) {
-//			                           			DataRowView drv = MainForm.findSite(site);
-//			                           			DataRow tempSite = null;
-//			                           			if(drv != null)
-//			                           				tempSite = drv.Row;
-//			                           			if(tempSite != null) {
-//			                           				DataTable tempCells = MainForm.findCells(site).ToTable();
-//			                           				foundSites.ImportRow(tempSite);
-//			                           				foundCells.Merge(tempCells);
-//			                           			}
-//			                           		}
-//			                           		else
-//			                           			break;
-//			                           	}
 			                           	
 			                           	if(sitesList.Count() > 1) {
 			                           		if(!siteDetails_UIMode.Contains("outage"))
@@ -648,10 +632,8 @@ namespace appCore.SiteFinder.UI
 			                           	else {
 			                           		if(sitesList.Count() == 1) {
 			                           			siteDetails_UIMode = "single";
-//			                           			DataRowView site = foundSites.DefaultView[0];
 			                           			selectedSiteDetailsPopulate(sitesList[0]);
 			                           			selectedSiteOverlay.Markers.Add(sitesList[0].MapMarker);
-//			                           			setSiteMarker(sitesList[0].MapMarker,false);
 			                           			myMap.Overlays.Add(selectedSiteOverlay);
 			                           			myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           		}
