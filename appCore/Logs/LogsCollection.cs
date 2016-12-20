@@ -287,9 +287,12 @@ namespace appCore.Logs
 						//						msgBox.StartPosition = FormStartPosition.CenterParent;
 						//						msgBox.Show(existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, "Overwrite existing log?",false);
 						DialogResult res = DialogResult.No;
+//						Action actionNonThreaded = new Action(delegate {
 						if (!ForceOverwriteLog)
 							res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 //						                           });
+//						LoadingPanel load = new LoadingPanel();
+//						load.Show(actionNonThreaded, false, this);
 //						Toolbox.Tools.darkenBackgroundForm(action,false,this);
 						if (res == DialogResult.Yes || ForceOverwriteLog) {
 							RemoveLog(existingLogIndex);

@@ -578,9 +578,6 @@ namespace appCore.SiteFinder.UI
 				                                   	currentSite = Finder.getSite(tb.Text);
 				                                   	currentSite.UpdateLockedCells();
 				                                   	
-//				                           	selectedSiteDetailsPopulate(currentSite);
-				                                   	
-//				                           	if(textBox4.Text != "Site not found") {
 				                                   	if(currentSite.Exists)
 				                                   		currentSite.requestOIData("INCCRQPWR");
 				                                   });
@@ -589,7 +586,7 @@ namespace appCore.SiteFinder.UI
 				                                      	if(currentSite.Exists) {
 				                                      		selectedSiteDetailsPopulate(currentSite);
 				                                      		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
-//				                           		setSiteMarker(site.MapMarker,false);
+//				                           					setSiteMarker(site.MapMarker,false);
 				                                      		myMap.Overlays.Add(selectedSiteOverlay);
 				                                      		myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				                                      	}
@@ -602,9 +599,7 @@ namespace appCore.SiteFinder.UI
 				                                      });
 				
 				LoadingPanel load = new LoadingPanel();
-				this.Controls.Add(load);
-				load.Initialize(actionThreaded, actionNonThreaded, true);
-//				Toolbox.Tools.darkenBackgroundForm(action,true,this);
+				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 		
@@ -807,16 +802,17 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void LockUnlockCells(object sender, EventArgs e) {
-			Action action = new Action(delegate {
-			                           	if(Settings.CurrentUser.userName == "GONCARJ3") {
-			                           		if(currentSite.Exists) {
-			                           			LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
-			                           			lucf.ShowDialog();
-			                           		}
-			                           	}
-			                           });
+			Action actionNonThreaded = new Action(delegate {
+			                                      	if(Settings.CurrentUser.userName == "GONCARJ3") {
+			                                      		if(currentSite.Exists) {
+			                                      			LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
+			                                      			lucf.ShowDialog();
+			                                      		}
+			                                      	}
+			                                      });
 			
-			Toolbox.Tools.darkenBackgroundForm(action,false, this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(null, actionNonThreaded, false, this);
 			selectedSiteDetailsPopulate(currentSite);
 		}
 		

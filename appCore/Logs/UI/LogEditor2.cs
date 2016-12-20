@@ -395,15 +395,14 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		void TextBox10TextChanged(object sender, EventArgs e)
-		{
+		void TextBox10TextChanged(object sender, EventArgs e) {
 			button14.Enabled = !string.IsNullOrEmpty(textBox10.Text);
 		}
 		
 		void Button14Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox10.Text,label33.Text,true);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox10.Text,label33.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox10.Text = enlarge.finaltext;

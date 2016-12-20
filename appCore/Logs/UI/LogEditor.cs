@@ -273,324 +273,12 @@ namespace appCore.Logs.UI
 			TabControl4SelectedIndexChanged(null,null);
 		}
 		
-		public void LoadTST()
-		{
-			string[] strTofind = { "\r\n" };
-			string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-			do {
-				if(log[log.Length - 1] == string.Empty) log = log.Where((source, index) => index != log.Length - 1).ToArray();
-			} while (log[log.Length - 1] == string.Empty);
-			
-			textBox1.Text = log[1].Substring("INC: ".Length);
-			textBox2.Text = log[2].Substring("Site ID: ".Length);
-			comboBox1.Text = log[3].Substring("Site Owner: ".Length,2);
-			if(comboBox1.Text == "TF") {
-				string[] temp = log[3].Split('(');
-				string tempStr = string.Empty;
-				foreach (char c in temp[temp.GetUpperBound(0)]) {
-					if(c != ')')
-						tempStr += c;
-				}
-				textBox3.Text = tempStr;
-			}
-			else
-				textBox3.Text = string.Empty;
-			textBox4.Text = log[4].Substring("Site Address: ".Length);
-			checkBox1.Checked = log[5].Substring("Other sites impacted: ".Length) != "None";
-			if (log[6].Substring("COOS: ".Length,2) == "No")
-				checkBox2.Checked = false;
-			else {
-				checkBox2.Checked = true;
-				string[] COOS = log[6].Substring("COOS: YES ".Length).Split(' ');
-				numericUpDown1.Text = COOS[1];
-				numericUpDown2.Text = COOS[3];
-				numericUpDown3.Text = COOS[5];
-			}
-			int ind = 7;
-			if(log[ind].StartsWith("Full")) {
-				checkBox18.Checked = log[ind].Substring("Full Site Outage: ".Length) != "No";
-				ind++;
-			}
-			else {
-				checkBox18.Checked = false;
-				checkBox18.Visible = false;
-			}
-			checkBox3.Checked = log[ind].Substring("Performance Issue: ".Length) != "No";
-			ind++;
-			checkBox4.Checked = log[ind].Substring("Intermittent Issue: ".Length) != "No";
-			ind++;
-			textBox5.Text = log[ind].Substring("CCT Reference: ".Length) == "None" ? string.Empty : log[ind].Substring("CCT Reference: ".Length);
-			ind++;
-			textBox6.Text = log[ind].Substring("Related INC/CRQ: ".Length) == "None" ? string.Empty : log[ind].Substring("Related INC/CRQ: ".Length);
-			
-			string complete = string.Empty;
-			ind = Array.IndexOf(log, "Active Alarms:");
-			for (ind++; ind < log.Length - 4; ind++) {
-				if (log[ind] == "") {
-					if (log[ind+1] != "Alarm History:")
-						complete += Environment.NewLine;
-					else {
-						ind++;
-						break;
-					}
-				}
-				else {
-					if (string.IsNullOrEmpty(complete)) complete = log[ind];
-					else complete += Environment.NewLine + log[ind];
-				}
-			}
-			textBox7.Text = complete;
-			
-			complete = string.Empty;
-			for (ind++; ind < log.Length - 4; ind++) {
-				if (log[ind] == "None related") {
-					complete = string.Empty;
-					ind += 2;
-					break;
-				}
-				if (log[ind] == "") {
-					if (log[ind+1] != "Troubleshoot:") complete = complete + Environment.NewLine;
-					else {
-						ind++;
-						break;
-					}
-				}
-				else {
-					if (string.IsNullOrEmpty(complete))
-						complete = log[ind];
-					else
-						complete += Environment.NewLine + log[ind];
-				}
-			}
-			textBox8.Text = complete;
-			
-			complete = string.Empty;
-			ind = Array.IndexOf(log, "Troubleshoot:");
-			for (ind++; ind < log.Length - 4; ind++) {
-				if (complete == string.Empty) complete = log[ind];
-				else complete += Environment.NewLine + log[ind];
-			}
-			textBox9.Text = complete;
-		}
-		
-		public void LoadFCRQ()
-		{
-			string complete = string.Empty;
-			string[] strTofind = { "\r\n" };
-			string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-			int c = 1;
-			textBox16.Text = log[c].Substring("INC raised: ".Length);
-			c++;
-			if (log[c].Contains("Site: ")) {
-				textBox27.Text = log[c].Substring("Site: ".Length);
-				c++;
-			}
-			else
-				textBox27.Text = string.Empty;
-			textBox17.Text = log[c].Substring("CRQ: ".Length);
-			c++;
-			
-			if(log[c].Contains("CRQ contacts:")) {
-				complete = log[++c];
-				for (c++; c < log.Length; c++) {
-					if (!log[c].Contains("FE booked in:"))
-						complete += Environment.NewLine + log[c];
-					else break;
-				}
-				richTextBox16.Text = complete;
-			}
-			else {
-				richTextBox16.Text = log[c].Substring("CRQ contact: ".Length);
-				c++;
-			}
-			string[] temp = log[c].Substring("FE booked in: ".Length).Split(',');
-			textBox18.Text = temp[0];
-			textBox22.Text = temp[1].Substring(1);
-			c++;
-			checkBox5.Checked = log[c].Substring("Did FE call the ANOC after CRQ: ".Length) != "No";
-			c++;
-			
-			complete = string.Empty;
-			if(log[c].Length > "Work performed by FE on site:".Length) {
-				if (log[c].Substring("Work performed by FE on site:".Length) == " N/A")
-					richTextBox1.Text = string.Empty;
-				else
-					complete = log[c].Substring("Work performed by FE on site: ".Length);
-				c++;
-			}
-			else {
-				complete = log[++c];
-				for (c++; c < log.Length; c++) {
-					if (!log[c].Contains("Troubleshooting done with FE on site to recover affected cells:"))
-						complete += Environment.NewLine + log[c];
-					else break;
-				}
-				richTextBox1.Text = complete;
-			}
-			
-			complete = string.Empty;
-			if(log[c].Length > "Troubleshooting done with FE on site to recover affected cells:".Length) {
-				if (log[c].Substring("Troubleshooting done with FE on site to recover affected cells:".Length) == " N/A")
-					richTextBox2.Text = string.Empty;
-				else
-					complete = log[c].Substring("Troubleshooting done with FE on site to recover affected cells:".Length);
-				c++;
-			}
-			else {
-				complete = log[++c];
-				for (c++; c < log.Length; c++) {
-					if (!log[c].Contains("Contractor to fix the fault: "))
-						complete += Environment.NewLine + log[c];
-					else break;
-				}
-				richTextBox2.Text = complete;
-			}
-			
-			if (log[c].Substring("Contractor to fix the fault: ".Length) == "None provided") {
-				textBox24.Text = string.Empty;
-				textBox23.Text = string.Empty;
-				checkBox6.Checked = false;
-				c++;
-			}
-			else {
-				string[] temp2 = log[c].Substring("Contractor to fix the fault: ".Length).Split(strTofind, StringSplitOptions.None);
-				textBox24.Text = temp2[0];
-				textBox23.Text = temp2[1];
-				c++;
-				if (log[c].Substring("Time to fix the fault: ".Length) == "None provided")
-					checkBox6.Checked = false;
-				else {
-					checkBox6.Checked = true;
-					string[] temp3 = log[c].Substring("Time to fix the fault: ".Length).Split(':');
-					dateTimePicker1.Value = new DateTime(2014, 11, 19, Convert.ToInt32(temp3[0]), Convert.ToInt32(temp3[1]), Convert.ToInt32(temp3[2]), 0);
-				}
-			}
-			c++;
-			
-			complete = string.Empty;
-			if(log[c].Length > "Observations:".Length) {
-				if (log[c].Substring("Observations:".Length) == " N/A")
-					richTextBox3.Text = string.Empty;
-				else
-					complete = log[c].Substring("Troubleshooting done with FE on site to recover affected cells:".Length);
-				c++;
-			}
-			else {
-				if (c < log.Length) {
-					complete += log[++c];
-					for (c++; c < log.Length; c++)
-						complete += Environment.NewLine + log[c];
-				}
-				richTextBox3.Text = complete;
-			}
-		}
-		
-		public void LoadTXT()
-		{
-			string[] strTofind = { "\r\n" };
-			string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-			
-			string complete = log[1].Substring(13,log[1].Length - 13);
-			int c = 1;
-			for (c++; c < log.Length; c++) {
-				if (!log[c].Contains("Service affected: ")) complete = complete + Environment.NewLine + log[c];
-				else break;
-			}
-			textBox25.Text = complete;
-			comboBox2.Text = log[c].Substring(18,log[c].Length - 18);
-			c++;
-			
-			complete = log[c].Substring(35,log[c].Length - 35);
-			for (c++; c < log.Length; c++) {
-				if (!log[c].Contains("Repeat/Intermittent: ")) complete = complete + Environment.NewLine + log[c];
-				else break;
-			}
-			richTextBox4.Text = complete;
-			
-			checkBox7.Checked = log[c].Substring(21, 2) == "No" ? false : true;
-			c++;
-			
-			comboBox3.Text = log[c].Substring(22, log[c].Length - 22);
-			c++;
-			textBox26.Text = comboBox3.Text == "IPRAN" ? log[c].Substring(26, log[c].Length - 26) : string.Empty;
-			c++;
-			
-			complete = log[c].Substring(88,log[c].Length - 88);
-			for (c++; c < log.Length - 4; c++) {
-				complete = complete + Environment.NewLine + log[c];
-			}
-			richTextBox5.Text = complete;
-		}
-		
-		public void LoadUPT()
-		{
-			string[] strTofind = { "\r\n" };
-			string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-			
-			textBox44.Text = log[1].Substring(5,15);
-			textBox43.Text = log[2].Substring(6,log[2].Length - 6);
-			richTextBox13.Text = log[4];
-			if (log[6] == "Next actions:") richTextBox12.Text = log[7];
-		}
-		
 		void ListView1SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (listView1.SelectedItems.Count > 0) {
 				switch (GlobalLogType) {
-					case "Templates":
-						switch (listView1.SelectedItems[0].Text) {
-							case "Troubleshoot Template":
-								groupBox1.Visible = true;
-								groupBox2.Visible = false;
-								groupBox3.Visible = false;
-								groupBox7.Visible = false;
-								groupBox8.Visible = false;
-								button11.Visible = true;
-								button12.Visible = false;
-								LoadTST();
-								break;
-							case "Failed CRQ":
-								groupBox1.Visible = false;
-								groupBox2.Visible = true;
-								groupBox3.Visible = false;
-								groupBox7.Visible = false;
-								groupBox8.Visible = false;
-								button11.Visible = true;
-								button12.Visible = false;
-								LoadFCRQ();
-								break;
-							case "TX Template":
-								groupBox1.Visible = false;
-								groupBox2.Visible = false;
-								groupBox3.Visible = true;
-								groupBox7.Visible = false;
-								groupBox8.Visible = false;
-								button11.Visible = true;
-								button12.Visible = false;
-								LoadTXT();
-								break;
-							case "Update Template":
-								groupBox1.Visible = false;
-								groupBox2.Visible = false;
-								groupBox3.Visible = false;
-								groupBox7.Visible = false;
-								groupBox8.Visible = true;
-								button11.Visible = false;
-								button12.Visible = false;
-								LoadUPT();
-								break;
-						}
-						button11.Text = "Copy to new Troubleshoot template";
-						button11.Size = new System.Drawing.Size(183, 23);
-						button11.Location = new System.Drawing.Point(350, 707);
-						button10.Text = "Copy Template";
-						break;
 					case "Outages":
-						groupBox1.Visible = false;
-						groupBox2.Visible = false;
-						groupBox3.Visible = false;
 						groupBox7.Visible = true;
-						groupBox8.Visible = false;
 						button12.Visible = true;
 						button11.Visible = true;
 						button11.Text = "Generate sites list";
@@ -610,50 +298,6 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (comboBox1.Text == "TF") {
-				textBox3.Visible = true;
-				label14.Visible = true;
-			}
-			else {
-				textBox3.Visible = false;
-				textBox3.Text = string.Empty;
-				label14.Visible = false;
-			}
-		}
-		
-		void CheckBox2CheckedChanged(object sender, EventArgs e)
-		{
-			if (checkBox2.Checked) {
-				checkBox18.Visible = true;
-				numericUpDown1.Visible = true;
-				numericUpDown2.Visible = true;
-				numericUpDown3.Visible = true;
-				label15.Visible = true;
-				label16.Visible = true;
-				label17.Visible = true;
-			}
-			else {
-				checkBox18.Visible = false;
-				checkBox18.Checked = false;
-				numericUpDown1.Visible = false;
-				numericUpDown1.Value = 0;
-				numericUpDown2.Visible = false;
-				numericUpDown2.Value = 0;
-				numericUpDown3.Visible = false;
-				numericUpDown3.Value = 0;
-				label15.Visible = false;
-				label16.Visible = false;
-				label17.Visible = false;
-			}
-		}
-		
-		void CheckBox6CheckedChanged(object sender, EventArgs e)
-		{
-			dateTimePicker1.Visible = checkBox6.Checked;
-		}
-		
 		void LogEditorFormClosing(object sender, FormClosingEventArgs e)
 		{
 			FormCollection fc = Application.OpenForms;
@@ -667,150 +311,6 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		void TextBox7TextChanged(object sender, EventArgs e)
-		{
-			button7.Enabled = textBox7.Text != string.Empty;
-		}
-		
-		void Button7Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox7.Text,label11.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	textBox7.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void TextBox8TextChanged(object sender, EventArgs e)
-		{
-			button8.Enabled = textBox8.Text != string.Empty;
-		}
-		
-		void Button8Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox8.Text,label12.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	textBox8.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void TextBox9TextChanged(object sender, EventArgs e)
-		{
-			button9.Enabled = textBox9.Text != string.Empty;
-		}
-		
-		void Button9Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox9.Text,label13.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	textBox9.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox1TextChanged(object sender, EventArgs e)
-		{
-			button4.Enabled = richTextBox1.Text != string.Empty;
-		}
-		
-		void Button4Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox1.Text,label25.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox1.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox2TextChanged(object sender, EventArgs e)
-		{
-			button5.Enabled = richTextBox2.Text != string.Empty;
-		}
-		
-		void Button5Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox2.Text,label26.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox2.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void Button54Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox16.Text,groupBox5.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox16.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox16TextChanged(object sender, EventArgs e)
-		{
-			button54.Enabled = richTextBox16.Text != string.Empty;
-		}
-		
-		void RichTextBox3TextChanged(object sender, EventArgs e)
-		{
-			button6.Enabled = richTextBox3.Text != string.Empty;
-		}
-		
-		void Button6Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox3.Text,label27.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox3.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox4TextChanged(object sender, EventArgs e)
-		{
-			button2.Enabled = richTextBox4.Text != string.Empty;
-		}
-		
-		void Button2Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox4.Text,label6.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox4.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox5TextChanged(object sender, EventArgs e)
-		{
-			button3.Enabled = richTextBox5.Text != string.Empty;
-		}
-		
-		void Button3Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox5.Text,label37.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox5.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
 		void TextBox10TextChanged(object sender, EventArgs e)
 		{
 			button14.Enabled = !string.IsNullOrEmpty(textBox10.Text);
@@ -818,13 +318,14 @@ namespace appCore.Logs.UI
 		
 		void Button14Click(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox10.Text,label33.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	textBox10.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			Action actionNonThreaded = new Action(delegate {
+			                                      	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox10.Text,label33.Text,true);
+			                                      	enlarge.StartPosition = FormStartPosition.CenterParent;
+			                                      	enlarge.ShowDialog();
+			                                      	textBox10.Text = enlarge.finaltext;
+			                                      });
+			LoadingPanel load = new LoadingPanel();
+			load.Show(null, actionNonThreaded,false,this);
 		}
 		
 		void TextBox11TextChanged(object sender, EventArgs e)
@@ -834,216 +335,88 @@ namespace appCore.Logs.UI
 		
 		void Button1Click(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox11.Text,label32.Text,true);
+			Action actionNonThreaded = new Action(delegate {
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox11.Text,label32.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox11.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox13TextChanged(object sender, EventArgs e)
-		{
-			button39.Enabled = richTextBox13.Text != string.Empty;
-		}
-		
-		void Button39Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(richTextBox13.Text,label52.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox13.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
-		}
-		
-		void RichTextBox12TextChanged(object sender, EventArgs e)
-		{
-			button38.Enabled = richTextBox12.Text != string.Empty;
-		}
-		
-		void Button38Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox12.Text,label51.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	richTextBox12.Text = enlarge.finaltext;
-			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(null, actionNonThreaded,false,this);
 		}
 		
 		void Button10Click(object sender, EventArgs e)
 		{
-			switch(button10.Text) {
-				case "Copy Outage":
-//					string[] strTofind = { "\r\n" };
-//					string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-//					int outageStartIndex;
-//					outageStartIndex = tabControl1.SelectedTab == tabControl1.TabPages[0] ? Array.IndexOf(log, "----------VF Report----------") : Array.IndexOf(log, "----------TF Report----------");
-//
-//					log = log.Where((source, index) => index > outageStartIndex).ToArray();
-//
-//					int outageEndIndex = Array.IndexOf(log,"-----BulkCI-----");
-//					log = log.Where((source, index) => index < outageEndIndex).ToArray();
-//
-//					string template = string.Join(Environment.NewLine, log);
-					
+			if(button10.Text == "Copy Outage") {
+				try {
+					Clipboard.SetText(textBox10.Text);
+				}
+				catch (Exception) {
 					try {
 						Clipboard.SetText(textBox10.Text);
 					}
 					catch (Exception) {
-						try {
-							Clipboard.SetText(textBox10.Text);
-						}
-						catch (Exception) {
-							FlexibleMessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-						}
+						FlexibleMessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 					}
-					
-//					msgBox = new FlexibleMessageBox();
-//					msgBox.StartPosition = FormStartPosition.CenterParent;
-					FlexibleMessageBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK);
-					break;
-				case "Copy Template":
-//					string[] strTofind = { "\r\n" };
-//					string log = Logs[listView1.SelectedItems[0].Index];
-					string[] logArr = Logs[listView1.SelectedItems[0].Index].Split(Environment.NewLine.ToCharArray()).Skip(1).ToArray();
-					string log = string.Join("\n\n", Logs[listView1.SelectedItems[0].Index].Split(Environment.NewLine.ToCharArray()).Skip(1).ToArray());
-					string template = "INC: " + textBox1.Text + Environment.NewLine;
-					template += "Site ID: " + textBox2.Text + Environment.NewLine;
-					template += "Site Owner: ";
-					template += comboBox1.SelectedIndex == 1 ? "TF (" + textBox3.Text + ")" : "VF";
-					template += Environment.NewLine;
-					template += "Site Address: " + textBox4.Text + Environment.NewLine;
-					template += "Other sites impacted: ";
-					template += checkBox1.Checked ? "YES * more info on the INC" : "None";
-					template += Environment.NewLine;
-					template += "COOS: ";
-					template += checkBox2.Checked ? "YES 2G: " + numericUpDown1.Value + " 3G: " + numericUpDown2.Value + " 4G: " + numericUpDown3.Value : "No";
-					template += Environment.NewLine;
-					template += "Full Site Outage: ";
-					template += checkBox18.Checked ? "YES" : "No";
-					template += Environment.NewLine;
-					template += "Performance Issue: ";
-					template += checkBox3.Checked ? "YES" : "No";
-					template += Environment.NewLine;
-					template += "Intermittent Issue: ";
-					template += checkBox4.Checked ? "YES" : "No";
-					template += Environment.NewLine;
-					template += "CCT Reference: ";
-					template += !string.IsNullOrEmpty(textBox5.Text) ? textBox5.Text : "None";
-					template += Environment.NewLine;
-					template += "Related INC/CRQ: ";
-					template += !string.IsNullOrEmpty(textBox6.Text) ? textBox6.Text : "None";
-					template += Environment.NewLine + Environment.NewLine;
-					template += "Active Alarms:" + Environment.NewLine;
-					template += textBox7.Text + Environment.NewLine + Environment.NewLine;
-					template += "Alarm History:" + Environment.NewLine;
-					if (string.IsNullOrEmpty(textBox8.Text)) {
-						template += "None related" + Environment.NewLine + Environment.NewLine;
-					}
-					else {
-						template += textBox8.Text + Environment.NewLine + Environment.NewLine;
-					}
-					template += "Troubleshoot:" + Environment.NewLine;
-					template += textBox9.Text;
-					
-					template = CurrentUser.fullName[1] + " " + CurrentUser.fullName[0] + Environment.NewLine + CurrentUser.department + Environment.NewLine + "ANOC Number: +44 163 569 206";
-					template += CurrentUser.department == "1st Line RAN Support" ? "7" : "9";
-					
-//					msgBox = new FlexibleMessageBox();
-//					msgBox.StartPosition = FormStartPosition.CenterParent;
-					FlexibleMessageBox.Show(template, "Success", MessageBoxButtons.OK);
-					
-					try {
-						Clipboard.SetText(template);
-					}
-					catch (Exception) {
-						try {
-							Clipboard.SetText(template);
-						}
-						catch (Exception) {
-							FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-						}
-					}
-					
-					break;
+				}
+				
+				FlexibleMessageBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK);
 			}
 		}
 		
 		void Button11Click(object sender, EventArgs e)
 		{
-			switch(button11.Text) {
-				case "Copy to Clipboard":
-					Action action = new Action(delegate {
-					                           	// Generate outage sites list
-					                           	string[] temp = textBox10.Text.Split('\n');
-					                           	int c;
-					                           	for(c = 0;c < temp.Length;c++) {
-					                           		if(temp[c] != "Site List") {
-					                           			temp = temp.Where((source, index) => index != c).ToArray();
-					                           			c--;
-					                           		}
-					                           		else {
-					                           			temp = temp.Where((source, index) => index != c).ToArray();
-					                           			break;
-					                           		}
-					                           	}
-					                           	
-					                           	for(c = 0;c < temp.Length;c++) {
-					                           		if(string.IsNullOrEmpty(temp[c]))
-					                           			break;
-					                           	}
-					                           	
-					                           	for(int i = 0;i < temp.Length;i++) {
-					                           		if(temp[i].Length > 8) {
-					                           			temp[i] = temp[i].Substring(0,8);
-					                           			i--;
-					                           		}
-					                           	}
-					                           	
-					                           	List<string> temp2 = temp.ToList();
-					                           	temp2.RemoveRange(c,temp.Length - c);
-					                           	temp = temp2.ToArray();
-					                           	
-					                           	for(c = 0;c < temp.Length;c++) {
-					                           		temp[c] = Convert.ToInt32(temp[c].Replace("RBS",string.Empty)).ToString();
-					                           	}
-					                           	
-					                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
-					                           	try {
-					                           		Clipboard.SetText(string.Join(Environment.NewLine,temp));
-					                           	}
-					                           	catch (Exception) {
-					                           		try {
-					                           			Clipboard.SetText(string.Join(Environment.NewLine,temp));
-					                           		}
-					                           		catch (Exception) {
-					                           			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-					                           		}
-					                           	}
-					                           });
-					Toolbox.Tools.darkenBackgroundForm(action,false,this);
-					break;
-				default:
-					string[] strTofind = { "\r\n" };
-					string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-					
-					myFormControl1.FillTemplateFromLog(log,listView1.SelectedItems[0].Text);
-					
-					
-					FormCollection fc = Application.OpenForms;
-					foreach (Form frm in fc)
-					{
-						if (frm.Name == "MainForm") {
-							frm.Invoke(new MethodInvoker(frm.Activate));
-							return;
-						}
-					}
-					break;
+			if(button11.Text == "Copy to Clipboard") {
+				Action actionThreaded = new Action(delegate {
+				                           	// Generate outage sites list
+				                           	string[] temp = textBox10.Text.Split('\n');
+				                           	int c;
+				                           	for(c = 0;c < temp.Length;c++) {
+				                           		if(temp[c] != "Site List") {
+				                           			temp = temp.Where((source, index) => index != c).ToArray();
+				                           			c--;
+				                           		}
+				                           		else {
+				                           			temp = temp.Where((source, index) => index != c).ToArray();
+				                           			break;
+				                           		}
+				                           	}
+				                           	
+				                           	for(c = 0;c < temp.Length;c++) {
+				                           		if(string.IsNullOrEmpty(temp[c]))
+				                           			break;
+				                           	}
+				                           	
+				                           	for(int i = 0;i < temp.Length;i++) {
+				                           		if(temp[i].Length > 8) {
+				                           			temp[i] = temp[i].Substring(0,8);
+				                           			i--;
+				                           		}
+				                           	}
+				                           	
+				                           	List<string> temp2 = temp.ToList();
+				                           	temp2.RemoveRange(c,temp.Length - c);
+				                           	temp = temp2.ToArray();
+				                           	
+				                           	for(c = 0;c < temp.Length;c++) {
+				                           		temp[c] = Convert.ToInt32(temp[c].Replace("RBS",string.Empty)).ToString();
+				                           	}
+				                           	
+				                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+				                           	try {
+				                           		Clipboard.SetText(string.Join(Environment.NewLine,temp));
+				                           	}
+				                           	catch (Exception) {
+				                           		try {
+				                           			Clipboard.SetText(string.Join(Environment.NewLine,temp));
+				                           		}
+				                           		catch (Exception) {
+				                           			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+				                           		}
+				                           	}
+				                           });
+				LoadingPanel load = new LoadingPanel();
+				load.Show(actionThreaded, null, false, this);
 			}
 		}
 		

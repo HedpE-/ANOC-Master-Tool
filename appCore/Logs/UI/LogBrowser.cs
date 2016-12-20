@@ -145,7 +145,7 @@ namespace appCore.Logs.UI
 		
 		void ListBox3DoubleClick(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
+			Action actionThreaded = new Action(delegate {
 			                           	if (listBox3.SelectedIndex != -1) {
 			                           		string LogFile;
 			                           		if (chkrb == "Templates") {
@@ -162,7 +162,6 @@ namespace appCore.Logs.UI
 			                           				LogsCollection<Templates.Template> logs = new LogsCollection<Templates.Template>();
 			                           				logs = logs.ImportLogFile(new FileInfo(LogFile));
 			                           				LogEditor2 LogEdit = new LogEditor2(logs, "Templates", myFormControl1);
-//			                           				LogEdit.Parent = (Control)this;
 			                           				LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                           				LogEdit.ShowDialog(this);
 			                           			}
@@ -188,10 +187,12 @@ namespace appCore.Logs.UI
 			                           			LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                           			LogEdit.ShowDialog();
 			                           		}
-			                           		else if (chkrb == "Updates") {}
+			                           		else
+			                           			if(chkrb == "Updates") {}
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(actionThreaded, null, false, this);
 		}
 		
 		void ListBox3KeyPress(object sender, KeyPressEventArgs e)

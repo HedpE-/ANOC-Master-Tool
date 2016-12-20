@@ -20,7 +20,7 @@ namespace appCore.UI
 	public class LoadingPanel : Panel
 	{
 		BackgroundWorker backgroundWorker = new BackgroundWorker();
-        
+		
 		int _spinnerSize = 32;
 		public int spinnerSize
 		{
@@ -43,7 +43,17 @@ namespace appCore.UI
 			}
 		}
 		
-		public void Initialize(Action actionThreaded, Action actionNonThreaded, bool showLoading) {
+		/// <summary>
+		/// Show LoadingPanel with both Threaded and Non Threaded instructions
+		/// For Threaded or Non Threaded action only, pass the other action argument as null
+		/// </summary>
+		/// <param name="actionThreaded"></param>
+		/// <param name="actionNonThreaded"></param>
+		/// <param name="showLoading"></param>
+		/// <param name="parentControl"></param>
+		public void Show(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
+			Form parentForm = (Form)parentControl ?? getParentForm(parentControl);
+			parentForm.Controls.Add(this);
 			// take a screenshot of the form and darken it
 			Bitmap bmp = new Bitmap(Parent.ClientRectangle.Width, Parent.ClientRectangle.Height);
 			using (Graphics g = Graphics.FromImage(bmp))
@@ -74,13 +84,27 @@ namespace appCore.UI
 				loadingBox.BringToFront();
 			}
 			
-			backgroundWorker.DoWork += delegate { actionThreaded(); };
-            backgroundWorker.RunWorkerCompleted += delegate {
-				actionNonThreaded();
+			if(actionThreaded != null)
+				backgroundWorker.DoWork += delegate { actionThreaded(); };
+			
+			backgroundWorker.RunWorkerCompleted += delegate {
+				if(actionNonThreaded != null)
+					actionNonThreaded();
 				Parent.Controls.Remove(this);
 				this.Dispose();
 			};
-            backgroundWorker.RunWorkerAsync();
+			
+			backgroundWorker.RunWorkerAsync();
+		}
+		
+		Form getParentForm(Control control) {
+			Form parentForm = null;
+			while(parentForm == null) {
+				control = control.Parent;
+				if(control is Form)
+					parentForm = (Form)control;
+			}
+			return parentForm;
 		}
 	}
 }

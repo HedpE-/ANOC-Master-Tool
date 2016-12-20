@@ -304,8 +304,7 @@ namespace appCore.Templates.UI
 				                             	COOSCheckBox.Checked = false;
 				                             });
 				LoadingPanel load = new LoadingPanel();
-				Toolbox.Tools.getParentForm(this).Controls.Add(load);
-				load.Initialize(actionThreaded, actionNonThreaded, true);
+				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 
