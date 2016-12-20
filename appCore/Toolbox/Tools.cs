@@ -14,7 +14,6 @@ namespace appCore.Toolbox
 	using System.Reflection;
 	using System.Security.Cryptography;
 	using System.Text;
-//	using System.Threading;
 	using System.Windows.Forms;
 //	using Excel;
 //	using msExcel = Microsoft.Office.Interop.Excel;
@@ -60,13 +59,17 @@ namespace appCore.Toolbox
 		}
 		
 		public static Form getParentForm(Control control) {
-				Form parentForm = null;
+			Form parentForm = null;
+			if((Form)control == null) {
 				while(parentForm == null) {
 					control = control.Parent;
 					if(control is Form)
 						parentForm = control as Form;
 				}
-				return parentForm;
+			}
+			else
+				parentForm = (Form)control;
+			return parentForm;
 		}
 		
 		public static string convertByteArrayToHex(byte[] hash) {
