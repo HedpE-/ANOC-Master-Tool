@@ -44,7 +44,7 @@ namespace appCore.UI
 		}
 		
 		/// <summary>
-		/// Show LoadingPanel with both Threaded and Non Threaded instructions
+		/// Show LoadingPanel with both Threaded and Non Threaded instructions.
 		/// For Threaded or Non Threaded action only, pass the other action argument as null
 		/// </summary>
 		/// <param name="actionThreaded"></param>
@@ -52,7 +52,7 @@ namespace appCore.UI
 		/// <param name="showLoading"></param>
 		/// <param name="parentControl"></param>
 		public void Show(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
-			Form parentForm = (Form)parentControl ?? getParentForm(parentControl);
+			Form parentForm = getParentForm(parentControl);
 			parentForm.Controls.Add(this);
 			// take a screenshot of the form and darken it
 			Bitmap bmp = new Bitmap(Parent.ClientRectangle.Width, Parent.ClientRectangle.Height);
@@ -99,10 +99,17 @@ namespace appCore.UI
 		
 		Form getParentForm(Control control) {
 			Form parentForm = null;
-			while(parentForm == null) {
-				control = control.Parent;
-				if(control is Form)
-					parentForm = (Form)control;
+			if(control is Form)
+				parentForm = (Form)control;
+			else {
+				while(parentForm == null) {
+					try {
+						control = control.Parent;
+						if(control is Form)
+							parentForm = (Form)control;
+					}
+					catch {}
+				}
 			}
 			return parentForm;
 		}
