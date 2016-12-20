@@ -247,7 +247,7 @@ namespace appCore.Templates.UI
 				TextBox tb = (TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
-				Action actionNoUI = new Action(delegate {
+				Action actionThreaded = new Action(delegate {
 //				Stopwatch sw = new Stopwatch();
 //
 //				sw.Start();
@@ -258,7 +258,7 @@ namespace appCore.Templates.UI
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
 				                               });
 				
-				Action actionUI = new Action(delegate {
+				Action actionNonThreaded = new Action(delegate {
 				                             	if(currentSite.Exists) {
 				                             		AddressTextBox.Text = currentSite.Address;
 				                             		RegionTextBox.Text = currentSite.Region;
@@ -305,7 +305,7 @@ namespace appCore.Templates.UI
 				                             });
 				LoadingPanel load = new LoadingPanel();
 				Toolbox.Tools.getParentForm(this).Controls.Add(load);
-				load.Initialize(actionNoUI, actionUI, true);
+				load.Initialize(actionThreaded, actionNonThreaded, true);
 			}
 		}
 
