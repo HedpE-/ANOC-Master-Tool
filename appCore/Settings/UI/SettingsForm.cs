@@ -93,8 +93,6 @@ namespace appCore.Settings.UI
 		{
 			Action action = new Action(delegate
 			                           {
-//			                           	FlexibleMessageBox msgBox = new FlexibleMessageBox();
-//			                           	msgBox.StartPosition = FormStartPosition.CenterParent;
 			                           	FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
 			                           });
 			Toolbox.Tools.darkenBackgroundForm(action, false, this);
