@@ -251,58 +251,58 @@ namespace appCore.Templates.UI
 //				Stopwatch sw = new Stopwatch();
 //
 //				sw.Start();
-				                               	currentSite = Finder.getSite(tb.Text);
-				                               	if(currentSite.Exists)
-				                               		currentSite.requestOIData("INCCRQPWR");
+				                                   	currentSite = Finder.getSite(tb.Text);
+				                                   	if(currentSite.Exists)
+				                                   		currentSite.requestOIData("INCCRQPWR");
 //				sw.Stop();
 //				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				                               });
+				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {
-				                             	if(currentSite.Exists) {
-				                             		AddressTextBox.Text = currentSite.Address;
-				                             		RegionTextBox.Text = currentSite.Region;
-				                             		PowerCompanyTextBox.Text = currentSite.PowerCompany;
-				                             		if(currentSite.HostedBy.Contains("TF") || currentSite.HostedBy.Contains("O2")) {
-				                             			SiteOwnerComboBox.Text = "TF";
-				                             			TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
-				                             		}
-				                             		else {
-				                             			SiteOwnerComboBox.Text = "VF";
-				                             			TefSiteTextBox.Text = string.Empty;
-				                             		}
-				                             	}
-				                             	else {
-				                             		AddressTextBox.Text = string.Empty;
-				                             		PowerCompanyTextBox.Text = "No site found";
-				                             		COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
-				                             		COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
-				                             		COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
-				                             		if(SiteOwnerComboBox.Text == "TF")
-				                             			SiteOwnerComboBox.Text = "VF";
-				                             		MainMenu.INCsButton.Enabled = false;
-				                             	}
-				                             	siteFinder_Toggle(true, currentSite.Exists);
-				                             	generateTemplateToolStripMenuItem.Enabled = true;
-				                             	generateTaskToolStripMenuItem.Enabled = true;
-				                             	sendBCPToolStripMenuItem.Enabled = true;
-				                             	
-				                             	List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
-				                             	COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
-				                             	COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                             	COOS2GNumericUpDown.Value = 0;
-				                             	
-				                             	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
-				                             	COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
-				                             	COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                             	COOS3GNumericUpDown.Value = 0;
+				                                      	if(currentSite.Exists) {
+				                                      		AddressTextBox.Text = currentSite.Address;
+				                                      		RegionTextBox.Text = currentSite.Region;
+				                                      		PowerCompanyTextBox.Text = currentSite.PowerCompany;
+				                                      		if(currentSite.HostedBy.Contains("TF") || currentSite.HostedBy.Contains("O2")) {
+				                                      			SiteOwnerComboBox.Text = "TF";
+				                                      			TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
+				                                      		}
+				                                      		else {
+				                                      			SiteOwnerComboBox.Text = "VF";
+				                                      			TefSiteTextBox.Text = string.Empty;
+				                                      		}
+				                                      	}
+				                                      	else {
+				                                      		AddressTextBox.Text = string.Empty;
+				                                      		PowerCompanyTextBox.Text = "No site found";
+				                                      		COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
+				                                      		COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
+				                                      		COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
+				                                      		if(SiteOwnerComboBox.Text == "TF")
+				                                      			SiteOwnerComboBox.Text = "VF";
+				                                      		MainMenu.INCsButton.Enabled = false;
+				                                      	}
+				                                      	siteFinder_Toggle(true, currentSite.Exists);
+				                                      	generateTemplateToolStripMenuItem.Enabled = true;
+				                                      	generateTaskToolStripMenuItem.Enabled = true;
+				                                      	sendBCPToolStripMenuItem.Enabled = true;
+				                                      	
+				                                      	List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
+				                                      	COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
+				                                      	COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                                      	COOS2GNumericUpDown.Value = 0;
+				                                      	
+				                                      	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
+				                                      	COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
+				                                      	COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                                      	COOS3GNumericUpDown.Value = 0;
 
-				                             	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
-				                             	COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
-				                             	COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                             	COOS4GNumericUpDown.Value = 0;
-				                             	COOSCheckBox.Checked = false;
-				                             });
+				                                      	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
+				                                      	COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
+				                                      	COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                                      	COOS4GNumericUpDown.Value = 0;
+				                                      	COOSCheckBox.Checked = false;
+				                                      });
 				LoadingPanel load = new LoadingPanel();
 				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
@@ -643,7 +643,6 @@ namespace appCore.Templates.UI
 
 		void GenerateTaskNotes(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
 			FormCollection fc = Application.OpenForms;
 			
 			foreach (Form frm in fc)
@@ -675,33 +674,35 @@ namespace appCore.Templates.UI
 				return;
 			}
 			TasksForm Tasks = new TasksForm();
-			TasksForm.siteID = SiteIdTextBox.Text;
-			TasksForm.siteAddress = AddressTextBox.Text;
-			TasksForm.powerCompany = PowerCompanyTextBox.Text;
-			TasksForm.cct = CCTRefTextBox.Text;
-			TasksForm.siteTEF = TefSiteTextBox.Text;
-			TasksForm.relatedINC = RelatedINC_CRQTextBox.Text;
+			Tasks.siteID = SiteIdTextBox.Text;
+			Tasks.siteAddress = AddressTextBox.Text;
+			Tasks.powerCompany = PowerCompanyTextBox.Text;
+			Tasks.cct = CCTRefTextBox.Text;
+			Tasks.siteTEF = TefSiteTextBox.Text;
+			Tasks.relatedINC = RelatedINC_CRQTextBox.Text;
 			Tasks.StartPosition = FormStartPosition.CenterParent;
 			Tasks.Show();
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 		}
 
 		void SendBCPForm(object sender, EventArgs e) {
-			if(prevTemp != null) {
-				if(currentTemplate == prevTemp) {
-					SendBCP bcp = new SendBCP(ref currentTemplate);
-					bcp.ShowDialog();
-					
-//				currentTemplate.AddBcpLog(bcp.mailBody);
-					
-					MainForm.logFile.HandleLog(currentTemplate, true);
-				}
-				else
-					FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-			else
-				FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			Action actionNonThreaded = new Action(delegate {
+			                                      	if(prevTemp != null) {
+			                                      		if(currentTemplate == prevTemp) {
+			                                      			SendBCP bcp = new SendBCP(ref currentTemplate);
+			                                      			bcp.ShowDialog();
+			                                      			
+//															currentTemplate.AddBcpLog(bcp.mailBody);
+			                                      			
+			                                      			MainForm.logFile.HandleLog(currentTemplate, true);
+			                                      		}
+			                                      		else
+			                                      			FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			                                      	}
+			                                      	else
+			                                      		FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			                                      });
+			LoadingPanel load = new LoadingPanel();
+			load.Show(null, actionNonThreaded, false, this);
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
