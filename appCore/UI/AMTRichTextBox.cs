@@ -18,7 +18,7 @@ namespace appCore.UI
 	/// </summary>
 	public class AMTRichTextBox : RichTextBox
 	{
-		public string TopBottomWhiteLinesRemoved {
+		public string TopBottomEmptyLinesRemove {
 			get {
 				return string.Join(Environment.NewLine, stripTopBottomWhiteLinesOnArray());
 			}

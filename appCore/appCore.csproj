@@ -56,6 +56,10 @@
       <HintPath>Extensions\Excel.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="GlacialList1.3">
+      <HintPath>UI\GlacialList1.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="GMap.NET.Core">
       <HintPath>GMap.NET\Lib\GMap.NET.Core.dll</HintPath>
       <Private>False</Private>
@@ -406,6 +410,7 @@
     <EmbeddedResource Include="Extensions\BMC.ARSystem.dll" />
     <EmbeddedResource Include="Extensions\ICSharpCode.SharpZipLib.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
+    <EmbeddedResource Include="UI\GlacialList1.3.dll" />
     <None Include="Web\HtmlAgilityPack\HtmlAgilityPack.snk" />
   </ItemGroup>
   <ItemGroup>

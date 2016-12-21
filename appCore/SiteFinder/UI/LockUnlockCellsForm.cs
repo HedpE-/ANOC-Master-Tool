@@ -22,12 +22,12 @@ namespace appCore.SiteFinder.UI
 	public partial class LockUnlockCellsForm : Form
 	{
 		Site currentSite;
-		int selectable2gCells;
-		int selectable3gCells;
-		int selectable4gCells;
-		int selected2gCells;
-		int selected3gCells;
-		int selected4gCells;
+//		int selectable2gCells;
+//		int selectable3gCells;
+//		int selectable4gCells;
+//		int selected2gCells;
+//		int selected3gCells;
+//		int selected4gCells;
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
@@ -40,16 +40,17 @@ namespace appCore.SiteFinder.UI
 		
 		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
 			RadioButton rb = sender as RadioButton;
-			listView1.Items.Clear();
+			listView1.Clear();
 			listView1.SuspendLayout();
-			selectable2gCells = 0;
-			selectable3gCells = 0;
-			selectable4gCells = 0;
-			selected2gCells = 0;
-			selected3gCells = 0;
-			selected4gCells = 0;
+//			selectable2gCells = 0;
+//			selectable3gCells = 0;
+//			selectable4gCells = 0;
+//			selected2gCells = 0;
+//			selected3gCells = 0;
+//			selected4gCells = 0;
 			
 			if(rb.Checked) {
+				InitializeListviewColumns(rb.Text);
 				foreach (Cell cell in currentSite.Cells) {
 					string ossID;
 					if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
@@ -72,17 +73,17 @@ namespace appCore.SiteFinder.UI
 							lvi.BackColor = SystemColors.InactiveBorder;
 						}
 						else {
-							switch(cell.Bearer) {
-								case "2G":
-									selectable2gCells++;
-									break;
-								case "3G":
-									selectable3gCells++;
-									break;
-								case "4G":
-									selectable4gCells++;
-									break;
-							}
+//							switch(cell.Bearer) {
+//								case "2G":
+//									selectable2gCells++;
+//									break;
+//								case "3G":
+//									selectable3gCells++;
+//									break;
+//								case "4G":
+//									selectable4gCells++;
+//									break;
+//							}
 						}
 					}
 					else {
@@ -90,19 +91,19 @@ namespace appCore.SiteFinder.UI
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
 						}
-						else {
-							switch(cell.Bearer) {
-								case "2G":
-									selectable2gCells++;
-									break;
-								case "3G":
-									selectable3gCells++;
-									break;
-								case "4G":
-									selectable4gCells++;
-									break;
-							}
-						}
+//						else {
+//							switch(cell.Bearer) {
+//								case "2G":
+//									selectable2gCells++;
+//									break;
+//								case "3G":
+//									selectable3gCells++;
+//									break;
+//								case "4G":
+//									selectable4gCells++;
+//									break;
+//							}
+//						}
 					}
 					
 					listView1.Items.Add(lvi);
@@ -162,7 +163,10 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
-			comboBox1.Enabled = listView1.CheckedItems.Count > 0; // && radioButton1.Checked;
+			if(radioButton1.Checked)
+				comboBox1.Enabled = listView1.CheckedItems.Count > 0; // && radioButton1.Checked;
+			if(radioButton2.Checked)
+				amtRichTextBox1.Enabled = listView1.CheckedItems.Count > 0;
 //			switch(e.Item.Text) {
 //				case "2G":
 //					if(e.Item.Checked)
@@ -240,6 +244,68 @@ namespace appCore.SiteFinder.UI
 			OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
 			currentSite.UpdateLockedCells();
 			RadioButtonsCheckedChanged(radioButton2, null);
+		}
+		
+		void InitializeListviewColumns(string radioButtonText) {
+			ColumnHeader Tech = new ColumnHeader();
+			ColumnHeader CellName = new ColumnHeader();
+			ColumnHeader OssId = new ColumnHeader();
+			ColumnHeader Switch = new ColumnHeader();
+			ColumnHeader Vendor = new ColumnHeader();
+			ColumnHeader NOC = new ColumnHeader();
+			ColumnHeader Locked = new ColumnHeader();
+			
+			Tech.Text = "Tech";
+			Tech.Width = 38;
+			
+			CellName.Text = "Cell Name";
+			
+			Switch.Text = "Switch";
+			Switch.Width = 45;
+			
+			OssId.Text = "OSS ID";
+			OssId.Width = 51;
+			
+			Vendor.Text = "Vendor";
+			Vendor.Width = 49;
+			
+			NOC.Text = "NOC";
+			NOC.Width = 39;
+			
+			Locked.Text = "Locked";
+			Locked.TextAlign = HorizontalAlignment.Center;
+			Locked.Width = 49;
+			
+			if(radioButtonText == "Lock Cells")
+				listView1.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Locked });
+			else {
+				ColumnHeader Reference = new ColumnHeader();
+				ColumnHeader CaseStatus = new ColumnHeader();
+				ColumnHeader CrqScheduledStart = new ColumnHeader();
+				ColumnHeader CrqScheduledEnd = new ColumnHeader();
+				ColumnHeader LockedTime = new ColumnHeader();
+				ColumnHeader LockedBy = new ColumnHeader();
+				ColumnHeader LockComments = new ColumnHeader();
+				Reference.Text = "Reference";
+				CaseStatus.Text = "Status";
+				CrqScheduledStart.Text = "Scheduled Start";
+				CrqScheduledEnd.Text = "Scheduled End";
+				LockedTime.Text = "Locked Time";
+				LockedBy.Text = "Locked By";
+				LockComments.Text = "Comments";
+				if(radioButtonText == "Unlock Cells")
+					listView1.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, Locked });
+				else {
+					ColumnHeader UnlockedTime = new ColumnHeader();
+					ColumnHeader UnlockedBy = new ColumnHeader();
+					ColumnHeader UnlockComments = new ColumnHeader();
+					LockComments.Text = "Lock Comments";
+					UnlockComments.Text = "Unlock Comments";
+					UnlockedTime.Text = "Unlocked Time";
+					UnlockedBy.Text = "Unlocked By";
+					listView1.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, UnlockedTime, UnlockedBy, UnlockComments });
+				}
+			}
 		}
 	}
 }

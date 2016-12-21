@@ -17,13 +17,6 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.ListView listView1;
-		private System.Windows.Forms.ColumnHeader Tech;
-		private System.Windows.Forms.ColumnHeader CellName;
-		private System.Windows.Forms.ColumnHeader OssId;
-		private System.Windows.Forms.ColumnHeader Switch;
-		private System.Windows.Forms.ColumnHeader Vendor;
-		private System.Windows.Forms.ColumnHeader NOC;
-		private System.Windows.Forms.ColumnHeader Locked;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.CheckBox checkBox3;
@@ -33,6 +26,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.RadioButton radioButton3;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -58,13 +52,6 @@ namespace appCore.SiteFinder.UI
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.listView1 = new System.Windows.Forms.ListView();
-			this.Tech = new System.Windows.Forms.ColumnHeader();
-			this.CellName = new System.Windows.Forms.ColumnHeader();
-			this.Switch = new System.Windows.Forms.ColumnHeader();
-			this.OssId = new System.Windows.Forms.ColumnHeader();
-			this.Vendor = new System.Windows.Forms.ColumnHeader();
-			this.NOC = new System.Windows.Forms.ColumnHeader();
-			this.Locked = new System.Windows.Forms.ColumnHeader();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -74,6 +61,7 @@ namespace appCore.SiteFinder.UI
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
+			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.SuspendLayout();
 			// 
 			// radioButton2
@@ -105,63 +93,20 @@ namespace appCore.SiteFinder.UI
 			// listView1
 			// 
 			this.listView1.CheckBoxes = true;
-			this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.Tech,
-			this.CellName,
-			this.Switch,
-			this.OssId,
-			this.Vendor,
-			this.NOC,
-			this.Locked});
 			this.listView1.GridLines = true;
 			this.listView1.Location = new System.Drawing.Point(6, 32);
 			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(437, 364);
+			this.listView1.Size = new System.Drawing.Size(803, 364);
 			this.listView1.TabIndex = 36;
 			this.listView1.UseCompatibleStateImageBehavior = false;
 			this.listView1.View = System.Windows.Forms.View.Details;
 			this.listView1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listView1_ItemCheck);
 			this.listView1.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListView1ItemChecked);
 			// 
-			// Tech
-			// 
-			this.Tech.Text = "Tech";
-			this.Tech.Width = 38;
-			// 
-			// CellName
-			// 
-			this.CellName.Text = "Cell Name";
-			// 
-			// Switch
-			// 
-			this.Switch.Text = "Switch";
-			this.Switch.Width = 45;
-			// 
-			// OssId
-			// 
-			this.OssId.Text = "OSS ID";
-			this.OssId.Width = 51;
-			// 
-			// Vendor
-			// 
-			this.Vendor.Text = "Vendor";
-			this.Vendor.Width = 49;
-			// 
-			// NOC
-			// 
-			this.NOC.Text = "NOC";
-			this.NOC.Width = 39;
-			// 
-			// Locked
-			// 
-			this.Locked.Text = "Locked";
-			this.Locked.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.Locked.Width = 49;
-			// 
 			// checkBox1
 			// 
 			this.checkBox1.Enabled = false;
-			this.checkBox1.Location = new System.Drawing.Point(449, 53);
+			this.checkBox1.Location = new System.Drawing.Point(815, 53);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(67, 24);
 			this.checkBox1.TabIndex = 37;
@@ -172,7 +117,7 @@ namespace appCore.SiteFinder.UI
 			// checkBox2
 			// 
 			this.checkBox2.Enabled = false;
-			this.checkBox2.Location = new System.Drawing.Point(449, 83);
+			this.checkBox2.Location = new System.Drawing.Point(815, 83);
 			this.checkBox2.Name = "checkBox2";
 			this.checkBox2.Size = new System.Drawing.Size(67, 24);
 			this.checkBox2.TabIndex = 38;
@@ -183,7 +128,7 @@ namespace appCore.SiteFinder.UI
 			// checkBox3
 			// 
 			this.checkBox3.Enabled = false;
-			this.checkBox3.Location = new System.Drawing.Point(449, 113);
+			this.checkBox3.Location = new System.Drawing.Point(815, 113);
 			this.checkBox3.Name = "checkBox3";
 			this.checkBox3.Size = new System.Drawing.Size(67, 24);
 			this.checkBox3.TabIndex = 39;
@@ -193,7 +138,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(449, 32);
+			this.label1.Location = new System.Drawing.Point(815, 32);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(67, 18);
 			this.label1.TabIndex = 40;
@@ -202,7 +147,7 @@ namespace appCore.SiteFinder.UI
 			// amtRichTextBox1
 			// 
 			this.amtRichTextBox1.Enabled = false;
-			this.amtRichTextBox1.Location = new System.Drawing.Point(522, 113);
+			this.amtRichTextBox1.Location = new System.Drawing.Point(888, 113);
 			this.amtRichTextBox1.Name = "amtRichTextBox1";
 			this.amtRichTextBox1.Size = new System.Drawing.Size(254, 283);
 			this.amtRichTextBox1.TabIndex = 41;
@@ -214,7 +159,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.comboBox1.Enabled = false;
 			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(522, 53);
+			this.comboBox1.Location = new System.Drawing.Point(888, 53);
 			this.comboBox1.Name = "comboBox1";
 			this.comboBox1.Size = new System.Drawing.Size(254, 21);
 			this.comboBox1.TabIndex = 42;
@@ -224,7 +169,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(522, 32);
+			this.label2.Location = new System.Drawing.Point(888, 32);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(77, 18);
 			this.label2.TabIndex = 43;
@@ -232,7 +177,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(522, 88);
+			this.label3.Location = new System.Drawing.Point(888, 88);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(77, 18);
 			this.label3.TabIndex = 44;
@@ -241,7 +186,7 @@ namespace appCore.SiteFinder.UI
 			// button1
 			// 
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(449, 143);
+			this.button1.Location = new System.Drawing.Point(815, 143);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(67, 51);
 			this.button1.TabIndex = 45;
@@ -249,11 +194,25 @@ namespace appCore.SiteFinder.UI
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
+			// radioButton3
+			// 
+			this.radioButton3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.radioButton3.Location = new System.Drawing.Point(170, 2);
+			this.radioButton3.Name = "radioButton3";
+			this.radioButton3.Size = new System.Drawing.Size(76, 24);
+			this.radioButton3.TabIndex = 46;
+			this.radioButton3.TabStop = true;
+			this.radioButton3.Text = "History";
+			this.radioButton3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.radioButton3.UseVisualStyleBackColor = true;
+			this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButtonsCheckedChanged);
+			// 
 			// LockUnlockCellsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(783, 403);
+			this.ClientSize = new System.Drawing.Size(1148, 403);
+			this.Controls.Add(this.radioButton3);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
