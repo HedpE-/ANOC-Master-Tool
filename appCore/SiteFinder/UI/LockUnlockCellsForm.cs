@@ -30,7 +30,7 @@ namespace appCore.SiteFinder.UI
 //		int selected2gCells;
 //		int selected3gCells;
 //		int selected4gCells;
-		CustomGListView mylist = new CustomGListView();
+		GlacialList mylist = new GlacialList();
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
@@ -79,17 +79,20 @@ namespace appCore.SiteFinder.UI
 							cell.Locked ? "YES" : "No"
 						});
 					GLItem item = new GLItem();
-					item.SubItems[0].Text = cell.Name;
-					item.SubItems[1].Text = cell.BscRnc_Id;
-					item.SubItems[2].Text = ossID;
-					item.SubItems[3].Text = cell.Vendor.ToString();
-					item.SubItems[4].Text = cell.Noc;
-					item.SubItems[5].Text = cell.Locked ? "YES" : "No";
+					item.SubItems[1].Text = cell.Bearer;
+					item.SubItems[2].Text = cell.Name;
+					item.SubItems[3].Text = cell.BscRnc_Id;
+					item.SubItems[4].Text = ossID;
+					item.SubItems[5].Text = cell.Vendor.ToString();
+					item.SubItems[6].Text = cell.Noc;
+					item.SubItems[7].Text = cell.Locked ? "YES" : "No";
 					mylist.Items.Add(item);
 					if(rb.Text.StartsWith("Lock")) {
 						if(cell.Locked || !cell.Noc.Contains("ANOC")) {
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
+							item.ForeColor = SystemColors.GrayText;
+							item.BackColor = SystemColors.InactiveBorder;
 						}
 //						else {
 //							switch(cell.Bearer) {
@@ -106,9 +109,11 @@ namespace appCore.SiteFinder.UI
 //						}
 					}
 					else {
-						if(!cell.Locked || !cell.Noc.Contains("ANOC")) {
+						if(rb.Text.StartsWith("Unlock") && (!cell.Locked || !cell.Noc.Contains("ANOC"))) {
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
+							item.ForeColor = SystemColors.GrayText;
+							item.BackColor = SystemColors.InactiveBorder;
 						}
 //						else {
 //							switch(cell.Bearer) {
@@ -131,13 +136,17 @@ namespace appCore.SiteFinder.UI
 				foreach (ColumnHeader col in listView1.Columns)
 					col.Width = -2;
 				for(int c = 0;c < mylist.Columns.Count;c++) {
-					int textSize = TextRenderer.MeasureText(mylist.Columns[c].Text, mylist.Font).Width;
-					foreach (GLItem item in mylist.Items) {
-						int tempSize = TextRenderer.MeasureText(item.SubItems[c].Text, mylist.Font).Width;
-						if(tempSize > textSize)
-							textSize = tempSize;
+					if(mylist.Columns[c].Text == string.Empty)
+						mylist.Columns[c].Width = 19;
+					else {
+						int textSize = TextRenderer.MeasureText(mylist.Columns[c].Text, mylist.Font).Width;
+						foreach (GLItem item in mylist.Items) {
+							int tempSize = TextRenderer.MeasureText(item.SubItems[c].Text, mylist.Font).Width;
+							if(tempSize > textSize)
+								textSize = tempSize;
+						}
+						mylist.Columns[c].Width = textSize + 7;
 					}
-					mylist.Columns[c].Width = textSize;
 				}
 				
 				if(rb.Text.StartsWith("Lock")) {
@@ -371,7 +380,7 @@ namespace appCore.SiteFinder.UI
 			Locked.Width = 49;
 			
 			if(radioButtonText == "Lock Cells")
-				mylist.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Locked, select });
+				mylist.Columns.AddRange(new [] { select, Tech, CellName, Switch, OssId, Vendor, NOC, Locked });
 			else {
 				GLColumn Reference = new GLColumn();
 				GLColumn CaseStatus = new GLColumn();
@@ -389,7 +398,7 @@ namespace appCore.SiteFinder.UI
 				LockComments.Text = "Comments";
 				LockComments.Width = 100;
 				if(radioButtonText == "Unlock Cells")
-					mylist.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, Locked });
+					mylist.Columns.AddRange(new [] { select, Tech, CellName, Switch, OssId, Vendor, NOC, Locked, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments });
 				else {
 					GLColumn UnlockedTime = new GLColumn();
 					GLColumn UnlockedBy = new GLColumn();
