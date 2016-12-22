@@ -237,6 +237,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
+    <Compile Include="UI\CustomGListView.cs" />
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\GraphicsExtension.cs" />
     <Compile Include="UI\AMTLargeTextForm.cs">
@@ -249,7 +250,6 @@
       <DependentUpon>Loading.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\LoadingPanel.cs" />
-    <Compile Include="UI\MultiLineListView.cs" />
     <Compile Include="UI\NotesForm.cs">
       <SubType>Form</SubType>
     </Compile>

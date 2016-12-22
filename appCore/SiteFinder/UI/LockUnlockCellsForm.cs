@@ -13,6 +13,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using GlacialComponents.Controls;
+using appCore.UI;
 
 namespace appCore.SiteFinder.UI
 {
@@ -28,6 +30,7 @@ namespace appCore.SiteFinder.UI
 //		int selected2gCells;
 //		int selected3gCells;
 //		int selected4gCells;
+		CustomGListView mylist = new CustomGListView();
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
@@ -35,13 +38,21 @@ namespace appCore.SiteFinder.UI
 			currentSite.UpdateLockedCells();
 			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
+			listView1.Visible = false;
+			mylist.Size = listView1.Size;
+			mylist.Location = listView1.Location;
+			mylist.GridLines = GLGridLines.gridBoth;
+			Controls.Add(mylist);
 			radioButton1.Select();
 		}
 		
 		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
 			RadioButton rb = sender as RadioButton;
-			listView1.Clear();
 			listView1.SuspendLayout();
+			listView1.Clear();
+			mylist.SuspendLayout();
+			mylist.Columns.Clear();
+			mylist.Items.Clear();
 //			selectable2gCells = 0;
 //			selectable3gCells = 0;
 //			selectable4gCells = 0;
@@ -50,6 +61,7 @@ namespace appCore.SiteFinder.UI
 //			selected4gCells = 0;
 			
 			if(rb.Checked) {
+				InitializeGListColumns(rb.Text);
 				InitializeListviewColumns(rb.Text);
 				foreach (Cell cell in currentSite.Cells) {
 					string ossID;
@@ -66,13 +78,20 @@ namespace appCore.SiteFinder.UI
 							cell.Noc,
 							cell.Locked ? "YES" : "No"
 						});
-					
+					GLItem item = new GLItem();
+					item.SubItems[0].Text = cell.Name;
+					item.SubItems[1].Text = cell.BscRnc_Id;
+					item.SubItems[2].Text = ossID;
+					item.SubItems[3].Text = cell.Vendor.ToString();
+					item.SubItems[4].Text = cell.Noc;
+					item.SubItems[5].Text = cell.Locked ? "YES" : "No";
+					mylist.Items.Add(item);
 					if(rb.Text.StartsWith("Lock")) {
 						if(cell.Locked || !cell.Noc.Contains("ANOC")) {
 							lvi.ForeColor = SystemColors.GrayText;
 							lvi.BackColor = SystemColors.InactiveBorder;
 						}
-						else {
+//						else {
 //							switch(cell.Bearer) {
 //								case "2G":
 //									selectable2gCells++;
@@ -84,7 +103,7 @@ namespace appCore.SiteFinder.UI
 //									selectable4gCells++;
 //									break;
 //							}
-						}
+//						}
 					}
 					else {
 						if(!cell.Locked || !cell.Noc.Contains("ANOC")) {
@@ -111,6 +130,15 @@ namespace appCore.SiteFinder.UI
 				
 				foreach (ColumnHeader col in listView1.Columns)
 					col.Width = -2;
+				for(int c = 0;c < mylist.Columns.Count;c++) {
+					int textSize = TextRenderer.MeasureText(mylist.Columns[c].Text, mylist.Font).Width;
+					foreach (GLItem item in mylist.Items) {
+						int tempSize = TextRenderer.MeasureText(item.SubItems[c].Text, mylist.Font).Width;
+						if(tempSize > textSize)
+							textSize = tempSize;
+					}
+					mylist.Columns[c].Width = textSize;
+				}
 				
 				if(rb.Text.StartsWith("Lock")) {
 					button1.Text = "Lock\nCells";
@@ -304,6 +332,74 @@ namespace appCore.SiteFinder.UI
 					UnlockedTime.Text = "Unlocked Time";
 					UnlockedBy.Text = "Unlocked By";
 					listView1.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, UnlockedTime, UnlockedBy, UnlockComments });
+				}
+			}
+		}
+		
+		void InitializeGListColumns(string radioButtonText) {
+			GLColumn select = new GLColumn();
+			GLColumn Tech = new GLColumn();
+			GLColumn CellName = new GLColumn();
+			GLColumn OssId = new GLColumn();
+			GLColumn Switch = new GLColumn();
+			GLColumn Vendor = new GLColumn();
+			GLColumn NOC = new GLColumn();
+			GLColumn Locked = new GLColumn();
+			
+			select.CheckBoxes = true;
+			select.Text = string.Empty;
+			
+			Tech.Text = "Tech";
+			Tech.Width = 38;
+			
+			CellName.Text = "Cell Name";
+			
+			Switch.Text = "Switch";
+			Switch.Width = 45;
+			
+			OssId.Text = "OSS ID";
+			OssId.Width = 51;
+			
+			Vendor.Text = "Vendor";
+			Vendor.Width = 49;
+			
+			NOC.Text = "NOC";
+			NOC.Width = 39;
+			
+			Locked.Text = "Locked";
+			Locked.TextAlignment = ContentAlignment.MiddleCenter;
+			Locked.Width = 49;
+			
+			if(radioButtonText == "Lock Cells")
+				mylist.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Locked, select });
+			else {
+				GLColumn Reference = new GLColumn();
+				GLColumn CaseStatus = new GLColumn();
+				GLColumn CrqScheduledStart = new GLColumn();
+				GLColumn CrqScheduledEnd = new GLColumn();
+				GLColumn LockedTime = new GLColumn();
+				GLColumn LockedBy = new GLColumn();
+				GLColumn LockComments = new GLColumn();
+				Reference.Text = "Reference";
+				CaseStatus.Text = "Status";
+				CrqScheduledStart.Text = "Scheduled Start";
+				CrqScheduledEnd.Text = "Scheduled End";
+				LockedTime.Text = "Locked Time";
+				LockedBy.Text = "Locked By";
+				LockComments.Text = "Comments";
+				LockComments.Width = 100;
+				if(radioButtonText == "Unlock Cells")
+					mylist.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, Locked });
+				else {
+					GLColumn UnlockedTime = new GLColumn();
+					GLColumn UnlockedBy = new GLColumn();
+					GLColumn UnlockComments = new GLColumn();
+					LockComments.Text = "Lock Comments";
+					UnlockComments.Width = 100;
+					UnlockComments.Text = "Unlock Comments";
+					UnlockedTime.Text = "Unlocked Time";
+					UnlockedBy.Text = "Unlocked By";
+					mylist.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, UnlockedTime, UnlockedBy, UnlockComments });
 				}
 			}
 		}
