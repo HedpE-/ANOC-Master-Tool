@@ -249,6 +249,7 @@
       <DependentUpon>Loading.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\LoadingPanel.cs" />
+    <Compile Include="UI\MultiLineListView.cs" />
     <Compile Include="UI\NotesForm.cs">
       <SubType>Form</SubType>
     </Compile>
