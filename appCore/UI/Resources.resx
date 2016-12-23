@@ -15956,6 +15956,8 @@ ZK - LTE2100 Pico</value>
   <data name="Changelog" xml:space="preserve">
     <value>####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
 
+##### MERRY CHRISTMAS #####
+
 - Fixed Shifts calendar issues related with the year change
 - Fixed Failed CRQ Templates on FE called to ANOC flag returning always "no" result
 - Fixed connectivity to OI issue that wasn't detecting correctly if session timed out (The browser still doesn't work though)
