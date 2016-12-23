@@ -357,8 +357,18 @@ namespace appCore.Settings
 								}
 							}
 							else {
-								if(file.LastWriteTime > newestFile.LastWriteTime && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
-									newestFile = file;
+								if(file.LastWriteTime > newestFile.LastWriteTime && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
+									if(DateTime.Now.Month == 12 && file.Name.Contains((DateTime.Now.Year + 1).ToString())) {
+										if(newestNextYear == null)
+											newestNextYear = file;
+										else {
+											if(file.LastWriteTime > newestNextYear.LastWriteTime)
+												newestNextYear = file;
+										}
+									}
+									else
+										newestFile = file;
+								}
 							}
 						}
 					}
