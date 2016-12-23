@@ -16,7 +16,7 @@ namespace appCore.SiteFinder.UI
 		private System.ComponentModel.IContainer components = null;
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.RadioButton radioButton1;
-		private System.Windows.Forms.ListView listView1;
+		private GlacialComponents.Controls.GlacialList glacialList1;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.CheckBox checkBox3;
@@ -51,7 +51,7 @@ namespace appCore.SiteFinder.UI
 		{
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.listView1 = new System.Windows.Forms.ListView();
+			this.glacialList1 = new GlacialComponents.Controls.GlacialList();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -92,16 +92,11 @@ namespace appCore.SiteFinder.UI
 			// 
 			// listView1
 			// 
-			this.listView1.CheckBoxes = true;
-			this.listView1.GridLines = true;
-			this.listView1.Location = new System.Drawing.Point(6, 32);
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(803, 364);
-			this.listView1.TabIndex = 36;
-			this.listView1.UseCompatibleStateImageBehavior = false;
-			this.listView1.View = System.Windows.Forms.View.Details;
-			this.listView1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listView1_ItemCheck);
-			this.listView1.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListView1ItemChecked);
+			this.glacialList1.GridLines = GlacialComponents.Controls.GLGridLines.gridBoth;
+			this.glacialList1.Location = new System.Drawing.Point(6, 32);
+			this.glacialList1.Name = "listView1";
+			this.glacialList1.Size = new System.Drawing.Size(803, 364);
+			this.glacialList1.TabIndex = 36;
 			// 
 			// checkBox1
 			// 
@@ -222,7 +217,7 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.checkBox3);
 			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.checkBox1);
-			this.Controls.Add(this.listView1);
+			this.Controls.Add(this.glacialList1);
 			this.Controls.Add(this.radioButton1);
 			this.Controls.Add(this.radioButton2);
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
