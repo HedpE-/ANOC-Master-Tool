@@ -129,6 +129,7 @@ namespace appCore.UI
 			
 			Links = new MenuItem("Links");
 			Links.MenuItems.Add("ST Internal Citrix", (s, e) => Process.Start("https://st.internal.vodafone.co.uk/"));
+			Links.MenuItems.Add("Vodafone Application Portal", (s, e) => Process.Start("https://dealer.vodafone.co.uk/"));
 			Links.MenuItems.Add("ANOC-UK Network Share", (s, e) => Process.Start("explorer.exe", '"' + "\\\\vf-pt\\fs\\ANOC-UK" + '"'));
 			Links.MenuItems.Add("Energy Networks", (s, e) => Process.Start("http://www.energynetworks.org/info/faqs/electricity-distribution-map.html"));
 			Links.MenuItems.Add("BT Wholesale", (s, e) => Process.Start("https://www.btwholesale.com/portalzone/portalzone/homeLogin.do"));

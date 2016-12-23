@@ -269,66 +269,6 @@
     <Compile Include="UI\NotesForm.Designer.cs">
       <DependentUpon>NotesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ObjectListView\CellEditing\CellEditKeyEngine.cs" />
-    <Compile Include="UI\ObjectListView\CellEditing\CellEditors.cs" />
-    <Compile Include="UI\ObjectListView\CellEditing\EditorRegistry.cs" />
-    <Compile Include="UI\ObjectListView\DataListView.cs" />
-    <Compile Include="UI\ObjectListView\DataTreeListView.cs" />
-    <Compile Include="UI\ObjectListView\DragDrop\DragSource.cs" />
-    <Compile Include="UI\ObjectListView\DragDrop\DropSink.cs" />
-    <Compile Include="UI\ObjectListView\DragDrop\OLVDataObject.cs" />
-    <Compile Include="UI\ObjectListView\FastDataListView.cs" />
-    <Compile Include="UI\ObjectListView\FastObjectListView.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\Cluster.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\ClusteringStrategy.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\ClustersFromGroupsStrategy.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\DateTimeClusteringStrategy.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\FilterMenuBuilder.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\Filters.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\FlagClusteringStrategy.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\ICluster.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\IClusteringStrategy.cs" />
-    <Compile Include="UI\ObjectListView\Filtering\TextMatchFilter.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Attributes.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Comparers.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\DataSourceAdapter.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Delegates.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Enums.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Events.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\GroupingParameters.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Groups.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\Munger.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\NativeMethods.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\NullableDictionary.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\OLVListItem.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\OLVListSubItem.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\OlvListViewHitTestInfo.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\TreeDataSourceAdapter.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\VirtualGroups.cs" />
-    <Compile Include="UI\ObjectListView\Implementation\VirtualListDataSource.cs" />
-    <Compile Include="UI\ObjectListView\ObjectListView.cs" />
-    <Compile Include="UI\ObjectListView\ObjectListView.DesignTime.cs" />
-    <Compile Include="UI\ObjectListView\OLVColumn.cs" />
-    <Compile Include="UI\ObjectListView\Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ObjectListView\Rendering\Adornments.cs" />
-    <Compile Include="UI\ObjectListView\Rendering\Decorations.cs" />
-    <Compile Include="UI\ObjectListView\Rendering\Overlays.cs" />
-    <Compile Include="UI\ObjectListView\Rendering\Renderers.cs" />
-    <Compile Include="UI\ObjectListView\Rendering\Styles.cs" />
-    <Compile Include="UI\ObjectListView\Rendering\TreeRenderer.cs" />
-    <Compile Include="UI\ObjectListView\SubControls\GlassPanelForm.cs" />
-    <Compile Include="UI\ObjectListView\SubControls\HeaderControl.cs" />
-    <Compile Include="UI\ObjectListView\SubControls\ToolStripCheckedListBox.cs" />
-    <Compile Include="UI\ObjectListView\SubControls\ToolTipControl.cs" />
-    <Compile Include="UI\ObjectListView\TreeListView.cs" />
-    <Compile Include="UI\ObjectListView\Utilities\ColumnSelectionForm.cs" />
-    <Compile Include="UI\ObjectListView\Utilities\ColumnSelectionForm.Designer.cs" />
-    <Compile Include="UI\ObjectListView\Utilities\Generator.cs" />
-    <Compile Include="UI\ObjectListView\Utilities\OLVExporter.cs" />
-    <Compile Include="UI\ObjectListView\Utilities\TypedObjectListView.cs" />
-    <Compile Include="UI\ObjectListView\VirtualObjectListView.cs" />
     <Compile Include="UI\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -471,8 +411,6 @@
     <EmbeddedResource Include="UI\NotesForm.resx">
       <DependentUpon>NotesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ObjectListView\Properties\Resources.resx" />
-    <EmbeddedResource Include="UI\ObjectListView\Utilities\ColumnSelectionForm.resx" />
     <EmbeddedResource Include="UI\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -507,13 +445,6 @@
     <EmbeddedResource Include="Extensions\BMC.ARSystem.dll" />
     <EmbeddedResource Include="Extensions\ICSharpCode.SharpZipLib.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
-    <None Include="UI\ObjectListView\CustomDictionary.xml" />
-    <None Include="UI\ObjectListView\Resources\clear-filter.png" />
-    <None Include="UI\ObjectListView\Resources\coffee.jpg" />
-    <None Include="UI\ObjectListView\Resources\filter-icons3.png" />
-    <None Include="UI\ObjectListView\Resources\filter.png" />
-    <None Include="UI\ObjectListView\Resources\sort-ascending.png" />
-    <None Include="UI\ObjectListView\Resources\sort-descending.png" />
     <None Include="Web\HtmlAgilityPack\HtmlAgilityPack.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -522,16 +453,12 @@
     <Folder Include="OssScripts\UI" />
     <Folder Include="Remedy\UI" />
     <Folder Include="UI\GlacialList13" />
-    <Folder Include="UI\ObjectListView" />
-    <Folder Include="UI\ObjectListView\CellEditing" />
-    <Folder Include="UI\ObjectListView\DragDrop" />
-    <Folder Include="UI\ObjectListView\Filtering" />
-    <Folder Include="UI\ObjectListView\Implementation" />
-    <Folder Include="UI\ObjectListView\Properties" />
-    <Folder Include="UI\ObjectListView\Rendering" />
-    <Folder Include="UI\ObjectListView\Resources" />
-    <Folder Include="UI\ObjectListView\SubControls" />
-    <Folder Include="UI\ObjectListView\Utilities" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ObjectListView\ObjectListView\ObjectListView2008.csproj">
+      <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
+      <Name>ObjectListView2008</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />

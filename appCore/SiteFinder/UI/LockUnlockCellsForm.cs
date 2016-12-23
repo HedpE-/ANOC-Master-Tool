@@ -14,7 +14,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
-using BrightIdeasSoftware.Design;
+using BrightIdeasSoftware;
 using appCore.UI;
 
 namespace appCore.SiteFinder.UI
@@ -32,7 +32,7 @@ namespace appCore.SiteFinder.UI
 //		int selected3gCells;
 //		int selected4gCells;
 		GlacialList mylist = new GlacialList();
-		
+		FastObjectListView fastList = new FastObjectListView();
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
@@ -41,10 +41,12 @@ namespace appCore.SiteFinder.UI
 			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
 			listView1.Visible = false;
-			mylist.Size = listView1.Size;
-			mylist.Location = listView1.Location;
-			mylist.GridLines = GLGridLines.gridBoth;
-			Controls.Add(mylist);
+			mylist.Visible = false;
+			fastList.Size = listView1.Size;
+			fastList.Location = listView1.Location;
+			fastList.GridLines = true;
+			fastList.CheckBoxes = true;
+			Controls.Add(fastList);
 			radioButton1.Select();
 		}
 		
@@ -63,7 +65,7 @@ namespace appCore.SiteFinder.UI
 //			selected4gCells = 0;
 			
 			if(rb.Checked) {
-				InitializeGListColumns(rb.Text);
+				InitializeOLVColumns(rb.Text);
 				InitializeListviewColumns(rb.Text);
 				foreach (Cell cell in currentSite.Cells) {
 					string ossID;
@@ -347,18 +349,18 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void InitializeGListColumns(string radioButtonText) {
-			GLColumn select = new GLColumn();
-			GLColumn Tech = new GLColumn();
-			GLColumn CellName = new GLColumn();
-			GLColumn OssId = new GLColumn();
-			GLColumn Switch = new GLColumn();
-			GLColumn Vendor = new GLColumn();
-			GLColumn NOC = new GLColumn();
-			GLColumn Locked = new GLColumn();
+		void InitializeOLVColumns(string radioButtonText) {
+//			OLVColumn select = new OLVColumn();
+			OLVColumn Tech = new OLVColumn();
+			OLVColumn CellName = new OLVColumn();
+			OLVColumn OssId = new OLVColumn();
+			OLVColumn Switch = new OLVColumn();
+			OLVColumn Vendor = new OLVColumn();
+			OLVColumn NOC = new OLVColumn();
+			OLVColumn Locked = new OLVColumn();
 			
-			select.CheckBoxes = true;
-			select.Text = string.Empty;
+//			select.CheckBoxes = true;
+//			select.Text = string.Empty;
 			
 			Tech.Text = "Tech";
 			Tech.Width = 38;
@@ -378,19 +380,19 @@ namespace appCore.SiteFinder.UI
 			NOC.Width = 39;
 			
 			Locked.Text = "Locked";
-			Locked.TextAlignment = ContentAlignment.MiddleCenter;
+			Locked.TextAlign = HorizontalAlignment.Center;
 			Locked.Width = 49;
 			
 			if(radioButtonText == "Lock Cells")
-				mylist.Columns.AddRange(new [] { select, Tech, CellName, Switch, OssId, Vendor, NOC, Locked });
+				fastList.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Locked });
 			else {
-				GLColumn Reference = new GLColumn();
-				GLColumn CaseStatus = new GLColumn();
-				GLColumn CrqScheduledStart = new GLColumn();
-				GLColumn CrqScheduledEnd = new GLColumn();
-				GLColumn LockedTime = new GLColumn();
-				GLColumn LockedBy = new GLColumn();
-				GLColumn LockComments = new GLColumn();
+				OLVColumn Reference = new OLVColumn();
+				OLVColumn CaseStatus = new OLVColumn();
+				OLVColumn CrqScheduledStart = new OLVColumn();
+				OLVColumn CrqScheduledEnd = new OLVColumn();
+				OLVColumn LockedTime = new OLVColumn();
+				OLVColumn LockedBy = new OLVColumn();
+				OLVColumn LockComments = new OLVColumn();
 				Reference.Text = "Reference";
 				CaseStatus.Text = "Status";
 				CrqScheduledStart.Text = "Scheduled Start";
@@ -400,17 +402,17 @@ namespace appCore.SiteFinder.UI
 				LockComments.Text = "Comments";
 				LockComments.Width = 100;
 				if(radioButtonText == "Unlock Cells")
-					mylist.Columns.AddRange(new [] { select, Tech, CellName, Switch, OssId, Vendor, NOC, Locked, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments });
+					fastList.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Locked, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments });
 				else {
-					GLColumn UnlockedTime = new GLColumn();
-					GLColumn UnlockedBy = new GLColumn();
-					GLColumn UnlockComments = new GLColumn();
+					OLVColumn UnlockedTime = new OLVColumn();
+					OLVColumn UnlockedBy = new OLVColumn();
+					OLVColumn UnlockComments = new OLVColumn();
 					LockComments.Text = "Lock Comments";
 					UnlockComments.Width = 100;
 					UnlockComments.Text = "Unlock Comments";
 					UnlockedTime.Text = "Unlocked Time";
 					UnlockedBy.Text = "Unlocked By";
-					mylist.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, UnlockedTime, UnlockedBy, UnlockComments });
+					fastList.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, UnlockedTime, UnlockedBy, UnlockComments });
 				}
 			}
 		}
