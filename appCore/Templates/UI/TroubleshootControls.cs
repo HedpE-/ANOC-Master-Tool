@@ -743,29 +743,31 @@ namespace appCore.Templates.UI
 				}
 			}
 			
-			string relatedCases = string.Empty;
-			if(currentSite.Exists) {
-				List<DataRow> OngoingCases = getCurrentCases();
-				if(OngoingCases.Count > 0) {
-					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id);
-					relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
-					relatedCasesForm.ShowDialog();
-					if(relatedCasesForm.Cancel)
-						return;
-					if(relatedCasesForm.selectedCases.Count > 0) {
-						int c = 0;
-						foreach(ListViewItem lvi in relatedCasesForm.selectedCases) {
-							relatedCases += lvi.SubItems[1].Text + " - " + lvi.SubItems[2].Text + " - " + lvi.SubItems[3].Text;
-							if(++c < relatedCasesForm.selectedCases.Count)
-								relatedCases += Environment.NewLine;
-						}
-					}
-				}
-			}
+			// HACK: Disabled currentCases
+//			string relatedCases = string.Empty;
+//			if(currentSite.Exists) {
+//				List<DataRow> OngoingCases = getCurrentCases();
+//				if(OngoingCases.Count > 0) {
+//					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id);
+//					relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
+//					relatedCasesForm.ShowDialog();
+//					if(relatedCasesForm.Cancel)
+//						return;
+//					if(relatedCasesForm.selectedCases.Count > 0) {
+//						int c = 0;
+//						foreach(ListViewItem lvi in relatedCasesForm.selectedCases) {
+//							relatedCases += lvi.SubItems[1].Text + " - " + lvi.SubItems[2].Text + " - " + lvi.SubItems[3].Text;
+//							if(++c < relatedCasesForm.selectedCases.Count)
+//								relatedCases += Environment.NewLine;
+//						}
+//					}
+//				}
+//			}
 			
 //			if(currentTemplate != null)
 //				currentTemplate = null;
-			currentTemplate = new TroubleShoot(Controls, relatedCases);
+//			currentTemplate = new TroubleShoot(Controls, relatedCases);
+			currentTemplate = new TroubleShoot(Controls, RelatedINC_CRQTextBox.Text);
 			
 			if(UiMode == Template.UIenum.Template && prevTemp != null) {
 				// No changes since the last template warning
