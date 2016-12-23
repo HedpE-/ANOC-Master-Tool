@@ -183,18 +183,15 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha9 11/12/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
 		///
-		///- Fixed crash when site isn&apos;t found on outage report build from sites list
-		///- Ask if user wants to delete previous UserFolder on change
-		///- Site Details tweaks and optimizations
-		///- Fixed Cell Vendor resolver on ALU cells returning Vendor None
-		///- Revert Ongoing INC&apos;s &amp; Ongoing CRQ&apos;s as preparation for new feature
+		///- Fixed Shifts calendar issues related with the year change
+		///- Fixed Failed CRQ Templates on FE called to ANOC flag returning always &quot;no&quot; result
+		///- Fixed connectivity to OI issue that wasn&apos;t detecting correctly if session timed out (The browser still doesn&apos;t work though)
+		///- Added context menu on all big text boxes to copy, cut, paste &amp; delete functions to work with mouse
+		///- Fixed loading icon still visible and floating on top of other windows
 		///
-		///####### ANOC Master Tool 7.0alpha8 03/12/2016 #######
-		///
-		///- Made the INCs/CRQs/BookIns/Alarms details window resizable
-		///- Fixed VF/TF 2G cel [rest of string was truncated]&quot;;.
+		///#### [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

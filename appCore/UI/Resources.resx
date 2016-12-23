@@ -15954,7 +15954,15 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha9 11/12/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
+
+- Fixed Shifts calendar issues related with the year change
+- Fixed Failed CRQ Templates on FE called to ANOC flag returning always "no" result
+- Fixed connectivity to OI issue that wasn't detecting correctly if session timed out (The browser still doesn't work though)
+- Added context menu on all big text boxes to copy, cut, paste &amp; delete functions to work with mouse
+- Fixed loading icon still visible and floating on top of other windows
+
+####### ANOC Master Tool 7.0alpha9 11/12/2016 #######
 
 - Fixed crash when site isn't found on outage report build from sites list
 - Ask if user wants to delete previous UserFolder on change
