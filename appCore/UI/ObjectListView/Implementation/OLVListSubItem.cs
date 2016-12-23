@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -140,11 +140,22 @@ namespace BrightIdeasSoftware {
         /// <summary>
         /// Gets or sets the url that should be invoked when this subitem is clicked
         /// </summary>
-        public string Url {
+        public string Url
+        {
             get { return this.url; }
             set { this.url = value; }
         }
         private string url;
+
+        /// <summary>
+        /// Gets or sets whether this cell is selected
+        /// </summary>
+        public bool Selected
+        {
+            get { return this.selected; }
+            set { this.selected = value; }
+        }
+        private bool selected;
 
         #endregion
 

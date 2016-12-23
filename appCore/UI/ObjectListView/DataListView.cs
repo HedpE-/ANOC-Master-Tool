@@ -5,6 +5,8 @@
  * Date: 27/09/2008 9:15 AM
  *
  * Change log:
+ * 2015-02-02   JPP  - Made Unfreezing more efficient by removing a redundant BuildList() call
+ * v2.6
  * 2011-02-27   JPP  - Moved most of the logic to DataSourceAdapter (where it
  *                     can be used by FastDataListView too)
  * v2.3
@@ -15,7 +17,7 @@
  * 2009-01-07   JPP  - Made all public and protected methods virtual 
  * 2008-10-03   JPP  - Separated from ObjectListView.cs
  * 
- * Copyright (C) 2006-2014 Phillip Piper
+ * Copyright (C) 2006-2015 Phillip Piper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +32,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -62,6 +64,8 @@ namespace BrightIdeasSoftware
     /// </remarks>
     public class DataListView : ObjectListView
     {
+        #region Life and death
+
         /// <summary>
         /// Make a DataListView
         /// </summary>
@@ -69,6 +73,13 @@ namespace BrightIdeasSoftware
         {
             this.Adapter = new DataSourceAdapter(this);
         }
+
+        protected override void Dispose(bool disposing) {
+            this.Adapter.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #endregion
 
         #region Public Properties
 
@@ -139,6 +150,9 @@ namespace BrightIdeasSoftware
         /// Gets or sets the DataSourceAdaptor that does the bulk of the work needed
         /// for data binding.
         /// </summary>
+        /// <remarks>
+        /// Adaptors cannot be shared between controls. Each DataListView needs its own adapter.
+        /// </remarks>
         protected DataSourceAdapter Adapter {
             get {
                 Debug.Assert(adapter != null, "Data adapter should not be null");
@@ -157,17 +171,28 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="modelObjects">A collection of model objects</param>
         /// <remarks>This is a no-op for data lists, since the data
-        /// is controlled by the VirtualListDataSource. Manipulate the data source
+        /// is controlled by the DataSource. Manipulate the data source
         /// rather than this view of the data source.</remarks>
         public override void AddObjects(ICollection modelObjects)
         {
         }
 
         /// <summary>
+        /// Insert the given collection of objects before the given position
+        /// </summary>
+        /// <param name="index">Where to insert the objects</param>
+        /// <param name="modelObjects">The objects to be inserted</param>
+        /// <remarks>This is a no-op for data lists, since the data
+        /// is controlled by the DataSource. Manipulate the data source
+        /// rather than this view of the data source.</remarks>
+        public override void InsertObjects(int index, ICollection modelObjects) {
+        }
+
+        /// <summary>
         /// Remove the given collection of model objects from this control.
         /// </summary>
         /// <remarks>This is a no-op for data lists, since the data
-        /// is controlled by the VirtualListDataSource. Manipulate the data source
+        /// is controlled by the DataSource. Manipulate the data source
         /// rather than this view of the data source.</remarks>
         public override void RemoveObjects(ICollection modelObjects)
         {
@@ -176,6 +201,18 @@ namespace BrightIdeasSoftware
         #endregion
 
         #region Event Handlers
+
+        /// <summary>
+        /// Change the Unfreeze behaviour 
+        /// </summary>
+        protected override void DoUnfreeze() {
+
+            // Copied from base method, but we don't need to BuildList() since we know that our
+            // data adaptor is going to do that immediately after this method exits.
+            this.EndUpdate();
+            this.ResizeFreeSpaceFillingColumns();
+           // this.BuildList();
+        }
 
         /// <summary>
         /// Handles parent binding context changes

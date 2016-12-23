@@ -28,7 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -145,6 +145,19 @@ namespace BrightIdeasSoftware
             set { filters = value; }
         }
         private IList<IModelFilter> filters = new List<IModelFilter>();
+
+        /// <summary>
+        /// Get the sub filters that are text match filters
+        /// </summary>
+        public IEnumerable<TextMatchFilter> TextFilters {
+            get {
+                foreach (IModelFilter filter in this.Filters) {
+                    TextMatchFilter textFilter = filter as TextMatchFilter;
+                    if (textFilter != null)
+                        yield return textFilter;
+                }
+            }
+        }
 
         /// <summary>
         /// Decide whether or not the given model should be included by the filter

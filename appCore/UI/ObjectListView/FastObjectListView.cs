@@ -5,6 +5,8 @@
  * Date: 27/09/2008 9:15 AM
  *
  * Change log:
+ * 2014-10-15   JPP  - Fire Filter event when applying filters
+ * v2.8
  * 2012-06-11   JPP  - Added more efficient version of FilteredObjects
  * v2.5.1
  * 2011-04-25   JPP  - Fixed problem with removing objects from filtered or sorted list
@@ -32,7 +34,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -101,6 +103,38 @@ namespace BrightIdeasSoftware
                 return ((FastObjectListDataSource)this.VirtualListDataSource).ObjectList;
             }
             set { base.Objects = value; }
+        }
+
+        /// <summary>
+        /// Move the given collection of objects to the given index.
+        /// </summary>
+        /// <remarks>This operation only makes sense on non-grouped ObjectListViews.</remarks>
+        /// <param name="index"></param>
+        /// <param name="modelObjects"></param>
+        public override void MoveObjects(int index, ICollection modelObjects) {
+            if (this.InvokeRequired) {
+                this.Invoke((MethodInvoker)delegate() { this.MoveObjects(index, modelObjects); });
+                return;
+            }
+
+            // If any object that is going to be moved is before the point where the insertion 
+            // will occur, then we have to reduce the location of our insertion point
+            int displacedObjectCount = 0;
+            foreach (object modelObject in modelObjects) {
+                int i = this.IndexOf(modelObject);
+                if (i >= 0 && i <= index)
+                    displacedObjectCount++;
+            }
+            index -= displacedObjectCount;
+
+            this.BeginUpdate();
+            try {
+                this.RemoveObjects(modelObjects);
+                this.InsertObjects(index, modelObjects);
+            }
+            finally {
+                this.EndUpdate();
+            }
         }
 
         /// <summary>
@@ -224,18 +258,28 @@ namespace BrightIdeasSoftware
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="modelObjects"></param>
+        public override void InsertObjects(int index, ICollection modelObjects) {
+            this.fullObjectList.InsertRange(index, modelObjects);
+            this.FilterObjects();
+            this.RebuildIndexMap();
+        }
+
+        /// <summary>
         /// Remove the given collection of models from this source.
         /// </summary>
         /// <param name="modelObjects"></param>
         public override void RemoveObjects(ICollection modelObjects) {
+
+            // We have to unselect any object that is about to be deleted
             List<int> indicesToRemove = new List<int>();
             foreach (object modelObject in modelObjects) {
                 int i = this.GetObjectIndex(modelObject);
                 if (i >= 0)
                     indicesToRemove.Add(i);
-
-                // Remove the objects from the unfiltered list
-                this.fullObjectList.Remove(modelObject);
             }
 
             // Sort the indices from highest to lowest so that we
@@ -246,6 +290,10 @@ namespace BrightIdeasSoftware
 
             foreach (int i in indicesToRemove) 
                 this.listView.SelectedIndices.Remove(i);
+
+            // Remove the objects from the unfiltered list
+            foreach (object modelObject in modelObjects)
+                this.fullObjectList.Remove(modelObject);
 
             this.FilterObjects();
             this.RebuildIndexMap();
@@ -274,6 +322,9 @@ namespace BrightIdeasSoftware
 
             int i = this.fullObjectList.IndexOf(this.filteredObjectList[index]);
             if (i < 0)
+                return;
+
+            if (ReferenceEquals(this.fullObjectList[i], modelObject))
                 return;
 
             this.fullObjectList[i] = modelObject;
@@ -334,8 +385,19 @@ namespace BrightIdeasSoftware
         /// Build our filtered list from our full list.
         /// </summary>
         protected void FilterObjects() {
-            if (!this.listView.UseFiltering || (this.modelFilter == null && this.listFilter == null)) {
+
+            // If this list isn't filtered, we don't need to do anything else
+            if (!this.listView.UseFiltering) {
                 this.filteredObjectList = new ArrayList(this.fullObjectList);
+                return;
+            }
+
+            // Tell the world to filter the objects. If they do so, don't do anything else
+            // ReSharper disable PossibleMultipleEnumeration
+            FilterEventArgs args = new FilterEventArgs(this.fullObjectList);
+            this.listView.OnFilter(args);
+            if (args.FilteredObjects != null) {
+                this.filteredObjectList = ObjectListView.EnumerableToArray(args.FilteredObjects, false);
                 return;
             }
 

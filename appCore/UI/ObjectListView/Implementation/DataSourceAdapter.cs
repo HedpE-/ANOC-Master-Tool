@@ -5,6 +5,12 @@
  * Date: 20/09/2010 7:42 AM
  *
  * Change log:
+ * v2.9
+ * 2015-10-31  JPP  - Put back sanity check on upper limit of source items
+ * 2015-02-02  JPP  - Made CreateColumnsFromSource() only rebuild columns when new ones were added
+ * v2.8.1
+ * 2014-11-23  JPP  - Honour initial CurrencyManager.Position when setting DataSource.
+ * 2014-10-27  JPP  - Fix issue where SelectedObject was not sync'ed with CurrencyManager.Position (SF #129)
  * v2.6
  * 2012-08-16  JPP  - Unify common column creation functionality with Generator when possible
  * 
@@ -25,16 +31,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing.Design;
-using System.Globalization;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -54,6 +56,7 @@ namespace BrightIdeasSoftware
             if (olv == null) throw new ArgumentNullException("olv");
 
             this.ListView = olv;
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             this.BindListView(this.ListView);
         }
 
@@ -142,7 +145,7 @@ namespace BrightIdeasSoftware
             get { return currencyManager; }
             set { currencyManager = value; }
         }
-        private CurrencyManager currencyManager = null;
+        private CurrencyManager currencyManager;
 
         #endregion
 
@@ -157,7 +160,7 @@ namespace BrightIdeasSoftware
                 return;
 
             olv.Freezing += new EventHandler<FreezeEventArgs>(HandleListViewFreezing);
-            olv.SelectedIndexChanged += new EventHandler(HandleListViewSelectedIndexChanged);
+            olv.SelectionChanged += new EventHandler(HandleListViewSelectionChanged);
             olv.BindingContextChanged += new EventHandler(HandleListViewBindingContextChanged);
         }
 
@@ -170,7 +173,7 @@ namespace BrightIdeasSoftware
                 return;
 
             olv.Freezing -= new EventHandler<FreezeEventArgs>(HandleListViewFreezing);
-            olv.SelectedIndexChanged -= new EventHandler(HandleListViewSelectedIndexChanged);
+            olv.SelectionChanged -= new EventHandler(HandleListViewSelectionChanged);
             olv.BindingContextChanged -= new EventHandler(HandleListViewBindingContextChanged);
         }
 
@@ -244,6 +247,9 @@ namespace BrightIdeasSoftware
             this.CreateMissingAspectGettersAndPutters();
             this.SetListContents();
             this.ListView.AutoSizeColumns();
+
+            // Fake a position change event so that the control matches any initial Position
+            this.HandleCurrencyManagerPositionChanged(null, null);
         }
 
         /// <summary>
@@ -279,6 +285,7 @@ namespace BrightIdeasSoftware
             if (properties.Count == 0)
                 return;
 
+            bool wereColumnsAdded = false;
             foreach (PropertyDescriptor property in properties) {
 
                 if (!this.ShouldCreateColumn(property))
@@ -290,9 +297,11 @@ namespace BrightIdeasSoftware
 
                 // Add it to our list
                 this.ListView.AllColumns.Add(column);
+                wereColumnsAdded = true;
             }
 
-            generator.PostCreateColumns(this.ListView);
+            if (wereColumnsAdded)
+                generator.PostCreateColumns(this.ListView);
         }
 
         /// <summary>
@@ -386,8 +395,7 @@ namespace BrightIdeasSoftware
                 return;
 
             //System.Diagnostics.Debug.WriteLine(e.ListChangedType);
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
+            Stopwatch sw = Stopwatch.StartNew();
             switch (e.ListChangedType) {
 
                 case ListChangedType.Reset:
@@ -420,8 +428,8 @@ namespace BrightIdeasSoftware
                     this.HandleListChangedMetadataChanged(e);
                     break;
             }
-            //sw.Stop();
-            //System.Diagnostics.Debug.WriteLine(String.Format("Processing {0} event on {1} rows took {2}ms", e.ListChangedType, this.ListView.GetItemCount(), sw.ElapsedMilliseconds));
+            sw.Stop();
+            System.Diagnostics.Debug.WriteLine(String.Format("PERF - Processing {0} event on {1} rows took {2}ms", e.ListChangedType, this.ListView.GetItemCount(), sw.ElapsedMilliseconds));
 
         }
 
@@ -529,7 +537,6 @@ namespace BrightIdeasSoftware
 
             try {
                 this.isChangingIndex = true;
-
                 this.ChangePosition(index);
             }
             finally {
@@ -562,23 +569,29 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void HandleListViewSelectedIndexChanged(object sender, EventArgs e) {
+        protected virtual void HandleListViewSelectionChanged(object sender, EventArgs e) {
             // Prevent recursion
             if (this.isChangingIndex)
                 return;
 
-            // If we are bound to a data source, and only one item is selected,
-            // tell the currency manager which item is selected.
-            if (this.ListView.SelectedIndices.Count == 1 && this.CurrencyManager != null) {
-                try {
-                    this.isChangingIndex = true;
+            // Sanity 
+            if (this.CurrencyManager == null)
+                return;
 
-                    // We can't use the selectedIndex directly, since our listview may be sorted.
-                    // So we have to find the index of the selected object within the original list.
-                    this.CurrencyManager.Position = this.CurrencyManager.List.IndexOf(this.ListView.SelectedObject);
-                } finally {
-                    this.isChangingIndex = false;
-                }
+            // If only one item is selected, tell the currency manager which item is selected.
+            // CurrencyManager can't handle multiple selection so there's nothing we can do 
+            // if more than one row is selected.
+            if (this.ListView.SelectedIndices.Count != 1)
+                return;
+
+            try {
+                this.isChangingIndex = true;
+
+                // We can't use the selectedIndex directly, since our listview may be sorted and/or filtered
+                // So we have to find the index of the selected object within the original list.
+                this.CurrencyManager.Position = this.CurrencyManager.List.IndexOf(this.ListView.SelectedObject);
+            } finally {
+                this.isChangingIndex = false;
             }
         }
 

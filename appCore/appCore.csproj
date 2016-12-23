@@ -309,7 +309,9 @@
     <Compile Include="UI\ObjectListView\ObjectListView.cs" />
     <Compile Include="UI\ObjectListView\ObjectListView.DesignTime.cs" />
     <Compile Include="UI\ObjectListView\OLVColumn.cs" />
-    <Compile Include="UI\ObjectListView\Properties\Resources.Designer.cs" />
+    <Compile Include="UI\ObjectListView\Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\ObjectListView\Rendering\Adornments.cs" />
     <Compile Include="UI\ObjectListView\Rendering\Decorations.cs" />
     <Compile Include="UI\ObjectListView\Rendering\Overlays.cs" />
@@ -506,7 +508,6 @@
     <EmbeddedResource Include="Extensions\ICSharpCode.SharpZipLib.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
     <None Include="UI\ObjectListView\CustomDictionary.xml" />
-    <None Include="UI\ObjectListView\FullClassDiagram.cd" />
     <None Include="UI\ObjectListView\Resources\clear-filter.png" />
     <None Include="UI\ObjectListView\Resources\coffee.jpg" />
     <None Include="UI\ObjectListView\Resources\filter-icons3.png" />

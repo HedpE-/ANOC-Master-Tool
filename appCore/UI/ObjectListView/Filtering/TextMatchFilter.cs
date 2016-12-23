@@ -29,7 +29,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -305,10 +305,16 @@ namespace BrightIdeasSoftware {
 
             foreach (OLVColumn column in this.IterateColumns()) {
                 if (column.IsVisible && column.Searchable) {
-                    string cellText = column.GetStringValue(modelObject);
-                    foreach (TextMatchingStrategy filter in this.MatchingStrategies) {
-                        if (String.IsNullOrEmpty(filter.Text) || filter.MatchesText(cellText))
-                            return true;
+                    string[] cellTexts = column.GetSearchValues(modelObject);
+                    if (cellTexts != null && cellTexts.Length > 0) {
+                        foreach (TextMatchingStrategy filter in this.MatchingStrategies) {
+                            if (String.IsNullOrEmpty(filter.Text))
+                                return true;
+                            foreach (string cellText in cellTexts) {
+                                if (filter.MatchesText(cellText))
+                                    return true;
+                            }
+                        }
                     }
                 }
             }

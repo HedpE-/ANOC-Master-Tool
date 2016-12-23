@@ -5,9 +5,11 @@
  * Date: 22/09/2010 8:11 AM
  *
  * Change log:
+ * 2015-02-02   JPP  - Made Unfreezing more efficient by removing a redundant BuildList() call
+ * v2.6
  * 2010-09-22   JPP  - Initial version
  *
- * Copyright (C) 2006-2014 Phillip Piper
+ * Copyright (C) 2006-2015 Phillip Piper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +24,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -48,6 +50,16 @@ namespace BrightIdeasSoftware
     /// </remarks>
     public class FastDataListView : FastObjectListView
     {
+        protected override void Dispose(bool disposing)
+        {
+            if (this.adapter != null) {
+                this.adapter.Dispose();
+                this.adapter = null;
+            }
+
+            base.Dispose(disposing);
+        }
+
         #region Public Properties
 
         /// <summary>
@@ -129,10 +141,23 @@ namespace BrightIdeasSoftware
         /// Create the DataSourceAdapter that this control will use.
         /// </summary>
         /// <returns>A DataSourceAdapter configured for this list</returns>
-        /// <remarks>Subclasses should overrride this to create their
+        /// <remarks>Subclasses should override this to create their
         /// own specialized adapters</remarks>
         protected virtual DataSourceAdapter CreateDataSourceAdapter() {
             return new DataSourceAdapter(this);
+        }
+
+        /// <summary>
+        /// Change the Unfreeze behaviour 
+        /// </summary>
+        protected override void DoUnfreeze()
+        {
+
+            // Copied from base method, but we don't need to BuildList() since we know that our
+            // data adaptor is going to do that immediately after this method exits.
+            this.EndUpdate();
+            this.ResizeFreeSpaceFillingColumns();
+            // this.BuildList();
         }
 
         #endregion

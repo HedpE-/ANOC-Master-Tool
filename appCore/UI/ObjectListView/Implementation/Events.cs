@@ -48,7 +48,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -139,6 +139,13 @@ namespace BrightIdeasSoftware
         public event EventHandler<CreateGroupsEventArgs> AboutToCreateGroups;
 
         /// <summary>
+        /// Triggered when a button in a cell is left clicked.
+        /// </summary>
+        [Category("ObjectListView"),
+        Description("This event is triggered when the user left clicks a button.")]
+        public event EventHandler<CellClickEventArgs> ButtonClick;
+
+        /// <summary>
         /// This event is triggered when the user moves a drag over an ObjectListView that
         /// has a SimpleDropSink installed as the drop handler.
         /// </summary>
@@ -150,6 +157,13 @@ namespace BrightIdeasSoftware
         [Category("ObjectListView"),
         Description("Can the user drop the currently dragged items at the current mouse location?")]
         public event EventHandler<OlvDropEventArgs> CanDrop;
+
+        /// <summary>
+        /// Triggered when a cell has finished being edited.
+        /// </summary>
+        [Category("ObjectListView"),
+        Description("This event is triggered cell edit operation has completely finished")]
+        public event CellEditEventHandler CellEditFinished;
 
         /// <summary>
         /// Triggered when a cell is about to finish being edited.
@@ -457,6 +471,16 @@ namespace BrightIdeasSoftware
         /// 
         /// </summary>
         /// <param name="args"></param>
+        protected virtual void OnButtonClick(CellClickEventArgs args)
+        {
+            if (this.ButtonClick != null)
+                this.ButtonClick(this, args);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnCanDrop(OlvDropEventArgs args) {
             if (this.CanDrop != null)
                 this.CanDrop(this, args);
@@ -529,7 +553,7 @@ namespace BrightIdeasSoftware
         /// 
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnFilter(FilterEventArgs e) {
+        internal protected virtual void OnFilter(FilterEventArgs e) {
             if (this.Filter != null)
                 this.Filter(this, e);
         }
@@ -761,6 +785,14 @@ namespace BrightIdeasSoftware
                 this.CellEditFinishing(this, e);
         }
 
+        /// <summary>
+        /// Tell the world when a cell has finished being edited.
+        /// </summary>
+        protected virtual void OnCellEditFinished(CellEditEventArgs e) {
+            if (this.CellEditFinished != null)
+                this.CellEditFinished(this, e);
+        }
+
         #endregion
     }
     
@@ -853,13 +885,13 @@ namespace BrightIdeasSoftware
         /// </summary>
         /// <param name="column"></param>
         /// <param name="control"></param>
-        /// <param name="r"></param>
+        /// <param name="cellBounds"></param>
         /// <param name="item"></param>
         /// <param name="subItemIndex"></param>
-        public CellEditEventArgs(OLVColumn column, Control control, Rectangle r, OLVListItem item, int subItemIndex) {
+        public CellEditEventArgs(OLVColumn column, Control control, Rectangle cellBounds, OLVListItem item, int subItemIndex) {
             this.Control = control;
             this.column = column;
-            this.cellBounds = r;
+            this.cellBounds = cellBounds;
             this.listViewItem = item;
             this.rowObject = item.RowObject;
             this.subItemIndex = subItemIndex;
@@ -1202,9 +1234,26 @@ namespace BrightIdeasSoftware
         /// Create an ItemsAddingEventArgs
         /// </summary>
         /// <param name="objectsToAdd"></param>
-        public ItemsAddingEventArgs(ICollection objectsToAdd) {
+        public ItemsAddingEventArgs(ICollection objectsToAdd)
+        {
             this.ObjectsToAdd = objectsToAdd;
         }
+        
+        /// <summary>
+        /// Create an ItemsAddingEventArgs
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="objectsToAdd"></param>
+        public ItemsAddingEventArgs(int index, ICollection objectsToAdd)
+        {
+            this.Index = index;
+            this.ObjectsToAdd = objectsToAdd;
+        }
+
+        /// <summary>
+        /// Gets or sets where the collection is going to be inserted.
+        /// </summary>
+        public int Index;
 
         /// <summary>
         /// Gets or sets the objects to be added to the list

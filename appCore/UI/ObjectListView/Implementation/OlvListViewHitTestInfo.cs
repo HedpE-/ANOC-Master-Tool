@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -60,6 +60,11 @@ namespace BrightIdeasSoftware {
         /// On the expand button (TreeListView)
         /// </summary>
         ExpandButton,
+
+        /// <summary>
+        /// in a button (cell must have ButtonRenderer)
+        /// </summary>
+        Button,
 
         /// <summary>
         /// in the cell but not in any more specific location

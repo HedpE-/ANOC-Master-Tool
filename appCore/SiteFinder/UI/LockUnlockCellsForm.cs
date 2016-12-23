@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using GlacialComponents.Controls;
+using BrightIdeasSoftware.Design;
 using appCore.UI;
 
 namespace appCore.SiteFinder.UI
@@ -31,6 +32,7 @@ namespace appCore.SiteFinder.UI
 //		int selected3gCells;
 //		int selected4gCells;
 		GlacialList mylist = new GlacialList();
+		
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;

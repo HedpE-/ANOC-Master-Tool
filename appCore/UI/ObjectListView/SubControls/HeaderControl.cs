@@ -5,6 +5,7 @@
  * Date: 25/11/2008 17:15 
  *
  * Change log:
+ * 2015-06-12  JPP  - Use HeaderTextAlignOrDefault instead of HeaderTextAlign
  * 2014-09-07  JPP  - Added ability to have checkboxes in headers
  * 
  * 2011-05-11  JPP  - Fixed bug that prevented columns from being resized in IDE Designer
@@ -47,7 +48,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -194,8 +195,17 @@ namespace BrightIdeasSoftware {
         /// <summary>
         /// Gets the maximum height of the header. -1 means no maximum.
         /// </summary>
-        public int MaximumHeight {
+        public int MaximumHeight
+        {
             get { return this.ListView.HeaderMaximumHeight; }
+        }
+
+        /// <summary>
+        /// Gets the minimum height of the header. -1 means no minimum.
+        /// </summary>
+        public int MinimumHeight
+        {
+            get { return this.ListView.HeaderMinimumHeight; }
         }
 
         /// <summary>
@@ -235,7 +245,7 @@ namespace BrightIdeasSoftware {
         protected int CalculateHeight(Graphics g) {
             TextFormatFlags flags = this.TextFormatFlags;
             int columnUnderCursor = this.ColumnIndexUnderCursor;
-            float height = 0.0f;
+            float height = this.MinimumHeight;
             for (int i = 0; i < this.ListView.Columns.Count; i++) {
                 OLVColumn column = this.ListView.GetColumn(i);
                 height = Math.Max(height, CalculateColumnHeight(g, column, flags, columnUnderCursor == i, i));
@@ -739,10 +749,12 @@ namespace BrightIdeasSoftware {
                     column.IsHeaderVertical || 
                     this.HasFilterIndicator(column) ||
                     this.HasCheckBox(column) ||
-                    column.TextAlign != column.HeaderTextAlign ||
+                    column.TextAlign != column.HeaderTextAlignOrDefault ||
+                    (column.Index == 0 && column.HeaderTextAlignOrDefault != HorizontalAlignment.Left) ||
                     this.NeedsCustomDraw(column.HeaderFormatStyle))
                     return true;
             }
+
             return false;
         }
 
@@ -1054,9 +1066,9 @@ namespace BrightIdeasSoftware {
 
             TextFormatFlags flags = this.TextFormatFlags;
             flags |= TextFormatFlags.VerticalCenter;
-            if (column.HeaderTextAlign == HorizontalAlignment.Center)
+            if (column.HeaderTextAlignOrDefault == HorizontalAlignment.Center)
                 flags |= TextFormatFlags.HorizontalCenter;
-            if (column.HeaderTextAlign == HorizontalAlignment.Right)
+            if (column.HeaderTextAlignOrDefault == HorizontalAlignment.Right)
                 flags |= TextFormatFlags.Right;
 
             Font f = this.ListView.HeaderUsesThemes ? this.ListView.Font : stateStyle.Font ?? this.ListView.Font;
@@ -1094,9 +1106,9 @@ namespace BrightIdeasSoftware {
 
             int imageY = r.Top + ((r.Height - column.ImageList.ImageSize.Height)/2);
             int imageX = textRect.Left;
-            if (column.HeaderTextAlign == HorizontalAlignment.Center)
+            if (column.HeaderTextAlignOrDefault == HorizontalAlignment.Center)
                 imageX = textRect.Left + ((textRect.Width - textSize.Width)/2);
-            if (column.HeaderTextAlign == HorizontalAlignment.Right)
+            if (column.HeaderTextAlignOrDefault == HorizontalAlignment.Right)
                 imageX = textRect.Right - textSize.Width;
             imageX -= (column.ImageList.ImageSize.Width + imageTextGap);
 

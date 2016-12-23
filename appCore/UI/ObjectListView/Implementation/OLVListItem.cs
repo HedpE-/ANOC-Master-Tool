@@ -5,13 +5,15 @@
  * Date: 31-March-2011 5:53 pm
  *
  * Change log:
+ * 2015-08-22  JPP  - Added OLVListItem.SelectedBackColor and SelectedForeColor
+ * 2015-06-09  JPP  - Added HasAnyHyperlinks property
  * v2.8
  * 2014-09-27  JPP  - Remove faulty caching of CheckState
  * 2014-05-06  JPP  - Added OLVListItem.Enabled flag
  * vOld
  * 2011-03-31  JPP  - Split into its own file
  * 
- * Copyright (C) 2011-2014 Phillip Piper
+ * Copyright (C) 2011-2015 Phillip Piper
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +28,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
@@ -61,7 +64,7 @@ namespace BrightIdeasSoftware {
             this.imageSelector = image;
         }
 
-        #endregion
+        #endregion.
 
         #region Properties
 
@@ -106,7 +109,7 @@ namespace BrightIdeasSoftware {
         /// <remarks>
         /// Virtual lists don't handle checkboxes well, so we have to intercept attempts to change them
         /// through the items, and change them into something that will work.
-        /// Unfortuneately, this won't work if this property is set through the base class, since
+        /// Unfortunately, this won't work if this property is set through the base class, since
         /// the property is not declared as virtual.
         /// </remarks>
         new public bool Checked {
@@ -206,6 +209,19 @@ namespace BrightIdeasSoftware {
         private bool enabled;
 
         /// <summary>
+        /// Gets whether any cell on this item is showing a hyperlink
+        /// </summary>
+        public bool HasAnyHyperlinks {
+            get {
+                foreach (OLVListSubItem subItem in this.SubItems) {
+                    if (!String.IsNullOrEmpty(subItem.Url))
+                        return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Get or set the image that should be shown against this item
         /// </summary>
         /// <remarks><para>This can be an Image, a string or an int. A string or an int will
@@ -232,6 +248,39 @@ namespace BrightIdeasSoftware {
             set { rowObject = value; }
         }
         private object rowObject;
+
+        /// <summary>
+        /// Gets or sets the color that will be used for this row's background when it is selected and 
+        /// the control is focused.
+        /// </summary>
+        /// <remarks>
+        /// <para>To work reliably, this property must be set during a FormatRow event.</para>
+        /// <para>
+        /// If this is not set, the normal selection BackColor will be used.
+        /// </para>
+        /// </remarks>
+        public Color? SelectedBackColor {
+            get { return this.selectedBackColor; }
+            set { this.selectedBackColor = value; }
+        }
+        private Color? selectedBackColor;
+
+        /// <summary>
+        /// Gets or sets the color that will be used for this row's foreground when it is selected and 
+        /// the control is focused.
+        /// </summary>
+        /// <remarks>
+        /// <para>To work reliably, this property must be set during a FormatRow event.</para>
+        /// <para>
+        /// If this is not set, the normal selection ForeColor will be used.
+        /// </para>
+        /// </remarks>
+        public Color? SelectedForeColor
+        {
+            get { return this.selectedForeColor; }
+            set { this.selectedForeColor = value; }
+        }
+        private Color? selectedForeColor;
 
         #endregion
 

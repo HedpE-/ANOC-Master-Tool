@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * If you wish to use this code in a closed source application, please contact phillip_piper@bigfoot.com.
+ * If you wish to use this code in a closed source application, please contact phillip.piper@gmail.com.
  */
 
 using System;
@@ -57,7 +57,12 @@ namespace BrightIdeasSoftware {
             /// Pressing F2 is the only way to edit the cells. Once the primary column is being edited,
             /// the other cells in the row can be edited by pressing Tab.
             /// </summary>
-            F2Only = 3
+            F2Only = 3,
+
+            /// <summary>
+            /// A single click on  a <strong>any</strong> cell will edit the value, even the primary column.
+            /// </summary>
+            SingleClickAlways = 4,
         }
 
         /// <summary>
