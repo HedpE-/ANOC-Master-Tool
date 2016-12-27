@@ -39,6 +39,28 @@ namespace appCore.Toolbox
 			November,
 			December
 		};
+		
+		public static string[] DirSearch(string sDir)
+		{
+			List<string> result = new List<string>();
+			try
+			{
+				foreach (string d in Directory.GetDirectories(sDir))
+				{
+					foreach (string f in Directory.GetFiles(d, "pattern"))
+					{
+						result.Add(f);
+					}
+					DirSearch(d);
+				}
+			}
+			catch (Exception excpt)
+			{
+				Console.WriteLine(excpt.Message);
+			}
+			
+			return result.ToArray();
+		}
 		// TODO: Implement MD5 Hash check
 		public static string CalculateMD5Hash(FileInfo filename) {
 			MD5 md5 = MD5.Create();
