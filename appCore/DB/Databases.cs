@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using System;
 using System.Data;
 using System.Threading;
 using System.IO;
@@ -162,7 +163,7 @@ namespace appCore.DB
 			all_cellsThread.IsBackground = true;
 			all_cellsThread.Start();
 			Thread shiftsFileThread = new Thread(() => {
-			                                     	shiftsFile = new ShiftsFile();
+			                                     	shiftsFile = new ShiftsFile(DateTime.Now.Year);
 			                                     	loadingShiftsFileFinished = true;
 			                                     });
 			shiftsFileThread.IsBackground = true;
