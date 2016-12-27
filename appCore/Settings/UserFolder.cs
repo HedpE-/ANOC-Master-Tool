@@ -306,9 +306,9 @@ namespace appCore.Settings
 			FileInfo[] files = userFolder.GetFiles(pattern);
 			FileInfo foundFile = null;
 			if(files.Length > 1) {
-				foreach (FileInfo fi in files) {
-					if(DateTime.Now.Month == 12 && fi.Name.Contains(DateTime.Now.Year.ToString())) {
-						foundFile = fi;
+				foreach (FileInfo file in files) {
+					if(DateTime.Now.Month == 12 && file.Name.Contains(DateTime.Now.Year.ToString())) {
+						foundFile = file;
 						break;
 					}
 				}
@@ -328,8 +328,10 @@ namespace appCore.Settings
 		}
 
 		static void UpdateShiftsFile() {
-			FileInfo currentShiftsFile = getDBFile("shift*.xlsx");
-			FileInfo currentNextYearShiftsFile = getDBFile("shift*" + DateTime.Now.Year + 1 + "*.xlsx");
+			FileInfo currentShiftsFile = getDBFile("shift*" + DateTime.Now.Year + "*.xlsx");
+			FileInfo currentNextYearShiftsFile = null;
+			if(DateTime.Now.Month == 12)
+				currentNextYearShiftsFile = getDBFile("shift*" + (DateTime.Now.Year + 1) + "*.xlsx");
 			
 //			typeof(GlobalProperties).GetField("ShiftsDefaultLocation").SetValue(null, new DirectoryInfo(@"C:\Users\goncarj3\Desktop\Fiddler4Portable"));
 			
@@ -384,21 +386,23 @@ namespace appCore.Settings
 						else
 							newestFile.CopyTo(FullName + "\\" + newestFile.Name);
 					}
-					if(newestNextYear != null) {
-						if(currentNextYearShiftsFile != null) {
-							if(newestNextYear.LastWriteTime > currentNextYearShiftsFile.LastWriteTime) {
-								if(DateTime.Now.Month != 12 && !newestNextYear.Name.Contains((DateTime.Now.Year + 1).ToString()))
-									currentNextYearShiftsFile.Delete();
-								newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name, true);
+					if(DateTime.Now.Month == 12) {
+						if(newestNextYear != null) {
+							if(currentNextYearShiftsFile != null) {
+								if(newestNextYear.LastWriteTime > currentNextYearShiftsFile.LastWriteTime) {
+									if(DateTime.Now.Month != 12 && !newestNextYear.Name.Contains((DateTime.Now.Year + 1).ToString()))
+										currentNextYearShiftsFile.Delete();
+									newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name, true);
+								}
 							}
+							else
+								newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name);
 						}
-						else
-							newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name);
 					}
 				}
 			}
 			else
-				Databases.shiftsFile = new ShiftsFile();
+				Databases.shiftsFile = new ShiftsFile(DateTime.Now.Year);
 		}
 		
 		public static void CreateTempFolder() {

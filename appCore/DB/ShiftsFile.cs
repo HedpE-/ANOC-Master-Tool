@@ -60,9 +60,9 @@ namespace appCore.DB
 			private set;
 		}
 
-		public ShiftsFile(int year = 2016)
+		public ShiftsFile(int year)
 		{
-			shiftsFile = UserFolder.getDBFile("shift*.xlsx");
+			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
 			if (shiftsFile != null)
 				monthTables = importShiftsTable();
 			Year = year;
