@@ -90,13 +90,44 @@ namespace appCore.SiteFinder.UI
 			this.radioButton1.UseVisualStyleBackColor = true;
 			this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButtonsCheckedChanged);
 			// 
-			// listView1
+			// glacialList1
 			// 
+			this.glacialList1.AllowColumnResize = true;
+			this.glacialList1.AllowMultiselect = false;
+			this.glacialList1.AlternateBackground = System.Drawing.Color.DarkGreen;
+			this.glacialList1.AlternatingColors = false;
+			this.glacialList1.AutoHeight = true;
+			this.glacialList1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.glacialList1.BackgroundStretchToFit = true;
+			this.glacialList1.ControlStyle = GlacialComponents.Controls.GLControlStyles.Normal;
+			this.glacialList1.FullRowSelect = true;
+			this.glacialList1.GridColor = System.Drawing.Color.LightGray;
 			this.glacialList1.GridLines = GlacialComponents.Controls.GLGridLines.gridBoth;
+			this.glacialList1.GridLineStyle = GlacialComponents.Controls.GLGridLineStyles.gridSolid;
+			this.glacialList1.GridTypes = GlacialComponents.Controls.GLGridTypes.gridOnExists;
+			this.glacialList1.HeaderHeight = 22;
+			this.glacialList1.HeaderVisible = true;
+			this.glacialList1.HeaderWordWrap = false;
+			this.glacialList1.HotColumnTracking = false;
+			this.glacialList1.HotItemTracking = false;
+			this.glacialList1.HotTrackingColor = System.Drawing.Color.LightGray;
+			this.glacialList1.HoverEvents = false;
+			this.glacialList1.HoverTime = 1;
+			this.glacialList1.ImageList = null;
+			this.glacialList1.ItemHeight = 18;
+			this.glacialList1.ItemWordWrap = false;
 			this.glacialList1.Location = new System.Drawing.Point(6, 32);
-			this.glacialList1.Name = "listView1";
+			this.glacialList1.Name = "glacialList1";
+			this.glacialList1.Selectable = true;
+			this.glacialList1.SelectedTextColor = System.Drawing.Color.White;
+			this.glacialList1.SelectionColor = System.Drawing.Color.DarkBlue;
+			this.glacialList1.ShowBorder = true;
+			this.glacialList1.ShowFocusRect = false;
 			this.glacialList1.Size = new System.Drawing.Size(803, 364);
+			this.glacialList1.SortType = GlacialComponents.Controls.SortTypes.InsertionSort;
+			this.glacialList1.SuperFlatHeaderColor = System.Drawing.Color.White;
 			this.glacialList1.TabIndex = 36;
+			this.glacialList1.ItemChangedEvent += new GlacialComponents.Controls.ChangedEventHandler(this.GlacialList1ItemChangedEvent);
 			// 
 			// checkBox1
 			// 

@@ -169,9 +169,13 @@ namespace appCore.SiteFinder.UI
 				}
 				else {
 					button1.Text = "Unlock\nCells";
-					checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => s.Locked).Count() > 0;
-					checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => s.Locked).Count() > 0;
-					checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => s.Locked).Count() > 0;
+					if(rb.Text.StartsWith("Unlock")) {
+						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => s.Locked).Count() > 0;
+						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => s.Locked).Count() > 0;
+						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => s.Locked).Count() > 0;
+					}
+					else
+						button1.Enabled = checkBox1.Enabled = checkBox2.Enabled = checkBox3.Enabled = false;
 				}
 			}
 			checkBox1.Checked = checkBox2.Checked = checkBox3.Checked = false;
@@ -333,6 +337,19 @@ namespace appCore.SiteFinder.UI
 					UnlockedBy.Text = "Unlocked By";
 					glacialList1.Columns.AddRange(new [] { Tech, CellName, Switch, OssId, Vendor, NOC, Reference, CaseStatus, CrqScheduledStart, CrqScheduledEnd, LockedTime, LockedBy, LockComments, UnlockedTime, UnlockedBy, UnlockComments });
 				}
+			}
+		}
+		
+		void GlacialList1ItemChangedEvent(object source, ChangedEventArgs e)
+		{
+			if(e.ChangedType == ChangedTypes.SubItemChanged) {
+				if(radioButton1.Checked)
+					comboBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0; // && radioButton1.Checked;
+				if(radioButton2.Checked)
+					amtRichTextBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0;
+//				checkBox1.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "2G" && s.SubItems[0].Checked).Count() > 0;
+//				checkBox2.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "3G" && s.SubItems[0].Checked).Count() > 0;
+//				checkBox3.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "4G" && s.SubItems[0].Checked).Count() > 0;
 			}
 		}
 	}
