@@ -34,7 +34,7 @@ namespace appCore.SiteFinder.UI
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
 			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
-			currentSite.UpdateLockedCells();
+			currentSite.UpdateLockedCells();	
 			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
 			Controls.Add(glacialList1);
@@ -221,6 +221,7 @@ namespace appCore.SiteFinder.UI
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
 			CheckBox cb = sender as CheckBox;
 			var filtered = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == cb.Text);
+			
 			foreach(GLItem gli in filtered)
 				gli.SubItems[0].Checked = cb.Checked;
 		}
@@ -347,9 +348,18 @@ namespace appCore.SiteFinder.UI
 					comboBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0; // && radioButton1.Checked;
 				if(radioButton2.Checked)
 					amtRichTextBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0;
-//				checkBox1.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "2G" && s.SubItems[0].Checked).Count() > 0;
-//				checkBox2.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "3G" && s.SubItems[0].Checked).Count() > 0;
-//				checkBox3.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "4G" && s.SubItems[0].Checked).Count() > 0;
+				
+//				checkBox1.CheckedChanged -= CheckBoxesCheckedChanged;
+//				checkBox1.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "2G" && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "2G").Count();
+//				checkBox1.CheckedChanged += CheckBoxesCheckedChanged;
+//				
+//				checkBox2.CheckedChanged -= CheckBoxesCheckedChanged;
+//				checkBox2.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "3G" && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "3G").Count();
+//				checkBox2.CheckedChanged -= CheckBoxesCheckedChanged;
+//				
+//				checkBox3.CheckedChanged -= CheckBoxesCheckedChanged;
+//				checkBox3.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "4G" && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "4G").Count();
+//				checkBox3.CheckedChanged -= CheckBoxesCheckedChanged;
 			}
 		}
 	}

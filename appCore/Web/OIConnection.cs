@@ -307,13 +307,14 @@ namespace appCore.Web
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
-				foreach(string cell in cellsList)
-					request.AddParameter("checkbox" + cell, "on");
-				
-				request.AddParameter("Comment", comments);
+				if(cellsList != null) {
+					foreach(string cell in cellsList)
+						request.AddParameter("checkbox" + cell, "on");
+					request.AddParameter("Comment", comments);
+				}
+				request.AddParameter("SiteNo", site);
 				request.AddParameter("FromTime", string.Empty);
 				request.AddParameter("ToTime", string.Empty);
-				request.AddParameter("SiteNo", site);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
 				IRestResponse response = client.Execute(request);

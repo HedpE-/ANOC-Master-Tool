@@ -410,8 +410,9 @@ namespace appCore.Toolbox
 			string csv = string.Empty;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
-			foreach (HtmlNode th in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("th")) {
-				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site")
+			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
+			foreach (HtmlNode th in table.Descendants("th")) {
+				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site" || th.InnerText == "Time")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else
 					dt.Columns.Add(th.InnerText);
@@ -419,7 +420,7 @@ namespace appCore.Toolbox
 			
 			// Build DataTable
 			List<string> tableRow = new List<string>();
-			foreach (HtmlNode tr in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("tr")) {
+			foreach (HtmlNode tr in table.Descendants("tr")) {
 				tableRow.Clear();
 				if(tr.Name != "#text") {
 					foreach(var node in tr.ChildNodes) {

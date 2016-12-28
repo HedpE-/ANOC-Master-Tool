@@ -135,7 +135,9 @@ namespace appCore.SiteFinder
 			VF_4G,
 			TF_2G,
 			TF_3G,
-			TF_4G
+			TF_4G,
+			Locked,
+			Unlocked
 		};
 	}
 }
@@ -161,6 +163,10 @@ public static class CellExtension {
 				return toFilter.Where(s => s.Bearer == "4G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
 			case Cell.Filters.TF_4G:
 				return toFilter.Where(s => s.Bearer == "4G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
+			case Cell.Filters.Locked:
+				return toFilter.Where(s => s.Locked).ToList();
+			case Cell.Filters.Unlocked:
+				return toFilter.Where(s => !s.Locked).ToList();
 		}
 		return null;
 	}

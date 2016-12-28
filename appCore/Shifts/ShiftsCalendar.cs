@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using System.Windows.Forms;
 using appCore.UI;
 using appCore.Toolbox;
@@ -26,6 +27,8 @@ namespace appCore.Shifts
 	/// </summary>
 	public class ShiftsCalendar : AMTRoundCornersPanel
 	{
+		System.Timers.Timer midnightTimer;
+		
 		List<Rectangle> rectCollection = new List<Rectangle>();
 		DateTime shiftsChosenDate = DateTime.Now;
 		Bitmap shiftsBodySnap;
@@ -74,9 +77,35 @@ namespace appCore.Shifts
 			Name = "ShiftsCalendar";
 //			this.MouseMove += shiftsPanel_MouseMove;
 //			http://www.codeproject.com/Articles/38436/Extended-Graphics-Rounded-rectangles-Font-metrics
+			Initiate();
+			deployMidnightTimer();
+		}
+		
+		void Initiate() {
 			shiftsBodySnap = loadShifts(shiftsChosenDate);
 			Paint += shiftsPanelPaint;
 			LocationChanged += shiftsPanel_LocationChanged;
+		}
+		
+		void deployMidnightTimer() {
+			DateTime midnight = new DateTime(DateTime.Now.AddDays(1).Year,DateTime.Now.AddDays(1).Month,DateTime.Now.AddDays(1).Day,0,0,1);
+			TimeSpan timeSpanToMidnight = midnight - DateTime.Now;
+			int msToMidnight = (int)timeSpanToMidnight.TotalMilliseconds;
+			midnightTimer = new System.Timers.Timer(msToMidnight);
+			midnightTimer.Elapsed += midnightTimer_Elapsed;
+			midnightTimer.Enabled = true;
+		}
+
+		void midnightTimer_Elapsed(object sender, ElapsedEventArgs e)
+		{
+			if(DateTime.Now > shiftsChosenDate) {
+				shiftsChosenDate = DateTime.Now;
+				Initiate();
+				
+				DateTime midnight = new DateTime(DateTime.Now.AddDays(1).Year,DateTime.Now.AddDays(1).Month,DateTime.Now.AddDays(1).Day,0,0,1);
+				TimeSpan timeSpanToMidnight = midnight - DateTime.Now;
+				midnightTimer.Interval = (int)timeSpanToMidnight.TotalMilliseconds;
+			}
 		}
 		
 		void shiftsPanelPaint(object sender, PaintEventArgs e)
