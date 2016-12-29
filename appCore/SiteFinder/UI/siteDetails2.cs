@@ -576,7 +576,7 @@ namespace appCore.SiteFinder.UI
 				                                   	}
 				                                   	
 				                                   	currentSite = Finder.getSite(tb.Text);
-				                                   	currentSite.UpdateLockedCells();
+				                                   	currentSite.UpdateLockedCells(false);
 				                                   	
 				                                   	if(currentSite.Exists)
 				                                   		currentSite.requestOIData("INCCRQPWR");

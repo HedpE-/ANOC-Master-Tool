@@ -24,17 +24,11 @@ namespace appCore.SiteFinder.UI
 	public partial class LockUnlockCellsForm : Form
 	{
 		Site currentSite;
-//		int selectable2gCells;
-//		int selectable3gCells;
-//		int selectable4gCells;
-//		int selected2gCells;
-//		int selected3gCells;
-//		int selected4gCells;
 		
 		public LockUnlockCellsForm(Site site) {
 			currentSite = site;
 			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
-			currentSite.UpdateLockedCells();	
+			currentSite.UpdateLockedCells(true);
 			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
 			Controls.Add(glacialList1);
@@ -61,15 +55,7 @@ namespace appCore.SiteFinder.UI
 						ossID = cell.ENodeB_Id;
 					else
 						ossID = cell.WBTS_BCF;
-//					ListViewItem lvi = new ListViewItem(
-//						new[]{ cell.Bearer,
-//							cell.Name,
-//							cell.BscRnc_Id,
-//							ossID,
-//							cell.Vendor.ToString(),
-//							cell.Noc,
-//							cell.Locked ? "YES" : "No"
-//						});
+					
 					GLItem item = new GLItem();
 					item.SubItems[1].Text = cell.Bearer;
 					item.SubItems[2].Text = cell.Name;
@@ -83,38 +69,33 @@ namespace appCore.SiteFinder.UI
 							item.ForeColor = SystemColors.GrayText;
 							item.BackColor = SystemColors.InactiveBorder;
 						}
-//						else {
-//							switch(cell.Bearer) {
-//								case "2G":
-//									selectable2gCells++;
-//									break;
-//								case "3G":
-//									selectable3gCells++;
-//									break;
-//								case "4G":
-//									selectable4gCells++;
-//									break;
-//							}
-//						}
 					}
 					else {
+						var filtered = currentSite.LockedCellsDetails.Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s[6].ToString()) && string.IsNullOrEmpty(s[9].ToString()));
+						DataRow dr = null;
+						if(filtered.Count() > 0) {
+							try { dr = filtered.Where(s => s[0].ToString() == cell.Id).First(); } catch { }
+							if(dr != null) {
+								item.SubItems[8].Text = dr[2].ToString();
+								item.SubItems[9].Text = dr[3].ToString();
+								item.SubItems[10].Text = dr[4].ToString();
+								item.SubItems[11].Text = dr[5].ToString();
+								item.SubItems[12].Text = dr[1].ToString();
+								item.SubItems[13].Text = dr[6].ToString();
+								item.SubItems[14].Text = dr[7].ToString();
+							}
+						}
 						if(rb.Text.StartsWith("Unlock") && (!cell.Locked || !cell.Noc.Contains("ANOC"))) {
 							item.ForeColor = SystemColors.GrayText;
 							item.BackColor = SystemColors.InactiveBorder;
 						}
-//						else {
-//							switch(cell.Bearer) {
-//								case "2G":
-//									selectable2gCells++;
-//									break;
-//								case "3G":
-//									selectable3gCells++;
-//									break;
-//								case "4G":
-//									selectable4gCells++;
-//									break;
-//							}
-//						}
+						else {
+							if(dr != null) {
+								item.SubItems[15].Text = dr[8].ToString();
+								item.SubItems[16].Text = dr[9].ToString();
+								item.SubItems[17].Text = dr[10].ToString();
+							}
+						}
 					}
 					
 					glacialList1.Items.Add(item);
@@ -183,47 +164,20 @@ namespace appCore.SiteFinder.UI
 			glacialList1.ResumeLayout();
 		}
 		
-		void listView1_ItemCheck(object sender, ItemCheckEventArgs e) {
-			if(glacialList1.Items[e.Index].ForeColor == SystemColors.GrayText)
-				e.NewValue = e.CurrentValue;
-		}
-		
-		void ListView1ItemChecked(object sender, ItemCheckedEventArgs e) {
-			if(radioButton1.Checked)
-				comboBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0; // && radioButton1.Checked;
-			if(radioButton2.Checked)
-				amtRichTextBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0;
-//			switch(e.Item.Text) {
-//				case "2G":
-//					if(e.Item.Checked)
-//						selected2gCells++;
-//					else
-//						selected2gCells--;
-//					break;
-//				case "3G":
-//					if(e.Item.Checked)
-//						selected3gCells++;
-//					else
-//						selected3gCells--;
-//					break;
-//				case "4G":
-//					if(e.Item.Checked)
-//						selected4gCells++;
-//					else
-//						selected4gCells--;
-//					break;
-//			}
-//				checkBox1.Checked = selected2gCells == selectable2gCells;
-//				checkBox2.Checked = selected3gCells == selectable3gCells;
-//				checkBox3.Checked = selected4gCells == selectable4gCells;
-		}
-		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
 			CheckBox cb = sender as CheckBox;
 			var filtered = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == cb.Text);
 			
-			foreach(GLItem gli in filtered)
-				gli.SubItems[0].Checked = cb.Checked;
+			if(filtered.Any())
+				glacialList1.ItemChangedEvent -= GlacialList1ItemChangedEvent;
+			foreach(GLItem gli in filtered) {
+				if(filtered.Last() == gli) {
+					glacialList1.ItemChangedEvent += GlacialList1ItemChangedEvent;
+					gli.SubItems[0].Checked = cb.Checked;
+				}
+				else
+					gli.SubItems[0].Checked = cb.Checked;
+			}
 		}
 		
 		void ComboBox1TextUpdate(object sender, EventArgs e) {
@@ -254,22 +208,15 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
-//			bool manRef = true;
-//			foreach(string rf in comboBox1.Items) {
-//				if(reference == rf) {
-//					manRef = false;
-//					break;
-//				}
-//			}
 			bool manRef = !comboBox1.Items.Contains(reference);
 			OIConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
-			currentSite.UpdateLockedCells();
+			currentSite.UpdateLockedCells(true);
 			RadioButtonsCheckedChanged(radioButton1, null);
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
 			OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
-			currentSite.UpdateLockedCells();
+			currentSite.UpdateLockedCells(true);
 			RadioButtonsCheckedChanged(radioButton2, null);
 		}
 		
@@ -343,24 +290,41 @@ namespace appCore.SiteFinder.UI
 		
 		void GlacialList1ItemChangedEvent(object source, ChangedEventArgs e)
 		{
-			if(e.ChangedType == ChangedTypes.SubItemChanged) {
+			if(e.ChangedType == ChangedTypes.SubItemChanged && e.Column != glacialList1.Columns[0]) {
+				if(e.Item.ForeColor == SystemColors.GrayText) {
+					e.SubItem.Checked = false;
+					return;
+				}
 				if(radioButton1.Checked)
 					comboBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0; // && radioButton1.Checked;
 				if(radioButton2.Checked)
 					amtRichTextBox1.Enabled = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[0].Checked).Count() > 0;
 				
-//				checkBox1.CheckedChanged -= CheckBoxesCheckedChanged;
-//				checkBox1.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "2G" && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "2G").Count();
-//				checkBox1.CheckedChanged += CheckBoxesCheckedChanged;
-//				
-//				checkBox2.CheckedChanged -= CheckBoxesCheckedChanged;
-//				checkBox2.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "3G" && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "3G").Count();
-//				checkBox2.CheckedChanged -= CheckBoxesCheckedChanged;
-//				
-//				checkBox3.CheckedChanged -= CheckBoxesCheckedChanged;
-//				checkBox3.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "4G" && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == "4G").Count();
-//				checkBox3.CheckedChanged -= CheckBoxesCheckedChanged;
+				CheckBox cb = null;
+				switch(e.Item.SubItems[1].Text) {
+					case "2G":
+						cb = checkBox1;
+						break;
+					case "3G":
+						cb = checkBox2;
+						break;
+					case "4G":
+						cb = checkBox3;
+						break;
+				}
+				if(cb != null) {
+					cb.CheckedChanged -= CheckBoxesCheckedChanged;
+					cb.Checked = glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == e.Item.SubItems[1].Text && s.SubItems[0].Checked).Count() == glacialList1.Items.Cast<GLItem>().Where(s => s.SubItems[1].Text == e.Item.SubItems[1].Text).Count();
+					cb.CheckedChanged += CheckBoxesCheckedChanged;
+				}
 			}
 		}
+		
+//		void GlacialList1SubItemChangedEvent(object source, ChangedEventArgs e) {
+//			if(e.ChangedType == ChangedTypes.SubItemChanged) {
+//				if(e.Item.ForeColor == SystemColors.GrayText)
+//					e.SubItem.Checked = false;
+//			}
+//		}
 	}
 }

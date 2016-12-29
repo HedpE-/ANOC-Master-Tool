@@ -434,10 +434,10 @@ namespace appCore.SiteFinder
 		
 		string getOiLockedCellsDetails() {
 			string response = Web.OIConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
-			return response.Contains("Site " + Id + "</b><table>") ? response : string.Empty;			
+			return response.Contains("Site " + Id + "</b><table>") ? response : string.Empty;
 		}
 		
-		string getOiCellsLockedState() {
+		string getOiCellsLockedState(bool getLockedDetails) {
 			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
 			if(string.IsNullOrWhiteSpace(PowerCompany))
 				try { PowerCompany = getPowerCompany(response); } catch {}
@@ -457,14 +457,16 @@ namespace appCore.SiteFinder
 							cell.Locked = false;
 					}
 				}
-				if(Cells.Filter(Cell.Filters.Locked).Any()) {
-					string resp = getOiLockedCellsDetails();
-					HtmlDocument doc2 = new HtmlDocument();
-					doc2.Load(new StringReader(resp));
-					
-					HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
-					
-					LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+				if(getLockedDetails) {
+					if(Cells.Filter(Cell.Filters.Locked).Any()) {
+						string resp = getOiLockedCellsDetails();
+						HtmlDocument doc2 = new HtmlDocument();
+						doc2.Load(new StringReader(resp));
+						
+						HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
+						
+						LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+					}
 				}
 				// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
 				// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
@@ -476,14 +478,14 @@ namespace appCore.SiteFinder
 		
 		
 		
-		public void UpdateLockedCells() {
+		public void UpdateLockedCells(bool getLockedDetails) {
 			if(Exists && Cells.Count > 0) {
 //				HttpStatusCode status = HttpStatusCode.NotFound;
 //				if(Web.OIConnection.Connection == null)
 //					status = Web.OIConnection.EstablishConnection();
 //				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
 //				if(statusCode == HttpStatusCode.OK)
-				getOiCellsLockedState();
+				getOiCellsLockedState(getLockedDetails);
 			}
 		}
 		
