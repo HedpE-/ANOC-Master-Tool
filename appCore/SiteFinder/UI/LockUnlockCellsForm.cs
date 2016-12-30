@@ -150,7 +150,7 @@ namespace appCore.SiteFinder.UI
 					}
 				}
 				for(int c = 0;c < glacialList1.Items.Count;c++) {
-					glacialList1
+//					glacialList1
 				}
 				if(rb.Text.StartsWith("Lock")) {
 					button1.Text = "Lock\nCells";
