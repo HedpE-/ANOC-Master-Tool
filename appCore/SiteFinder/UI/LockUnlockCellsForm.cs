@@ -49,72 +49,109 @@ namespace appCore.SiteFinder.UI
 			
 			if(rb.Checked) {
 				InitializeGLColumns(rb.Text);
-				foreach (Cell cell in currentSite.Cells) {
-					string ossID;
-					if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
-						ossID = cell.ENodeB_Id;
-					else
-						ossID = cell.WBTS_BCF;
-					
-					GLItem item = new GLItem();
-					item.SubItems[1].Text = cell.Bearer;
-					item.SubItems[2].Text = cell.Name;
-					item.SubItems[3].Text = cell.BscRnc_Id;
-					item.SubItems[4].Text = ossID;
-					item.SubItems[5].Text = cell.Vendor.ToString();
-					item.SubItems[6].Text = cell.Noc;
-					item.SubItems[7].Text = cell.Locked ? "YES" : "No";
-					if(rb.Text.StartsWith("Lock")) {
-						if(cell.Locked || !cell.Noc.Contains("ANOC")) {
-							item.ForeColor = SystemColors.GrayText;
-							item.BackColor = SystemColors.InactiveBorder;
-						}
-					}
-					else {
-						var filtered = currentSite.LockedCellsDetails.Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s[6].ToString()) && string.IsNullOrEmpty(s[9].ToString()));
-						DataRow dr = null;
-						if(filtered.Count() > 0) {
-							try { dr = filtered.Where(s => s[0].ToString() == cell.Id).First(); } catch { }
-							if(dr != null) {
-								item.SubItems[8].Text = dr[2].ToString();
-								item.SubItems[9].Text = dr[3].ToString();
-								item.SubItems[10].Text = dr[4].ToString();
-								item.SubItems[11].Text = dr[5].ToString();
-								item.SubItems[12].Text = dr[1].ToString();
-								item.SubItems[13].Text = dr[6].ToString();
-								item.SubItems[14].Text = dr[7].ToString();
+				if(!rb.Text.StartsWith("History")) {
+					foreach (Cell cell in currentSite.Cells) {
+						string ossID;
+						if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+							ossID = cell.ENodeB_Id;
+						else
+							ossID = cell.WBTS_BCF;
+						
+						GLItem item = new GLItem();
+						item.SubItems[1].Text = cell.Bearer;
+						item.SubItems[2].Text = cell.Name;
+						item.SubItems[3].Text = cell.BscRnc_Id;
+						item.SubItems[4].Text = ossID;
+						item.SubItems[5].Text = cell.Vendor.ToString();
+						item.SubItems[6].Text = cell.Noc;
+						item.SubItems[7].Text = cell.Locked ? "YES" : "No";
+						if(rb.Text.StartsWith("Lock")) {
+							if(cell.Locked || !cell.Noc.Contains("ANOC")) {
+								item.ForeColor = SystemColors.GrayText;
+								item.BackColor = SystemColors.InactiveBorder;
 							}
-						}
-						if(rb.Text.StartsWith("Unlock") && (!cell.Locked || !cell.Noc.Contains("ANOC"))) {
-							item.ForeColor = SystemColors.GrayText;
-							item.BackColor = SystemColors.InactiveBorder;
 						}
 						else {
-							if(dr != null) {
-								item.SubItems[15].Text = dr[8].ToString();
-								item.SubItems[16].Text = dr[9].ToString();
-								item.SubItems[17].Text = dr[10].ToString();
+							if(currentSite.LockedCellsDetails == null)
+								currentSite.UpdateLockedCells(true);
+							var filtered = currentSite.LockedCellsDetails.Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s[6].ToString()) && string.IsNullOrEmpty(s[9].ToString()));
+							DataRow dr = null;
+							if(filtered.Count() > 0) {
+								try { dr = filtered.Where(s => s[0].ToString() == cell.Name).First(); } catch { }
+								if(dr != null) {
+									item.SubItems[8].Text = dr[2].ToString();
+									item.SubItems[9].Text = dr[3].ToString();
+									item.SubItems[10].Text = dr[4].ToString();
+									item.SubItems[11].Text = dr[5].ToString();
+									item.SubItems[12].Text = dr[1].ToString();
+									item.SubItems[13].Text = dr[6].ToString();
+									item.SubItems[14].Text = dr[7].ToString();
+								}
+							}
+							if(rb.Text.StartsWith("Unlock") && (!cell.Locked || !cell.Noc.Contains("ANOC"))) {
+								item.ForeColor = SystemColors.GrayText;
+								item.BackColor = SystemColors.InactiveBorder;
 							}
 						}
+						
+						glacialList1.Items.Add(item);
 					}
-					
-					glacialList1.Items.Add(item);
 				}
-				
+				else {
+					if(currentSite.LockedCellsDetails == null)
+						currentSite.UpdateLockedCells(true);
+					foreach (DataRow row in currentSite.LockedCellsDetails.Rows) {
+						GLItem item = new GLItem();
+						Cell cell = currentSite.Cells.Find(s => s.Name == row[0].ToString());
+						string ossID = string.Empty;
+						if(cell != null) {
+							if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+								ossID = cell.ENodeB_Id;
+							else
+								ossID = cell.WBTS_BCF;
+						}
+						
+						item.SubItems[0].Text = cell != null ? cell.Bearer : string.Empty;
+						item.SubItems[1].Text = row[0].ToString();
+						item.SubItems[2].Text = cell != null ? cell.BscRnc_Id : string.Empty;
+						item.SubItems[3].Text = ossID;
+						item.SubItems[4].Text = cell != null ? cell.Vendor.ToString() : string.Empty;
+						item.SubItems[5].Text = cell != null ? cell.Noc : string.Empty;
+//						item.SubItems[6].Text = cell != null ? (cell.Locked ? "YES" : "No") : string.Empty;
+						item.SubItems[6].Text = row[2].ToString();
+						item.SubItems[7].Text = row[3].ToString();
+						item.SubItems[8].Text = row[4].ToString();
+						item.SubItems[9].Text = row[5].ToString();
+						item.SubItems[10].Text = row[1].ToString();
+						item.SubItems[11].Text = row[6].ToString();
+						item.SubItems[12].Text = row[7].ToString();
+						item.SubItems[13].Text = row[8].ToString();
+						item.SubItems[14].Text = row[9].ToString();
+						item.SubItems[15].Text = row[10].ToString();
+						
+						glacialList1.Items.Add(item);
+					}
+				}
 				for(int c = 0;c < glacialList1.Columns.Count;c++) {
 					if(glacialList1.Columns[c].Text == string.Empty)
 						glacialList1.Columns[c].Width = 19;
 					else {
-						int textSize = TextRenderer.MeasureText(glacialList1.Columns[c].Text, glacialList1.Font).Width;
-						foreach (GLItem item in glacialList1.Items) {
-							int tempSize = TextRenderer.MeasureText(item.SubItems[c].Text, glacialList1.Font).Width;
-							if(tempSize > textSize)
-								textSize = tempSize;
+						if(glacialList1.Columns[c].Text.Contains("Comments"))
+							glacialList1.Columns[c].Width = 250;
+						else {
+							int textSize = TextRenderer.MeasureText(glacialList1.Columns[c].Text, glacialList1.Font).Width;
+							foreach (GLItem item in glacialList1.Items) {
+								int tempSize = TextRenderer.MeasureText(item.SubItems[c].Text, glacialList1.Font).Width;
+								if(tempSize > textSize)
+									textSize = tempSize;
+							}
+							glacialList1.Columns[c].Width = textSize + 7;
 						}
-						glacialList1.Columns[c].Width = textSize + 7;
 					}
 				}
-				
+				for(int c = 0;c < glacialList1.Items.Count;c++) {
+					glacialList1
+				}
 				if(rb.Text.StartsWith("Lock")) {
 					button1.Text = "Lock\nCells";
 					checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => !s.Locked).Count() > 0;

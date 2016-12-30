@@ -458,7 +458,7 @@ namespace appCore.SiteFinder
 					}
 				}
 				if(getLockedDetails) {
-					if(Cells.Filter(Cell.Filters.Locked).Any()) {
+//					if(Cells.Filter(Cell.Filters.Locked).Any()) {
 						string resp = getOiLockedCellsDetails();
 						HtmlDocument doc2 = new HtmlDocument();
 						doc2.Load(new StringReader(resp));
@@ -466,7 +466,7 @@ namespace appCore.SiteFinder
 						HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
 						
 						LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
-					}
+//					}
 				}
 				// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
 				// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
@@ -479,14 +479,8 @@ namespace appCore.SiteFinder
 		
 		
 		public void UpdateLockedCells(bool getLockedDetails) {
-			if(Exists && Cells.Count > 0) {
-//				HttpStatusCode status = HttpStatusCode.NotFound;
-//				if(Web.OIConnection.Connection == null)
-//					status = Web.OIConnection.EstablishConnection();
-//				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
-//				if(statusCode == HttpStatusCode.OK)
+			if(Exists && Cells.Count > 0)
 				getOiCellsLockedState(getLockedDetails);
-			}
 		}
 		
 		public void LockUnlockCells() {
