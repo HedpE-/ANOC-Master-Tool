@@ -459,13 +459,13 @@ namespace appCore.SiteFinder
 				}
 				if(getLockedDetails) {
 //					if(Cells.Filter(Cell.Filters.Locked).Any()) {
-						string resp = getOiLockedCellsDetails();
-						HtmlDocument doc2 = new HtmlDocument();
-						doc2.Load(new StringReader(resp));
-						
-						HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
-						
-						LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+					string resp = getOiLockedCellsDetails();
+					HtmlDocument doc2 = new HtmlDocument();
+					doc2.Load(new StringReader(resp));
+					
+					HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
+					
+					LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
 //					}
 				}
 				// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
@@ -475,8 +475,6 @@ namespace appCore.SiteFinder
 			}
 			return string.Empty;
 		}
-		
-		
 		
 		public void UpdateLockedCells(bool getLockedDetails) {
 			if(Exists && Cells.Count > 0)
