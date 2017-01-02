@@ -272,16 +272,6 @@ namespace appCore.Shifts
 			DataRow[] foundRows = null;
 			switch (shift) {
 				case "M":
-//					foreach (DataRow row in Databases.shiftsFile.monthTables[date.Month - 1].Rows) {
-//						if(string.IsNullOrEmpty(row["AbsName"].ToString())
-//						   && string.IsNullOrEmpty(row["Day" + date.Day].ToString())
-//						   && row["Day" + date.Day].ToString() != "A"
-//						   && row["Day" + date.Day].ToString() != "N"
-//						   && row["Day" + date.Day].ToString() != "H"
-//						   && row["Day" + date.Day].ToString() != "HA"
-//						   && row["Day" + date.Day].ToString() != "L")
-//							
-//					}
 					foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s["AbsName"].ToString())
 					                                                                                        && !string.IsNullOrEmpty(s["Day" + date.Day].ToString())
 					                                                                                        && s["Day" + date.Day].ToString() != "A"
@@ -289,7 +279,7 @@ namespace appCore.Shifts
 					                                                                                        && s["Day" + date.Day].ToString() != "H"
 					                                                                                        && s["Day" + date.Day].ToString() != "HA"
 					                                                                                        && s["Day" + date.Day].ToString() != "L").ToArray();
-//					filter = "Day" + date.Day + " <> 'A' AND Day" + date.Day + " <> 'N' AND Day" + date.Day + " <> 'H' AND Day" + date.Day + " <> 'HA' AND Day" + date.Day + " <> 'L'";
+//					filter = "AbsName <> '' AND Day" + date.Day + " <> 'A' AND Day" + date.Day + " <> 'N' AND Day" + date.Day + " <> 'H' AND Day" + date.Day + " <> 'HA' AND Day" + date.Day + " <> 'L'";
 					break;
 				case "A":
 					foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s["AbsName"].ToString())
@@ -299,7 +289,7 @@ namespace appCore.Shifts
 					                                                                                        && s["Day" + date.Day].ToString() != "H"
 					                                                                                        && s["Day" + date.Day].ToString() != "HA"
 					                                                                                        && s["Day" + date.Day].ToString() != "L").ToArray();
-//					filter = "Day" + date.Day + " <> 'M' AND Day" + date.Day + " <> 'N' AND Day" + date.Day + " <> 'H' AND Day" + date.Day + " <> 'HA' AND Day" + date.Day + " <> 'L'";
+//					filter = "AbsName <> '' AND Day" + date.Day + " <> 'M' AND Day" + date.Day + " <> 'N' AND Day" + date.Day + " <> 'H' AND Day" + date.Day + " <> 'HA' AND Day" + date.Day + " <> 'L'";
 					break;
 				case "N":
 					try {
@@ -308,7 +298,6 @@ namespace appCore.Shifts
 					}
 					catch { }
 //					filter = "AbsName <> '' AND Day" + date.Day + " = '" + shift + "'";
-//					filter = "Day" + date.Day + " = '" + shift + "'";
 					break;
 				default:
 					foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s["AbsName"].ToString())
@@ -317,7 +306,7 @@ namespace appCore.Shifts
 					                                                                                        && s["Day" + date.Day].ToString() != "H"
 					                                                                                        && s["Day" + date.Day].ToString() != "HA"
 					                                                                                        && s["Day" + date.Day].ToString() != "L").ToArray();
-//					filter = "Day" + date.Day + " <> 'N' AND Day" + date.Day + " <> 'H' AND Day" + date.Day + " <> 'HA' AND Day" + date.Day + " <> 'L'";
+//					filter = "AbsName <> '' AND Day" + date.Day + " <> 'N' AND Day" + date.Day + " <> 'H' AND Day" + date.Day + " <> 'HA' AND Day" + date.Day + " <> 'L'";
 					break;
 			}
 			
