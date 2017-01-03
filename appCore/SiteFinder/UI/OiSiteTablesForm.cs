@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-//using System.Linq;
 using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
@@ -20,7 +19,6 @@ namespace appCore.SiteFinder.UI
 	public partial class OiSiteTablesForm : Form
 	{
 		DataTable Datatable;
-//		string filter = "all";
 		int maxWidth;
 		public bool Cancel;
 		public string DataType { get; private set; }
