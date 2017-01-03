@@ -33,9 +33,8 @@ namespace appCore.Netcool
 		}
 		
 		void ToDataTable() {
-			while (toParse.Contains("\n-ProbableCause")) {
+			while(toParse.Contains("\n-ProbableCause"))
 				toParse = toParse.Remove(toParse.IndexOf("\n-ProbableCause", StringComparison.Ordinal), 1);
-			}
 			
 			string[] rows = toParse.Split('\n'); // Extrair todas as rows
 			string[] columns = rows[0].Split('\t'); // Extrair o nome das colunas da primeira linha

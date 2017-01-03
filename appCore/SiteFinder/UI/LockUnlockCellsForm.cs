@@ -74,10 +74,19 @@ namespace appCore.SiteFinder.UI
 						else {
 							if(currentSite.LockedCellsDetails == null)
 								currentSite.UpdateLockedCells(true);
-							var filtered = currentSite.LockedCellsDetails.Rows.Cast<DataRow>().Where(s => !string.IsNullOrEmpty(s[6].ToString()) && string.IsNullOrEmpty(s[9].ToString()));
+							List<DataRow> filtered = new List<DataRow>();
+							foreach(DataRow row in currentSite.LockedCellsDetails.Rows) {
+								if(!string.IsNullOrEmpty(row[6].ToString()) && string.IsNullOrEmpty(row[9].ToString()))
+									filtered.Add(row);
+							}
 							DataRow dr = null;
-							if(filtered.Count() > 0) {
-								try { dr = filtered.Where(s => s[0].ToString() == cell.Name).First(); } catch { }
+							if(filtered.Count > 0) {
+								foreach(DataRow row in filtered) {
+									if(row[0].ToString() == cell.Name) {
+										dr = row;
+										break;
+									}
+								}
 								if(dr != null) {
 									item.SubItems[8].Text = dr[2].ToString();
 									item.SubItems[9].Text = dr[3].ToString();

@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+//using System.Linq;
 using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
@@ -152,8 +152,13 @@ namespace appCore.SiteFinder.UI
 		
 		void OiSiteTablesFormFormClosing(object sender, FormClosingEventArgs e) {
 			if(!Cancel) {
-				if(listView1.CheckedItems.Count > 0)
-					selectedCases = listView1.Items.Cast<ListViewItem>().Where(s => s.Checked).ToList();
+				if(listView1.CheckedItems.Count > 0) {
+					selectedCases = new List<ListViewItem>();
+					foreach(ListViewItem lvi in listView1.Items) {
+						if(lvi.Checked)
+							selectedCases.Add(lvi);
+					}
+				}
 				else {
 					DialogResult ans = appCore.UI.FlexibleMessageBox.Show("You didn't select any cases to relate, is this right?", "No cases selected", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 					if(ans == DialogResult.No)

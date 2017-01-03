@@ -15,7 +15,6 @@ using System.Windows.Forms;
 using appCore.Templates;
 using appCore.Templates.Types;
 using appCore.UI;
-using System.Linq;
 using System.Timers;
 
 namespace appCore.Logs
@@ -514,19 +513,44 @@ namespace appCore.Logs
 		}
 		
 		public int FilterCounts(Template.Filters filter) {
+			int count = 0;
 			switch(filter) {
 				case Template.Filters.Troubleshoot:
-					return this.List.Cast<Template>().Select(x => x.LogType == "Troubleshoot Template").Count();
+					foreach(Template t in this.List) {
+						if(t.LogType == "Troubleshoot Template")
+							count++;
+					}
+					return count;
 				case Template.Filters.FailedCRQ:
-					return this.List.Cast<Template>().Select(x => x.LogType == "Failed CRQ").Count();
+					foreach(Template t in this.List) {
+						if(t.LogType == "Failed CRQ")
+							count++;
+					}
+					return count;
 				case Template.Filters.TX:
-					return this.List.Cast<Template>().Select(x => x.LogType == "TX Template").Count();
+					foreach(Template t in this.List) {
+						if(t.LogType == "TX Template")
+							count++;
+					}
+					return count;
 				case Template.Filters.Update:
-					return this.List.Cast<Template>().Select(x => x.LogType == "Update Template").Count();
+					foreach(Template t in this.List) {
+						if(t.LogType == "Update Template")
+							count++;
+					}
+					return count;
 				case Template.Filters.Outage:
-					return this.List.Cast<Template>().Select(x => x.LogType == "Outage").Count();
+					foreach(Template t in this.List) {
+						if(t.LogType == "Outage")
+							count++;
+					}
+					return count;
 				case Template.Filters.TicketCount:
-					return this.List.Cast<Template>().Select(x => x.LogType == "Troubleshoot Template" || x.LogType == "Failed CRQ" || x.LogType == "TX Template").Count();
+					foreach(Template t in this.List) {
+						if(t.LogType == "Troubleshoot Template" || t.LogType == "Failed CRQ" || t.LogType == "TX Template")
+							count++;
+					}
+					return count;
 			}
 			return -1;
 		}

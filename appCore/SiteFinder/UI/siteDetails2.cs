@@ -549,7 +549,7 @@ namespace appCore.SiteFinder.UI
 				col.Width = -2;
 			listView2.ResumeLayout();
 			
-			label11.Text = label11.Text.Split('(')[0] + '(' + outageSites.Count() + ')';
+			label11.Text = label11.Text.Split('(')[0] + '(' + outageSites.Count + ')';
 		}
 		
 		void bulkSearchForm_buttonClick(object sender, EventArgs e)
@@ -615,7 +615,7 @@ namespace appCore.SiteFinder.UI
 			                           	catch (Exception) {
 			                           	}
 			                           	
-			                           	if(sitesList.Count() > 1) {
+			                           	if(sitesList.Count > 1) {
 			                           		if(!siteDetails_UIMode.Contains("outage"))
 			                           			siteDetails_UIMode = "multi";
 			                           		searchResultsPopulate(sitesList);
@@ -625,7 +625,7 @@ namespace appCore.SiteFinder.UI
 			                           		myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 			                           	}
 			                           	else {
-			                           		if(sitesList.Count() == 1) {
+			                           		if(sitesList.Count == 1) {
 			                           			siteDetails_UIMode = "single";
 			                           			selectedSiteDetailsPopulate(sitesList[0]);
 			                           			selectedSiteOverlay.Markers.Add(sitesList[0].MapMarker);

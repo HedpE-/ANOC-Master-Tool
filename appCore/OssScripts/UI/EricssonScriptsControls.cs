@@ -12,9 +12,7 @@ using appCore.SiteFinder;
 using appCore.SiteFinder.UI;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace appCore.OssScripts.UI
@@ -105,7 +103,11 @@ namespace appCore.OssScripts.UI
 				currentSite = Finder.getSite(tb.Text);
 				
 				if(currentSite.Exists) {
-					filteredCells = currentSite.Cells.Where(s => s.Vendor == SiteFinder.Site.Vendors.Ericsson).ToList();
+					filteredCells = new List<Cell>();
+					foreach(Cell cell in currentSite.Cells) {
+						if(cell.Vendor == SiteFinder.Site.Vendors.Ericsson)
+							filteredCells.Add(cell);
+					}
 					if(filteredCells.Count == 0){
 						MainForm.trayIcon.showBalloon("Error",String.Format("Site {0} is not E///",tb.Text));
 						return;

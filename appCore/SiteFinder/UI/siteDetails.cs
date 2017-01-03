@@ -11,15 +11,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Net;
-using System.Linq;
 using System.Windows.Forms;
+using appCore.DB;
+using appCore.Toolbox;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
-using appCore.DB;
-using appCore.Toolbox;
 
 namespace appCore.SiteFinder.UI
 {
@@ -127,7 +126,7 @@ namespace appCore.SiteFinder.UI
 			currentSite = site;
 			if(currentSite.Exists) {
 				currentSite.requestOIData("INCCRQPWR");
-				if(currentSite.Cells.Any()) {
+				if(currentSite.Cells.Count > 0) {
 					
 //				cellsList = cells;
 //				cellsList.Sort = "BEARER Asc, CELL_NAME Asc";

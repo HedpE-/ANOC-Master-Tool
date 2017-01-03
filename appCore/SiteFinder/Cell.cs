@@ -8,7 +8,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data;
 using appCore.SiteFinder;
 
@@ -144,29 +143,74 @@ namespace appCore.SiteFinder
 
 public static class CellExtension {
 	public static List<Cell> Filter(this List<Cell> toFilter, Cell.Filters filter) {
+		List<Cell> list = new List<Cell>();
 		switch(filter) {
 			case Cell.Filters.All_2G:
-				return toFilter.Where(s => s.Bearer == "2G" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "2G" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.VF_2G:
-				return toFilter.Where(s => s.Bearer == "2G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "2G" && cell.Operator == "VF" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.TF_2G:
-				return toFilter.Where(s => s.Bearer == "2G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "2G" && cell.Operator == "TEF" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.All_3G:
-				return toFilter.Where(s => s.Bearer == "3G" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "3G" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.VF_3G:
-				return toFilter.Where(s => s.Bearer == "3G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "3G" && cell.Operator == "VF" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.TF_3G:
-				return toFilter.Where(s => s.Bearer == "3G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "3G" && cell.Operator == "TEF" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.All_4G:
-				return toFilter.Where(s => s.Bearer == "4G" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "4G" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.VF_4G:
-				return toFilter.Where(s => s.Bearer == "4G" && s.Operator == "VF" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "4G" && cell.Operator == "VF" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.TF_4G:
-				return toFilter.Where(s => s.Bearer == "4G" && s.Operator == "TEF" && s.Noc.Contains("ANOC")).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Bearer == "4G" && cell.Operator == "TEF" && cell.Noc.Contains("ANOC"))
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.Locked:
-				return toFilter.Where(s => s.Locked).ToList();
+				foreach(Cell cell in toFilter) {
+					if(cell.Locked)
+						list.Add(cell);
+				}
+				return list;
 			case Cell.Filters.Unlocked:
-				return toFilter.Where(s => !s.Locked).ToList();
+				foreach(Cell cell in toFilter) {
+					if(!cell.Locked)
+						list.Add(cell);
+				}
+				return list;
 		}
 		return null;
 	}
