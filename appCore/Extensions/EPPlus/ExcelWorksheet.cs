@@ -543,7 +543,8 @@ namespace OfficeOpenXml
             Stream stream = packPart.GetStream();
 
             XmlTextReader xr = new XmlTextReader(stream);
-            xr.ProhibitDtd = true;
+//            xr.ProhibitDtd = true;
+            xr.DtdProcessing = DtdProcessing.Prohibit;
             
             LoadColumns(xr);    //columnXml
             long start = stream.Position;
