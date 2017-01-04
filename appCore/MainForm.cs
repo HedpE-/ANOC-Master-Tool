@@ -589,6 +589,8 @@ namespace appCore
 						
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
+						ShiftsSwapForm ss = new ShiftsSwapForm();
+						ss.Show();
 					};
 					tabPage1.Controls.Add(butt);
 					

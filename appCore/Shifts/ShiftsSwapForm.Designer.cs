@@ -8,7 +8,7 @@
  */
 namespace appCore.Shifts
 {
-	partial class ShiftChangeForm
+	partial class ShiftsSwapForm
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
@@ -63,29 +63,35 @@ namespace appCore.Shifts
 			this.comboBox1.FormattingEnabled = true;
 			this.comboBox1.Location = new System.Drawing.Point(91, 9);
 			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(200, 21);
+			this.comboBox1.Size = new System.Drawing.Size(306, 21);
 			this.comboBox1.TabIndex = 0;
+			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBoxesSelectedIndexChanged);
 			// 
 			// comboBox2
 			// 
 			this.comboBox2.FormattingEnabled = true;
 			this.comboBox2.Location = new System.Drawing.Point(91, 36);
 			this.comboBox2.Name = "comboBox2";
-			this.comboBox2.Size = new System.Drawing.Size(200, 21);
+			this.comboBox2.Size = new System.Drawing.Size(306, 21);
 			this.comboBox2.TabIndex = 1;
+			this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.ComboBoxesSelectedIndexChanged);
 			// 
 			// dateTimePicker1
 			// 
+			this.dateTimePicker1.CustomFormat = "dd/MM/yyyy";
+			this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
 			this.dateTimePicker1.Location = new System.Drawing.Point(91, 63);
 			this.dateTimePicker1.Name = "dateTimePicker1";
-			this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
+			this.dateTimePicker1.Size = new System.Drawing.Size(105, 20);
 			this.dateTimePicker1.TabIndex = 2;
 			// 
 			// dateTimePicker2
 			// 
+			this.dateTimePicker2.CustomFormat = "dd/MM/yyyy";
+			this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
 			this.dateTimePicker2.Location = new System.Drawing.Point(91, 89);
 			this.dateTimePicker2.Name = "dateTimePicker2";
-			this.dateTimePicker2.Size = new System.Drawing.Size(200, 20);
+			this.dateTimePicker2.Size = new System.Drawing.Size(105, 20);
 			this.dateTimePicker2.TabIndex = 3;
 			// 
 			// label1
@@ -132,21 +138,22 @@ namespace appCore.Shifts
 			this.button1.TabIndex = 8;
 			this.button1.Text = "Send Request";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(191, 115);
+			this.button2.Location = new System.Drawing.Point(297, 115);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(100, 23);
 			this.button2.TabIndex = 9;
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
 			// 
-			// ShiftChangeForm
+			// ShiftsSwapForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(296, 141);
+			this.ClientSize = new System.Drawing.Size(403, 141);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.label4);
@@ -158,8 +165,8 @@ namespace appCore.Shifts
 			this.Controls.Add(this.comboBox2);
 			this.Controls.Add(this.comboBox1);
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
-			this.Name = "ShiftChangeForm";
-			this.Text = "Swap Shifts Request";
+			this.Name = "ShiftsSwapForm";
+			this.Text = "Shifts Swap Request";
 			this.ResumeLayout(false);
 
 		}

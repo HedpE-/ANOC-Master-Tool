@@ -1202,9 +1202,9 @@
     <Compile Include="Settings\CurrentUser.cs" />
     <Compile Include="Settings\UserFolder.cs" />
     <Compile Include="Shifts\PopupHelper.cs" />
-    <Compile Include="Shifts\ShiftChangeForm.cs" />
-    <Compile Include="Shifts\ShiftChangeForm.Designer.cs">
-      <DependentUpon>ShiftChangeForm.cs</DependentUpon>
+    <Compile Include="Shifts\ShiftsSwapForm.cs" />
+    <Compile Include="Shifts\ShiftsSwapForm.Designer.cs">
+      <DependentUpon>ShiftsSwapForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Shifts\ShiftsCalendar.cs" />
     <Compile Include="Shifts\WholeShiftsPanel.cs">
@@ -1422,8 +1422,8 @@
     <EmbeddedResource Include="Settings\UI\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shifts\ShiftChangeForm.resx">
-      <DependentUpon>ShiftChangeForm.cs</DependentUpon>
+    <EmbeddedResource Include="Shifts\ShiftsSwapForm.resx">
+      <DependentUpon>ShiftsSwapForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\LockUnlockCellsForm.resx">
       <DependentUpon>LockUnlockCellsForm.cs</DependentUpon>
