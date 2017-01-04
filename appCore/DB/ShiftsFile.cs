@@ -11,6 +11,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 using Excel;
 using appCore.Settings;
 using appCore.Toolbox;
@@ -59,6 +60,16 @@ namespace appCore.DB
 			get;
 			private set;
 		}
+		
+		public List<DataRow> ShiftLeaders {
+			get;
+			private set;
+		}
+		
+		public List<DataRow> Agents {
+			get;
+			private set;
+		}
 
 		public ShiftsFile(int year)
 		{
@@ -98,11 +109,9 @@ namespace appCore.DB
 				.ToArray();
 			TableA.Columns.AddRange(aCols);
 			TableA.Columns.Add(new DataColumn("AbsName", typeof(string)));
-			foreach (DataRow row in dtTable.Rows)
-			{
+			foreach (DataRow row in dtTable.Rows) {
 				DataRow aRow = TableA.Rows.Add();
-				foreach (DataColumn aCol in TableA.Columns)
-				{
+				foreach (DataColumn aCol in TableA.Columns) {
 					if (aCol.ColumnName != "AbsName")
 						aRow.SetField(aCol, row[aCol.ColumnName]);
 					else
@@ -113,9 +122,31 @@ namespace appCore.DB
 						    !row["Column3"].ToString().Contains("Intermediate") &&
 						    row["Column3"].ToString() != "Afternoon" &&
 						    row["Column3"].ToString() != "Night" &&
-						    row["Column3"].ToString() != "TEF Customer")
+						    row["Column3"].ToString() != "TEF Customer" &&
+						    row["Column3"].ToString() != "External alarms")
 
 							aRow.SetField(aCol, Tools.RemoveDiacritics(row["Column3"].ToString()).ToUpper());
+					}
+				}
+				if(!string.IsNullOrEmpty(aRow["Column3"].ToString()) &&
+				   aRow["Column3"].ToString() != "Name" &&
+				   aRow["Column3"].ToString() != "Morning" &&
+				   !aRow["Column3"].ToString().Contains("Intermediate") &&
+				   aRow["Column3"].ToString() != "Afternoon" &&
+				   aRow["Column3"].ToString() != "Night" &&
+				   aRow["Column3"].ToString() != "TEF Customer" &&
+				   aRow["Column3"].ToString() != "External alarms") {
+					FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
+					int rowID = (int)Convert.ToInt64(_rowID.GetValue(row));
+					if(rowID > 3 && rowID < 12) {
+						if(ShiftLeaders == null)
+							ShiftLeaders = new List<DataRow>();
+						ShiftLeaders.Add(aRow);
+					}
+					else {
+						if(Agents == null)
+							Agents = new List<DataRow>();
+						Agents.Add(aRow);
 					}
 				}
 			}
@@ -185,7 +216,7 @@ namespace appCore.DB
 				for (int c = 0; c < TableB.Columns.Count; c++)
 				{
 					if (!string.IsNullOrEmpty(TableB.Rows[2][TableB.Columns[c].ColumnName].ToString()))
-						if(!(curMonth == Tools.Months.December.ToString() && TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() == "1" && c > 4)) 
+						if(!(curMonth == Tools.Months.December.ToString() && TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() == "1" && c > 4))
 							TableB.Columns[c].ColumnName = "Day" + TableB.Rows[2][TableB.Columns[c].ColumnName];
 //					else
 //							UI.FlexibleMessageBox.Show("Dia " + TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() + "\nMês " + curMonth + "\ncounter " + c);

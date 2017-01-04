@@ -75,12 +75,6 @@ namespace appCore.UI
 			
 			InternalNotifyIcon.MouseUp += thisNotifyIcon_MouseUp;
 //			trayIcon.DoubleClick += new EventHandler(trayIcon_DoubleClick);
-			
-			
-//			MainForm.trayIc = tray;
-//			MainForm.trayIc.Icon = Resources.MB_0001_vodafone3;
-//			MainForm.trayIc.Text = "ANOC Master Tool";
-//			MainForm.trayIc.Visible = true;
 		}
 		
 		[DllImport("user32.dll", SetLastError = true)]

@@ -307,9 +307,11 @@ namespace appCore.Settings
 			FileInfo foundFile = null;
 			if(files.Length > 1) {
 				foreach (FileInfo file in files) {
-					if(DateTime.Now.Month == 12 && file.Name.Contains(DateTime.Now.Year.ToString())) {
+					if(foundFile == null)
 						foundFile = file;
-						break;
+					else {
+						if(file.LastWriteTime > foundFile.LastWriteTime)
+							foundFile = file;
 					}
 				}
 			}
@@ -329,9 +331,7 @@ namespace appCore.Settings
 
 		static void UpdateShiftsFile() {
 			FileInfo currentShiftsFile = getDBFile("shift*" + DateTime.Now.Year + "*.xlsx");
-			FileInfo currentNextYearShiftsFile = null;
-			if(DateTime.Now.Month == 12)
-				currentNextYearShiftsFile = getDBFile("shift*" + (DateTime.Now.Year + 1) + "*.xlsx");
+			FileInfo currentNextYearShiftsFile = getDBFile("shift*" + (DateTime.Now.Year + 1) + "*.xlsx");
 			
 //			typeof(GlobalProperties).GetField("ShiftsDefaultLocation").SetValue(null, new DirectoryInfo(@"C:\Users\goncarj3\Desktop\Fiddler4Portable"));
 			
@@ -344,32 +344,44 @@ namespace appCore.Settings
 						newestFile = shiftsFiles[0];
 					else {
 						foreach (FileInfo file in shiftsFiles) {
-							if(newestFile == null) {
-								if(!file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
-									if(DateTime.Now.Month == 12 && file.Name.Contains((DateTime.Now.Year + 1).ToString())) {
-										if(newestNextYear == null)
-											newestNextYear = file;
-										else {
-											if(file.LastWriteTime > newestNextYear.LastWriteTime)
-												newestNextYear = file;
-										}
-									}
-									else
+							if(file.Name.Contains(DateTime.Now.Year.ToString())) {
+								if(newestFile == null) {
+									if(!file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
+//										if(DateTime.Now.Month == 12 && file.Name.Contains((DateTime.Now.Year + 1).ToString())) {
+//											if(newestNextYear == null)
+//												newestNextYear = file;
+//											else {
+//												if(file.LastWriteTime > newestNextYear.LastWriteTime)
+//													newestNextYear = file;
+//											}
+//										}
+//										else
 										newestFile = file;
+									}
+								}
+								else {
+									if(file.LastWriteTime > newestFile.LastWriteTime && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
+//										if(DateTime.Now.Month == 12 && file.Name.Contains((DateTime.Now.Year + 1).ToString())) {
+//											if(newestNextYear == null)
+//												newestNextYear = file;
+//											else {
+//												if(file.LastWriteTime > newestNextYear.LastWriteTime)
+//													newestNextYear = file;
+//											}
+//										}
+//										else
+										newestFile = file;
+									}
 								}
 							}
 							else {
-								if(file.LastWriteTime > newestFile.LastWriteTime && !file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$")) {
-									if(DateTime.Now.Month == 12 && file.Name.Contains((DateTime.Now.Year + 1).ToString())) {
-										if(newestNextYear == null)
+								if(file.Name.Contains((DateTime.Now.Year + 1).ToString())) {
+									if(newestNextYear == null)
+										newestNextYear = file;
+									else {
+										if(file.LastWriteTime > newestNextYear.LastWriteTime)
 											newestNextYear = file;
-										else {
-											if(file.LastWriteTime > newestNextYear.LastWriteTime)
-												newestNextYear = file;
-										}
 									}
-									else
-										newestFile = file;
 								}
 							}
 						}
