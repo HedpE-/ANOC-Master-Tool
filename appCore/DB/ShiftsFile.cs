@@ -123,7 +123,8 @@ namespace appCore.DB
 						    row["Column3"].ToString() != "Afternoon" &&
 						    row["Column3"].ToString() != "Night" &&
 						    row["Column3"].ToString() != "TEF Customer" &&
-						    row["Column3"].ToString() != "External alarms")
+						    row["Column3"].ToString() != "External alarms" &&
+						    aRow["Column3"].ToString() != "Morning Telephone")
 
 							aRow.SetField(aCol, Tools.RemoveDiacritics(row["Column3"].ToString()).ToUpper());
 					}
@@ -135,7 +136,8 @@ namespace appCore.DB
 				   aRow["Column3"].ToString() != "Afternoon" &&
 				   aRow["Column3"].ToString() != "Night" &&
 				   aRow["Column3"].ToString() != "TEF Customer" &&
-				   aRow["Column3"].ToString() != "External alarms") {
+				   aRow["Column3"].ToString() != "External alarms" &&
+				   aRow["Column3"].ToString() != "Morning Telephone") {
 					FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
 					int rowID = (int)Convert.ToInt64(_rowID.GetValue(row));
 					if(rowID > 3 && rowID < 12) {
