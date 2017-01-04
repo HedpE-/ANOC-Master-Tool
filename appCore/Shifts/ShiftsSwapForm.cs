@@ -95,15 +95,17 @@ namespace appCore.Shifts
 			EmailMessage message = new EmailMessage(service);
 			
 			message.Subject = "Troca de turno";
-			message.Body = new MessageBody(BodyType.Text,
-			                               "Interessado: " + comboBox1.Text + Environment.NewLine +
+			string body = "Interessado: " + comboBox1.Text + Environment.NewLine +
 			                               "Troca com: " + comboBox2.Text + Environment.NewLine +
 			                               "Data início: " + dateTimePicker1.Value.ToString(dateTimePicker1.CustomFormat) + Environment.NewLine +
 			                               "Data fim: " + dateTimePicker2.Value.ToString(dateTimePicker2.CustomFormat));
+			message.Body = new MessageBody(BodyType.Text, body);
 			message.ToRecipients.Add(approverContact.Mailbox);
 			message.CcRecipients.Add(swapContact.Mailbox);
 			
 			message.Send();
+			
+			MainForm.trayIcon.showBalloon("Shift swap request sent", body);
 		}
 	}
 }
