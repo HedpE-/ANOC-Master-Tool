@@ -618,10 +618,23 @@ namespace appCore
 			tabPage11.Controls.Add(huaweiScriptsControls);
 			ericssonScriptsControls.Location = new Point(1, 2);
 			tabPage13.Controls.Add(ericssonScriptsControls);
-			
+					
 			SplashForm.UpdateLabelText("Loading Databases");
 			
 			Databases.PopulateDatabases();
+			
+			comboBox1.Items.Add("CBV");
+			string[] results = new string[Databases.shiftsFile.ShiftLeaders.Count];
+			for (int index = 0; index < Databases.shiftsFile.ShiftLeaders.Count; index++) {
+				results[index] = Databases.shiftsFile.ShiftLeaders[index]["Column1"].ToString();
+			}
+			comboBox1.Items.AddRange(results);
+			results = new string[Databases.shiftsFile.Agents.Count];
+			for (int index = 0; index < Databases.shiftsFile.Agents.Count; index++) {
+				results[index] = Databases.shiftsFile.Agents[index]["Column1"].ToString();
+			}
+			comboBox1.Items.AddRange(results);
+			comboBox1.Text = CurrentUser.ClosureCode;
 			
 			GlobalProperties.siteFinder_mainswitch = false;
 			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
@@ -696,15 +709,15 @@ namespace appCore
 		void TextBox13TextChanged(object sender, EventArgs e)
 		{
 			textBox14.Text = "";
-			if (textBox13.Text.Length == 15 & textBox15.Text.Length == 3)
+			if (textBox13.Text.Length == 15 & comboBox1.Text.Length == 3)
 			{
 				label30.Visible = false;
 				textBox13.TextChanged -= TextBox13TextChanged;
-				textBox15.TextChanged -= TextBox15TextChanged;
+				comboBox1.TextChanged -= ComboBox1TextChanged;
 				textBox13.Text = textBox13.Text.ToUpper();
-				textBox15.Text = textBox15.Text.ToUpper();
+				comboBox1.Text = comboBox1.Text.ToUpper();
 				textBox13.TextChanged += TextBox13TextChanged;
-				textBox15.TextChanged += TextBox15TextChanged;
+				comboBox1.TextChanged += ComboBox1TextChanged;
 				if (Tools.IsAllDigits(textBox13.Text.Substring(3,textBox13.Text.Length - 3))) {
 					int[] rng = new int[12];
 					for (int c = 0; c <= 11; c++) {
@@ -718,7 +731,7 @@ namespace appCore
 							textBox14.Text += "0";
 						}
 					}
-					textBox14.Text += hx + " " + textBox15.Text;
+					textBox14.Text += hx + " " + comboBox1.Text;
 				}
 				else {
 					Action action = new Action(delegate {
@@ -740,20 +753,20 @@ namespace appCore
 			}
 		}
 
-		void TextBox15TextChanged(object sender, EventArgs e)
+		void ComboBox1TextChanged(object sender, EventArgs e)
 		{
 			try{
-				if (textBox15.Text.Length == 3 & textBox13.Text.Length == 15) {
+				if (comboBox1.Text.Length == 3 & textBox13.Text.Length == 15) {
 					label31.Visible = false;
 					TextBox13TextChanged(sender, e);
 				}
 				else {
 					textBox14.Text = "";
-					if (textBox15.Text.Length < 3) label31.Visible = true;
+					if (comboBox1.Text.Length < 3) label31.Visible = true;
 					else {
-						textBox15.TextChanged -= TextBox15TextChanged;
-						textBox15.Text = textBox15.Text.ToUpper();
-						textBox15.TextChanged += TextBox15TextChanged;
+						comboBox1.TextChanged -= ComboBox1TextChanged;
+						comboBox1.Text = comboBox1.Text.ToUpper();
+						comboBox1.TextChanged += ComboBox1TextChanged;
 						label31.Visible = false;
 					}
 				}

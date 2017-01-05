@@ -18,9 +18,9 @@ namespace appCore.Templates.UI
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
-		private System.Windows.Forms.TextBox textBox3;
+		private appCore.UI.AMTTextBox textBox1;
+		private appCore.UI.AMTTextBox textBox2;
+		private appCore.UI.AMTTextBox textBox3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Button button3;
 		private appCore.UI.AMTRichTextBox textBox4;
@@ -58,10 +58,10 @@ namespace appCore.Templates.UI
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.textBox1 = new appCore.UI.AMTTextBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.textBox3 = new System.Windows.Forms.TextBox();
+			this.textBox2 = new appCore.UI.AMTTextBox();
+			this.textBox3 = new appCore.UI.AMTTextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.textBox4 = new appCore.UI.AMTRichTextBox();

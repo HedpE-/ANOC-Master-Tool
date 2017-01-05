@@ -26,9 +26,9 @@ namespace appCore.OssScripts.UI
 		Button SelectNoneButton = new Button();
 		Button SelectAllButton = new Button();
 		Label PriorityLabel = new Label();
-		TextBox PriorityTextBox = new TextBox();
+		AMTTextBox PriorityTextBox = new AMTTextBox();
 		Label RegionLabel = new Label();
-		TextBox RegionTextBox = new TextBox();
+		AMTTextBox RegionTextBox = new AMTTextBox();
 		Label CellsLabel = new Label();
 		ListView CellsListView = new ListView();
 		ColumnHeader TechColumnHeader = new ColumnHeader();
@@ -48,7 +48,7 @@ namespace appCore.OssScripts.UI
 		RadioButton GsmRadioButton = new RadioButton();
 		RadioButton UmtsRadioButton = new RadioButton();
 		RadioButton LteRadioButton = new RadioButton();
-		TextBox SiteTextBox = new TextBox();
+		AMTTextBox SiteTextBox = new AMTTextBox();
 		CellDetailsPictureBox CellsSummaryPictureBox = new CellDetailsPictureBox();
 		
 //		DataView eScriptCellsGlobal = new DataView();
@@ -97,7 +97,7 @@ namespace appCore.OssScripts.UI
 //				                           	Stopwatch sw = new Stopwatch();
 //
 //				                           	sw.Start();
-				TextBox tb = (TextBox)sender;
+				AMTTextBox tb = (AMTTextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
 				currentSite = Finder.getSite(tb.Text);
@@ -165,7 +165,7 @@ namespace appCore.OssScripts.UI
 							}
 						}
 						break;
-					case "System.Windows.Forms.TextBox":
+					case "appCore.UI.AMTTextBox":
 						TextBoxBase tb = ctrl as TextBoxBase;
 						if(tb.Name != "SiteTextBox")
 							tb.Enabled = toggle;

@@ -32,11 +32,11 @@ namespace appCore.Web.UI
 		private System.Windows.Forms.CheckBox checkBox4;
 		private System.Windows.Forms.CheckBox checkBox3;
 		private System.Windows.Forms.CheckBox checkBox2;
-		private System.Windows.Forms.TextBox textBox1;
+		private appCore.UI.AMTTextBox textBox1;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBox2;
+		private appCore.UI.AMTTextBox textBox2;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox textBox3;
+		private appCore.UI.AMTTextBox textBox3;
 		private System.Windows.Forms.Label label3;
 		
 		/// <summary>
@@ -62,15 +62,15 @@ namespace appCore.Web.UI
 		{
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.textBox1 = new appCore.UI.AMTTextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.webBrowser1 = new System.Windows.Forms.WebBrowser();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.textBox2 = new System.Windows.Forms.TextBox();
+			this.textBox2 = new appCore.UI.AMTTextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.webBrowser2 = new appCore.UI.AMTBrowser();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.textBox3 = new System.Windows.Forms.TextBox();
+			this.textBox3 = new appCore.UI.AMTTextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.webBrowser3 = new appCore.UI.AMTBrowser();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();

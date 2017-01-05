@@ -1289,6 +1289,7 @@
     <Compile Include="UI\AMTRoundCornersPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\AMTTextBox.cs" />
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\GlacialList13\BorderStrip.cs" />

@@ -21,12 +21,11 @@ namespace appCore
 		private appCore.UI.AMTRichTextBox textBox11;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.TextBox textBox15;
-		private System.Windows.Forms.TextBox textBox14;
+		private appCore.UI.AMTTextBox textBox14;
 		private appCore.UI.AMTRichTextBox textBox12;
 		private System.Windows.Forms.Label label20;
 		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.TextBox textBox13;
+		private appCore.UI.AMTTextBox textBox13;
 		private System.Windows.Forms.Label label18;
 		private System.Windows.Forms.TabPage tabPage5;
 		private System.Windows.Forms.TabPage tabPage4;
@@ -71,6 +70,7 @@ namespace appCore
 		private System.Windows.Forms.PictureBox pictureBox6;
 		private System.Windows.Forms.TabPage tabPage17;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.ComboBox comboBox1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -97,11 +97,11 @@ namespace appCore
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.pictureBox6 = new System.Windows.Forms.PictureBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
-			this.pictureBox2 = new System.Windows.Forms.PictureBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
@@ -115,14 +115,14 @@ namespace appCore
 			this.tabPage11 = new System.Windows.Forms.TabPage();
 			this.tabPage14 = new System.Windows.Forms.TabPage();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.label31 = new System.Windows.Forms.Label();
 			this.label30 = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
-			this.textBox14 = new System.Windows.Forms.TextBox();
-			this.textBox15 = new System.Windows.Forms.TextBox();
+			this.textBox14 = new appCore.UI.AMTTextBox();
 			this.label18 = new System.Windows.Forms.Label();
-			this.textBox13 = new System.Windows.Forms.TextBox();
+			this.textBox13 = new appCore.UI.AMTTextBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.button46 = new System.Windows.Forms.Button();
 			this.button25 = new System.Windows.Forms.Button();
@@ -153,11 +153,11 @@ namespace appCore
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.panel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.tabPage2.SuspendLayout();
 			this.tabControl2.SuspendLayout();
 			this.tabPage7.SuspendLayout();
@@ -214,6 +214,21 @@ namespace appCore
 			this.panel1.Size = new System.Drawing.Size(98, 138);
 			this.panel1.TabIndex = 10;
 			// 
+			// pictureBox2
+			// 
+			this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox2.Image = global::appCore.UI.Resources.globe;
+			this.pictureBox2.Location = new System.Drawing.Point(6, 3);
+			this.pictureBox2.Name = "pictureBox2";
+			this.pictureBox2.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox2.TabIndex = 3;
+			this.pictureBox2.TabStop = false;
+			this.pictureBox2.Click += new System.EventHandler(this.PictureBoxesClick);
+			this.pictureBox2.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+			this.pictureBox2.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
+			// 
 			// pictureBox6
 			// 
 			this.pictureBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -229,6 +244,21 @@ namespace appCore
 			this.pictureBox6.Click += new System.EventHandler(this.PictureBoxesClick);
 			this.pictureBox6.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
 			this.pictureBox6.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+			this.pictureBox1.Image = global::appCore.UI.Resources.Settings_normal;
+			this.pictureBox1.Location = new System.Drawing.Point(6, 95);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(40, 40);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox1.TabIndex = 1;
+			this.pictureBox1.TabStop = false;
+			this.pictureBox1.Click += new System.EventHandler(this.PictureBoxesClick);
+			this.pictureBox1.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+			this.pictureBox1.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
 			// 
 			// pictureBox4
 			// 
@@ -256,36 +286,6 @@ namespace appCore
 			this.pictureBox3.TabStop = false;
 			this.pictureBox3.Click += new System.EventHandler(this.PictureBoxesClick);
 			this.pictureBox3.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
-			// 
-			// pictureBox2
-			// 
-			this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox2.Image = global::appCore.UI.Resources.globe;
-			this.pictureBox2.Location = new System.Drawing.Point(6, 3);
-			this.pictureBox2.Name = "pictureBox2";
-			this.pictureBox2.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox2.TabIndex = 3;
-			this.pictureBox2.TabStop = false;
-			this.pictureBox2.Click += new System.EventHandler(this.PictureBoxesClick);
-			this.pictureBox2.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
-			this.pictureBox2.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-			this.pictureBox1.Image = global::appCore.UI.Resources.Settings_normal;
-			this.pictureBox1.Location = new System.Drawing.Point(6, 95);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(40, 40);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox1.TabIndex = 1;
-			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Click += new System.EventHandler(this.PictureBoxesClick);
-			this.pictureBox1.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
-			this.pictureBox1.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
 			// 
 			// tabPage2
 			// 
@@ -418,12 +418,12 @@ namespace appCore
 			// tabPage3
 			// 
 			this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage3.Controls.Add(this.comboBox1);
 			this.tabPage3.Controls.Add(this.label31);
 			this.tabPage3.Controls.Add(this.label30);
 			this.tabPage3.Controls.Add(this.label19);
 			this.tabPage3.Controls.Add(this.label20);
 			this.tabPage3.Controls.Add(this.textBox14);
-			this.tabPage3.Controls.Add(this.textBox15);
 			this.tabPage3.Controls.Add(this.label18);
 			this.tabPage3.Controls.Add(this.textBox13);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -432,16 +432,26 @@ namespace appCore
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Closure Code";
 			// 
+			// comboBox1
+			// 
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(87, 32);
+			this.comboBox1.MaxLength = 3;
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(76, 21);
+			this.comboBox1.TabIndex = 38;
+			this.comboBox1.TextChanged += new System.EventHandler(this.ComboBox1TextChanged);
+			// 
 			// label31
 			// 
 			this.label31.AutoSize = true;
 			this.label31.BackColor = System.Drawing.Color.Transparent;
 			this.label31.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.label31.Location = new System.Drawing.Point(146, 36);
+			this.label31.Location = new System.Drawing.Point(180, 37);
 			this.label31.Name = "label31";
-			this.label31.Size = new System.Drawing.Size(183, 13);
+			this.label31.Size = new System.Drawing.Size(193, 13);
 			this.label31.TabIndex = 37;
-			this.label31.Text = "Insert your initials to get Closure Code";
+			this.label31.Text = "Choose your initials to get Closure Code";
 			this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// label30
@@ -483,16 +493,6 @@ namespace appCore
 			this.textBox14.ReadOnly = true;
 			this.textBox14.Size = new System.Drawing.Size(76, 20);
 			this.textBox14.TabIndex = 3;
-			// 
-			// textBox15
-			// 
-			this.textBox15.Font = new System.Drawing.Font("Courier New", 8.25F);
-			this.textBox15.Location = new System.Drawing.Point(87, 33);
-			this.textBox15.MaxLength = 3;
-			this.textBox15.Name = "textBox15";
-			this.textBox15.Size = new System.Drawing.Size(44, 20);
-			this.textBox15.TabIndex = 2;
-			this.textBox15.TextChanged += new System.EventHandler(this.TextBox15TextChanged);
 			// 
 			// label18
 			// 
@@ -820,11 +820,11 @@ namespace appCore
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.tabPage2.ResumeLayout(false);
 			this.tabControl2.ResumeLayout(false);
 			this.tabPage7.ResumeLayout(false);

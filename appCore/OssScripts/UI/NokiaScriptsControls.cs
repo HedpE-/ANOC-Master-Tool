@@ -31,16 +31,16 @@ namespace appCore.OssScripts.UI
 		CheckBox BtsCheckBox8 = new CheckBox();
 		CheckBox BtsCheckBox9 = new CheckBox();
 		CheckBox BtsCheckBox10 = new CheckBox();
-		TextBox BtsTextBox1 = new TextBox();
-		TextBox BtsTextBox2 = new TextBox();
-		TextBox BtsTextBox3 = new TextBox();
-		TextBox BtsTextBox4 = new TextBox();
-		TextBox BtsTextBox5 = new TextBox();
-		TextBox BtsTextBox6 = new TextBox();
-		TextBox BtsTextBox7 = new TextBox();
-		TextBox BtsTextBox8 = new TextBox();
-		TextBox BtsTextBox9 = new TextBox();
-		TextBox BtsTextBox10 = new TextBox();
+		AMTTextBox BtsTextBox1 = new AMTTextBox();
+		AMTTextBox BtsTextBox2 = new AMTTextBox();
+		AMTTextBox BtsTextBox3 = new AMTTextBox();
+		AMTTextBox BtsTextBox4 = new AMTTextBox();
+		AMTTextBox BtsTextBox5 = new AMTTextBox();
+		AMTTextBox BtsTextBox6 = new AMTTextBox();
+		AMTTextBox BtsTextBox7 = new AMTTextBox();
+		AMTTextBox BtsTextBox8 = new AMTTextBox();
+		AMTTextBox BtsTextBox9 = new AMTTextBox();
+		AMTTextBox BtsTextBox10 = new AMTTextBox();
 		Button dChannelsLargeTextButton = new Button();
 		Button UnlockScriptLargeTextButton = new Button();
 		Button LockScriptLargeTextButton = new Button();
@@ -51,8 +51,8 @@ namespace appCore.OssScripts.UI
 		Label LockScriptLabel = new Label();
 		Label BtsDChannelsCommandLabel = new Label();
 		Label BcfPcmLabel = new Label();
-		TextBox BtsDChannelsCommandTextBox = new TextBox();
-		TextBox BcfPcmTextBox = new TextBox();
+		AMTTextBox BtsDChannelsCommandTextBox = new AMTTextBox();
+		AMTTextBox BcfPcmTextBox = new AMTTextBox();
 		RadioButton BcfRadioButton = new RadioButton();
 		RadioButton PcmRadioButton = new RadioButton();
 		
@@ -114,7 +114,7 @@ namespace appCore.OssScripts.UI
 						CheckBox cb = control as CheckBox;
 						if(cb != null) {
 							if(cb.Checked) {
-								TextBox tb = (TextBox)BtsDChannelsGroupBox.Controls["BtsTextBox" + cb.Name.Substring("BtsCheckBox".Length)];
+								AMTTextBox tb = (AMTTextBox)BtsDChannelsGroupBox.Controls["BtsTextBox" + cb.Name.Substring("BtsCheckBox".Length)];
 								LockScriptTextBox.Text += "ZEQS:BTS=" + tb.Text + ":L:FHO,30;\r\n";
 								UnlockScriptTextBox.Text += "ZEQS:BTS=" + tb.Text + ":U;\r\n";
 							}

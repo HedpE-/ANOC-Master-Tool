@@ -27,8 +27,8 @@ namespace appCore.Templates.UI
 		public CheckBox FEBookedIn_CalledANOCCheckBox = new CheckBox();
 		Label FEBookedIn_PhoneNumberLabel = new Label();
 		Label FEBookedIn_NameLabel = new Label();
-		public TextBox FEBookedIn_PhoneNumberTextBox = new TextBox();
-		public TextBox FEBookedIn_NameTextBox = new TextBox();
+		public AMTTextBox FEBookedIn_PhoneNumberTextBox = new AMTTextBox();
+		public AMTTextBox FEBookedIn_NameTextBox = new AMTTextBox();
 		
 		Label CRQContactsLabel = new Label();
 		public Button CRQContactsLargeTextButton = new Button();
@@ -39,17 +39,17 @@ namespace appCore.Templates.UI
 		public DateTimePicker ContractorToFixFault_WillReturnDateTimePicker = new DateTimePicker();
 		Label ContractorToFixFault_PhoneNumberLabel = new Label();
 		Label ContractorToFixFault_NameLabel = new Label();
-		public TextBox ContractorToFixFault_PhoneNumberTextBox = new TextBox();
-		public TextBox ContractorToFixFault_NameTextBox = new TextBox();
+		public AMTTextBox ContractorToFixFault_PhoneNumberTextBox = new AMTTextBox();
+		public AMTTextBox ContractorToFixFault_NameTextBox = new AMTTextBox();
 		
 		public Button TroubleshootingDoneLargeTextButton = new Button();
 		public Button ObservationsLargeTextButton = new Button();
 		public Button WorkPerformedByFELargeTextButton = new Button();
-		public TextBox INCTextBox = new TextBox();
-		public TextBox CRQTextBox = new TextBox();
-		public TextBox SiteIdTextBox = new TextBox();
-		TextBox PriorityTextBox = new TextBox();
-		TextBox RegionTextBox = new TextBox();
+		public AMTTextBox INCTextBox = new AMTTextBox();
+		public AMTTextBox CRQTextBox = new AMTTextBox();
+		public AMTTextBox SiteIdTextBox = new AMTTextBox();
+		AMTTextBox PriorityTextBox = new AMTTextBox();
+		AMTTextBox RegionTextBox = new AMTTextBox();
 		public AMTRichTextBox WorkPerformedByFETextBox = new AMTRichTextBox();
 		public AMTRichTextBox TroubleshootingDoneTextBox = new AMTRichTextBox();
 		public AMTRichTextBox ObservationsTextBox = new AMTRichTextBox();
@@ -360,7 +360,7 @@ namespace appCore.Templates.UI
 						if(btn.Text.Contains("Generate") || btn.Text == "Clear")
 							btn.Enabled = toggle;
 						break;
-					case "appCore.UI.AMTRichTextBox": case "System.Windows.Forms.TextBox":
+					case "appCore.UI.AMTRichTextBox": case "appCore.UI.AMTTextBox":
 						TextBoxBase tb = ctrl as TextBoxBase;
 						if(tb.Name != "SiteIdTextBox" && tb.Name != "RegionTextBox" && tb.Name != "PriorityTextBox")
 							tb.Enabled = toggle;
@@ -374,7 +374,7 @@ namespace appCore.Templates.UI
 						foreach(Control ctr in grb.Controls) {
 							switch(ctr.GetType().ToString())
 							{
-								case "System.Windows.Forms.TextBox":
+								case "appCore.UI.AMTTextBox":
 									TextBoxBase txb = ctr as TextBoxBase;
 									txb.Enabled = toggle;
 									break;

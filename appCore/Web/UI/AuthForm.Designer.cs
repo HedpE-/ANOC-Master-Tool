@@ -16,8 +16,8 @@ namespace appCore.Web.UI
 		private System.ComponentModel.IContainer components = null;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
+		private appCore.UI.AMTTextBox textBox1;
+		private appCore.UI.AMTTextBox textBox2;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Label label3;
@@ -45,8 +45,8 @@ namespace appCore.Web.UI
 		{
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.textBox2 = new System.Windows.Forms.TextBox();
+			this.textBox1 = new appCore.UI.AMTTextBox();
+			this.textBox2 = new appCore.UI.AMTTextBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();

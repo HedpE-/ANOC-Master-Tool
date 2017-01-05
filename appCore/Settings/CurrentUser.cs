@@ -11,83 +11,93 @@ using System.DirectoryServices.AccountManagement;
 
 namespace appCore.Settings
 {
-    /// <summary>
-    /// Description of CurrentUser.
-    /// </summary>
-    public static class CurrentUser
-    {
-        public static bool hasOICredentials
-        {
-            get;
-            private set;
-        }
-        public static string userName
-        {
-            get;
-            private set;
-        }
-        public static string[] fullName
-        {
-            get;
-            private set;
-        }
-        public static string department
-        {
-            get;
-            private set;
-        }
-        public static string networkDomain
-        {
-        	get { return GetUserDetails("NetworkDomain"); }
-        	private set { }
-        }
+	/// <summary>
+	/// Description of CurrentUser.
+	/// </summary>
+	public static class CurrentUser
+	{
+		public static bool hasOICredentials
+		{
+			get;
+			private set;
+		}
+		public static string userName
+		{
+			get;
+			private set;
+		}
+		public static string[] fullName
+		{
+			get;
+			private set;
+		}
+		public static string department
+		{
+			get;
+			private set;
+		}
+		public static string networkDomain
+		{
+			get { return GetUserDetails("NetworkDomain"); }
+			private set { }
+		}
+		public static string ClosureCode {
+			get {
+				System.Data.DataRow temp = DB.Databases.shiftsFile.ShiftLeaders.Find(s => s["Column3"].Equals(fullName[1] + " " + fullName[0]));
+				if(temp != null)
+					return temp[0].ToString();
+				temp = DB.Databases.shiftsFile.Agents.Find(s => s["Column3"].Equals(fullName[1] + " " + fullName[0]));
+				return temp != null ? temp[0].ToString() : null;				
+			}
+			private set { }
+		}
 
-        public static void InitializeUserProperties()
-        {
-            userName = GetUserDetails("Username");
-            fullName = GetUserDetails("Name").Split(' ');
-            for (int c = 0; c < fullName.Length; c++)
-                fullName[c] = fullName[c].Replace(",", string.Empty);
-            department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
-            UserFolder.ResolveUserFolder();
-            SettingsFile.ResolveSettingsFile();
-            hasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
-            UserFolder.Initialize();
-        }
+		public static void InitializeUserProperties()
+		{
+			userName = GetUserDetails("Username");
+			fullName = GetUserDetails("Name").Split(' ');
+			for (int c = 0; c < fullName.Length; c++)
+				fullName[c] = fullName[c].Replace(",", string.Empty);
+			department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
+			UserFolder.ResolveUserFolder();
+			SettingsFile.ResolveSettingsFile();
+			hasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
+			UserFolder.Initialize();
+		}
 
-        /// <summary>
-        /// Valid queries: "Name", "Username", "Department" or "NetworkDomain"
-        /// </summary>
-        public static string GetUserDetails(string detail)
-        {
-            UserPrincipal current = UserPrincipal.Current;
-            if (detail != null)
-            {
-                switch (detail)
-                {
-                    case "Name":
-                        if (current.SamAccountName.Contains("Caramelos"))
-                            return "Gonçalves, Rui";
-                        if (current.SamAccountName.Contains("Hugo Gonçalves"))
-                            return "Gonçalves, Hugo";
-                        return current.DisplayName;
-                    case "Username":
-                        return current.SamAccountName;
-                    case "Department":
-                        if (current.SamAccountName.Contains("Caramelos"))
-                            return "1st Line RAN";
-                        else
-                        {
-                            DirectoryEntry underlyingObject = current.GetUnderlyingObject() as DirectoryEntry;
-                            if (underlyingObject.Properties.Contains("department"))
-                                return underlyingObject.Properties["department"].Value.ToString();
-                        }
-                        break;
-                    case "NetworkDomain":
-                        return System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
-                }
-            }
-            return string.Empty;
-        }
-    }
+		/// <summary>
+		/// Valid queries: "Name", "Username", "Department" or "NetworkDomain"
+		/// </summary>
+		public static string GetUserDetails(string detail)
+		{
+			UserPrincipal current = UserPrincipal.Current;
+			if (detail != null)
+			{
+				switch (detail)
+				{
+					case "Name":
+						if (current.SamAccountName.Contains("Caramelos"))
+							return "Gonçalves, Rui";
+						if (current.SamAccountName.Contains("Hugo Gonçalves"))
+							return "Gonçalves, Hugo";
+						return current.DisplayName;
+					case "Username":
+						return current.SamAccountName;
+					case "Department":
+						if (current.SamAccountName.Contains("Caramelos"))
+							return "1st Line RAN";
+						else
+						{
+							DirectoryEntry underlyingObject = current.GetUnderlyingObject() as DirectoryEntry;
+							if (underlyingObject.Properties.Contains("department"))
+								return underlyingObject.Properties["department"].Value.ToString();
+						}
+						break;
+					case "NetworkDomain":
+						return System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
+				}
+			}
+			return string.Empty;
+		}
+	}
 }

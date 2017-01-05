@@ -12,6 +12,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -27,9 +28,8 @@ namespace appCore.Shifts
 			
 			List<DataRow> SL = new List<DataRow>();
 			List<DataRow> Agents = new List<DataRow>();
-			FieldInfo _rowID;
 			foreach(DataRow dr in sameShiftRows) {
-				_rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
+				FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
 				int rowID = (int)Convert.ToInt64(_rowID.GetValue(dr));
 				if(rowID > 3 && rowID < 12)
 					SL.Add(dr);

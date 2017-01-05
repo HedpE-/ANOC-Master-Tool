@@ -36,13 +36,13 @@ namespace appCore.Templates.UI
 		public CheckBox OtherSitesImpactedCheckBox = new CheckBox();
 		public CheckBox FullSiteOutageCheckBox = new CheckBox();
 		public ComboBox SiteOwnerComboBox = new ComboBox();
-		public TextBox CCTRefTextBox = new TextBox();
-		public TextBox TefSiteTextBox = new TextBox();
-		public TextBox SiteIdTextBox = new TextBox();
-		public TextBox INCTextBox = new TextBox();
-		public TextBox RelatedINC_CRQTextBox = new TextBox();
-		public TextBox PowerCompanyTextBox = new TextBox();
-		public TextBox RegionTextBox = new TextBox();
+		public AMTTextBox CCTRefTextBox = new AMTTextBox();
+		public AMTTextBox TefSiteTextBox = new AMTTextBox();
+		public AMTTextBox SiteIdTextBox = new AMTTextBox();
+		public AMTTextBox INCTextBox = new AMTTextBox();
+		public AMTTextBox RelatedINC_CRQTextBox = new AMTTextBox();
+		public AMTTextBox PowerCompanyTextBox = new AMTTextBox();
+		public AMTTextBox RegionTextBox = new AMTTextBox();
 		public AMTRichTextBox AddressTextBox = new AMTRichTextBox();
 		public AMTRichTextBox ActiveAlarmsTextBox = new AMTRichTextBox();
 		public AMTRichTextBox AlarmHistoryTextBox = new AMTRichTextBox();
@@ -219,7 +219,7 @@ namespace appCore.Templates.UI
 						if(btn.Text == "MTX")
 							btn.Enabled = toggle;
 						break;
-					case "appCore.UI.AMTRichTextBox": case "System.Windows.Forms.TextBox":
+					case "appCore.UI.AMTRichTextBox": case "appCore.UI.AMTTextBox":
 						TextBoxBase tb = ctrl as TextBoxBase;
 						if(tb.Name != "SiteIdTextBox" && tb.Name != "PowerCompanyTextBox" && tb.Name != "RegionTextBox")
 							tb.Enabled = toggle;

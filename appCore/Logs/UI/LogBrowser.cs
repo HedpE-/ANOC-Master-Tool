@@ -15,10 +15,10 @@ using appCore.UI;
 
 namespace appCore.Logs.UI
 {
-    /// <summary>
-    /// Description of LogBrowser.
-    /// </summary>
-    public partial class LogBrowser : Form
+	/// <summary>
+	/// Description of LogBrowser.
+	/// </summary>
+	public partial class LogBrowser : Form
 	{
 		public string chkrb;
 		MainForm myFormControl1;
@@ -145,54 +145,60 @@ namespace appCore.Logs.UI
 		
 		void ListBox3DoubleClick(object sender, EventArgs e)
 		{
+//			Action actionNonThreaded = null;
 			Action actionThreaded = new Action(delegate {
-			                           	if (listBox3.SelectedIndex != -1) {
-			                           		string LogFile;
-			                           		if (chkrb == "Templates") {
-			                           			string separator = string.Empty;
-			                           			for (int c = 1; c < 301; c++) {
-			                           				if (c == 151) separator += "\r\n";
-			                           				separator += "*";
-			                           			}
-			                           			LogFile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\" + listBox3.Text + ".txt";
-			                           			string[] strTofind = { "\r\n" };
-			                           			string[] Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                           			
-			                           			if (Logs[0].Contains(" - ")) {
-			                           				LogsCollection<Templates.Template> logs = new LogsCollection<Templates.Template>();
-			                           				logs = logs.ImportLogFile(new FileInfo(LogFile));
-			                           				LogEditor2 LogEdit = new LogEditor2(logs, "Templates", myFormControl1);
-			                           				LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                           				LogEdit.ShowDialog(this);
-			                           			}
-			                           			else {
-			                           				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-			                           				if (ans == DialogResult.No)	return;
-			                           				System.Diagnostics.Process.Start("notepad.exe", LogFile);
-			                           			}
-			                           		}
-			                           		else if (chkrb == "Outages") {
-			                           			string separator = string.Empty;
-			                           			for (int i = 1; i < 301; i++) {
-			                           				if (i == 151) separator = separator + Environment.NewLine;
-			                           				separator = separator + "*";
-			                           			}
-			                           			
-			                           			LogFile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages\\" + listBox3.Text + ".txt";
-			                           			
-			                           			string[] strTofind = { separator + "\r\n" };
-			                           			string[] Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                           			
-			                           			LogEditor LogEdit = new LogEditor(LogFile, "Outages", WindowTitle(),myFormControl1);
-			                           			LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                           			LogEdit.ShowDialog();
-			                           		}
-			                           		else
-			                           			if(chkrb == "Updates") {}
-			                           	}
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.Show(actionThreaded, null, false, this);
+			                                   	if (listBox3.SelectedIndex != -1) {
+			                                   		string LogFile;
+			                                   		if (chkrb == "Templates") {
+			                                   			string separator = string.Empty;
+			                                   			for (int c = 1; c < 301; c++) {
+			                                   				if (c == 151) separator += "\r\n";
+			                                   				separator += "*";
+			                                   			}
+			                                   			LogFile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\" + listBox3.Text + ".txt";
+			                                   			string[] strTofind = { "\r\n" };
+			                                   			string[] Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			                                   			
+			                                   			if (Logs[0].Contains(" - ")) {
+			                                   				LogsCollection<Templates.Template> logs = new LogsCollection<Templates.Template>();
+//			                                   				actionNonThreaded = delegate {
+			                                   					logs = logs.ImportLogFile(new FileInfo(LogFile));
+			                                   					LogEditor2 LogEdit = new LogEditor2(logs, "Templates", myFormControl1);
+			                                   					LogEdit.StartPosition = FormStartPosition.CenterParent;
+			                                   					LogEdit.ShowDialog(this);
+//			                                   				};
+			                                   			}
+			                                   			else {
+			                                   				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+			                                   				if (ans == DialogResult.No)	return;
+			                                   				System.Diagnostics.Process.Start("notepad.exe", LogFile);
+			                                   			}
+			                                   		}
+			                                   		else if (chkrb == "Outages") {
+			                                   			string separator = string.Empty;
+			                                   			for (int i = 1; i < 301; i++) {
+			                                   				if (i == 151) separator = separator + Environment.NewLine;
+			                                   				separator = separator + "*";
+			                                   			}
+			                                   			
+			                                   			LogFile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages\\" + listBox3.Text + ".txt";
+			                                   			
+			                                   			string[] strTofind = { separator + "\r\n" };
+			                                   			string[] Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			                                   			
+//			                                   			actionNonThreaded = delegate {
+			                                   				LogEditor LogEdit = new LogEditor(LogFile, "Outages", WindowTitle(),myFormControl1);
+			                                   				LogEdit.StartPosition = FormStartPosition.CenterParent;
+			                                   				LogEdit.ShowDialog();
+//			                                   			};
+			                                   		}
+			                                   		else
+			                                   			if(chkrb == "Updates") {}
+			                                   	}
+			                                   });
+			Toolbox.Tools.darkenBackgroundForm(actionThreaded, false, this);
+//			LoadingPanel load = new LoadingPanel();
+//			load.Show(actionThreaded, actionNonThreaded, false, this);
 		}
 		
 		void ListBox3KeyPress(object sender, KeyPressEventArgs e)

@@ -14,7 +14,7 @@ namespace appCore.Settings.UI
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-		private System.Windows.Forms.TextBox textBox1;
+		private appCore.UI.AMTTextBox textBox1;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button button2;
@@ -55,7 +55,7 @@ namespace appCore.Settings.UI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.textBox1 = new appCore.UI.AMTTextBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.button2 = new System.Windows.Forms.Button();
@@ -80,19 +80,19 @@ namespace appCore.Settings.UI
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.button7 = new System.Windows.Forms.Button();
 			this.comboBox3 = new System.Windows.Forms.ComboBox();
-			this.textBox4 = new System.Windows.Forms.TextBox();
+			this.textBox4 = new appCore.UI.AMTTextBox();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
-			this.textBox5 = new System.Windows.Forms.TextBox();
+			this.textBox5 = new appCore.UI.AMTTextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.button6 = new System.Windows.Forms.Button();
 			this.comboBox2 = new System.Windows.Forms.ComboBox();
-			this.textBox3 = new System.Windows.Forms.TextBox();
+			this.textBox3 = new appCore.UI.AMTTextBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
-			this.textBox2 = new System.Windows.Forms.TextBox();
+			this.textBox2 = new appCore.UI.AMTTextBox();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -589,11 +589,11 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private appCore.UI.AMTTextBox textBox3;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox textBox2;
+        private appCore.UI.AMTTextBox textBox2;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Username;
@@ -601,10 +601,10 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.TextBox textBox4;
+        private appCore.UI.AMTTextBox textBox4;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox textBox5;
+        private appCore.UI.AMTTextBox textBox5;
     }
 }

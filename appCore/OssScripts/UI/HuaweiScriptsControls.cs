@@ -32,8 +32,8 @@ namespace appCore.OssScripts.UI
 		Button UnlockScriptLargeTextButton = new Button();
 		Button LockScriptLargeTextButton = new Button();
 		Button CellsListLargeTextButton = new Button();
-		TextBox ListCellsTextBox = new TextBox();
-		TextBox SiteTextBox = new TextBox();
+		AMTTextBox ListCellsTextBox = new AMTTextBox();
+		AMTTextBox SiteTextBox = new AMTTextBox();
 		AMTRichTextBox CellsListTextBox = new AMTRichTextBox();
 		AMTRichTextBox LockScriptTextBox = new AMTRichTextBox();
 		AMTRichTextBox UnlockScriptTextBox = new AMTRichTextBox();

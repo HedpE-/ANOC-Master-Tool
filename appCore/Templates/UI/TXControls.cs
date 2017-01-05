@@ -31,7 +31,7 @@ namespace appCore.Templates.UI
 		public AMTRichTextBox SitesTextBox = new AMTRichTextBox();
 		public AMTRichTextBox DetailedRanTroubleshootTextBox = new AMTRichTextBox();
 		public AMTRichTextBox PerformanceOutageDetailsTextBox = new AMTRichTextBox();
-		public TextBox IpRanPortConfigTextBox = new TextBox();
+		public AMTTextBox IpRanPortConfigTextBox = new AMTTextBox();
 		public CheckBox Repeat_IntermittentCheckBox = new CheckBox();
 		public ComboBox ServiceAffectedComboBox = new ComboBox();
 		public ComboBox TxTypeComboBox = new ComboBox();

@@ -52,6 +52,22 @@ namespace appCore.UI
 		/// <param name="showLoading"></param>
 		/// <param name="parentControl"></param>
 		public void Show(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
+			darkenBackgroundForm(showLoading, parentControl);
+			
+			if(actionThreaded != null)
+				backgroundWorker.DoWork += delegate { actionThreaded(); };
+			
+			backgroundWorker.RunWorkerCompleted += delegate {
+				if(actionNonThreaded != null)
+					actionNonThreaded();
+				Parent.Controls.Remove(this);
+				this.Dispose();
+			};
+			
+			backgroundWorker.RunWorkerAsync();
+		}
+		
+		void darkenBackgroundForm(bool showLoading, Control parentControl) {
 			Form parentForm = getParentForm(parentControl);
 			parentForm.Controls.Add(this);
 			// take a screenshot of the form and darken it
@@ -83,18 +99,6 @@ namespace appCore.UI
 				Controls.Add(loadingBox);
 				loadingBox.BringToFront();
 			}
-			
-			if(actionThreaded != null)
-				backgroundWorker.DoWork += delegate { actionThreaded(); };
-			
-			backgroundWorker.RunWorkerCompleted += delegate {
-				if(actionNonThreaded != null)
-					actionNonThreaded();
-				Parent.Controls.Remove(this);
-				this.Dispose();
-			};
-			
-			backgroundWorker.RunWorkerAsync();
 		}
 		
 		Form getParentForm(Control control) {

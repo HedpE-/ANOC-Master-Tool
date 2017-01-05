@@ -32,11 +32,11 @@ namespace appCore.Templates.UI
 		Label RegionLabel = new Label();
 		Label PriorityLabel = new Label();
 		Label PowerCompanyLabel = new Label();
-		public TextBox SiteIdTextBox = new TextBox();
-		public TextBox INCTextBox = new TextBox();
-		public TextBox RegionTextBox = new TextBox();
-		public TextBox PriorityTextBox = new TextBox();
-		public TextBox PowerCompanyTextBox = new TextBox();
+		public AMTTextBox SiteIdTextBox = new AMTTextBox();
+		public AMTTextBox INCTextBox = new AMTTextBox();
+		public AMTTextBox RegionTextBox = new AMTTextBox();
+		public AMTTextBox PriorityTextBox = new AMTTextBox();
+		public AMTTextBox PowerCompanyTextBox = new AMTTextBox();
 		public AMTRichTextBox NextActionsTextBox = new AMTRichTextBox();
 		public AMTRichTextBox UpdateTextBox = new AMTRichTextBox();
 		
@@ -156,7 +156,7 @@ namespace appCore.Templates.UI
 							btn.Enabled = toggle;
 						}
 						break;
-					case "appCore.UI.AMTRichTextBox": case "System.Windows.Forms.TextBox":
+					case "appCore.UI.AMTRichTextBox": case "appCore.UI.AMTTextBox":
 						TextBoxBase tb = ctrl as TextBoxBase;
 						if(tb.Name != "SiteIdTextBox" && tb.Name != "PowerCompanyTextBox")
 							tb.Enabled = toggle;
