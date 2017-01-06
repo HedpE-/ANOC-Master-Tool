@@ -517,7 +517,7 @@ namespace appCore.Logs
 			switch(filter) {
 				case Template.Filters.Troubleshoot:
 					foreach(Template t in this.List) {
-						if(t.LogType == "Troubleshoot Template")
+						if(t.LogType == "Troubleshoot")
 							count++;
 					}
 					return count;
@@ -529,13 +529,13 @@ namespace appCore.Logs
 					return count;
 				case Template.Filters.TX:
 					foreach(Template t in this.List) {
-						if(t.LogType == "TX Template")
+						if(t.LogType == "TX")
 							count++;
 					}
 					return count;
 				case Template.Filters.Update:
 					foreach(Template t in this.List) {
-						if(t.LogType == "Update Template")
+						if(t.LogType == "Update")
 							count++;
 					}
 					return count;
@@ -547,7 +547,7 @@ namespace appCore.Logs
 					return count;
 				case Template.Filters.TicketCount:
 					foreach(Template t in this.List) {
-						if(t.LogType == "Troubleshoot Template" || t.LogType == "Failed CRQ" || t.LogType == "TX Template")
+						if(t.LogType == "Troubleshoot" || t.LogType == "Failed CRQ" || t.LogType == "TX")
 							count++;
 					}
 					return count;
