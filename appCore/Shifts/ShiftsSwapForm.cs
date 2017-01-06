@@ -33,7 +33,15 @@ namespace appCore.Shifts
 				comboBox2.Items.Add(row["Column3"]);
 			}
 			
-			dateTimePicker1.MinDate = dateTimePicker2.MinDate = dateTimePicker1.Value = dateTimePicker2.Value = DateTime.Now;
+			dateTimePicker1.MinDate =
+				dateTimePicker2.MinDate =
+				dateTimePicker3.MinDate =
+				dateTimePicker4.MinDate =
+				dateTimePicker1.Value =
+				dateTimePicker2.Value =
+				dateTimePicker3.Value =
+				dateTimePicker4.Value =
+				DateTime.Now;
 			
 			// Create the binding.
 			service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
@@ -96,9 +104,11 @@ namespace appCore.Shifts
 			
 			message.Subject = "Troca de turno";
 			string body = "Interessado: " + comboBox1.Text + Environment.NewLine +
-			                               "Troca com: " + comboBox2.Text + Environment.NewLine +
-			                               "Data início: " + dateTimePicker1.Value.ToString(dateTimePicker1.CustomFormat) + Environment.NewLine +
-			                               "Data fim: " + dateTimePicker2.Value.ToString(dateTimePicker2.CustomFormat);
+				"Data início: " + dateTimePicker1.Value.ToString(dateTimePicker1.CustomFormat) + Environment.NewLine +
+				"Data fim: " + dateTimePicker2.Value.ToString(dateTimePicker2.CustomFormat) + Environment.NewLine +
+				"Troca com: " + comboBox2.Text + Environment.NewLine +
+				"Data início: " + dateTimePicker3.Value.ToString(dateTimePicker3.CustomFormat) + Environment.NewLine +
+				"Data fim: " + dateTimePicker4.Value.ToString(dateTimePicker4.CustomFormat);
 			message.Body = new MessageBody(BodyType.Text, body);
 			message.ToRecipients.Add(approverContact.Mailbox);
 //			message.CcRecipients.Add(swapContact.Mailbox);
