@@ -126,7 +126,7 @@ namespace appCore.DB
 						    row["Column3"].ToString() != "External alarms" &&
 						    aRow["Column3"].ToString() != "Morning Telephone")
 
-							aRow.SetField(aCol, Tools.RemoveDiacritics(row["Column3"].ToString()).ToUpper());
+							aRow.SetField(aCol, row["Column3"].ToString().RemoveDiacritics().ToUpper());
 					}
 				}
 				if(!string.IsNullOrEmpty(aRow["Column3"].ToString()) &&

@@ -33,7 +33,7 @@ namespace appCore.Web.UI
 			
 			if(app == "OI") {
 				textBox1.Text = Settings.SettingsFile.OIUsername;
-				textBox2.Text = Toolbox.Tools.EncryptDecryptText("Dec",Settings.SettingsFile.OIPassword);
+				textBox2.Text = Settings.SettingsFile.OIPassword.DecryptText();
 				this.Text = "OI Login";
 			}
 		}
@@ -49,7 +49,7 @@ namespace appCore.Web.UI
 				//}
 				
 				Username = textBox1.Text;
-				Password = Toolbox.Tools.EncryptDecryptText("Enc",textBox2.Text);
+				Password = textBox2.Text.EncryptText();
 				
 				this.Close();
 			}

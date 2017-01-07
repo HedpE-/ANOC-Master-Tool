@@ -77,7 +77,7 @@ namespace appCore.SiteFinder
 
 		public static List<Cell> getCells(string site)
 		{
-			if(!Toolbox.Tools.IsAllDigits(site))
+			if(!site.IsAllDigits())
 				site = "00000";
 			
 			DataView dv = new DataView(Databases.cellDetailsTable);
@@ -94,7 +94,7 @@ namespace appCore.SiteFinder
 
 		public static Cell getCell(string cell)
 		{
-			if(!Toolbox.Tools.IsAllDigits(cell))
+			if(!cell.IsAllDigits())
 				cell = "00000";
 			
 			DataView dv = new DataView(Databases.cellDetailsTable);
@@ -106,7 +106,7 @@ namespace appCore.SiteFinder
 
 		static DataRowView findSite(string site)
 		{
-			if(!Toolbox.Tools.IsAllDigits(site))
+			if(!site.IsAllDigits())
 				site = "00000";
 			
 			DataView dv = new DataView(Databases.siteDetailsTable);
@@ -119,7 +119,7 @@ namespace appCore.SiteFinder
 
 		static DataView findCells(string site)
 		{
-			if(!Toolbox.Tools.IsAllDigits(site))
+			if(!site.IsAllDigits())
 				site = "00000";
 			
 			DataView dv = new DataView(Databases.cellDetailsTable);

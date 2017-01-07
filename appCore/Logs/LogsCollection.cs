@@ -127,7 +127,7 @@ namespace appCore.Logs
 					logfile = reader.ReadToEnd();
 			}
 			
-			int logsCount = Toolbox.Tools.CountStringOccurrences(logfile, logSeparator);
+			int logsCount = logfile.CountStringOccurrences(logSeparator);
 			if(logsCount != this.List.Count) {
 				this.List.Clear();
 				if(logsCount > 0)

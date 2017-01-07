@@ -24,13 +24,13 @@ namespace appCore.Shifts
 		public ShiftsSwapForm() {
 			InitializeComponent();
 			
-			foreach(DataRow row in DB.Databases.shiftsFile.ShiftLeaders) {
-				comboBox1.Items.Add(row["Column3"]);
-				comboBox2.Items.Add(row["Column3"]);
+			foreach(string str in DB.Databases.shiftsFile2.ShiftLeaders) {
+				comboBox1.Items.Add(str);
+				comboBox2.Items.Add(str);
 			}
-			foreach(DataRow row in DB.Databases.shiftsFile.Agents) {
-				comboBox1.Items.Add(row["Column3"]);
-				comboBox2.Items.Add(row["Column3"]);
+			foreach(string str in DB.Databases.shiftsFile2.Agents) {
+				comboBox1.Items.Add(str);
+				comboBox2.Items.Add(str);
 			}
 			
 			dateTimePicker1.MinDate =

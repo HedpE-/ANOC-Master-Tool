@@ -31,7 +31,7 @@ namespace appCore.Logs.UI
 				strTofind = strTofind + "*";
 			}
 			
-			return Toolbox.Tools.CountStringOccurrences(File.ReadAllText(logfile), strTofind).ToString();
+			return File.ReadAllText(logfile).CountStringOccurrences(strTofind).ToString();
 		}
 		
 		public string WindowTitle()

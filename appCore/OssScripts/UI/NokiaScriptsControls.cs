@@ -221,7 +221,7 @@ namespace appCore.OssScripts.UI
 		void BcfPcmTextBoxTextChanged(object sender, EventArgs e)
 		{
 			if (!string.IsNullOrEmpty(BcfPcmTextBox.Text)) {
-				if (!Tools.IsAllDigits(BcfPcmTextBox.Text)) {
+				if (!BcfPcmTextBox.Text.IsAllDigits()) {
 //					Action action = new Action(delegate {
 					FlexibleMessageBox.Show("BCF can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 //					                           });
@@ -288,7 +288,7 @@ namespace appCore.OssScripts.UI
 		{
 			TextBoxBase tb = sender as TextBoxBase;
 			if (!string.IsNullOrEmpty(tb.Text)) {
-				if (!Tools.IsAllDigits(tb.Text)) {
+				if (!tb.Text.IsAllDigits()) {
 //					Action action = new Action(delegate {
 					FlexibleMessageBox.Show("BTS can only contain numbers!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 //					                           });

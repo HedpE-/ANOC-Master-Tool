@@ -657,7 +657,7 @@ namespace appCore.SiteFinder.UI
 				if(listView2.SelectedItems.Count > 0) {
 					string site = listView2.SelectedItems[0].SubItems[0].Text;
 					
-					if(!Toolbox.Tools.IsAllDigits(site))
+					if(!site.IsAllDigits())
 						site = "00000";
 					
 					DataView dv = new DataView(foundSites);

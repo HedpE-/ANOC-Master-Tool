@@ -67,7 +67,7 @@ namespace appCore.Web
 				"/sso/index.php?url=%2F";
 			IRestRequest request = new RestRequest(restRequest, Method.POST);
 			request.AddParameter("username", OIUsername);
-			request.AddParameter("password", Toolbox.Tools.EncryptDecryptText("Dec", OIPassword));
+			request.AddParameter("password", OIPassword.DecryptText());
 			request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 			
 			IRestResponse response = client.Execute(request);
