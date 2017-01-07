@@ -1,28 +1,27 @@
-namespace appCore.Toolbox
-{
-	using System;
-	using System.Collections.Generic;
-	using System.Data;
-	using System.Diagnostics;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 //	using System.DirectoryServices;
 //	using System.DirectoryServices.AccountManagement;
-	using System.Drawing;
-	using System.Drawing.Drawing2D;
-	using System.Globalization;
-	using System.IO;
-	using System.Linq;
-	using System.Reflection;
-	using System.Security.Cryptography;
-	using System.Text;
-	using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows.Forms;
 //	using Excel;
 //	using msExcel = Microsoft.Office.Interop.Excel;
-	using Outlook = Microsoft.Office.Interop.Outlook;
-	using appCore.UI;
-	using appCore.Settings;
-	using appCore.DB;
-	using HtmlAgilityPack;
-	
+using Outlook = Microsoft.Office.Interop.Outlook;
+using appCore.UI;
+using appCore.Settings;
+using HtmlAgilityPack;
+
+namespace appCore.Toolbox
+{
 	public static class Tools
 	{
 		public enum Months : byte {
@@ -152,7 +151,7 @@ namespace appCore.Toolbox
 				return num;
 			
 			num = num.Replace(prefix, string.Empty);
-			if (!IsAllDigits(num))
+			if (!num.IsAllDigits())
 				return "error";
 			
 			if (num.Length < 13) {
@@ -208,41 +207,6 @@ namespace appCore.Toolbox
 				if(showLoading)
 					Loading.CloseLoadingForm();
 			} // panel will be disposed and the form will "lighten" again...
-		}
-		
-		/// <summary>
-		/// Valid action values: "Enc","Dec"
-		/// </summary>
-		public static string EncryptDecryptText(string action, string text)
-		{
-			if(!string.IsNullOrEmpty(text)) {
-				string str = string.Empty;
-				switch(action) {
-					case "Enc":
-						foreach (char ch in text)
-							str += Convert.ToInt32(ch).ToString("x");
-						text = str;
-						break;
-					case "Dec":
-						text = text.Replace(" ", "");
-						byte[] bytes = new byte[text.Length / 2];
-						for (int i = 0; i < bytes.Length; i++)
-							bytes[i] = Convert.ToByte(text.Substring(i * 2, 2), 0x10);
-						
-						text = Encoding.ASCII.GetString(bytes);
-						break;
-				}
-			}
-			return text;
-		}
-		
-		public static bool IsAllDigits(string s)
-		{
-			foreach (char ch in s)
-				if (!char.IsDigit(ch))
-					return false;
-			
-			return true;
 		}
 		
 //		static string ReadSignature()
@@ -326,55 +290,6 @@ namespace appCore.Toolbox
 //			}
 //			return new string(array, 0, arrayIndex);
 //		}
-		
-		public static void EmbeddedAssembliesInit()
-		{
-			// http://www.codeproject.com/Articles/528178/Load-DLL-From-Embedded-Resource
-			
-			EmbeddedAssembly.Load("appCore.GMap.NET.Lib.GMap.NET.Core.dll", "GMap.NET.Core.dll");
-			EmbeddedAssembly.Load("appCore.GMap.NET.Lib.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.Transitions.dll", "Transitions.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.RestSharp.dll", "RestSharp.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.Excel.dll", "Excel.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.Outlook.dll", "Outlook.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
-			EmbeddedAssembly.Load("appCore.Extensions.BMC.ARSystem.dll", "BMC.ARSystem.dll");
-			
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-		}
-		
-		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-		{
-			return EmbeddedAssembly.Get(args.Name);
-		}
-
-		public static int CountStringOccurrences(string text, string pattern)
-		{
-			int num = 0;
-			int startIndex = 0;
-			while ((startIndex = text.IndexOf(pattern, startIndex, StringComparison.Ordinal)) != -1) {
-				startIndex += pattern.Length;
-				num++;
-			}
-			return num;
-		}
-		
-		public static string RemoveDiacritics(string text)
-		{
-			var normalizedString = text.Normalize(NormalizationForm.FormD);
-			var stringBuilder = new StringBuilder();
-
-			foreach (var c in normalizedString)
-			{
-				var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-				if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-				{
-					stringBuilder.Append(c);
-				}
-			}
-
-			return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
-		}
 		
 		public static void CopyProperties(object dst, object src) {
 			PropertyInfo[] srcProperties = src.GetType().GetProperties();
