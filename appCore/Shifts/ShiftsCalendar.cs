@@ -137,7 +137,7 @@ namespace appCore.Shifts
 			if(loopFinished)
 				return;
 			
-			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
+			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
 			if(string.IsNullOrEmpty(shift))
 				return;
 			
@@ -174,7 +174,7 @@ namespace appCore.Shifts
 			int num_lines = (int)Math.Ceiling((double)(first_weekday + num_days) / (double)7);
 			int panelHeaderWidth = this.Controls["shiftsPanel_refresh"].Left - this.Controls["shiftsPanel_icon"].Right;
 			int panelBodyHeight = (int)((shiftsRectHeight * 2) + 3 + ((num_lines * 2) * shiftsRectHeight) + 10); // (height * 2) + 3 for title and weedays headers; + 10 for 5 padding on top&bottom
-			DataRow[] foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'");
+			DataRow[] foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
 			
 //			shiftsHeaderSnap = new Bitmap(MainForm.shiftsPanel.Controls["shiftsPanel_refresh"].Right + MainForm.shiftsPanel.Controls["shiftsPanel_icon"].Right, shiftsRectHeight);
 			shiftsBodySnap = new Bitmap(224, panelBodyHeight);
@@ -263,7 +263,7 @@ namespace appCore.Shifts
 		}
 		
 		public DataRow[] getWholeShift(DateTime date) {
-			string shift = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'")[0]["Day" + date.Day].ToString();
+			string shift = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'")[0]["Day" + date.Day].ToString();
 			if(shift.StartsWith("H"))
 				return null;
 //			string dayColumnToFilter = MainForm.shiftsTable[date.Month - 1].Columns[date.Day + 3].ColumnName;

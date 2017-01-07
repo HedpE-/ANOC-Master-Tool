@@ -43,11 +43,7 @@ namespace appCore.Settings
 		}
 		public static string ClosureCode {
 			get {
-				System.Data.DataRow temp = DB.Databases.shiftsFile.ShiftLeaders.Find(s => s["Column3"].Equals(fullName[1] + " " + fullName[0]));
-				if(temp != null)
-					return temp[0].ToString();
-				temp = DB.Databases.shiftsFile.Agents.Find(s => s["Column3"].Equals(fullName[1] + " " + fullName[0]));
-				return temp != null ? temp[0].ToString() : null;				
+				return DB.Databases.shiftsFile2.GetClosureCode(fullName[1] + " " + fullName[0]);			
 			}
 			private set { }
 		}

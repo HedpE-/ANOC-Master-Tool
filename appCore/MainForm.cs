@@ -505,7 +505,7 @@ namespace appCore
 			SplashForm.ShowSplashScreen();
 			trayIcon = new TrayIcon(tray);
 			
-			Tools.EmbeddedAssembliesInit();
+			EmbeddedAssemblies.Init();
 			
 			SplashForm.UpdateLabelText("Getting network access");
 			
@@ -624,23 +624,23 @@ namespace appCore
 			Databases.PopulateDatabases();
 			
 			comboBox1.Items.Add("CBV");
-			string[] results = new string[Databases.shiftsFile.ShiftLeaders.Count];
-			for (int index = 0; index < Databases.shiftsFile.ShiftLeaders.Count; index++) {
-				results[index] = Databases.shiftsFile.ShiftLeaders[index]["Column1"].ToString();
-			}
-			comboBox1.Items.AddRange(results);
-			results = new string[Databases.shiftsFile.Agents.Count];
-			for (int index = 0; index < Databases.shiftsFile.Agents.Count; index++) {
-				results[index] = Databases.shiftsFile.Agents[index]["Column1"].ToString();
-			}
-			comboBox1.Items.AddRange(results);
+//			string[] results = new string[Databases.shiftsFile.ShiftLeaders.Count];
+//			for (int index = 0; index < Databases.shiftsFile.ShiftLeaders.Count; index++) {
+//				results[index] = Databases.shiftsFile.ShiftLeaders[index]["Column1"].ToString();
+//			}
+//			comboBox1.Items.AddRange(results);
+//			results = new string[Databases.shiftsFile.Agents.Count];
+//			for (int index = 0; index < Databases.shiftsFile.Agents.Count; index++) {
+//				results[index] = Databases.shiftsFile.Agents[index]["Column1"].ToString();
+//			}
+			comboBox1.Items.AddRange(Databases.shiftsFile2.GetAllClosureCodes());
 			comboBox1.Text = CurrentUser.ClosureCode;
 			
 			GlobalProperties.siteFinder_mainswitch = false;
 			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
 			
 			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
-				DataRow[] foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + Tools.RemoveDiacritics(CurrentUser.fullName[1]).ToUpper() + "%' AND AbsName Like '%" + Tools.RemoveDiacritics(CurrentUser.fullName[0]).ToUpper() + "'");
+				DataRow[] foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
 				
 				if(foundRows.Length >= 1) {
 					pictureBox6.Visible = true;
@@ -670,7 +670,7 @@ namespace appCore
 
 		public static DataRowView findSite(string site)
 		{
-			if(!Tools.IsAllDigits(site))
+			if(!site.IsAllDigits())
 				site = "00000";
 			
 			DataView dv = new DataView(Databases.siteDetailsTable);
@@ -683,7 +683,7 @@ namespace appCore
 
 		public static DataView findCells(string site)
 		{
-			if(!Tools.IsAllDigits(site))
+			if(!site.IsAllDigits())
 				site = "00000";
 			
 			DataView dv = new DataView(Databases.cellDetailsTable);
@@ -718,7 +718,7 @@ namespace appCore
 				comboBox1.Text = comboBox1.Text.ToUpper();
 				textBox13.TextChanged += TextBox13TextChanged;
 				comboBox1.TextChanged += ComboBox1TextChanged;
-				if (Tools.IsAllDigits(textBox13.Text.Substring(3,textBox13.Text.Length - 3))) {
+				if (textBox13.Text.Substring(3,textBox13.Text.Length - 3).IsAllDigits()) {
 					int[] rng = new int[12];
 					for (int c = 0; c <= 11; c++) {
 						rng[c] = Convert.ToInt32(textBox13.Text.Substring(c + 3,1));

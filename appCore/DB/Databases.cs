@@ -58,6 +58,7 @@ namespace appCore.DB
 		}
 		
 		public static ShiftsFile shiftsFile;
+		public static ShiftsFile2 shiftsFile2;
 		
 		public static DataTable siteDetailsTable = null;
 		public static DataTable cellDetailsTable = null;
@@ -164,6 +165,7 @@ namespace appCore.DB
 			all_cellsThread.Start();
 			Thread shiftsFileThread = new Thread(() => {
 			                                     	shiftsFile = new ShiftsFile(DateTime.Now.Year);
+			                                     	shiftsFile2 = new ShiftsFile2(DateTime.Now.Year);
 			                                     	loadingShiftsFileFinished = true;
 			                                     });
 			shiftsFileThread.IsBackground = true;
