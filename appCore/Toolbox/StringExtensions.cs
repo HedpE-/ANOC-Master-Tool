@@ -11,7 +11,8 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-public static class StringExtensions {
+public static class StringExtensions
+{
 	public static String RemoveDigits(this string str) {
 		return Regex.Replace(str, @"\d", "");
 	}
@@ -45,8 +46,7 @@ public static class StringExtensions {
 		foreach (var c in normalizedString)
 		{
 			var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-			if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-			{
+			if(unicodeCategory != UnicodeCategory.NonSpacingMark) {
 				stringBuilder.Append(c);
 			}
 		}
@@ -64,7 +64,7 @@ public static class StringExtensions {
 		return str;
 	}
 	
-	public static string DecryptText(this string str) {
+	public static String DecryptText(this string str) {
 		if(!string.IsNullOrEmpty(str)) {
 			str = str.Replace(" ", "");
 			byte[] bytes = new byte[str.Length / 2];
