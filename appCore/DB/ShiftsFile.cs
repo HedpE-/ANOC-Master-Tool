@@ -179,7 +179,7 @@ namespace appCore.DB
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "M" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+								if(cell.Text != "M" && cell.Text != "MT" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
