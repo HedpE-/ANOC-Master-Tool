@@ -29,8 +29,6 @@ namespace appCore.DB
 		
 		ArrayList monthRanges;
 
-		public List<DataTable> monthTables = new List<DataTable>();
-
 		public string FullName
 		{
 			get
@@ -44,20 +42,22 @@ namespace appCore.DB
 		{
 			get
 			{
-				return shiftsFile != null && shiftsFile.Exists;
+				if(shiftsFile != null)
+					return shiftsFile.Exists;
+				return false;
 				
 			}
 			protected set { }
 		}
 
-		public Tools.Months LastMonthAvailable
-		{
-			get
-			{
-				return (Tools.Months)(monthTables.Count - 1);
-			}
-			protected set { }
-		}
+//		public Tools.Months LastMonthAvailable
+//		{
+//			get
+//			{
+//				return (Tools.Months)(monthTables.Count - 1);
+//			}
+//			protected set { }
+//		}
 
 		public int Year
 		{
@@ -153,23 +153,15 @@ namespace appCore.DB
 			if(shift.StartsWith("H"))
 				return null;
 			
-			string dayColumn = string.Empty;
-			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace("1","3")]) {
-				if(cell.Value != null) {
-					if(cell.Text == date.Day.ToString()) {
-						dayColumn = cell.Address.RemoveDigits();
-						break;
-					}
-				}
-			}
+			string dayColumn = FindDayColumn(date);
 			var columnRange = package.Workbook.Worksheets[1].Cells[dayColumn.ToLower() + ":" + dayColumn.ToLower()];
 			List<SingleShift> foundRows = new List<SingleShift>();
 			switch (shift) {
-				case "M": case "MT":
+				case "M": case "MT": case "QM":
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "A" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+								if(cell.Text != "A" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L" && !cell.Text.IsAllDigits())
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
@@ -179,7 +171,7 @@ namespace appCore.DB
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "M" && cell.Text != "MT" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+								if(cell.Text != "M" && cell.Text != "MT" && cell.Text != "QM" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L" && !cell.Text.IsAllDigits())
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
@@ -199,7 +191,7 @@ namespace appCore.DB
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+								if(cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L" && !cell.Text.IsAllDigits())
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
@@ -242,18 +234,29 @@ namespace appCore.DB
 			return 0;
 		}
 		
-		List<DataTable> importShiftsTable()
-		{
-			FileStream stream = null;
-			try {
-				stream = shiftsFile.Open(FileMode.Open, FileAccess.Read);
+		String FindDayColumn(DateTime date) {
+			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace("1","3")]) {
+				if(cell.Value != null) {
+					if(cell.Text == date.Day.ToString()) {
+						return cell.Address.RemoveDigits();
+					}
+				}
 			}
-			catch (Exception) {
-				UserFolder.CreateTempFolder();
-				FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder.FullName + "\\" + shiftsFile.Name, true);
-				stream = tempShiftsFile.Open(FileMode.Open, FileAccess.Read);
-			}
-			return null;
+			return string.Empty;
 		}
+		
+//		List<DataTable> importShiftsTable(int month)
+//		{
+//			FileStream stream = null;
+//			try {
+//				stream = shiftsFile.Open(FileMode.Open, FileAccess.Read);
+//			}
+//			catch (Exception) {
+//				UserFolder.CreateTempFolder();
+//				FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder.FullName + "\\" + shiftsFile.Name, true);
+//				stream = tempShiftsFile.Open(FileMode.Open, FileAccess.Read);
+//			}
+//			return null;
+//		}
 	}
 }

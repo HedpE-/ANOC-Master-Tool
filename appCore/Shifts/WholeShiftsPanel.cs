@@ -23,17 +23,6 @@ namespace appCore.Shifts
 		{
 			this.SetStyle(ControlStyles.Selectable, true);
 			
-//			List<DataRow> SL = new List<DataRow>();
-//			List<DataRow> Agents = new List<DataRow>();
-//			foreach(DataRow dr in sameShiftRows) {
-//				FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
-//				int rowID = (int)Convert.ToInt64(_rowID.GetValue(dr));
-//				if(rowID > 3 && rowID < 12)
-//					SL.Add(dr);
-//				else
-//					Agents.Add(dr);
-//			}
-			
 			// Draw panel
 			// FIXME: improve wholeShiftsPanel performance(generate a cache for individual shifts on separate thread)
 			const int RectHeight = 20;
