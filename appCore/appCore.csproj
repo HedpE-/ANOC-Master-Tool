@@ -115,7 +115,7 @@
   <ItemGroup>
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
-    <Compile Include="DB\ShiftsFile2.cs" />
+    <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\CF Implementation.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingAverageGroup.cs" />

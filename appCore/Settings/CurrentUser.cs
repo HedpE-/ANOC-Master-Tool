@@ -43,7 +43,7 @@ namespace appCore.Settings
 		}
 		public static string ClosureCode {
 			get {
-				return DB.Databases.shiftsFile2.GetClosureCode(fullName[1] + " " + fullName[0]);			
+				return DB.Databases.shiftsFile.GetClosureCode(fullName[1] + " " + fullName[0]);			
 			}
 			private set { }
 		}

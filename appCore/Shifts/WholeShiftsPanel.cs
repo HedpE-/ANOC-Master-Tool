@@ -6,14 +6,11 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using appCore.Settings;
 using System;
-using System.Data;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace appCore.Shifts
@@ -22,20 +19,20 @@ namespace appCore.Shifts
 	{
 		string wholeShiftString;
 		
-		public WholeShiftsPanel(DateTime shiftsChosenDate, DataRow[] sameShiftRows, string shift)
+		public WholeShiftsPanel(DateTime shiftsChosenDate, List<SingleShift> sameShiftRows, string shift)
 		{
 			this.SetStyle(ControlStyles.Selectable, true);
 			
-			List<DataRow> SL = new List<DataRow>();
-			List<DataRow> Agents = new List<DataRow>();
-			foreach(DataRow dr in sameShiftRows) {
-				FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
-				int rowID = (int)Convert.ToInt64(_rowID.GetValue(dr));
-				if(rowID > 3 && rowID < 12)
-					SL.Add(dr);
-				else
-					Agents.Add(dr);
-			}
+//			List<DataRow> SL = new List<DataRow>();
+//			List<DataRow> Agents = new List<DataRow>();
+//			foreach(DataRow dr in sameShiftRows) {
+//				FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
+//				int rowID = (int)Convert.ToInt64(_rowID.GetValue(dr));
+//				if(rowID > 3 && rowID < 12)
+//					SL.Add(dr);
+//				else
+//					Agents.Add(dr);
+//			}
 			
 			// Draw panel
 			// FIXME: improve wholeShiftsPanel performance(generate a cache for individual shifts on separate thread)
@@ -45,7 +42,7 @@ namespace appCore.Shifts
 			const int headerSpacing = 10;
 			const int paddingVertical = 7;
 			const int paddingHorizontal = 7;
-			int num_lines = SL.Count + Agents.Count + 3; // + 3 for Title, SL & Agents headers
+			int num_lines = sameShiftRows.Count + 3; // + 3 for Title, SL & Agents headers
 			
 			int panelHeight = (int)(2 * paddingVertical) + (2 * headerSpacing) + (num_lines * RectHeight);
 			int panelWidth = (int)(2 * paddingHorizontal) + nameRectWidth + shiftRectWidth;
@@ -72,45 +69,41 @@ namespace appCore.Shifts
 				
 				int previousRectBottomCoord = rectangle.Bottom;
 				
-				tempText = "Shift Leaders:";
-				wholeShiftString += Environment.NewLine + tempText + Environment.NewLine;
+				wholeShiftString += Environment.NewLine + "Shift Leaders:" + Environment.NewLine;
 				drawStringFormat.Alignment = StringAlignment.Near;
 				rectangle = new Rectangle(new Point(7, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
-				g.DrawString(tempText, titlesFont, Brushes.Red, rectangle, drawStringFormat);
+				g.DrawString("Shift Leaders:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
 				previousRectBottomCoord = rectangle.Bottom;
 				
-				foreach(DataRow dr in SL) {
+				List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == "Shift Leader").ToList();
+				foreach(SingleShift sh in filteredList) {
 					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
-					tempText = dr["Column3"].ToString();
-					wholeShiftString += tempText + '\t';
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
+					wholeShiftString += sh.Name + '\t';
+					g.DrawString(sh.Name, stringFont, Brushes.Gray, rectangle, drawStringFormat);
 					drawStringFormat.Alignment = StringAlignment.Far;
 					rectangle = new Rectangle(new Point(paddingHorizontal + nameRectWidth, previousRectBottomCoord), new Size(shiftRectWidth, RectHeight));
-					tempText = dr["Day" + shiftsChosenDate.Day].ToString();
-					wholeShiftString += tempText + Environment.NewLine;
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
+					wholeShiftString += sh.Shift + Environment.NewLine;
+					g.DrawString(sh.Shift, stringFont, Brushes.Gray, rectangle, drawStringFormat);
 					previousRectBottomCoord = rectangle.Bottom;
 					drawStringFormat.Alignment = StringAlignment.Near;
 				}
 				
-				tempText = "Agents:";
-				wholeShiftString += Environment.NewLine + tempText + Environment.NewLine;
+				wholeShiftString += Environment.NewLine + "Agents:" + Environment.NewLine;
 				rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
-				g.DrawString(tempText, titlesFont, Brushes.Red, rectangle, drawStringFormat);
+				g.DrawString("Agents:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
 				previousRectBottomCoord = rectangle.Bottom;
 				
-				for(int c = 1;c <= Agents.Count;c++) {
+				filteredList = sameShiftRows.Where(s => s.Role == "Agent").ToList();
+				for(int c = 1;c <= filteredList.Count;c++) {
 					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
-					tempText = Agents[c - 1]["Column3"].ToString();
-					wholeShiftString += tempText + '\t';
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
+					wholeShiftString += filteredList[c - 1].Name + '\t';
+					g.DrawString(filteredList[c - 1].Name, stringFont, Brushes.Gray, rectangle, drawStringFormat);
 					drawStringFormat.Alignment = StringAlignment.Far;
 					rectangle = new Rectangle(new Point(paddingHorizontal + nameRectWidth, previousRectBottomCoord), new Size(shiftRectWidth, RectHeight));
-					tempText = Agents[c - 1]["Day" + shiftsChosenDate.Day].ToString();
-					wholeShiftString += tempText;
-					if(c < Agents.Count)
-						wholeShiftString +=  Environment.NewLine;
-					g.DrawString(tempText, stringFont, Brushes.Gray, rectangle, drawStringFormat);
+					wholeShiftString += filteredList[c - 1].Shift;
+					if(c < filteredList.Count)
+						wholeShiftString += Environment.NewLine;
+					g.DrawString(filteredList[c - 1].Shift, stringFont, Brushes.Gray, rectangle, drawStringFormat);
 					previousRectBottomCoord = rectangle.Bottom;
 					drawStringFormat.Alignment = StringAlignment.Near;
 				}

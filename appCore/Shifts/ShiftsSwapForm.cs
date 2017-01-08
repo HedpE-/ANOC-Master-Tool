@@ -24,11 +24,11 @@ namespace appCore.Shifts
 		public ShiftsSwapForm() {
 			InitializeComponent();
 			
-			foreach(string str in DB.Databases.shiftsFile2.ShiftLeaders) {
+			foreach(string str in DB.Databases.shiftsFile.ShiftLeaders) {
 				comboBox1.Items.Add(str);
 				comboBox2.Items.Add(str);
 			}
-			foreach(string str in DB.Databases.shiftsFile2.Agents) {
+			foreach(string str in DB.Databases.shiftsFile.Agents) {
 				comboBox1.Items.Add(str);
 				comboBox2.Items.Add(str);
 			}

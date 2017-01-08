@@ -10,11 +10,12 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Excel;
 using appCore.Settings;
+using appCore.Shifts;
 using appCore.Toolbox;
+using OfficeOpenXml;
 
 namespace appCore.DB
 {
@@ -24,6 +25,9 @@ namespace appCore.DB
 	public class ShiftsFile
 	{
 		FileInfo shiftsFile;
+		ExcelPackage package;
+		
+		ArrayList monthRanges;
 
 		public List<DataTable> monthTables = new List<DataTable>();
 
@@ -61,12 +65,12 @@ namespace appCore.DB
 			private set;
 		}
 		
-		public List<DataRow> ShiftLeaders {
+		public List<string> ShiftLeaders {
 			get;
 			private set;
 		}
 		
-		public List<DataRow> Agents {
+		public List<string> Agents {
 			get;
 			private set;
 		}
@@ -74,11 +78,170 @@ namespace appCore.DB
 		public ShiftsFile(int year)
 		{
 			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
-			if (shiftsFile != null)
-				monthTables = importShiftsTable();
+//			shiftsFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Shift 2017_JAN - Copy.xlsx");
+			
+			try { package = new ExcelPackage(shiftsFile); } finally { }
+			
+			if (package.File != null) {
+				var allMergedCells = package.Workbook.Worksheets[1].MergedCells;
+				monthRanges = new ArrayList();
+				foreach(string address in allMergedCells.List) {
+					string[] temp = address.Split(':');
+					if(temp[0].RemoveLetters() != "1")
+						continue;
+					if(temp[1].RemoveLetters() != "1")
+						continue;
+					monthRanges.Add(address);
+				}
+				
+				SortAlphabetLength alphaLen = new SortAlphabetLength();
+				monthRanges.Sort(alphaLen);
+				
+				bool slListEnd = false;
+				foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
+					if(cell.Value != null) {
+						if(cell.Value.ToString() != "Closure Code") {
+							if(!slListEnd) {
+								if(ShiftLeaders == null)
+									ShiftLeaders = new List<string>();
+								ShiftLeaders.Add(cell.Offset(0, 2).Value.ToString());
+							}
+							else {
+								if(Agents == null)
+									Agents = new List<string>();
+								Agents.Add(cell.Offset(0, 2).Value.ToString());
+							}
+						}
+					}
+					else {
+						if(!slListEnd && cell.Offset(0, 2).Value != null) {
+							slListEnd = cell.Offset(0, 2).Value.ToString() == "Morning";
+						}
+					}
+				}
+			}
 			Year = year;
 		}
-
+		
+		public String GetShift(String name, DateTime date) {
+			int personRow = FindPersonRow(name);
+			
+			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace('1','3')]) {
+				if(cell.Value != null) {
+					if(cell.Value.ToString() == date.Day.ToString())
+						return package.Workbook.Worksheets[1].Cells[personRow, cell.Start.Column].Text;
+				}
+				else
+					return string.Empty;
+			}
+			return null;
+		}
+		
+		public String[] GetAllShiftsInMonth(String name, int month) {
+			List<string> list = new List<string>();
+			int personRow = FindPersonRow(name);
+			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[month - 1].ToString().Replace("1",personRow.ToString())]) {
+				if(cell.Value == null)
+					list.Add(string.Empty);
+				else
+					list.Add(cell.Text);
+			}
+			return list.ToArray();
+		}
+		
+		public List<SingleShift> GetWholeShift(string shift, DateTime date) {
+			if(shift.StartsWith("H"))
+				return null;
+			
+			string dayColumn = string.Empty;
+			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace("1","3")]) {
+				if(cell.Value != null) {
+					if(cell.Text == date.Day.ToString()) {
+						dayColumn = cell.Address.RemoveDigits();
+						break;
+					}
+				}
+			}
+			var columnRange = package.Workbook.Worksheets[1].Cells[dayColumn.ToLower() + ":" + dayColumn.ToLower()];
+			List<SingleShift> foundRows = new List<SingleShift>();
+			switch (shift) {
+				case "M":
+					foreach(var cell in columnRange) {
+						if(cell.Start.Row > 3) {
+							if(cell.Value != null) {
+								if(cell.Text != "A" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
+							}
+						}
+					}
+					break;
+				case "A":
+					foreach(var cell in columnRange) {
+						if(cell.Start.Row > 3) {
+							if(cell.Value != null) {
+								if(cell.Text != "M" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
+							}
+						}
+					}
+					break;
+				case "N":
+					foreach(var cell in columnRange) {
+						if(cell.Start.Row > 3) {
+							if(cell.Value != null) {
+								if(cell.Text == "N")
+									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
+							}
+						}
+					}
+					break;
+				default:
+					foreach(var cell in columnRange) {
+						if(cell.Start.Row > 3) {
+							if(cell.Value != null) {
+								if(cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L")
+									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
+							}
+						}
+					}
+					
+					break;
+			}
+			
+			return foundRows;
+		}
+		
+		public String GetClosureCode(String name) {
+			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
+				if(cell.Value != null) {
+					if(cell.Value.ToString() == name)
+						return cell.Offset(0, -2).Value.ToString();
+				}
+			}
+			return string.Empty;
+		}
+		
+		public String[] GetAllClosureCodes() {
+			List<string> list = new List<string>();
+			foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
+				if(cell.Value != null) {
+					if(cell.Value.ToString() != "Closure Code")
+						list.Add(cell.Value.ToString());
+				}
+			}
+			return list.ToArray();
+		}
+		
+		int FindPersonRow(String name) {
+			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
+				if(cell.Value != null) {
+					if(cell.Value.ToString() == name)
+						return cell.Start.Row;
+				}
+			}
+			return 0;
+		}
+		
 		List<DataTable> importShiftsTable()
 		{
 			FileStream stream = null;
@@ -90,144 +253,145 @@ namespace appCore.DB
 				FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder.FullName + "\\" + shiftsFile.Name, true);
 				stream = tempShiftsFile.Open(FileMode.Open, FileAccess.Read);
 			}
-			IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-			DataSet ds = excelReader.AsDataSet();
-			DataTable dtTable = ds.Tables[0];
-			excelReader.Close();
-
-			// divide datatable code http://stackoverflow.com/questions/22312385/splitting-a-datatable-into-2-using-a-column-index
-			int days = (int)(DateTime.Now - new DateTime(2016, 1, 1)).TotalDays;
-			byte lastMonth = (byte)(DateTime.Now.Month - 1); // - 1 to get enum starting on 0
-			List<DataTable> dtTablesList = new List<DataTable>();
-
-			// Build TableA with columns F1, F2 and F3 that will go to all tables plus range from start of month until start of next month
-			// Added 4th Column named AbsName containing the UpperCase + Diacritics removed from persons name
-			DataTable TableA = new DataTable();
-			DataColumn[] aCols = dtTable.Columns.Cast<DataColumn>()
-				.Where(c => c.Ordinal < 3)
-				.Select(c => new DataColumn(c.ColumnName, c.DataType))
-				.ToArray();
-			TableA.Columns.AddRange(aCols);
-			TableA.Columns.Add(new DataColumn("AbsName", typeof(string)));
-			foreach (DataRow row in dtTable.Rows) {
-				DataRow aRow = TableA.Rows.Add();
-				foreach (DataColumn aCol in TableA.Columns) {
-					if (aCol.ColumnName != "AbsName")
-						aRow.SetField(aCol, row[aCol.ColumnName]);
-					else
-					{
-						if (!string.IsNullOrEmpty(row["Column3"].ToString()) &&
-						    row["Column3"].ToString() != "Name" &&
-						    row["Column3"].ToString() != "Morning" &&
-						    !row["Column3"].ToString().Contains("Intermediate") &&
-						    row["Column3"].ToString() != "Afternoon" &&
-						    row["Column3"].ToString() != "Night" &&
-						    row["Column3"].ToString() != "TEF Customer" &&
-						    row["Column3"].ToString() != "External alarms" &&
-						    aRow["Column3"].ToString() != "Morning Telephone")
-
-							aRow.SetField(aCol, row["Column3"].ToString().RemoveDiacritics().ToUpper());
-					}
-				}
-				if(!string.IsNullOrEmpty(aRow["Column3"].ToString()) &&
-				   aRow["Column3"].ToString() != "Name" &&
-				   aRow["Column3"].ToString() != "Morning" &&
-				   !aRow["Column3"].ToString().Contains("Intermediate") &&
-				   aRow["Column3"].ToString() != "Afternoon" &&
-				   aRow["Column3"].ToString() != "Night" &&
-				   aRow["Column3"].ToString() != "TEF Customer" &&
-				   aRow["Column3"].ToString() != "External alarms" &&
-				   aRow["Column3"].ToString() != "Morning Telephone") {
-					FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
-					int rowID = (int)Convert.ToInt64(_rowID.GetValue(row));
-					if(rowID > 3 && rowID < 12) {
-						if(ShiftLeaders == null)
-							ShiftLeaders = new List<DataRow>();
-						ShiftLeaders.Add(aRow);
-					}
-					else {
-						if(Agents == null)
-							Agents = new List<DataRow>();
-						Agents.Add(aRow);
-					}
-				}
-			}
-
-			// Check if next month is available
-			if (lastMonth != 11)
-			{
-				int firstColumn = dtTable.Columns.Cast<DataColumn>()
-					.Where(c => dtTable.Rows[0][c].ToString().Contains(Enum.GetName(typeof(Tools.Months), lastMonth + 1)))
-					.Select(c => c.Ordinal)
-					.ToArray()[0];
-				int lastColumn = 0;
-				for (int i = firstColumn; i < dtTable.Columns.Count; i++)
-				{
-					if (dtTable.Rows[0][i].ToString() == Enum.GetName(typeof(Tools.Months), lastMonth + 2))
-					{ // lastMonth + 2 to get end of next month's table
-						lastColumn = i - 1;
-						break;
-					}
-				}
-				int nullCount = 0;
-
-				for (int i = firstColumn; i <= lastColumn; i++)
-				{
-					if (string.IsNullOrEmpty(dtTable.Rows[29][i].ToString())) // check values on Row 29, anyone's shifts
-						nullCount++;
-				}
-				if (nullCount < (lastColumn - firstColumn) - 10)
-					lastMonth++;
-			}
-
-			for (int i = 0; i <= lastMonth; i++)
-			{
-				string curMonth = Enum.GetName(typeof(Tools.Months), i);
-				int monthFirstColumn = dtTable.Columns.Cast<DataColumn>()
-					.Where(c => dtTable.Rows[0][c].Equals(curMonth))
-					.Select(c => c.Ordinal)
-					.ToArray()[0];
-				int monthLastColumn = 0;
-				for (int c = monthFirstColumn; c < dtTable.Columns.Count; c++)
-				{
-					if (dtTable.Columns[c].Ordinal > monthFirstColumn)
-					{
-						if (!string.IsNullOrEmpty(dtTable.Rows[0][dtTable.Columns[c].Ordinal].ToString()))
-						{
-							monthLastColumn = dtTable.Columns[c].Ordinal;
-							break;
-						}
-					}
-				}
-				DataColumn[] bCols = dtTable.Columns.Cast<DataColumn>()
-					.Where(c => c.Ordinal >= monthFirstColumn && c.Ordinal <= monthLastColumn)
-					.Select(c => new DataColumn(c.ColumnName, c.DataType))
-					.ToArray();
-
-				DataTable TableB = TableA.Copy();
-				TableB.Columns.AddRange(bCols);
-				for (int c = 0; c < dtTable.Rows.Count; c++)
-				{
-					DataRow bRow = TableB.Rows[c];
-					foreach (DataColumn bCol in bCols)
-					{
-						bRow.SetField(bCol, dtTable.Rows[c][bCol.ColumnName]);
-					}
-				}
-
-				for (int c = 0; c < TableB.Columns.Count; c++)
-				{
-					if (!string.IsNullOrEmpty(TableB.Rows[2][TableB.Columns[c].ColumnName].ToString()))
-						if(!(curMonth == Tools.Months.December.ToString() && TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() == "1" && c > 4))
-							TableB.Columns[c].ColumnName = "Day" + TableB.Rows[2][TableB.Columns[c].ColumnName];
+			return null;
+//			IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+//			DataSet ds = excelReader.AsDataSet();
+//			DataTable dtTable = ds.Tables[0];
+//			excelReader.Close();
+//
+//			// divide datatable code http://stackoverflow.com/questions/22312385/splitting-a-datatable-into-2-using-a-column-index
+//			int days = (int)(DateTime.Now - new DateTime(2016, 1, 1)).TotalDays;
+//			byte lastMonth = (byte)(DateTime.Now.Month - 1); // - 1 to get enum starting on 0
+//			List<DataTable> dtTablesList = new List<DataTable>();
+//
+//			// Build TableA with columns F1, F2 and F3 that will go to all tables plus range from start of month until start of next month
+//			// Added 4th Column named AbsName containing the UpperCase + Diacritics removed from persons name
+//			DataTable TableA = new DataTable();
+//			DataColumn[] aCols = dtTable.Columns.Cast<DataColumn>()
+//				.Where(c => c.Ordinal < 3)
+//				.Select(c => new DataColumn(c.ColumnName, c.DataType))
+//				.ToArray();
+//			TableA.Columns.AddRange(aCols);
+//			TableA.Columns.Add(new DataColumn("AbsName", typeof(string)));
+//			foreach (DataRow row in dtTable.Rows) {
+//				DataRow aRow = TableA.Rows.Add();
+//				foreach (DataColumn aCol in TableA.Columns) {
+//					if (aCol.ColumnName != "AbsName")
+//						aRow.SetField(aCol, row[aCol.ColumnName]);
 //					else
-//							UI.FlexibleMessageBox.Show("Dia " + TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() + "\nMês " + curMonth + "\ncounter " + c);
-				}
-				TableB.TableName = curMonth;
-				dtTablesList.Add(TableB);
-			}
-			UserFolder.ClearTempFolder();
-			return dtTablesList;
+//					{
+//						if (!string.IsNullOrEmpty(row["Column3"].ToString()) &&
+//						    row["Column3"].ToString() != "Name" &&
+//						    row["Column3"].ToString() != "Morning" &&
+//						    !row["Column3"].ToString().Contains("Intermediate") &&
+//						    row["Column3"].ToString() != "Afternoon" &&
+//						    row["Column3"].ToString() != "Night" &&
+//						    row["Column3"].ToString() != "TEF Customer" &&
+//						    row["Column3"].ToString() != "External alarms" &&
+//						    aRow["Column3"].ToString() != "Morning Telephone")
+//
+//							aRow.SetField(aCol, Tools.RemoveDiacritics(row["Column3"].ToString()).ToUpper());
+//					}
+//				}
+//				if(!string.IsNullOrEmpty(aRow["Column3"].ToString()) &&
+//				   aRow["Column3"].ToString() != "Name" &&
+//				   aRow["Column3"].ToString() != "Morning" &&
+//				   !aRow["Column3"].ToString().Contains("Intermediate") &&
+//				   aRow["Column3"].ToString() != "Afternoon" &&
+//				   aRow["Column3"].ToString() != "Night" &&
+//				   aRow["Column3"].ToString() != "TEF Customer" &&
+//				   aRow["Column3"].ToString() != "External alarms" &&
+//				   aRow["Column3"].ToString() != "Morning Telephone") {
+//					FieldInfo _rowID = typeof(DataRow).GetField("_rowID", BindingFlags.NonPublic | BindingFlags.Instance);
+//					int rowID = (int)Convert.ToInt64(_rowID.GetValue(row));
+//					if(rowID > 3 && rowID < 12) {
+//						if(ShiftLeaders == null)
+//							ShiftLeaders = new List<DataRow>();
+//						ShiftLeaders.Add(aRow);
+//					}
+//					else {
+//						if(Agents == null)
+//							Agents = new List<DataRow>();
+//						Agents.Add(aRow);
+//					}
+//				}
+//			}
+//
+//			// Check if next month is available
+//			if (lastMonth != 11)
+//			{
+//				int firstColumn = dtTable.Columns.Cast<DataColumn>()
+//					.Where(c => dtTable.Rows[0][c].ToString().Contains(Enum.GetName(typeof(Tools.Months), lastMonth + 1)))
+//					.Select(c => c.Ordinal)
+//					.ToArray()[0];
+//				int lastColumn = 0;
+//				for (int i = firstColumn; i < dtTable.Columns.Count; i++)
+//				{
+//					if (dtTable.Rows[0][i].ToString() == Enum.GetName(typeof(Tools.Months), lastMonth + 2))
+//					{ // lastMonth + 2 to get end of next month's table
+//						lastColumn = i - 1;
+//						break;
+//					}
+//				}
+//				int nullCount = 0;
+//
+//				for (int i = firstColumn; i <= lastColumn; i++)
+//				{
+//					if (string.IsNullOrEmpty(dtTable.Rows[29][i].ToString())) // check values on Row 29, anyone's shifts
+//						nullCount++;
+//				}
+//				if (nullCount < (lastColumn - firstColumn) - 10)
+//					lastMonth++;
+//			}
+//
+//			for (int i = 0; i <= lastMonth; i++)
+//			{
+//				string curMonth = Enum.GetName(typeof(Tools.Months), i);
+//				int monthFirstColumn = dtTable.Columns.Cast<DataColumn>()
+//					.Where(c => dtTable.Rows[0][c].Equals(curMonth))
+//					.Select(c => c.Ordinal)
+//					.ToArray()[0];
+//				int monthLastColumn = 0;
+//				for (int c = monthFirstColumn; c < dtTable.Columns.Count; c++)
+//				{
+//					if (dtTable.Columns[c].Ordinal > monthFirstColumn)
+//					{
+//						if (!string.IsNullOrEmpty(dtTable.Rows[0][dtTable.Columns[c].Ordinal].ToString()))
+//						{
+//							monthLastColumn = dtTable.Columns[c].Ordinal;
+//							break;
+//						}
+//					}
+//				}
+//				DataColumn[] bCols = dtTable.Columns.Cast<DataColumn>()
+//					.Where(c => c.Ordinal >= monthFirstColumn && c.Ordinal <= monthLastColumn)
+//					.Select(c => new DataColumn(c.ColumnName, c.DataType))
+//					.ToArray();
+//
+//				DataTable TableB = TableA.Copy();
+//				TableB.Columns.AddRange(bCols);
+//				for (int c = 0; c < dtTable.Rows.Count; c++)
+//				{
+//					DataRow bRow = TableB.Rows[c];
+//					foreach (DataColumn bCol in bCols)
+//					{
+//						bRow.SetField(bCol, dtTable.Rows[c][bCol.ColumnName]);
+//					}
+//				}
+//
+//				for (int c = 0; c < TableB.Columns.Count; c++)
+//				{
+//					if (!string.IsNullOrEmpty(TableB.Rows[2][TableB.Columns[c].ColumnName].ToString()))
+//						if(!(curMonth == Tools.Months.December.ToString() && TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() == "1" && c > 4))
+//							TableB.Columns[c].ColumnName = "Day" + TableB.Rows[2][TableB.Columns[c].ColumnName];
+			////					else
+			////							UI.FlexibleMessageBox.Show("Dia " + TableB.Rows[2][TableB.Columns[c].ColumnName].ToString() + "\nMês " + curMonth + "\ncounter " + c);
+//				}
+//				TableB.TableName = curMonth;
+//				dtTablesList.Add(TableB);
+//			}
+//			UserFolder.ClearTempFolder();
+//			return dtTablesList;
 		}
 	}
 }

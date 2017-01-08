@@ -633,16 +633,17 @@ namespace appCore
 //			for (int index = 0; index < Databases.shiftsFile.Agents.Count; index++) {
 //				results[index] = Databases.shiftsFile.Agents[index]["Column1"].ToString();
 //			}
-			comboBox1.Items.AddRange(Databases.shiftsFile2.GetAllClosureCodes());
+			comboBox1.Items.AddRange(Databases.shiftsFile.GetAllClosureCodes());
 			comboBox1.Text = CurrentUser.ClosureCode;
 			
 			GlobalProperties.siteFinder_mainswitch = false;
 			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
 			
 			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
-				DataRow[] foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
+//				DataRow[] foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
+				string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.fullName[1] + " " + CurrentUser.fullName[0], DateTime.Now.Month);
 				
-				if(foundRows.Length >= 1) {
+				if(monthShifts.Length > 0) {
 					pictureBox6.Visible = true;
 					shiftsCalendar = new ShiftsCalendar();
 					shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
