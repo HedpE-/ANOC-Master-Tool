@@ -19,7 +19,7 @@ namespace appCore.Toolbox
 	{
 		static Datum datum1;
 		
-		public static LLPoint toLat_Long(Point coord, string datumName) {
+		public static LLPoint toLat_Long(CoordPoint coord, string datumName) {
 			LLPoint LL = new LLPoint();
 			datum1 = datums.First(d => d.Name == datumName);
 			LL.Latitude = E_N_to_Lat(coord);
@@ -27,7 +27,7 @@ namespace appCore.Toolbox
 			return LL;
 		}
 		
-		static double E_N_to_Lat(Point coord) {
+		static double E_N_to_Lat(CoordPoint coord) {
 			// Un-project Transverse Mercator eastings and northings back to latitude.
 			// Input: - _
 			// eastings (East) and northings (North) in meters; _
@@ -68,7 +68,7 @@ namespace appCore.Toolbox
 			return (180 / Math.PI) * (PHId - ((Math.Pow(Et, 2)) * VII) + ((Math.Pow(Et, 4)) * VIII) - ((Math.Pow(Et, 6)) * IX));
 		}
 		
-		static double E_N_to_Long(Point coord) {
+		static double E_N_to_Long(CoordPoint coord) {
 			// Un-project Transverse Mercator eastings and northings back to longitude.
 			// Input: - _
 			// eastings (East) and northings (North) in meters; _
@@ -107,7 +107,7 @@ namespace appCore.Toolbox
 			return (180 / Math.PI) * (RadLAM0 + (Et * X) - ((Math.Pow(Et, 3)) * XI) + ((Math.Pow(Et, 5)) * XII) - ((Math.Pow(Et, 7)) * XIIA));
 		}
 		
-		static double InitialLat(Point coord, double afo, double PHI0, double n, double bfo) {
+		static double InitialLat(CoordPoint coord, double afo, double PHI0, double n, double bfo) {
 			// Compute initial value for Latitude (PHI) IN RADIANS.
 			// Input: - _
 			// northing of point (North) and northing of false origin (n0) in meters; _

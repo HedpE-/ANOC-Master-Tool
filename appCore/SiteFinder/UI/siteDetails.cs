@@ -262,7 +262,7 @@ namespace appCore.SiteFinder.UI
 		void setSiteMarker(DataRowView site, bool multi) {
 			double easting = Convert.ToDouble(site[site.Row.Table.Columns.IndexOf("EASTING")].ToString());
 			double northing = Convert.ToDouble(site[site.Row.Table.Columns.IndexOf("NORTHING")].ToString());
-			LLPoint llp =  coordConvert.toLat_Long(new GMap.NET.Point { Easting = easting, Northing = northing }, "OSGB36");
+			LLPoint llp =  coordConvert.toLat_Long(new GMap.NET.CoordPoint { Easting = easting, Northing = northing }, "OSGB36");
 			
 			GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(llp.Latitude, llp.Longitude), GMarkerGoogleType.red);
 			marker.Tag = site[site.Row.Table.Columns.IndexOf("SITE")].ToString();

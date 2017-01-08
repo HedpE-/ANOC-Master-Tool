@@ -52,14 +52,6 @@
       <HintPath>Assemblies\BMC.ARSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="GMap.NET.Core">
-      <HintPath>Assemblies\GMap.NET\Lib\GMap.NET.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GMap.NET.WindowsForms">
-      <HintPath>Assemblies\GMap.NET\Lib\GMap.NET.WindowsForms.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
@@ -85,6 +77,10 @@
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data.SqlServerCe">
+      <HintPath>Assemblies\System.Data.SqlServerCe.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement">
@@ -100,10 +96,6 @@
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Transitions">
-      <HintPath>Assemblies\Transitions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -111,6 +103,170 @@
   <ItemGroup>
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders\MemoryCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders\MSSQLCEPureImageCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders\MSSQLPureImageCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders\MySQLPureImageCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders\PostgreSQLPureImageCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders\SQLitePureImageCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\Cache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\CacheQueueItem.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\Core.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\DrawTile.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\FastReaderWriterLock.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\FastResourceLock.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\KiberTileCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\LoadTask.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\PureImage.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\RawTile.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\AuthMethod.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\AuthNone.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\AuthUserPass.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\IAsyncProxyResult.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\ProxyException.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\ProxySocket.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\Socks4Handler.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\Socks5Handler.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\SocksHandler.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket\SocksHttpWebRequest.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\Stuff.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\Tile.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\TileHttpHost.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\TileMatrix.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_DarbAE_Q2_2011_NAVTQ_Eng_V5_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_Imagery_World_2D_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_ShadedRelief_World_2D_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_StreetMap_World_2D_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_Topo_US_2D_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_World_Physical_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_World_Shaded_Relief_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_World_Street_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_World_Terrain_Base_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS\ArcGIS_World_Topo_MapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Bing\BingHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Bing\BingMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Bing\BingSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\CzechOld\CzechHistoryMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\CzechOld\CzechHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\CzechOld\CzechMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\CzechOld\CzechSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\CzechOld\CzechTuristMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechGeographicMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechHistoryMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechTuristMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech\CzechTuristWinterMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\CloudMadeMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\LatviaMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\MapBenderWMSProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\SpainMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\SwedenMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\TurkeyMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc\WikiMapiaMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\GMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\China\GoogleChinaHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\China\GoogleChinaMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\China\GoogleChinaSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\China\GoogleChinaTerrainMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\GoogleHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\GoogleMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\GoogleSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\GoogleTerrainMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\Korea\GoogleKoreaHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\Korea\GoogleKoreaMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\Korea\GoogleKoreaSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\Lithuania3dMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaHybridOldMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaOrtoFotoMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaOrtoFotoOldMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaReliefMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania\LithuaniaTOP50.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\NearMap\NearHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\NearMap\NearMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\NearMap\NearSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenCycleLandscapeMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenCycleMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenCycleTransportMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenSeaMapHybridProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreet4UMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetMapQuestHybridProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetMapQuestProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetMapQuestSatteliteProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetMapSurferProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetMapSurferTerrainProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap\OpenStreetOsmProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Ovi\OviHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Ovi\OviMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Ovi\OviSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Ovi\OviTerrainMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yahoo\YahooHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yahoo\YahooMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yahoo\YahooSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yandex\YandexHybridMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yandex\YandexMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yandex\YandexSatelliteMapProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\MapsLTProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\MapsLTReliefProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\MapsLVProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\MapyCZProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\MercatorProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\MercatorProjectionYandex.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\PlateCarreeProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\PlateCarreeProjectionDarbAe.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\PlateCarreeProjectionPergo.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections\SWEREF99_TMProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\AccessMode.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\Delegates.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\DirectionsProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\Extensions.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GDirections.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GeocodingProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GMaps.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GPoint.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GpsLog.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\gpx.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GRect.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\GSize.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\Interface.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\LanguageType.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\MapRoute.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\MapType.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\MouseWheelZoomType.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\Placemark.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\PointLatLng.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\PureImageCache.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\PureProjection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\RectLatLng.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\RenderMode.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\RoutingProvider.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\Singleton.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\SizeLatLng.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\StatusCodes.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\GMap.NET\ZipStorer.cs" />
+    <Compile Include="GMap.NET\GMap.NET.Core\Properties\Resources.Designer.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.ObjectModel\ObservableCollection.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.ObjectModel\ObservableCollectionThreadSafe.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\ColorMatrixs.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapControl.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapImage.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapMarker.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapOverlay.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapPolygon.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapRoute.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\GMapToolTip.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\Markers\GMarkerCross.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\Markers\GMarkerGoogle.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\TilePrefetcher.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\TilePrefetcher.Designer.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\ToolTips\GMapBaloonToolTip.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\ToolTips\GMapRoundedToolTip.cs" />
+    <Compile Include="GMap.NET\GMap.NET.WindowsForms\Properties\Resources.Designer.cs" />
+    <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\CF Implementation.cs" />
@@ -1160,7 +1316,6 @@
     <Compile Include="Toolbox\EWS\UnifiedMessaging\PhoneCall.cs" />
     <Compile Include="Toolbox\EWS\UnifiedMessaging\PhoneCallId.cs" />
     <Compile Include="Toolbox\EWS\UnifiedMessaging\UnifiedMessaging.cs" />
-    <Compile Include="Assemblies\GMap.NET\WindowsForms\Markers\GmapMarkerWithLabel.cs" />
     <Compile Include="Logs\ILog.cs" />
     <Compile Include="Logs\LogsCollection.cs" />
     <Compile Include="Logs\UI\LogBrowser.cs">
@@ -1276,6 +1431,27 @@
     <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />
     <Compile Include="SiteFinder\Vendors.cs" />
+    <Compile Include="Toolbox\Transitions\IManagedType.cs" />
+    <Compile Include="Toolbox\Transitions\ITransitionType.cs" />
+    <Compile Include="Toolbox\Transitions\ManagedType_Color.cs" />
+    <Compile Include="Toolbox\Transitions\ManagedType_Double.cs" />
+    <Compile Include="Toolbox\Transitions\ManagedType_Float.cs" />
+    <Compile Include="Toolbox\Transitions\ManagedType_Int.cs" />
+    <Compile Include="Toolbox\Transitions\ManagedType_String.cs" />
+    <Compile Include="Toolbox\Transitions\Transition.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionChain.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionElement.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionManager.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_Acceleration.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_Bounce.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_CriticalDamping.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_Deceleration.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_EaseInEaseOut.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_Flash.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_Linear.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_ThrowAndCatch.cs" />
+    <Compile Include="Toolbox\Transitions\TransitionType_UserDefined.cs" />
+    <Compile Include="Toolbox\Transitions\Utility.cs" />
     <Compile Include="UI\AMTBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1393,9 +1569,9 @@
       <DependentUpon>BrowserView.cs</DependentUpon>
     </Compile>
     <Compile Include="Web\UriItem.cs" />
-    <Compile Include="Assemblies\GMap.NET\Interfaces\IPosition.cs" />
-    <Compile Include="Assemblies\GMap.NET\Interfaces\IPositionTime.cs" />
-    <Compile Include="Assemblies\GMap.NET\Interfaces\ITime.cs" />
+    <Compile Include="GMap.NET\Interfaces\IPosition.cs" />
+    <Compile Include="GMap.NET\Interfaces\IPositionTime.cs" />
+    <Compile Include="GMap.NET\Interfaces\ITime.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1403,10 +1579,13 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Assemblies\GMap.NET\Types\LLPoint.cs" />
-    <Compile Include="Assemblies\GMap.NET\Types\Point.cs" />
+    <Compile Include="GMap.NET\Types\LLPoint.cs" />
+    <Compile Include="GMap.NET\Types\Point.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GMap.NET\GMap.NET.Core\Properties\Resources.resx" />
+    <EmbeddedResource Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\TilePrefetcher.resx" />
+    <EmbeddedResource Include="GMap.NET\GMap.NET.WindowsForms\Properties\Resources.resx" />
     <EmbeddedResource Include="Logs\UI\LogBrowser.resx">
       <DependentUpon>LogBrowser.cs</DependentUpon>
     </EmbeddedResource>
@@ -1494,22 +1673,108 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assemblies\RestSharp.dll" />
-    <EmbeddedResource Include="Assemblies\Transitions.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assemblies\GMap.NET\Lib\GMap.NET.Core.dll" />
-    <EmbeddedResource Include="Assemblies\GMap.NET\Lib\GMap.NET.WindowsForms.dll" />
     <EmbeddedResource Include="Assemblies\Outlook.dll" />
     <EmbeddedResource Include="Assemblies\BMC.ARSystem.dll" />
     <EmbeddedResource Include="Assemblies\ICSharpCode.SharpZipLib.dll" />
+    <EmbeddedResource Include="Assemblies\System.Data.SqlServerCe.dll" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\blue-dot.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\drag_cross_67_16.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\green-dot.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\marker.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\mm_20_blue.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\mm_20_green.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\mm_20_red.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\mm_20_shadow.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\mm_20_yellow.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\red-dot.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\shadow50.png" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\System.Data.SQLite.x64.NET2.dll.gz" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\System.Data.SQLite.x64.NET4.dll.gz" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\System.Data.SQLite.x86.NET2.dll.gz" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\System.Data.SQLite.x86.NET4.dll.gz" />
+    <None Include="GMap.NET\GMap.NET.Core\Resources\yellow-dot.png" />
+    <None Include="GMap.NET\GMap.Net.README.md" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\arrow.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\arrowshadow.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\black_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\blue-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\blue-pushpin.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\blue.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\blue_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\brown_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\drag_cross_67_16.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\go-big-green.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\gray_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\green-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\green.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\green_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\grn-pushpin.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\lightblue.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\ltblu-pushpin.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\ltblue-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\msmarker.shadow.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\orange-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\orange.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\orange_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\pause-big-red.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\pink-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\pink-pushpin.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\pink.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\purple-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\purple-pushpin.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\purple.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\purple_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\pushpin_shadow.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\red-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\red-pushpin.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\red.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\red_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\shadow_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\stop-big-red.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\white_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\yellow-dot.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\yellow.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\yellow_small.png" />
+    <None Include="GMap.NET\GMap.NET.WindowsForms\Resources\ylw-pushpin.png" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
     <None Include="Toolbox\EWS\Docs\README.htm" />
     <None Include="Toolbox\EWS\Docs\Redist.txt" />
-    <None Include="Assemblies\GMap.NET\GMap.Net.README.md" />
-    <None Include="Web\HtmlAgilityPack\HtmlAgilityPack.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="GMap.NET\GMap.NET.Core" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.CacheProviders" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.Internals\SocksProxySocket" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\ArcGIS" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Bing" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Czech" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\CzechOld" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Etc" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\China" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Google\Korea" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Lithuania" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\NearMap" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\OpenStreetMap" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Ovi" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yahoo" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.MapProviders\Yandex" />
+    <Folder Include="GMap.NET\GMap.NET.Core\GMap.NET.Projections" />
+    <Folder Include="GMap.NET\GMap.NET.Core\Properties" />
+    <Folder Include="GMap.NET\GMap.NET.Core\Resources" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.ObjectModel" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\Markers" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms\GMap.NET.WindowsForms\ToolTips" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms\Properties" />
+    <Folder Include="GMap.NET\GMap.NET.WindowsForms\Resources" />
+    <Folder Include="GMap.NET" />
     <Folder Include="Toolbox\EPPlus" />
     <Folder Include="Toolbox\EPPlus\ConditionalFormatting" />
     <Folder Include="Toolbox\EPPlus\ConditionalFormatting\Contracts" />
@@ -1576,6 +1841,7 @@
     <Folder Include="OssScripts" />
     <Folder Include="OssScripts\UI" />
     <Folder Include="Remedy\UI" />
+    <Folder Include="Toolbox\Transitions" />
     <Folder Include="UI\GlacialList13" />
   </ItemGroup>
   <ItemGroup>

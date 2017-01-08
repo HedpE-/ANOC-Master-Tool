@@ -256,7 +256,7 @@ namespace appCore.SiteFinder
 					orderby element.Name ascending
 					select element;
 				
-				Coordinates = coordConvert.toLat_Long(new GMap.NET.Point { Easting = EASTING, Northing = NORTHING }, "OSGB36");
+				Coordinates = coordConvert.toLat_Long(new GMap.NET.CoordPoint { Easting = EASTING, Northing = NORTHING }, "OSGB36");
 				MapMarker = new GMarkerGoogle(new PointLatLng(Coordinates.Latitude, Coordinates.Longitude), GMarkerGoogleType.red);
 				MapMarker.Tag = Id;
 				MapMarker.ToolTip = new GMapBaloonToolTip(MapMarker);

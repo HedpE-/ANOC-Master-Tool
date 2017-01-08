@@ -15,13 +15,11 @@ public static class EmbeddedAssemblies
 	{
 		// http://www.codeproject.com/Articles/528178/Load-DLL-From-Embedded-Resource
 		
-		EmbeddedAssemblies.Load("appCore.Assemblies.GMap.NET.Lib.GMap.NET.Core.dll", "GMap.NET.Core.dll");
-		EmbeddedAssemblies.Load("appCore.Assemblies.GMap.NET.Lib.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
-		EmbeddedAssemblies.Load("appCore.Assemblies.Transitions.dll", "Transitions.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.RestSharp.dll", "RestSharp.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.Outlook.dll", "Outlook.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.BMC.ARSystem.dll", "BMC.ARSystem.dll");
+		EmbeddedAssemblies.Load("appCore.Assemblies.System.Data.SqlServerCe.dll", "System.Data.SqlServerCe.dll");
 		
 		AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 	}
