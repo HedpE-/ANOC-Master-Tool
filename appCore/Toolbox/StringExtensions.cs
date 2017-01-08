@@ -20,8 +20,7 @@ public static class StringExtensions {
 		return Regex.Replace(str, "[^0-9.]", "");
 	}
 
-	public static int CountStringOccurrences(this string str, string pattern)
-	{
+	public static int CountStringOccurrences(this string str, string pattern) {
 		int num = 0;
 		int startIndex = 0;
 		while ((startIndex = str.IndexOf(pattern, startIndex, StringComparison.Ordinal)) != -1) {
@@ -31,8 +30,7 @@ public static class StringExtensions {
 		return num;
 	}
 	
-	public static bool IsAllDigits(this string str)
-	{
+	public static bool IsAllDigits(this string str) {
 		foreach (char ch in str)
 			if (!char.IsDigit(ch))
 				return false;
@@ -40,8 +38,7 @@ public static class StringExtensions {
 		return true;
 	}
 	
-	public static String RemoveDiacritics(this string str)
-	{
+	public static String RemoveDiacritics(this string str) {
 		var normalizedString = str.Normalize(NormalizationForm.FormD);
 		var stringBuilder = new StringBuilder();
 
@@ -57,8 +54,7 @@ public static class StringExtensions {
 		return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
 	}
 	
-	public static String EncryptText(this string str)
-	{
+	public static String EncryptText(this string str) {
 		if(!string.IsNullOrEmpty(str)) {
 			string text = string.Empty;
 			foreach (char ch in str)
@@ -68,16 +64,14 @@ public static class StringExtensions {
 		return str;
 	}
 	
-	public static string DecryptText(this string str)
-	{
+	public static string DecryptText(this string str) {
 		if(!string.IsNullOrEmpty(str)) {
-			string text = string.Empty;
-			text = text.Replace(" ", "");
-			byte[] bytes = new byte[text.Length / 2];
+			str = str.Replace(" ", "");
+			byte[] bytes = new byte[str.Length / 2];
 			for (int i = 0; i < bytes.Length; i++)
-				bytes[i] = Convert.ToByte(text.Substring(i * 2, 2), 0x10);
+				bytes[i] = Convert.ToByte(str.Substring(i * 2, 2), 0x10);
 			
-			text = Encoding.ASCII.GetString(bytes);
+			str = Encoding.ASCII.GetString(bytes);
 		}
 		return str;
 	}
