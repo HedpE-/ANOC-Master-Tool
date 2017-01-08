@@ -19,7 +19,6 @@ public static class EmbeddedAssemblies
 		EmbeddedAssemblies.Load("appCore.Assemblies.GMap.NET.Lib.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.Transitions.dll", "Transitions.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.RestSharp.dll", "RestSharp.dll");
-		EmbeddedAssemblies.Load("appCore.Assemblies.Excel.dll", "Excel.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.Outlook.dll", "Outlook.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
 		EmbeddedAssemblies.Load("appCore.Assemblies.BMC.ARSystem.dll", "BMC.ARSystem.dll");
