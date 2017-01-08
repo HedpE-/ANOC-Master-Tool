@@ -165,7 +165,7 @@ namespace appCore.DB
 			var columnRange = package.Workbook.Worksheets[1].Cells[dayColumn.ToLower() + ":" + dayColumn.ToLower()];
 			List<SingleShift> foundRows = new List<SingleShift>();
 			switch (shift) {
-				case "M":
+				case "M": case "MT":
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
