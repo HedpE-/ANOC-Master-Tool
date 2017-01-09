@@ -6,16 +6,17 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using System;
 using System.Collections.Generic;
 using System.Data;
 using appCore.DB;
 
 namespace appCore.SiteFinder
 {
-    /// <summary>
-    /// Description of Finder.
-    /// </summary>
-    public static class Finder
+	/// <summary>
+	/// Description of Finder.
+	/// </summary>
+	public static class Finder
 	{
 		public static Site queryAllSitesDB(string columnName, string pattern) {
 //			Action action = new Action(delegate {
