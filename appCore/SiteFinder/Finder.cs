@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using appCore.DB;
+using FileHelpers;
 
 namespace appCore.SiteFinder
 {
@@ -59,6 +60,20 @@ namespace appCore.SiteFinder
 //			Action action = new Action(delegate {
 			DataRowView siteRow = null;
 			DataView cellsRows = null;
+			
+			try {
+				var engine = new FileHelperEngine<Site2>();
+				var res = engine.ReadFileAsList(Databases.all_sites.FullName);
+				foreach (Site2 s in res)
+				{
+					Console.WriteLine("Order Info:");
+					Console.WriteLine(s.Site + " - " +
+					                  s.Date);
+				}
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
 			
 			while(Site.StartsWith("0"))
 				Site = Site.Substring(1);
