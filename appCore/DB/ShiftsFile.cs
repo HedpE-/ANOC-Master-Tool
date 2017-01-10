@@ -100,23 +100,22 @@ namespace appCore.DB
 				bool slListEnd = false;
 				foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
 					if(cell.Value != null) {
-						if(cell.Value.ToString() != "Closure Code") {
+						if(cell.Text != "Closure Code") {
 							if(!slListEnd) {
 								if(ShiftLeaders == null)
 									ShiftLeaders = new List<string>();
-								ShiftLeaders.Add(cell.Offset(0, 2).Value.ToString());
+								ShiftLeaders.Add(cell.Offset(0, 2).Text);
 							}
 							else {
 								if(Agents == null)
 									Agents = new List<string>();
-								Agents.Add(cell.Offset(0, 2).Value.ToString());
+								Agents.Add(cell.Offset(0, 2).Text);
 							}
 						}
 					}
 					else {
-						if(!slListEnd && cell.Offset(0, 2).Value != null) {
-							slListEnd = cell.Offset(0, 2).Value.ToString() == "Morning";
-						}
+						if(!slListEnd && cell.Offset(0, 2).Value != null)
+							slListEnd = cell.Offset(0, 2).Text == "Morning";
 					}
 				}
 			}
@@ -127,7 +126,7 @@ namespace appCore.DB
 			int personRow = FindPersonRow(name);
 			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace('1','3')]) {
 				if(cell.Value != null) {
-					if(cell.Value.ToString() == date.Day.ToString())
+					if(cell.Text == date.Day.ToString())
 						return package.Workbook.Worksheets[1].Cells[personRow, cell.Start.Column].Text;
 				}
 //				else
@@ -205,8 +204,9 @@ namespace appCore.DB
 		public String GetClosureCode(String name) {
 			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
 				if(cell.Value != null) {
-					if(cell.Value.ToString() == name)
-						return cell.Offset(0, -2).Value.ToString();
+					string[] nameArr = name.Split(' ');
+					if(cell.Text.Contains(nameArr[0]) && cell.Text.Contains(nameArr[1]))
+						return cell.Offset(0, -2).Text;
 				}
 			}
 			return string.Empty;
@@ -217,7 +217,7 @@ namespace appCore.DB
 			foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
 				if(cell.Value != null) {
 					if(cell.Value.ToString() != "Closure Code")
-						list.Add(cell.Value.ToString());
+						list.Add(cell.Text);
 				}
 			}
 			return list.ToArray();
@@ -226,7 +226,8 @@ namespace appCore.DB
 		int FindPersonRow(String name) {
 			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
 				if(cell.Value != null) {
-					if(cell.Value.ToString() == name)
+					string[] nameArr = name.Split(' ');
+					if(cell.Text.Contains(nameArr[0]) && cell.Text.Contains(nameArr[1]))
 						return cell.Start.Row;
 				}
 			}

@@ -276,11 +276,6 @@ namespace appCore.SiteFinder
 		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "PWR"</param>
 		public void requestOIData(string dataToRequest) {
 			if(Exists) {
-//				HttpStatusCode status = HttpStatusCode.NotFound;
-//				if(Web.OIConnection.Connection == null)
-//					status = Web.OIConnection.EstablishConnection();
-//				HttpStatusCode statusCode = Web.OIConnection.Connection.Logon();
-//				if(statusCode == HttpStatusCode.OK) {
 				if(dataToRequest.Contains("INC"))
 					INCs = FetchINCs();
 				
