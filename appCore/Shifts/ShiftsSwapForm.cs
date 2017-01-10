@@ -109,6 +109,12 @@ namespace appCore.Shifts
 				"Troca com: " + comboBox2.Text + Environment.NewLine +
 				"Data início: " + dateTimePicker3.Value.ToString(dateTimePicker3.CustomFormat) + Environment.NewLine +
 				"Data fim: " + dateTimePicker4.Value.ToString(dateTimePicker4.CustomFormat);
+			
+			if((dateTimePicker2.Value - dateTimePicker1.Value).TotalDays != (dateTimePicker4.Value - dateTimePicker3.Value).TotalDays) {
+				
+				return;
+			}
+			
 			message.Body = new MessageBody(BodyType.Text, body);
 			message.ToRecipients.Add(approverContact.Mailbox);
 //			message.CcRecipients.Add(swapContact.Mailbox);

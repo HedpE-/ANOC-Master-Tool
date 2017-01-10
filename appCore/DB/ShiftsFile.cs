@@ -125,16 +125,15 @@ namespace appCore.DB
 		
 		public String GetShift(String name, DateTime date) {
 			int personRow = FindPersonRow(name);
-			
 			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace('1','3')]) {
 				if(cell.Value != null) {
 					if(cell.Value.ToString() == date.Day.ToString())
 						return package.Workbook.Worksheets[1].Cells[personRow, cell.Start.Column].Text;
 				}
-				else
-					return string.Empty;
+//				else
+//					return string.Empty;
 			}
-			return null;
+			return string.Empty;
 		}
 		
 		public String[] GetAllShiftsInMonth(String name, int month) {
