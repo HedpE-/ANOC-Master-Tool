@@ -118,6 +118,8 @@
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
+    <Compile Include="SiteFinder\Cell.cs" />
+    <Compile Include="SiteFinder\Cell2.cs" />
     <Compile Include="SiteFinder\Site2.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\CF Implementation.cs" />
@@ -1278,7 +1280,6 @@
     <Compile Include="Toolbox\StringExtensions.cs" />
     <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\Tools.cs" />
-    <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />
     <Compile Include="SiteFinder\Vendors.cs" />
     <Compile Include="Toolbox\Transitions\IManagedType.cs" />

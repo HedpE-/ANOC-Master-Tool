@@ -55,26 +55,32 @@ namespace appCore.SiteFinder
 			return filtered;
 		}
 		
-		public static Site getSite(string Site)
+		public static Site2 getSite2(string Site)
 		{
-//			Action action = new Action(delegate {
-			DataRowView siteRow = null;
-			DataView cellsRows = null;
-			
+			Site2 site = null;
 			try {
-				var engine = new FileHelperEngine<Site2>();
-				var res = engine.ReadFileAsList(Databases.all_sites.FullName);
-				foreach (Site2 s in res)
-				{
-					Console.WriteLine("Order Info:");
-					Console.WriteLine(s.Site + " - " +
-					                  s.Date);
-				}
+				var engine2 = new FileHelperEngine<Site2>();
+				var res = engine2.ReadFileAsList(Databases.all_sites.FullName);
+				site = res.Find(s => s.Id == Site);
+//				foreach (Site2 s in res) {
+//						if(s.Id == Site)
+//							return s;
+//				}
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
 			}
 			
+			if(site == null)
+				site = new Site2();
+			return site;
+		}
+		
+		public static Site getSite(string Site)
+		{
+//			Action action = new Action(delegate {
+			DataRowView siteRow = null;
+			DataView cellsRows = null;
 			while(Site.StartsWith("0"))
 				Site = Site.Substring(1);
 			
