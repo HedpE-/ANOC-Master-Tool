@@ -19,81 +19,55 @@ namespace appCore.SiteFinder
 	/// </summary>
 	public static class Finder
 	{
-		public static Site queryAllSitesDB(string columnName, string pattern) {
-//			Action action = new Action(delegate {
-			DataView dv = new DataView(Databases.siteDetailsTable);
-			dv.RowFilter = columnName + " = '" + pattern + "'"; // query example = "id = 10"
-			DataRowView dr = null;
-			if(dv.Count == 1)
-				dr = dv[0];
+		public static List<Site> queryAllSitesDB(string columnName, string pattern) {
+			List<Site> filtered = new List<Site>();
+			try {
+				var engine = new FileHelperEngine<Site>();
+				var res = engine.ReadFileAsList(Databases.all_sites.FullName);
+				switch(columnName) {
+					case "CELL_ID":
+						filtered = res.FindAll(s => s.Id == pattern);
+						break;
+				}
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
 			
-			bool siteFound = dv.Count > 0;
-			
-			Site site = new Site();
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
-			return site;
+			return filtered;
 		}
 		
 		public static List<Cell> queryAllCellsDB(string columnName, string pattern) {
-			DataView dv = new DataView(Databases.cellDetailsTable);
-			dv.RowFilter = columnName + " = '" + pattern + "'"; // query example = "id = 10"
-//			DataRowView dr = null;
-//			if(dv.Count == 1)
-//				dr = dv[0];
 			List<Cell> filtered = new List<Cell>();
-//			DataTable dt = null;
-			if(dv.Count > 0) {
-				DataTable dt = dv.ToTable();
-				//clone the source table
-				//fill the list with the reolved Cell instances from filtered rows
-				foreach (DataRowView drv in dt.DefaultView) {
-					filtered.Add(new Cell(drv));
+			try {
+				var engine2 = new FileHelperEngine<Cell>();
+				var res = engine2.ReadFileAsList(Databases.all_cells.FullName);
+				switch(columnName) {
+					case "CELL_ID":
+						filtered = res.FindAll(s => s.Id == pattern);
+						break;
 				}
-//				dt = filtered;
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
 			}
 			return filtered;
 		}
 		
-		public static Site2 getSite2(string Site)
+		public static Site getSite(string Site)
 		{
-			Site2 site = null;
+			Site site = null;
 			try {
-				var engine2 = new FileHelperEngine<Site2>();
+				var engine2 = new FileHelperEngine<Site>();
 				var res = engine2.ReadFileAsList(Databases.all_sites.FullName);
 				site = res.Find(s => s.Id == Site);
-//				foreach (Site2 s in res) {
-//						if(s.Id == Site)
-//							return s;
-//				}
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
 			}
 			
 			if(site == null)
-				site = new Site2();
-			return site;
-		}
-		
-		public static Site getSite(string Site)
-		{
-//			Action action = new Action(delegate {
-			DataRowView siteRow = null;
-			DataView cellsRows = null;
-			while(Site.StartsWith("0"))
-				Site = Site.Substring(1);
-			
-			if(!string.IsNullOrEmpty(Site)) {
-				siteRow = findSite(Site);
-				cellsRows = findCells(Site);
-			}
-			else
-				return new Site();
-			
-			Site site = new Site(siteRow, cellsRows);
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+				site = new Site();
 			return site;
 		}
 
@@ -102,16 +76,18 @@ namespace appCore.SiteFinder
 			if(!site.IsAllDigits())
 				site = "00000";
 			
-			DataView dv = new DataView(Databases.cellDetailsTable);
-			dv.RowFilter = "SITE = '" + site + "'";
+			List<Cell> foundCells = new List<Cell>();
 			
-			List<Cell> cellsList = new List<Cell>();
-			if (dv.Count > 0) {
-				foreach(DataRowView tempCell in dv)
-					cellsList.Add(new Cell(tempCell));
+			try {
+				var engine2 = new FileHelperEngine<Cell>();
+				var res = engine2.ReadFileAsList(Databases.all_cells.FullName);
+				foundCells = res.FindAll(s => s.ParentSite == site);
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
 			}
 			
-			return cellsList;
+			return foundCells;
 		}
 
 		public static Cell getCell(string cell)
@@ -119,48 +95,55 @@ namespace appCore.SiteFinder
 			if(!cell.IsAllDigits())
 				cell = "00000";
 			
-			DataView dv = new DataView(Databases.cellDetailsTable);
-			dv.RowFilter = "CELL_NAME = '" + cell + "'";
+			Cell tempCell = null;
 			
-			Cell tempCell = new Cell(dv[0]);
+			try {
+				var engine2 = new FileHelperEngine<Cell>();
+				var res = engine2.ReadFileAsList(Databases.all_cells.FullName);
+				tempCell = res.Find(s => s.Name == cell);
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
+			
 			return tempCell;
 		}
 
-		static DataRowView findSite(string site)
-		{
-			if(!site.IsAllDigits())
-				site = "00000";
-			
-			DataView dv = new DataView(Databases.siteDetailsTable);
-			dv.RowFilter = "SITE = '" + site + "'"; // query example = "id = 10"
-			DataRowView dr = null;
-			if(dv.Count == 1)
-				dr = dv[0];
-			return dr;
-		}
-
-		static DataView findCells(string site)
-		{
-			if(!site.IsAllDigits())
-				site = "00000";
-			
-			DataView dv = new DataView(Databases.cellDetailsTable);
-			dv.RowFilter = "SITE = '" + site + "'";
-			DataTable dt = null;
-			if (dv.Count > 0) {
-				dt = dv.ToTable();
-				//clone the source table
-				DataTable filtered = dt.Clone();
-
-				//fill the clone with the filtered rows
-				foreach (DataRowView drv in dt.DefaultView)
-				{
-					filtered.Rows.Add(drv.Row.ItemArray);
-				}
-				dt = filtered;
-			}
-			
-			return new DataView(dt);
-		}
+//		static DataRowView findSite(string site)
+//		{
+//			if(!site.IsAllDigits())
+//				site = "00000";
+//			
+//			DataView dv = new DataView(Databases.siteDetailsTable);
+//			dv.RowFilter = "SITE = '" + site + "'"; // query example = "id = 10"
+//			DataRowView dr = null;
+//			if(dv.Count == 1)
+//				dr = dv[0];
+//			return dr;
+//		}
+//
+//		static DataView findCells(string site)
+//		{
+//			if(!site.IsAllDigits())
+//				site = "00000";
+//			
+//			DataView dv = new DataView(Databases.cellDetailsTable);
+//			dv.RowFilter = "SITE = '" + site + "'";
+//			DataTable dt = null;
+//			if (dv.Count > 0) {
+//				dt = dv.ToTable();
+//				//clone the source table
+//				DataTable filtered = dt.Clone();
+//
+//				//fill the clone with the filtered rows
+//				foreach (DataRowView drv in dt.DefaultView)
+//				{
+//					filtered.Rows.Add(drv.Row.ItemArray);
+//				}
+//				dt = filtered;
+//			}
+//			
+//			return new DataView(dt);
+//		}
 	}
 }

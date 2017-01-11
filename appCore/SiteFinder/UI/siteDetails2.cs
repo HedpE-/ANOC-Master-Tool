@@ -106,6 +106,7 @@ namespace appCore.SiteFinder.UI
 		public Site currentSite;
 		List<Site> outageSites = new List<Site>(); // for outages site list
 		byte listView2_EventCount = 1;
+		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(560);
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
@@ -256,7 +257,7 @@ namespace appCore.SiteFinder.UI
 			if(currentSite.Exists) {
 				textBox1.Text = currentSite.Id;
 				textBox2.Text = currentSite.PowerCompany;
-				textBox3.Text = currentSite.JVCO;
+				textBox3.Text = currentSite.JVCO_Id;
 				textBox4.Text = currentSite.Address.Replace(';',',');
 				TextBox4TextChanged(textBox4,null);
 				textBox5.Text = currentSite.Area;
@@ -536,7 +537,7 @@ namespace appCore.SiteFinder.UI
 		void searchResultsPopulate(List<Site> foundSites) {
 			outageSites = foundSites;
 			foreach (Site site in foundSites) {
-				listView2.Items.Add(new ListViewItem(new[]{ site.Id,site.JVCO,site.Priority,site.HostedBy,site.PostCode }));
+				listView2.Items.Add(new ListViewItem(new[]{ site.Id,site.JVCO_Id,site.Priority,site.HostedBy,site.PostCode }));
 				
 				foreach (ColumnHeader col in listView2.Columns)
 					col.Width = -2;

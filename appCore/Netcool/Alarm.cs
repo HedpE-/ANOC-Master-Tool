@@ -150,7 +150,7 @@ namespace appCore.Netcool
 					COOS = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
 					break;
 				case Site.Vendors.Ericsson:
-					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable"))
+					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable") || Summary.Contains("UtranCell_NbapMessageFailure"))
 						COOS = true;
 					else
 						OnM = Summary.Contains("Heartbeat Failure") || Summary.Contains("OML FAULT");

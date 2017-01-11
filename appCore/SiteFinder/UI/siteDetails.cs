@@ -133,7 +133,7 @@ namespace appCore.SiteFinder.UI
 					
 					textBox1.Text = currentSite.Id;
 					textBox2.Text = currentSite.PowerCompany;
-					textBox3.Text = currentSite.JVCO;
+					textBox3.Text = currentSite.JVCO_Id;
 					textBox4.Text = currentSite.Address.Replace(';',',');
 					TextBox4TextChanged(textBox4,null);
 					textBox5.Text = currentSite.Area;

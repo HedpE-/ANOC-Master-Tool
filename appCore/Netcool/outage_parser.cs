@@ -177,7 +177,7 @@ namespace appCore.Netcool
 						}
 						break;
 					case "ERICSSON":
-						if (!((dr[summaryIndex].ToString().Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && dr[summaryIndex].ToString().Contains("BCCH")) || dr[summaryIndex].ToString().Contains("UtranCell_ServiceUnavailable") || dr[summaryIndex].ToString().Contains("4G: Heartbeat Failure")))
+						if (!((dr[summaryIndex].ToString().Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && dr[summaryIndex].ToString().Contains("BCCH")) || dr[summaryIndex].ToString().Contains("UtranCell_ServiceUnavailable") || dr[summaryIndex].ToString().Contains("UtranCell_NbapMessageFailure") ||dr[summaryIndex].ToString().Contains("4G: Heartbeat Failure")))
 						{
 							dr.Delete();
 							if (a > 0)

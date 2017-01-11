@@ -248,21 +248,9 @@ namespace appCore.Templates.UI
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
 				Action actionThreaded = new Action(delegate {
-				                                   	System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-
-				                                   	sw.Start();
-				                                   	Site2 currentSite2 = Finder.getSite2(tb.Text);
-				                                   	if(currentSite2.Exists)
-				                                   		currentSite2.requestOIData("INCCRQPWR");
-				                                   	sw.Stop();
-				                                   	FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-//				                                   	sw.Reset();
-//				                                   	sw.Start();
 				                                   	currentSite = Finder.getSite(tb.Text);
 				                                   	if(currentSite.Exists)
 				                                   		currentSite.requestOIData("INCCRQPWR");
-//				                                   	sw.Stop();
-//				                                   	FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
 				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {

@@ -1,8 +1,8 @@
 ﻿/*
  * Created by SharpDevelop.
  * User: goncarj3
- * Date: 09-01-2017
- * Time: 22:12
+ * Date: 21-07-2016
+ * Time: 10:25
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.Data;
+using System.Net;
 using System.IO;
 using GMap.NET;
 using GMap.NET.WindowsForms;
@@ -18,144 +19,39 @@ using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
 using appCore.Toolbox;
 using HtmlAgilityPack;
-using FileHelpers;
 
 namespace appCore.SiteFinder
 {
 	/// <summary>
-	/// Description of Site2.
+	/// Description of Site.
 	/// </summary>
-	[DelimitedRecord(","), IgnoreFirst(1)]
-	public class Site2
+	public class Site3
 	{
-		[FieldOrder(1)]
-		public string Id;
-		[FieldOrder(2)]
-		public string JVCO_Id;
-		[FieldOrder(3)]
-		public string GSM900;
-		[FieldOrder(4)]
-		public string GSM1800;
-		[FieldOrder(5)]
-		public string UMTS900;
-		[FieldOrder(6)]
-		public string UMTS2100;
-		[FieldOrder(7)]
-		public string LTE800;
-		[FieldOrder(8)]
-		public string LTE2600;
-		[FieldOrder(9)]
-		public string LTE2100;
-		[FieldOrder(10)]
-		public double Easting;
-		[FieldOrder(11)]
-		public double Northing;
-		[FieldOrder(12)]
-		public string Host;
-		[FieldOrder(13)]
-		public string Priority;
-		[FieldOrder(14)]
-		string ADDRESS;
-		[FieldOrder(15)]
-		public string TellabsAtRisk;
-		[FieldOrder(16)]
-		public string Area;
-		[FieldOrder(17)]
-		public string NSN_Status;
-		[FieldOrder(18)]
-		public string NOC2G;
-		[FieldOrder(19)]
-		public string NOC3G;
-		[FieldOrder(20)]
-		public string NOC4G;
-		[FieldOrder(21)]
-		public string VF_Region;
-		[FieldOrder(22)]
-		public string Special_Id;
-		[FieldOrder(23)]
-		public string Special;
-		[FieldOrder(24)]
-		string SPECIAL_START;
-		[FieldOrder(25)]
-		string SPECIAL_END;
-		[FieldOrder(26)]
-		public string VIP;
-		[FieldOrder(27)]
-		public string Site_Share_Operator;
-		[FieldOrder(28)]
-		public string Site_Share_Site_Id;
-		[FieldOrder(29)]
-		public string Site_Access;
-		[FieldOrder(30)]
-		public string Site_Type;
-		[FieldOrder(31)]
-		public string Site_Subtype;
-		[FieldOrder(32)]
-		[FieldConverter(ConverterKind.Boolean, "Yes", "No")]
-		[FieldNullValue(typeof (bool), "false")]
-		public bool Paknet_Fitted;
-		[FieldOrder(33)]
-		[FieldConverter(ConverterKind.Boolean, "Yes", "No")]
-		[FieldNullValue(typeof (bool), "false")]
-		public bool Vodapage_Fitted;
-		[FieldOrder(34)]
-		public string DC_STATUS;
-		[FieldOrder(35)]
-		public string DC_Timestamp;
-		[FieldOrder(36)]
-		public string Cooling_Status;
-		[FieldOrder(37)]
-		public string Cooling_Timestamp;
-		[FieldOrder(38)]
-		public string Key_Information;
-		[FieldOrder(39)]
-		public string EF_HealthAndSafety;
-		[FieldOrder(40)]
-		public string Switch2G;
-		[FieldOrder(41)]
-		public string Switch3G;
-		[FieldOrder(42)]
-		public string Switch4G;
-		[FieldOrder(43)]
-		public string DRSwitch2G;
-		[FieldOrder(44)]
-		public string DRSwitch3G;
-		[FieldOrder(45)]
-		public string DRSwitch4G;
-		[FieldOrder(46)]
-		public string MTX2G;
-		[FieldOrder(47)]
-		public string MTX3G;
-		[FieldOrder(48)]
-		public string MTX4G;
-		[FieldOrder(49)]
-		public string IP_2G_I;
-		[FieldOrder(50)]
-		public string IP_2G_E;
-		[FieldOrder(51)]
-		public string IP_3G_I;
-		[FieldOrder(52)]
-		public string IP_3G_E;
-		[FieldOrder(53)]
-		public string IP_4G_I;
-		[FieldOrder(54)]
-		public string IP_4G_E;
-		[FieldOrder(55)]
-		string VENDOR_2G;
-		[FieldOrder(56)]
-		string VENDOR_3G;
-		[FieldOrder(57)]
-		string VENDOR_4G;
-		[FieldOrder(58)]
-		string DATE;
-		[FieldOrder(59)]
-		public string MTX_Related;
-		
-//		[FieldHidden]
-		public bool Exists { get { return !string.IsNullOrEmpty(JVCO_Id); } private set { } }
-		[FieldHidden]
-		public LLPoint Coordinates;
-//		[FieldHidden]
+		public bool Exists { get { return _site != null; } private set { } }
+		string SITE = string.Empty;
+		public string Id { get { return SITE; } }
+		string JVCO_ID = string.Empty;
+		public string JVCO { get { return JVCO_ID; } }
+		string GSM900 = string.Empty;
+		public string GSM900Operators { get { return GSM900; } }
+		string GSM1800 = string.Empty;
+		public string GSM1800Operators { get { return GSM1800; } }
+		string UMTS900 = string.Empty;
+		public string UMTS900Operators { get { return UMTS900; } }
+		string UMTS2100 = string.Empty;
+		public string UMTS2100Operators { get { return UMTS2100; } }
+		string LTE800 = string.Empty;
+		public string LTE800Operators { get { return LTE800; } }
+		string LTE2600 = string.Empty;
+		public string LTE2600Operators { get { return LTE2600; } }
+		double EASTING = 0;
+		double NORTHING = 0;
+		public LLPoint Coordinates { get; private set; }
+		string HOST = string.Empty;
+		public string HostedBy { get { return HOST; } }
+		string PRIORITY = string.Empty;
+		public string Priority { get { return PRIORITY; } }
+		string ADDRESS = string.Empty;
 		public string Address {
 			get {
 				return ADDRESS.Replace(';',',');
@@ -169,17 +65,11 @@ namespace appCore.SiteFinder
 				try { Town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 			}
 		}
-		[FieldHidden]
-		public string PostCode;
-		[FieldHidden]
-		public string Town;
-		[FieldHidden]
-		public string County;
-		[FieldHidden]
+		public string PostCode { get; private set; }
+		public string Town { get; private set; }
+		public string County { get; private set; }
 		string POWER_COMPANY = string.Empty;
-		[FieldHidden]
 		string POWER_CONTACT = string.Empty;
-//		[FieldHidden]
 		public string PowerCompany {
 			get {
 				return (POWER_COMPANY + " " + POWER_CONTACT).Trim();
@@ -190,89 +80,143 @@ namespace appCore.SiteFinder
 				POWER_CONTACT = temp[1].Trim();
 			}
 		}
-//		[FieldHidden]
-		public DateTime SpecialEvent_StartDate { get { return Convert.ToDateTime(SPECIAL_START); } }
-//		[FieldHidden]
-		public DateTime SpecialEvent_EndDate { get { return Convert.ToDateTime(SPECIAL_END); } }
-//		[FieldHidden]
-		public Site.Vendors Vendor2G { get { return resolveVendor(VENDOR_2G); } }
-//		[FieldHidden]
-		public Site.Vendors Vendor3G { get { return resolveVendor(VENDOR_3G); } }
-//		[FieldHidden]
-		public Site.Vendors Vendor4G { get { return resolveVendor(VENDOR_4G); } }
-//		[FieldHidden]
-		public DateTime DeploymentDate { get { return Convert.ToDateTime(DATE); } }
+//		string TELLABSATRISK = string.Empty;
+//		public string TellabsAtRisk { get { return TELLABSATRISK; } }
+		string AREA = string.Empty;
+		public string Area { get { return AREA; } }
+//		string NSN_STATUS = string.Empty;
+//		public string NSNStatus { get { return NSN_STATUS; } }
+		string NOC2G = string.Empty;
+		public string NOC_2G { get { return NOC2G; } }
+		string NOC3G = string.Empty;
+		public string NOC_3G { get { return NOC3G; } }
+		string NOC4G = string.Empty;
+		public string NOC_4G { get { return NOC4G; } }
+		string VF_REGION = string.Empty;
+		public string Region { get { return VF_REGION; } }
+		string SPECIAL_ID = string.Empty;
+		public string SpecialEventID { get { return SPECIAL_ID; } }
+		string SPECIAL = string.Empty;
+		public string SpecialEvent { get { return SPECIAL_ID; } }
+		DateTime SPECIAL_START = new DateTime(1,1,1);
+		public DateTime SpecialEvent_StartDate { get { return SPECIAL_START; } }
+		DateTime SPECIAL_END = new DateTime(1,1,1);
+		public DateTime SpecialEvent_EndDate { get { return SPECIAL_END; } }
+		string VIP = string.Empty;
+		public string VipSite { get { return VIP; } }
+		string SITE_SHARE_OPERATOR = string.Empty;
+		public string SharedOperator { get { return SITE_SHARE_OPERATOR; } }
+		string SITE_SHARE_SITE_NO = string.Empty;
+		public string SharedOperatorSiteID { get { return SITE_SHARE_SITE_NO; } }
+		string SITE_ACCESS = string.Empty;
+		public string Access { get { return SITE_ACCESS; } }
+//		string SITE_TYPE = string.Empty;
+//		public string Type { get { return SITE_TYPE; } }
+//		string SITE_SUBTYPE = string.Empty;
+//		public string SubType { get { return SITE_SUBTYPE; } }
+//		bool PAKNET_FITTED;
+//		public string PaknetFitted { get { return PAKNET_FITTED ? "Yes" : "No"; } }
+//		bool VODAPAGE_FITTED;
+//		public string VodaPageFitted { get { return VODAPAGE_FITTED ? "Yes" : "No"; } }
+//		string DC_STATUS = string.Empty;
+//		public string OwnDCStatus { get { return DC_STATUS; } }
+//		DateTime DC_TIMESTAMP = new DateTime(1,1,1);
+//		public DateTime OwnDCStatusChangedDate { get { return DC_TIMESTAMP; } }
+//		string COOLING_STATUS = string.Empty;
+//		public string CoolingSystemStatus { get { return COOLING_STATUS; } }
+//		DateTime COOLING_TIMESTAMP = new DateTime(1,1,1);
+//		public DateTime CoolingSystemStatusChangedDate { get { return COOLING_TIMESTAMP; } }
+//		readonly string KEY_INFORMATION = string.Empty;
+//		public string KeyInformation { get { return KEY_INFORMATION; } }
+//		string EF_HEALTHANDSAFETY = string.Empty;
+//		public string HealthAndSafety { get { return EF_HEALTHANDSAFETY; } }
+		string SWITCH2G = string.Empty;
+		public string BSC { get { return SWITCH2G; } }
+		string SWITCH3G = string.Empty;
+		public string RNC { get { return SWITCH3G; } }
+		string SWITCH4G = string.Empty;
+		public string Switch4G { get { return SWITCH4G; } }
+//		string DRSWITCH2G = string.Empty;
+//		public string DRSwitch2G { get { return DRSWITCH2G; } }
+//		string DRSWITCH3G = string.Empty;
+//		public string DRSwitch3G { get { return DRSWITCH2G; } }
+//		string DRSWITCH4G = string.Empty;
+//		public string DRSwitch4G { get { return DRSWITCH2G; } }
+		string MTX2G = string.Empty;
+		public string MTX_2G { get { return MTX2G; } }
+		string MTX3G = string.Empty;
+		public string MTX_3G { get { return MTX3G; } }
+		string MTX4G = string.Empty;
+		public string MTX_4G { get { return MTX4G; } }
+//		string IP_2G_I = string.Empty;
+//		public string InnerIP2G { get { return IP_2G_I; } }
+//		string IP_2G_E = string.Empty;
+//		public string OuterIP2G { get { return IP_2G_E; } }
+//		string IP_3G_I = string.Empty;
+//		public string InnerIP3G { get { return IP_3G_I; } }
+//		string IP_3G_E = string.Empty;
+//		public string OuterIP3G { get { return IP_3G_E; } }
+//		string IP_4G_I = string.Empty;
+//		public string InnerIP4G { get { return IP_4G_I; } }
+//		string IP_4G_E = string.Empty;
+//		public string OuterIP4G { get { return IP_4G_E; } }
+		Site.Vendors VENDOR_2G = Site.Vendors.None;
+		public Site.Vendors Vendor2G { get { return VENDOR_2G; } }
+		Site.Vendors VENDOR_3G = Site.Vendors.None;
+		public Site.Vendors Vendor3G { get { return VENDOR_3G; } }
+		Site.Vendors VENDOR_4G = Site.Vendors.None;
+		public Site.Vendors Vendor4G { get { return VENDOR_4G; } }
+		DateTime DATE = new DateTime(1,1,1);
+		public DateTime DeploymentDate { get { return DATE; } }
+//		string MTX_RELATED = string.Empty;
+//		public string RelatedMTX { get { return MTX_RELATED; } }
+		public DataTable ActiveAlarms { get; private set; }
+		public DataTable INCs { get; private set; }
+		public DataTable CRQs { get; private set; }
+		public DataTable BookIns { get; private set; }
+		public DataTable LockedCellsDetails { get; private set; }
+		public GMarkerGoogle MapMarker { get; private set; }
 		
-		[FieldHidden]
-		public DataTable ActiveAlarms;
-		[FieldHidden]
-		public DataTable INCs;
-		[FieldHidden]
-		public DataTable CRQs;
-		[FieldHidden]
-		public DataTable BookIns;
-		[FieldHidden]
-		public DataTable LockedCellsDetails;
-		[FieldHidden]
-		public GMarkerGoogle MapMarker;
-		
-		[FieldHidden]
-		List<Cell2> cells = new List<Cell2>();
-		public List<Cell2> Cells {
-			get {
-				if(cells.Count == 0 && Exists) {
-					try {
-						var engine = new FileHelperEngine<Cell2>();
-						var res = engine.ReadFileAsList(DB.Databases.all_cells.FullName);
-						foreach (Cell2 s in res)
-						{
-							if(s.ParentSite == Id)
-								cells.Add(s);
-						}
-					}
-					catch(FileHelpersException e) {
-						string f = e.Message;
-					}
-				}
-				return cells;
-			}
-			private set { }
-		}
-		
-		public Site2() {
-//			_site = site;
-//			_cells = cells;
+		public List<Cell3> Cells = new List<Cell3>();
+		protected DataRowView _site;
+		protected DataView _cells;
+
+		public Site3() {}
+
+		public Site3(DataRowView site, DataView cells) {
+			_site = site;
+			_cells = cells;
 			if(Exists) {
-//				try { SITE = _site[_site.Row.Table.Columns.IndexOf("SITE")].ToString(); } catch (Exception) { }
-//				try { JVCO_ID = _site[_site.Row.Table.Columns.IndexOf("JVCO_ID")].ToString(); } catch (Exception) { }
-//				try { GSM900 = _site[_site.Row.Table.Columns.IndexOf("GSM900")].ToString(); } catch (Exception) { }
-//				try { GSM1800 = _site[_site.Row.Table.Columns.IndexOf("GSM1800")].ToString(); } catch (Exception) { }
-//				try { UMTS900 = _site[_site.Row.Table.Columns.IndexOf("UMTS900")].ToString(); } catch (Exception) { }
-//				try { UMTS2100 = _site[_site.Row.Table.Columns.IndexOf("UMTS2100")].ToString(); } catch (Exception) { }
-//				try { LTE800 = _site[_site.Row.Table.Columns.IndexOf("LTE800")].ToString(); } catch (Exception) { }
-//				try { LTE2600 = _site[_site.Row.Table.Columns.IndexOf("LTE2600")].ToString(); } catch (Exception) { }
-//				try { EASTING = Convert.ToDouble(_site[_site.Row.Table.Columns.IndexOf("EASTING")].ToString()); } catch (Exception) { }
-//				try { NORTHING = Convert.ToDouble(_site[_site.Row.Table.Columns.IndexOf("NORTHING")].ToString()); } catch (Exception) { }
-//				try { HOST = _site[_site.Row.Table.Columns.IndexOf("HOST")].ToString(); } catch (Exception) { }
-//				try { PRIORITY = _site[_site.Row.Table.Columns.IndexOf("PRIORITY")].ToString(); } catch (Exception) { }
-//				try { Address = _site[_site.Row.Table.Columns.IndexOf("ADDRESS")].ToString(); } catch (Exception) { }
-//				try { POWER_COMPANY = _site[_site.Row.Table.Columns.IndexOf("POWER_COMPANY")].ToString(); } catch (Exception) { }
-//				try { POWER_CONTACT = _site[_site.Row.Table.Columns.IndexOf("POWER_CONTACT")].ToString(); } catch (Exception) { }
+				try { SITE = _site[_site.Row.Table.Columns.IndexOf("SITE")].ToString(); } catch (Exception) { }
+				try { JVCO_ID = _site[_site.Row.Table.Columns.IndexOf("JVCO_ID")].ToString(); } catch (Exception) { }
+				try { GSM900 = _site[_site.Row.Table.Columns.IndexOf("GSM900")].ToString(); } catch (Exception) { }
+				try { GSM1800 = _site[_site.Row.Table.Columns.IndexOf("GSM1800")].ToString(); } catch (Exception) { }
+				try { UMTS900 = _site[_site.Row.Table.Columns.IndexOf("UMTS900")].ToString(); } catch (Exception) { }
+				try { UMTS2100 = _site[_site.Row.Table.Columns.IndexOf("UMTS2100")].ToString(); } catch (Exception) { }
+				try { LTE800 = _site[_site.Row.Table.Columns.IndexOf("LTE800")].ToString(); } catch (Exception) { }
+				try { LTE2600 = _site[_site.Row.Table.Columns.IndexOf("LTE2600")].ToString(); } catch (Exception) { }
+				try { EASTING = Convert.ToDouble(_site[_site.Row.Table.Columns.IndexOf("EASTING")].ToString()); } catch (Exception) { }
+				try { NORTHING = Convert.ToDouble(_site[_site.Row.Table.Columns.IndexOf("NORTHING")].ToString()); } catch (Exception) { }
+				try { HOST = _site[_site.Row.Table.Columns.IndexOf("HOST")].ToString(); } catch (Exception) { }
+				try { PRIORITY = _site[_site.Row.Table.Columns.IndexOf("PRIORITY")].ToString(); } catch (Exception) { }
+				try { Address = _site[_site.Row.Table.Columns.IndexOf("ADDRESS")].ToString(); } catch (Exception) { }
+				try { POWER_COMPANY = _site[_site.Row.Table.Columns.IndexOf("POWER_COMPANY")].ToString(); } catch (Exception) { }
+				try { POWER_CONTACT = _site[_site.Row.Table.Columns.IndexOf("POWER_CONTACT")].ToString(); } catch (Exception) { }
 //			try { TELLABSATRISK = _site[_site.Row.Table.Columns.IndexOf("TELLABSATRISK")].ToString(); } catch (Exception) { }
-//				try { AREA = _site[_site.Row.Table.Columns.IndexOf("AREA")].ToString(); } catch (Exception) { }
+				try { AREA = _site[_site.Row.Table.Columns.IndexOf("AREA")].ToString(); } catch (Exception) { }
 //			try { NSN_STATUS = _site[_site.Row.Table.Columns.IndexOf("NSN_STATUS")].ToString(); } catch (Exception) { }
-//				try { NOC2G = _site[_site.Row.Table.Columns.IndexOf("NOC2G")].ToString(); } catch (Exception) { }
-//				try { NOC3G = _site[_site.Row.Table.Columns.IndexOf("NOC3G")].ToString(); } catch (Exception) { }
-//				try { NOC4G = _site[_site.Row.Table.Columns.IndexOf("NOC4G")].ToString(); } catch (Exception) { }
-//				try { VF_REGION = _site[_site.Row.Table.Columns.IndexOf("VF_REGION")].ToString(); } catch (Exception) { }
-//				try { SPECIAL_ID = _site[_site.Row.Table.Columns.IndexOf("SPECIAL_ID")].ToString(); } catch (Exception) { }
-//				try { SPECIAL = _site[_site.Row.Table.Columns.IndexOf("SPECIAL")].ToString(); } catch (Exception) { }
-//				try { SPECIAL_START = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("SPECIAL_START")].ToString()); } catch (Exception) { }
-//				try { SPECIAL_END = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("SPECIAL_END")].ToString()); } catch (Exception) { }
-//				try { VIP = _site[_site.Row.Table.Columns.IndexOf("VIP")].ToString(); } catch (Exception) { }
-//				try { SITE_SHARE_OPERATOR = _site[_site.Row.Table.Columns.IndexOf("SITE_SHARE_OPERATOR")].ToString(); } catch (Exception) { }
-//				try { SITE_SHARE_SITE_NO = _site[_site.Row.Table.Columns.IndexOf("SITE_SHARE_SITE_NO")].ToString(); } catch (Exception) { }
-//				try { SITE_ACCESS = _site[_site.Row.Table.Columns.IndexOf("SITE_ACCESS")].ToString(); } catch (Exception) { }
+				try { NOC2G = _site[_site.Row.Table.Columns.IndexOf("NOC2G")].ToString(); } catch (Exception) { }
+				try { NOC3G = _site[_site.Row.Table.Columns.IndexOf("NOC3G")].ToString(); } catch (Exception) { }
+				try { NOC4G = _site[_site.Row.Table.Columns.IndexOf("NOC4G")].ToString(); } catch (Exception) { }
+				try { VF_REGION = _site[_site.Row.Table.Columns.IndexOf("VF_REGION")].ToString(); } catch (Exception) { }
+				try { SPECIAL_ID = _site[_site.Row.Table.Columns.IndexOf("SPECIAL_ID")].ToString(); } catch (Exception) { }
+				try { SPECIAL = _site[_site.Row.Table.Columns.IndexOf("SPECIAL")].ToString(); } catch (Exception) { }
+				try { SPECIAL_START = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("SPECIAL_START")].ToString()); } catch (Exception) { }
+				try { SPECIAL_END = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("SPECIAL_END")].ToString()); } catch (Exception) { }
+				try { VIP = _site[_site.Row.Table.Columns.IndexOf("VIP")].ToString(); } catch (Exception) { }
+				try { SITE_SHARE_OPERATOR = _site[_site.Row.Table.Columns.IndexOf("SITE_SHARE_OPERATOR")].ToString(); } catch (Exception) { }
+				try { SITE_SHARE_SITE_NO = _site[_site.Row.Table.Columns.IndexOf("SITE_SHARE_SITE_NO")].ToString(); } catch (Exception) { }
+				try { SITE_ACCESS = _site[_site.Row.Table.Columns.IndexOf("SITE_ACCESS")].ToString(); } catch (Exception) { }
 //			try { SITE_TYPE = _site[_site.Row.Table.Columns.IndexOf("SITE_TYPE")].ToString(); } catch (Exception) { }
 //			try { SITE_SUBTYPE = _site[_site.Row.Table.Columns.IndexOf("SITE_SUBTYPE")].ToString(); } catch (Exception) { }
 //			try { PAKNET_FITTED = _site[_site.Row.Table.Columns.IndexOf("PAKNET_FITTED")].ToString() == "Yes"; } catch (Exception) { }
@@ -283,36 +227,36 @@ namespace appCore.SiteFinder
 //			try { COOLING_TIMESTAMP = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("COOLING_TIMESTAMP")].ToString()); } catch (Exception) { }
 //			try { KEY_INFORMATION = _site[_site.Row.Table.Columns.IndexOf("KEY_INFORMATION")].ToString(); } catch (Exception) { }
 //			try { EF_HEALTHANDSAFETY = _site[_site.Row.Table.Columns.IndexOf("EF_HEALTHANDSAFETY")].ToString(); } catch (Exception) { }
-//				try { SWITCH2G = _site[_site.Row.Table.Columns.IndexOf("SWITCH2G")].ToString(); } catch (Exception) { }
-//				try { SWITCH3G = _site[_site.Row.Table.Columns.IndexOf("SWITCH3G")].ToString(); } catch (Exception) { }
-//				try { SWITCH4G = _site[_site.Row.Table.Columns.IndexOf("SWITCH4G")].ToString(); } catch (Exception) { }
+				try { SWITCH2G = _site[_site.Row.Table.Columns.IndexOf("SWITCH2G")].ToString(); } catch (Exception) { }
+				try { SWITCH3G = _site[_site.Row.Table.Columns.IndexOf("SWITCH3G")].ToString(); } catch (Exception) { }
+				try { SWITCH4G = _site[_site.Row.Table.Columns.IndexOf("SWITCH4G")].ToString(); } catch (Exception) { }
 //			try { DRSWITCH2G = _site[_site.Row.Table.Columns.IndexOf("DRSWITCH2G")].ToString(); } catch (Exception) { }
 //			try { DRSWITCH3G = _site[_site.Row.Table.Columns.IndexOf("DRSWITCH3G")].ToString(); } catch (Exception) { }
 //			try { DRSWITCH4G = _site[_site.Row.Table.Columns.IndexOf("DRSWITCH4G")].ToString(); } catch (Exception) { }
-//				try { MTX2G = _site[_site.Row.Table.Columns.IndexOf("MTX2G")].ToString(); } catch (Exception) { }
-//				try { MTX3G = _site[_site.Row.Table.Columns.IndexOf("MTX3G")].ToString(); } catch (Exception) { }
-//				try { MTX4G = _site[_site.Row.Table.Columns.IndexOf("MTX4G")].ToString(); } catch (Exception) { }
+				try { MTX2G = _site[_site.Row.Table.Columns.IndexOf("MTX2G")].ToString(); } catch (Exception) { }
+				try { MTX3G = _site[_site.Row.Table.Columns.IndexOf("MTX3G")].ToString(); } catch (Exception) { }
+				try { MTX4G = _site[_site.Row.Table.Columns.IndexOf("MTX4G")].ToString(); } catch (Exception) { }
 //			try { IP_2G_I = _site[_site.Row.Table.Columns.IndexOf("IP_2G_I")].ToString(); } catch (Exception) { }
 //			try { IP_2G_E = _site[_site.Row.Table.Columns.IndexOf("IP_2G_E")].ToString(); } catch (Exception) { }
 //			try { IP_3G_I = _site[_site.Row.Table.Columns.IndexOf("IP_3G_I")].ToString(); } catch (Exception) { }
 //			try { IP_3G_E = _site[_site.Row.Table.Columns.IndexOf("IP_3G_E")].ToString(); } catch (Exception) { }
 //			try { IP_4G_I = _site[_site.Row.Table.Columns.IndexOf("IP_4G_I")].ToString(); } catch (Exception) { }
 //			try { IP_4G_E = _site[_site.Row.Table.Columns.IndexOf("IP_4G_E")].ToString(); } catch (Exception) { }
-//				try { VENDOR_2G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
-//				try { VENDOR_3G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
-//				try { VENDOR_4G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
-//				try { DATE = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("DATE")].ToString()); } catch (Exception) { }
+				try { VENDOR_2G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
+				try { VENDOR_3G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
+				try { VENDOR_4G = resolveVendor(_site[_site.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
+				try { DATE = Convert.ToDateTime(_site[_site.Row.Table.Columns.IndexOf("DATE")].ToString()); } catch (Exception) { }
 //			try { MTX_RELATED = _site[_site.Row.Table.Columns.IndexOf("MTX_RELATED")].ToString(); } catch (Exception) { }
 				
-//				foreach (DataRowView cell in _cells) {
-//					Cells.Add(new Cell(cell));
-//				}
-//				var lengths = from element in Cells
-//					orderby element.Bearer ascending
-//					orderby element.Name ascending
-//					select element;
+				foreach (DataRowView cell in _cells) {
+					Cells.Add(new Cell3(cell));
+				}
+				var lengths = from element in Cells
+					orderby element.Bearer ascending
+					orderby element.Name ascending
+					select element;
 				
-				Coordinates = coordConvert.toLat_Long(new CoordPoint { Easting = Easting, Northing = Northing }, "OSGB36");
+				Coordinates = coordConvert.toLat_Long(new GMap.NET.CoordPoint { Easting = EASTING, Northing = NORTHING }, "OSGB36");
 				MapMarker = new GMarkerGoogle(new PointLatLng(Coordinates.Latitude, Coordinates.Longitude), GMarkerGoogleType.red);
 				MapMarker.Tag = Id;
 				MapMarker.ToolTip = new GMapBaloonToolTip(MapMarker);
@@ -499,7 +443,7 @@ namespace appCore.SiteFinder
 				
 				HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
 				
-				foreach (Cell2 cell in Cells) {
+				foreach (Cell3 cell in Cells) {
 					HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id.Contains(cell.Name));
 					if(checkBoxNode != null) {
 						if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))

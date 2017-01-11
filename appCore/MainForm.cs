@@ -594,8 +594,8 @@ namespace appCore
 					};
 					tabPage1.Controls.Add(butt);
 					
-//					OutageUI.Location = new Point(1, 2);
-//					tabPage17.Controls.Add(OutageUI);
+					OutageUI.Location = new Point(1, 2);
+					tabPage17.Controls.Add(OutageUI);
 				}
 			}
 			if(CurrentUser.userName != "GONCARJ3" && CurrentUser.userName != "Caramelos") {
@@ -624,23 +624,13 @@ namespace appCore
 			Databases.PopulateDatabases();
 			
 			comboBox1.Items.Add("CBV");
-//			string[] results = new string[Databases.shiftsFile.ShiftLeaders.Count];
-//			for (int index = 0; index < Databases.shiftsFile.ShiftLeaders.Count; index++) {
-//				results[index] = Databases.shiftsFile.ShiftLeaders[index]["Column1"].ToString();
-//			}
-//			comboBox1.Items.AddRange(results);
-//			results = new string[Databases.shiftsFile.Agents.Count];
-//			for (int index = 0; index < Databases.shiftsFile.Agents.Count; index++) {
-//				results[index] = Databases.shiftsFile.Agents[index]["Column1"].ToString();
-//			}
 			comboBox1.Items.AddRange(Databases.shiftsFile.GetAllClosureCodes());
 			comboBox1.Text = CurrentUser.ClosureCode;
 			
 			GlobalProperties.siteFinder_mainswitch = false;
-			GlobalProperties.siteFinder_mainswitch = Databases.siteDetailsTable != null || Databases.cellDetailsTable != null;
+			GlobalProperties.siteFinder_mainswitch = Databases.all_sites.Exists || Databases.all_cells.Exists;
 			
 			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
-//				DataRow[] foundRows = Databases.shiftsFile.monthTables[DateTime.Now.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
 				string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.fullName[1] + " " + CurrentUser.fullName[0], DateTime.Now.Month);
 				
 				if(monthShifts.Length > 0) {

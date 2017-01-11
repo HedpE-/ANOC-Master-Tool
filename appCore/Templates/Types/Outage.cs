@@ -14,11 +14,11 @@ using appCore.SiteFinder;
 
 namespace appCore.Templates.Types
 {
-    /// <summary>
-    /// Description of Outage.
-    /// </summary>
-    //	[Serializable]
-    public class Outage : Template
+	/// <summary>
+	/// Description of Outage.
+	/// </summary>
+	//	[Serializable]
+	public class Outage : Template
 	{
 		public string VFoutage;
 		public string TFoutage;
@@ -74,16 +74,18 @@ namespace appCore.Templates.Types
 			OutageAlarms.AddRange(resolved4gCoosAlarms);
 			
 			// TODO: Separate VF & TF cells
+			
+			
+			
 			// TODO: Build both reports
 			
-			fullLog = generateFullLog();
-			LogType = "Outage";
-			
-//			parserTable = op.parse(alarms);
 //			VFoutage = op.genReport(parserTable,"VF");
 //			VFbulkCI = op.bulkCi(sites);
 //			TFoutage = op.genReport(parserTable,"TF");
 //			TFbulkCI = op.bulkCi(sites);
+			
+			fullLog = generateFullLog();
+			LogType = "Outage";
 		}
 		
 		public Outage(Outage existingOutage) {
@@ -101,6 +103,27 @@ namespace appCore.Templates.Types
 		}
 		
 		string generateFullLog() {
+			List<string> sites = new List<string>();
+			List<string> cells = new List<string>();
+			foreach (Alarm alarm in OutageAlarms) {
+				if(!sites.Contains(alarm.SiteID))
+					sites.Add(alarm.SiteID);
+				if(!cells.Contains(alarm.Element))
+					cells.Add(alarm.Element);
+			}
+			
+			List<Site> sitesList = new List<Site>();
+			foreach(string site in sites)
+				sitesList.Add(Finder.getSite(site));
+			
+			List<Cell> cellsList = new List<Cell>();
+			foreach(string cell in cells)
+				cellsList.Add(Finder.getCell(cell));
+			
+			List<string> locations = new List<string>();
+			foreach (Site site in sitesList)
+				locations.Add(site.County);
+			
 			return string.Empty;
 		}
 		

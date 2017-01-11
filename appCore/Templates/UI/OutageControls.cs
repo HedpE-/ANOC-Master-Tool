@@ -823,6 +823,7 @@ namespace appCore.Templates.UI
 		{
 			BackColor = SystemColors.Control;
 			Name = "Outages GUI";
+			Controls.Add(MainMenu);
 			Controls.Add(label33);
 			Controls.Add(textBox10);
 			Controls.Add(button22);
