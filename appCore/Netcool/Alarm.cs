@@ -87,6 +87,16 @@ namespace appCore.Netcool
 			}
 		}
 		
+		string celloperator;
+		public string Operator {
+			get {
+				if(string.IsNullOrEmpty(celloperator))
+					celloperator = Element.StartsWith("T") || Element.EndsWith("W") || Element.EndsWith("X") || Element.EndsWith("Y") ? "TEF" : "VF";
+				return celloperator;
+			}
+			private set { celloperator = value;}
+		}
+		
 		public Alarm(DataRow alarm, DataColumnCollection columns) {
 			int lastoccurIndex = columns.Contains("Last Occurrence") ? columns["Last Occurrence"].Ordinal : columns["LastOccurrence"].Ordinal; // Encontrar a posição da column Last Occurence
 			int switchIndex = columns["RNC/BSC"].Ordinal; // Encontrar a prosição da column RNC/BSC
@@ -141,6 +151,33 @@ namespace appCore.Netcool
 			
 			County = ParentSite.County;
 			Town = ParentSite.Town;
+			
+			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+		}
+		
+		public Alarm(Cell cell, bool coos, Alarm parentAlarm) {
+			RncBsc = cell.BscRnc_Id;
+			LastOccurrence = parentAlarm.LastOccurrence;
+			Element = cell.Name;
+			COOS = coos;
+			Bearer = cell.Bearer;
+//			string temp = cell.ParentSite;
+//			while(temp.Length < 5)
+//				temp = "0" + temp;
+//			Location = "RBS" + temp;
+			Location = parentAlarm.Location;
+			
+			Vendor = cell.Vendor;
+			
+			Summary = parentAlarm.Summary + "(Auto generated alarm)";
+			AlarmCount = parentAlarm.AlarmCount;
+			Attributes = parentAlarm.Attributes;
+			POC = parentAlarm.POC;
+			Node = parentAlarm.Node;
+			Identifier = parentAlarm.Identifier;
+			
+			County = parentAlarm.County;
+			Town = parentAlarm.Town;
 			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
 		}
 		

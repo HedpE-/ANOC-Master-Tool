@@ -28,6 +28,16 @@ namespace appCore.Templates.Types
 		public List<Cell> Cells = new List<Cell>(); // Cells list caught on outage alarms, these can be compared later on Outage Follow Up
 		public List<string> Locations = new List<string>();
 		List<Alarm> OutageAlarms = new List<Alarm>();
+		List<Alarm> VfAlarms {
+			get {
+				return OutageAlarms.FindAll(s => s.Operator == "VF");
+			}
+		}
+		List<Alarm> TefAlarms {
+			get {
+				return OutageAlarms.FindAll(s => s.Operator == "TEF");
+			}
+		}
 		
 //		string siteids = string.Empty;
 //		public string SiteIDs { get { return siteids; } protected set { siteids = value; } }
@@ -73,9 +83,7 @@ namespace appCore.Templates.Types
 			
 			OutageAlarms.AddRange(resolved4gCoosAlarms);
 			
-			// TODO: Separate VF & TF cells
-			
-			
+			generateReports();
 			
 			// TODO: Build both reports
 			
@@ -84,8 +92,8 @@ namespace appCore.Templates.Types
 //			TFoutage = op.genReport(parserTable,"TF");
 //			TFbulkCI = op.bulkCi(sites);
 			
-			fullLog = generateFullLog();
 			LogType = "Outage";
+			fullLog = generateFullLog();
 		}
 		
 		public Outage(Outage existingOutage) {
@@ -102,27 +110,43 @@ namespace appCore.Templates.Types
 			LogType = "Outage";
 		}
 		
-		string generateFullLog() {
-			List<string> sites = new List<string>();
-			List<string> cells = new List<string>();
+		void generateReports() {
+			List<string> VfLocations = new List<string>();
+			List<string> TefLocations = new List<string>();
+			List<string> VfSites = new List<string>();
+			List<string> TefSites = new List<string>();
+			
 			foreach (Alarm alarm in OutageAlarms) {
-				if(!sites.Contains(alarm.SiteID))
-					sites.Add(alarm.SiteID);
-				if(!cells.Contains(alarm.Element))
-					cells.Add(alarm.Element);
+				switch (alarm.Operator) {
+					case "VF":
+						if(!VfLocations.Contains(alarm.County) && !string.IsNullOrEmpty(alarm.County))
+							VfLocations.Add(alarm.County);
+						if(!VfSites.Contains(alarm.Location) && !string.IsNullOrEmpty(alarm.Location))
+							VfSites.Add(alarm.Location);
+						break;
+					case "TEF":
+						if(!TefLocations.Contains(alarm.County) && !string.IsNullOrEmpty(alarm.County))
+							TefLocations.Add(alarm.County);
+						if(!TefSites.Contains(alarm.Location) && !string.IsNullOrEmpty(alarm.Location))
+							TefSites.Add(alarm.Location);
+						break;
+				}
 			}
+		}
+		
+		string generateFullLog() {
 			
-			List<Site> sitesList = new List<Site>();
-			foreach(string site in sites)
-				sitesList.Add(Finder.getSite(site));
-			
-			List<Cell> cellsList = new List<Cell>();
-			foreach(string cell in cells)
-				cellsList.Add(Finder.getCell(cell));
-			
-			List<string> locations = new List<string>();
-			foreach (Site site in sitesList)
-				locations.Add(site.County);
+//			List<Site> sitesList = new List<Site>();
+//			foreach(string site in sites)
+//				sitesList.Add(Finder.getSite(site));
+//
+//			List<Cell> cellsList = new List<Cell>();
+//			foreach(string cell in cells)
+//				cellsList.Add(Finder.getCell(cell));
+//
+//			List<string> locations = new List<string>();
+//			foreach (Site site in sitesList)
+//				locations.Add(site.County);
 			
 			return string.Empty;
 		}
