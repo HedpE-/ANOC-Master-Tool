@@ -108,38 +108,6 @@ namespace appCore.SiteFinder
 			private set { celloperator = value;}
 		}
 		
-		public Cell()
-		{
-//			_cell = cell;
-			
-//			try { SITE = _cell[_cell.Row.Table.Columns.IndexOf("SITE")].ToString(); } catch (Exception) { }
-//			try { JVCO_ID = _cell[_cell.Row.Table.Columns.IndexOf("JVCO_ID")].ToString(); } catch (Exception) { }
-//			try { CELL_ID = _cell[_cell.Row.Table.Columns.IndexOf("CELL_ID")].ToString(); } catch (Exception) { }
-//			try { LAC_TAC = _cell[_cell.Row.Table.Columns.IndexOf("LAC_TAC")].ToString(); } catch (Exception) { }
-//			try { BSC_RNC_ID = _cell[_cell.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString(); } catch (Exception) { }
-//			try { VENDOR = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR")].ToString()); } catch (Exception) { }
-//			try { ENODEB_ID = _cell[_cell.Row.Table.Columns.IndexOf("ENODEB_ID")].ToString(); } catch (Exception) { }
-//			try { TF_SITENO = _cell[_cell.Row.Table.Columns.IndexOf("TF_SITENO")].ToString(); } catch (Exception) { }
-//			try { CELL_NAME = _cell[_cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString(); } catch (Exception) { }
-//			try { BEARER = _cell[_cell.Row.Table.Columns.IndexOf("BEARER")].ToString(); } catch (Exception) { }
-//			try { COOS = _cell[_cell.Row.Table.Columns.IndexOf("COOS")].ToString(); } catch (Exception) { }
-//			try { SO_EXCLUSION = _cell[_cell.Row.Table.Columns.IndexOf("SO_EXCLUSION")].ToString(); } catch (Exception) { }
-//			try { WHITE_LIST = _cell[_cell.Row.Table.Columns.IndexOf("WHITE_LIST")].ToString(); } catch (Exception) { }
-//			try { NTQ = _cell[_cell.Row.Table.Columns.IndexOf("NTQ")].ToString(); } catch (Exception) { }
-//			try { NOC = _cell[_cell.Row.Table.Columns.IndexOf("NOC")].ToString(); } catch (Exception) { }
-//			try { WBTS_BCF = _cell[_cell.Row.Table.Columns.IndexOf("WBTS_BCF")].ToString(); } catch (Exception) { }
-//			try { LOCKED = _cell[_cell.Row.Table.Columns.IndexOf("LOCKED")].ToString(); } catch (Exception) { }
-//			try { IP_2G_I = _cell[_cell.Row.Table.Columns.IndexOf("IP_2G_I")].ToString(); } catch (Exception) { }
-//			try { IP_2G_E = _cell[_cell.Row.Table.Columns.IndexOf("IP_2G_E")].ToString(); } catch (Exception) { }
-//			try { IP_3G_I = _cell[_cell.Row.Table.Columns.IndexOf("IP_3G_I")].ToString(); } catch (Exception) { }
-//			try { IP_3G_E = _cell[_cell.Row.Table.Columns.IndexOf("IP_3G_E")].ToString(); } catch (Exception) { }
-//			try { IP_4G_I = _cell[_cell.Row.Table.Columns.IndexOf("IP_4G_I")].ToString(); } catch (Exception) { }
-//			try { IP_4G_E = _cell[_cell.Row.Table.Columns.IndexOf("IP_4G_E")].ToString(); } catch (Exception) { }
-//			try { VENDOR_2G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_2G")].ToString()); } catch (Exception) { }
-//			try { VENDOR_3G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_3G")].ToString()); } catch (Exception) { }
-//			try { VENDOR_4G = getVendor(_cell[_cell.Row.Table.Columns.IndexOf("VENDOR_4G")].ToString()); } catch (Exception) { }
-		}
-		
 		Site.Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
