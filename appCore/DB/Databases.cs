@@ -32,10 +32,10 @@ namespace appCore.DB
 			{
 				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
 				{
-//					bool sameFile = value.FullName == _all_sites.FullName && value.Length == _all_sites.Length;
+					bool sameFile = value.FullName == _all_sites.FullName && value.Length == _all_sites.Length;
 					_all_sites = value;
-//					if (!sameFile || siteDetailsTable == null)
-//						siteDetailsTable = _all_sites.Exists ? Tools.GetDataTableFromCsv(_all_sites, true) : buildSitesTable();
+					if (!sameFile || siteDetailsTable == null)
+						siteDetailsTable = _all_sites.Exists ? Tools.GetDataTableFromCsv(_all_sites, true) : null;
 				}
 			}
 		}
@@ -49,10 +49,10 @@ namespace appCore.DB
 			private set {
 				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
 				{
-//					bool sameFile = value.FullName == _all_cells.FullName && value.Length == _all_cells.Length;
+					bool sameFile = value.FullName == _all_cells.FullName && value.Length == _all_cells.Length;
 					_all_cells = value;
-//					if (!sameFile || cellDetailsTable == null)
-//						cellDetailsTable = _all_cells.Exists ? Tools.GetDataTableFromCsv(_all_cells, true) : buildSitesTable();
+					if (!sameFile || cellDetailsTable == null)
+						cellDetailsTable = _all_cells.Exists ? Tools.GetDataTableFromCsv(_all_cells, true) : null;
 				}
 			}
 		}
@@ -212,110 +212,5 @@ namespace appCore.DB
 //			if(files == "all" || files.Contains("shifts"))
 //				shiftsFile = new ShiftsFile();
 //		}
-		
-		static DataTable buildSitesTable() {
-			DataTable dt = new DataTable();
-			
-			dt.Columns.Add(new DataColumn("SITE"));
-			dt.Columns.Add(new DataColumn("JVCO_ID"));
-			dt.Columns.Add(new DataColumn("GSM900"));
-			dt.Columns.Add(new DataColumn("GSM1800"));
-			dt.Columns.Add(new DataColumn("UMTS900"));
-			dt.Columns.Add(new DataColumn("UMTS2100"));
-			dt.Columns.Add(new DataColumn("LTE800"));
-			dt.Columns.Add(new DataColumn("LTE2600"));
-			dt.Columns.Add(new DataColumn("EASTING"));
-			dt.Columns.Add(new DataColumn("NORTHING"));
-			dt.Columns.Add(new DataColumn("HOST"));
-			dt.Columns.Add(new DataColumn("PRIORITY"));
-			dt.Columns.Add(new DataColumn("ADDRESS"));
-			dt.Columns.Add(new DataColumn("POWER_COMPANY"));
-			dt.Columns.Add(new DataColumn("POWER_CONTACT"));
-			dt.Columns.Add(new DataColumn("TELLABSATRISK"));
-			dt.Columns.Add(new DataColumn("AREA"));
-			dt.Columns.Add(new DataColumn("NSN_STATUS"));
-			dt.Columns.Add(new DataColumn("NOC2G"));
-			dt.Columns.Add(new DataColumn("NOC3G"));
-			dt.Columns.Add(new DataColumn("NOC4G"));
-			dt.Columns.Add(new DataColumn("VF_REGION"));
-			dt.Columns.Add(new DataColumn("SPECIAL"));
-			dt.Columns.Add(new DataColumn("SPECIAL_START"));
-			dt.Columns.Add(new DataColumn("SPECIAL_END"));
-			dt.Columns.Add(new DataColumn("VIP"));
-			dt.Columns.Add(new DataColumn("SITE_SHARE_OPERATOR"));
-			dt.Columns.Add(new DataColumn("SITE_SHARE_SITE_NO"));
-			dt.Columns.Add(new DataColumn("SITE_ACCESS"));
-			dt.Columns.Add(new DataColumn("SITE_TYPE"));
-			dt.Columns.Add(new DataColumn("SITE_SUBTYPE"));
-			dt.Columns.Add(new DataColumn("PAKNET_FITTED"));
-			dt.Columns.Add(new DataColumn("VODAPAGE_FITTED"));
-			dt.Columns.Add(new DataColumn("DC_STATUS"));
-			dt.Columns.Add(new DataColumn("DC_TIMESTAMP"));
-			dt.Columns.Add(new DataColumn("COOLING_STATUS"));
-			dt.Columns.Add(new DataColumn("COOLING_TIMESTAMP"));
-			dt.Columns.Add(new DataColumn("KEY_INFORMATION"));
-			dt.Columns.Add(new DataColumn("EF_HEALTHANDSAFETY"));
-			dt.Columns.Add(new DataColumn("SWITCH2G"));
-			dt.Columns.Add(new DataColumn("SWITCH3G"));
-			dt.Columns.Add(new DataColumn("SWITCH4G"));
-			dt.Columns.Add(new DataColumn("DRSWITCH2G"));
-			dt.Columns.Add(new DataColumn("DRSWITCH3G"));
-			dt.Columns.Add(new DataColumn("DRSWITCH4G"));
-			dt.Columns.Add(new DataColumn("MTX2G"));
-			dt.Columns.Add(new DataColumn("MTX3G"));
-			dt.Columns.Add(new DataColumn("MTX4G"));
-			dt.Columns.Add(new DataColumn("MTX_RELATED"));
-
-			return dt;
-		}
-		
-		static DataTable buildCellsTable() {
-			DataTable dt = new DataTable();
-			
-			dt.Columns.Add(new DataColumn("SITE"));
-			dt.Columns.Add(new DataColumn("JVCO_ID"));
-			dt.Columns.Add(new DataColumn("CELL_ID"));
-			dt.Columns.Add(new DataColumn("LAC_TAC"));
-			dt.Columns.Add(new DataColumn("BSC_RNC_ID"));
-			dt.Columns.Add(new DataColumn("VENDOR"));
-			dt.Columns.Add(new DataColumn("ENODEB_ID"));
-			dt.Columns.Add(new DataColumn("TF_SITENO"));
-			dt.Columns.Add(new DataColumn("CELL_NAME"));
-			dt.Columns.Add(new DataColumn("BEARER"));
-			dt.Columns.Add(new DataColumn("COOS"));
-			dt.Columns.Add(new DataColumn("SO_EXCLUSION"));
-			dt.Columns.Add(new DataColumn("WHITE_LIST"));
-			dt.Columns.Add(new DataColumn("NTQ"));
-			dt.Columns.Add(new DataColumn("NOC"));
-			dt.Columns.Add(new DataColumn("WBTS_BCF"));
-			dt.Columns.Add(new DataColumn("LOCKED"));
-			
-//			dt.Rows.Add("35","V0018305S","3726","304","BEASN","Ericsson",null,null,"G00351","2G",null,null,null,null,"ANOC","BCF-505",null);
-//			dt.Rows.Add("35","V0018305S","3727","304","BEASN","Ericsson",null,null,"G00352","2G",null,null,null,null,"ANOC","BCF-505",null);
-//			dt.Rows.Add("35","V0018305S","3728","304","BEASN","Ericsson",null,null,"G00353","2G",null,null,null,null,"ANOC","BCF-505",null);
-//			dt.Rows.Add("35","V0018305S","33067","21481","BEASN","Ericsson",null,null,"G0035W","2G",null,null,null,null,"ANOC","BCF-1505",null);
-//			dt.Rows.Add("35","V0018305S","23067","21481","BEASN","Ericsson",null,null,"G0035X","2G",null,null,null,null,"ANOC","BCF-1505",null);
-//			dt.Rows.Add("35","V0018305S","13067","21481","BEASN","Ericsson",null,null,"G0035Y","2G",null,null,null,null,"ANOC","BCF-1505",null);
-//			dt.Rows.Add("35","V0018305S","63051","8","RNCCY3","Ericsson",null,null,"M00035015","3G",null,null,null,null,"TANOC","WBTS-999",null);
-//			dt.Rows.Add("35","V0018305S","63050","8","RNCCY3","Ericsson",null,null,"M00035025","3G",null,null,null,null,"TANOC","WBTS-999",null);
-//			dt.Rows.Add("35","V0018305S","63049","8","RNCCY3","Ericsson",null,null,"M00035035","3G",null,null,null,null,"TANOC","WBTS-999",null);
-//			dt.Rows.Add("35","V0018305S","17715","21723","RNCCY3","Ericsson",null,null,"TM00035017","3G",null,null,null,null,"TANOC","WBTS-1999",null);
-//			dt.Rows.Add("35","V0018305S","27715","21723","RNCCY3","Ericsson",null,null,"TM00035027","3G",null,null,null,null,"TANOC","WBTS-1999",null);
-//			dt.Rows.Add("35","V0018305S","37715","21723","RNCCY3","Ericsson",null,null,"TM00035037","3G",null,null,null,null,"TANOC","WBTS-1999",null);
-//			dt.Rows.Add("35","V0018305S","10","24615","XCY_CA_01","Ericsson","1489",null,"N00035010","4G",null,null,null,null,"TF",null,null);
-//			dt.Rows.Add("35","V0018305S","20","24615","XCY_CA_01","Ericsson","1489",null,"N00035020","4G",null,null,null,null,"TF",null,null);
-//			dt.Rows.Add("35","V0018305S","30","24615","XCY_CA_01","Ericsson","1489",null,"N00035030","4G",null,null,null,null,"TF",null,null);
-//			dt.Rows.Add("35","V0018305S","110","16784","XCY_CA_01","Ericsson","101489",null,"TN00035110","4G",null,null,null,null,"TF",null,null);
-//			dt.Rows.Add("35","V0018305S","120","16784","XCY_CA_01","Ericsson","101489",null,"TN00035120","4G",null,null,null,null,"TF",null,null);
-//			dt.Rows.Add("35","V0018305S","130","16784","XCY_CA_01","Ericsson","101489",null,"TN00035130","4G",null,null,null,null,"TF",null,null);
-//			dt.Rows.Add("125","V0018305S","33067","21481","BEASN","Ericsson",null,null,"G0125W","2G",null,null,null,null,"ANOC","BCF-1505",null);
-//			dt.Rows.Add("125","V0018305S","23067","21481","BEASN","Ericsson",null,null,"G0125X","2G",null,null,null,null,"ANOC","BCF-1505",null);
-//			dt.Rows.Add("125","V0018305S","13067","21481","BEASN","Ericsson",null,null,"G0125Y","2G",null,null,null,null,"ANOC","BCF-1505",null);
-//			dt.Rows.Add("136","V0018305S","3726","304","BEASN","Ericsson",null,null,"G001361","2G",null,null,null,null,"ANOC","BCF-505",null);
-//			dt.Rows.Add("136","V0018305S","3727","304","BEASN","Ericsson",null,null,"G001362","2G",null,null,null,null,"ANOC","BCF-505",null);
-//			dt.Rows.Add("136","V0018305S","3728","304","BEASN","Ericsson",null,null,"G001363","2G",null,null,null,null,"ANOC","BCF-505",null);
-			
-			return dt;
-		}
 	}
 }

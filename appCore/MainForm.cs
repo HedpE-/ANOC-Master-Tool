@@ -618,7 +618,7 @@ namespace appCore
 			tabPage11.Controls.Add(huaweiScriptsControls);
 			ericssonScriptsControls.Location = new Point(1, 2);
 			tabPage13.Controls.Add(ericssonScriptsControls);
-					
+			
 			SplashForm.UpdateLabelText("Loading Databases");
 			
 			Databases.PopulateDatabases();
@@ -663,6 +663,8 @@ namespace appCore
 		{
 			if(!site.IsAllDigits())
 				site = "00000";
+			while(site.StartsWith("0"))
+				site = site.Substring(1);
 			
 			DataView dv = new DataView(Databases.siteDetailsTable);
 			dv.RowFilter = "SITE = '" + site + "'"; // query example = "id = 10"
@@ -676,6 +678,8 @@ namespace appCore
 		{
 			if(!site.IsAllDigits())
 				site = "00000";
+			while(site.StartsWith("0"))
+				site = site.Substring(1);
 			
 			DataView dv = new DataView(Databases.cellDetailsTable);
 			dv.RowFilter = "SITE = '" + site + "'";
