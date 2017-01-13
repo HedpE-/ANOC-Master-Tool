@@ -91,13 +91,22 @@ namespace appCore.SiteFinder.UI
 		
 		GMapControl drawGMap(string mapName,bool multi) {
 			GMapProvider.TimeoutMs = 20*1000;
+			IWebProxy proxy;
+			try {
+				proxy = Settings.CurrentUser.networkDomain == "internal.vodafone.com" ?
+					new WebProxy("http://10.74.51.1:80/", true) :
+					WebRequest.GetSystemWebProxy();
+			}
+			catch (Exception) {
+				proxy = WebRequest.GetSystemWebProxy();
+			}
 			
-			GMapProvider.WebProxy = WebRequest.GetSystemWebProxy();
+			GMapProvider.WebProxy = proxy;
 			GMapProvider.Credential = CredentialCache.DefaultNetworkCredentials;
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
-			map.Location = new System.Drawing.Point(567, 6);
+			map.Location = new Point(567, 6);
 			map.Size = new Size(380, 614);
 			map.MapProvider = GoogleHybridMapProvider.Instance;
 			
