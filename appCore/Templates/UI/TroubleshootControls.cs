@@ -889,6 +889,9 @@ namespace appCore.Templates.UI
 						}
 					}
 				}
+				DataView dv = tempDt.DefaultView;
+				dv.Sort = "Start Date desc";
+				tempDt = dv.ToTable();
 				currentCases.AddRange(tempDt.AsEnumerable());
 			}
 			return currentCases;
