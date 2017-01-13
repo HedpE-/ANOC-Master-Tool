@@ -623,8 +623,7 @@ namespace appCore
 			
 			Databases.PopulateDatabases();
 			
-			comboBox1.Items.Add("CBV");
-			comboBox1.Items.AddRange(Databases.shiftsFile.GetAllClosureCodes());
+			comboBox1.Items.AddRange(new []{ "CBV", CurrentUser.ClosureCode });
 			comboBox1.Text = CurrentUser.ClosureCode;
 			
 			GlobalProperties.siteFinder_mainswitch = false;
@@ -1328,6 +1327,14 @@ namespace appCore
 			                           	}
 			                           	else {
 			                           		string[] outageSites = (VFbulkCI + TFbulkCI).Split(';');
+			                           		for(int c = 0;c < outageSites.Length;c++) {
+			                           			if(outageSites[c].StartsWith("0")) {
+			                           				while(outageSites[c].StartsWith("0"))
+			                           					outageSites[c] = outageSites[c].Substring(1);
+			                           			}
+			                           			else
+			                           				break;
+			                           		}
 			                           		outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
 			                           		outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			                           		Thread thread = new Thread(() => {
