@@ -60,8 +60,23 @@ namespace appCore.Web
 				client.CookieContainer = OldOICookieContainer;
 			}
 			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
-			client.Proxy = WebRequest.DefaultWebProxy;
-			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+			
+			IWebProxy proxy;
+			try {
+				proxy = Settings.CurrentUser.networkDomain == "internal.vodafone.com" ?
+					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
+					WebRequest.GetSystemWebProxy();
+			}
+			catch (Exception) {
+				proxy = WebRequest.GetSystemWebProxy();
+			}
+			
+			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;	
+			client.Proxy = proxy;
+			
+//			client.Proxy = WebRequest.DefaultWebProxy;
+//			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+			
 			string restRequest = OldOiPortal ?
 				"/SSO/index.asp?url=%2FSSO%2Fsecurity%2Ephp&proxylogin=true" :
 				"/sso/index.php?url=%2F";
@@ -97,8 +112,22 @@ namespace appCore.Web
 		
 		static HttpStatusCode CheckAvailability(bool OldOiPortal) {
 			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
-			client.Proxy = WebRequest.DefaultWebProxy;
-			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+			
+			IWebProxy proxy;
+			try {
+				proxy = Settings.CurrentUser.networkDomain == "internal.vodafone.com" ?
+					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
+					WebRequest.GetSystemWebProxy();
+			}
+			catch (Exception) {
+				proxy = WebRequest.GetSystemWebProxy();
+			}
+			
+			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;	
+			client.Proxy = proxy;
+			
+//			client.Proxy = WebRequest.DefaultWebProxy;
+//			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
 			
 			IRestRequest request = new RestRequest(Method.HEAD);
 			IRestResponse response = client.Execute(request);
