@@ -70,6 +70,21 @@ namespace appCore.SiteFinder
 				site = new Site();
 			return site;
 		}
+		
+		public static List<Site> getSites(List<string> Sites)
+		{
+			List<Site> sites = new List<Site>();
+			try {
+				var engine2 = new FileHelperEngine<Site>();
+				var res = engine2.ReadFileAsList(Databases.all_sites.FullName);
+				sites = res.FindAll(s => Sites.Contains(s.Id));
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
+			
+			return sites;
+		}
 
 		public static List<Cell> getCells(string site)
 		{

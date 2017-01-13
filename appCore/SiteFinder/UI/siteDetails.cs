@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using appCore.DB;
@@ -602,7 +603,7 @@ namespace appCore.SiteFinder.UI
 				                           		myMap.Zoom = 6;
 				                           	}
 				                           });
-				Toolbox.Tools.darkenBackgroundForm(action,true,this);
+				Tools.darkenBackgroundForm(action,true,this);
 			}
 		}
 		
@@ -619,6 +620,8 @@ namespace appCore.SiteFinder.UI
 			                           	}
 			                           	catch (Exception) {
 			                           	}
+			                           	System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+			                           	st.Start();
 			                           	foreach (string site in src) {
 			                           		if(!string.IsNullOrEmpty(site)) {
 			                           			DataRowView drv = MainForm.findSite(site);
@@ -634,6 +637,13 @@ namespace appCore.SiteFinder.UI
 			                           		else
 			                           			break;
 			                           	}
+			                           	st.Stop();
+			                           	var t = st.Elapsed;
+			                           	st.Reset();
+			                           	st.Start();
+			                           	List<Site> sites2 = Finder.getSites(src.ToList());
+			                           	st.Stop();
+			                           	var t2 = st.Elapsed;
 			                           	
 			                           	if(foundSites.Rows.Count > 1) {
 			                           		if(!siteDetails_UIMode.Contains("outage"))
@@ -655,7 +665,7 @@ namespace appCore.SiteFinder.UI
 			                           		}
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+			Tools.darkenBackgroundForm(action,true,this);
 		}
 		
 		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
