@@ -189,7 +189,6 @@ namespace appCore.SiteFinder.UI
 			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(53, 20);
 			this.textBox1.TabIndex = 79;
-			this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
 			// 
 			// label1
 			// 
@@ -569,7 +568,6 @@ namespace appCore.SiteFinder.UI
 			this.button1.Text = "Bulk site search";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Visible = false;
-			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
 			// label13
 			// 
