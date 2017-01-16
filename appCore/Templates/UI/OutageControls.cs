@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using appCore.Netcool;
 using appCore.Templates.Types;
 using appCore.UI;
+using appCore.SiteFinder.UI;
 
 namespace appCore.Templates.UI
 {
@@ -249,10 +250,18 @@ namespace appCore.Templates.UI
 		
 		void OutageFollowUp() {
 			string[] outageSites = (currentOutage.VfBulkCI + currentOutage.TefBulkCI).Split(';');
+			for(int c = 0;c < outageSites.Length;c++) {
+				if(outageSites[c].StartsWith("0")) {
+					while(outageSites[c].StartsWith("0"))
+						outageSites[c] = outageSites[c].Substring(1);
+				}
+				else
+					break;
+			}
 			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			Thread thread = new Thread(() => {
-			                           	SiteFinder.UI.siteDetails sd = new SiteFinder.UI.siteDetails(true, outageSites);
+			                           	siteDetails sd = new siteDetails(true,outageSites);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();

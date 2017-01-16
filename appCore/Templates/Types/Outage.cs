@@ -103,7 +103,7 @@ namespace appCore.Templates.Types
 						case "VF":
 							if(!VfLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
 								VfLocations.Add(e.Record.County);
-							if(!VfSites.Contains(e.Record.Location) && !string.IsNullOrEmpty(e.Record.Location))
+							if(!VfSites.Contains(tempSite))
 								VfSites.Add(tempSite);
 							switch(e.Record.Bearer) {
 								case "2G":
@@ -129,7 +129,7 @@ namespace appCore.Templates.Types
 						case "TEF":
 							if(!TefLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
 								TefLocations.Add(e.Record.County);
-							if(!TefSites.Contains(e.Record.Location) && !string.IsNullOrEmpty(e.Record.Location))
+							if(!TefSites.Contains(tempSite))
 								TefSites.Add(tempSite);
 							switch(e.Record.Bearer) {
 								case "2G":
