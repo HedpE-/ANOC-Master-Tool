@@ -86,22 +86,51 @@ namespace appCore.SiteFinder
 			return sites;
 		}
 
-		public static List<Cell> getCells(string site)
+		public static List<Cell> getCells(List<string> sites, string bearers = "2G3G4G")
 		{
-			if(!site.IsAllDigits())
-				site = "00000";
-			
 			List<Cell> foundCells = new List<Cell>();
-			
+//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+//			st.Start();
 			try {
 				var engine2 = new FileHelperEngine<Cell>();
+				engine2.AfterReadRecord +=  (eng, e) => {
+					if(!bearers.Contains(e.Record.Bearer))
+						e.SkipThisRecord = true;
+					else {
+						if(!sites.Contains(e.Record.ParentSite))
+							e.SkipThisRecord = true;
+					}
+				};
+				foundCells = engine2.ReadFileAsList(Databases.all_cells.FullName);
+//				foundCells = res.FindAll(s => sites.Contains(s.ParentSite));
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
+//			st.Stop();
+//			var t = st.Elapsed;
+			return foundCells;
+		}
+
+		public static List<Cell> getCells(string site)
+		{
+			List<Cell> foundCells = new List<Cell>();
+//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+//			st.Start();
+			try {
+				var engine2 = new FileHelperEngine<Cell>();
+//					engine.AfterReadRecord +=  (eng, e) => {
+//						if(!sites.Contains(e.Record.ParentSite))
+//							e.SkipThisRecord = true;
+//					};
 				var res = engine2.ReadFileAsList(Databases.all_cells.FullName);
 				foundCells = res.FindAll(s => s.ParentSite == site);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
 			}
-			
+//			st.Stop();
+//			var t = st.Elapsed;
 			return foundCells;
 		}
 
@@ -128,7 +157,7 @@ namespace appCore.SiteFinder
 //		{
 //			if(!site.IsAllDigits())
 //				site = "00000";
-//			
+//
 //			DataView dv = new DataView(Databases.siteDetailsTable);
 //			dv.RowFilter = "SITE = '" + site + "'"; // query example = "id = 10"
 //			DataRowView dr = null;
@@ -141,7 +170,7 @@ namespace appCore.SiteFinder
 //		{
 //			if(!site.IsAllDigits())
 //				site = "00000";
-//			
+//
 //			DataView dv = new DataView(Databases.cellDetailsTable);
 //			dv.RowFilter = "SITE = '" + site + "'";
 //			DataTable dt = null;
@@ -157,7 +186,7 @@ namespace appCore.SiteFinder
 //				}
 //				dt = filtered;
 //			}
-//			
+//
 //			return new DataView(dt);
 //		}
 	}

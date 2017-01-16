@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using appCore.Netcool;
 using appCore.SiteFinder;
+using FileHelpers;
 
 namespace appCore.Templates.Types
 {
@@ -20,14 +21,30 @@ namespace appCore.Templates.Types
 	//	[Serializable]
 	public class Outage : Template
 	{
-		public string VFoutage;
-		public string TFoutage;
-		public string VFbulkCI;
-		public string TFbulkCI;
-		public List<Site> Sites = new List<Site>(); // Para o parser guardar os sites para o bulkCI
-		public List<Cell> Cells = new List<Cell>(); // Cells list caught on outage alarms, these can be compared later on Outage Follow Up
-		public List<string> Locations = new List<string>();
-		List<Alarm> OutageAlarms = new List<Alarm>();
+		public string VfOutage;
+		public string VfBulkCI;
+		public string TefOutage;
+		public string TefBulkCI;
+		
+		List<string> VfSites = new List<string>();
+		List<string> VfGsmCells = new List<string>();
+		List<string> VfUmtsCells = new List<string>();
+		List<string> VfLteCells = new List<string>();
+		List<string> VfLocations = new List<string>();
+		DateTime VfGsmTime = new DateTime(2500,1,1);
+		DateTime VfUmtsTime = new DateTime(2500,1,1);
+		DateTime VfLteTime = new DateTime(2500,1,1);
+		List<string> TefSites = new List<string>();
+		List<string> TefGsmCells = new List<string>();
+		List<string> TefUmtsCells = new List<string>();
+		List<string> TefLteCells = new List<string>();
+		List<string> TefLocations = new List<string>();
+		DateTime TefGsmTime = new DateTime(2500,1,1);
+		DateTime TefUmtsTime = new DateTime(2500,1,1);
+		DateTime TefLteTime = new DateTime(2500,1,1);
+		
+		List<Alarm> OutageAlarms;
+		
 		List<Alarm> VfAlarms {
 			get {
 				return OutageAlarms.FindAll(s => s.Operator == "VF");
@@ -39,61 +56,129 @@ namespace appCore.Templates.Types
 			}
 		}
 		
-//		string siteids = string.Empty;
-//		public string SiteIDs { get { return siteids; } protected set { siteids = value; } }
-//		string serviceaffected = string.Empty;
-//		public string ServiceAffected { get { return serviceaffected; } protected set { serviceaffected = value; } }
-//		bool repeat_intermittent;
-//		public bool Repeat_Intermittent{ get { return repeat_intermittent; } protected set { repeat_intermittent = value; } }
-//		string txtype = string.Empty;
-//		public string TxType { get { return txtype; } protected set { txtype = value; } }
-//		string ipranportconfig = string.Empty;
-//		public string IpRanPortConfig { get { return ipranportconfig; } protected set { ipranportconfig = value; } }
-//		string performanceoutagedetails = string.Empty;
-//		public string PerformanceOutageDetails { get { return performanceoutagedetails; } protected set { performanceoutagedetails = value; } }
-//		string detailedrantroubleshoot = string.Empty;
-//		public string DetailedRanTroubleshoot { get { return detailedrantroubleshoot; } protected set { detailedrantroubleshoot = value; } }
+		public Outage(AlarmsParser alarms) {
+			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+			st.Start();
+			OutageAlarms = alarms.AlarmsList;
+			
+			List<Cell> LTEcells = new List<Cell>();
+			
+			TimeSpan t2;
+			if(alarms.lteSites.Count > 0) {
+				LTEcells = Finder.getCells(alarms.lteSites, "4G");
+//				System.Diagnostics.Stopwatch st2 = new System.Diagnostics.Stopwatch();
+//				st2.Start();
+				
+				foreach(Cell cell in LTEcells) {
+					Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
+					OutageAlarms.Add(new Alarm(cell, true, temp));
+				}
+//				st2.Stop();
+//				t2 = st2.Elapsed;
+			}
+			string toparse = string.Empty;
+			try {
+				var engine = new FileHelperEngine<Alarm>();
+
+				engine.BeforeWriteRecord += (eng, e) => {
+					if(e.Record.OnM && !e.Record.COOS)
+						e.SkipThisRecord = true;
+				};
+
+				toparse = engine.WriteString(OutageAlarms);
+			}
+			catch(FileHelpersException e) {
+				var m = e.Message;
+			}
+			
+			try {
+				var engine = new FileHelperEngine<Alarm>();
+				engine.AfterReadRecord += (eng, e) => {
+					string temp = e.Record.RncBsc + " - " + e.Record.Element;
+					string temp2 = e.Record.Bearer;
+					switch (e.Record.Operator) {
+						case "VF":
+							if(!VfLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
+								VfLocations.Add(e.Record.County);
+							if(!VfSites.Contains(e.Record.Location) && !string.IsNullOrEmpty(e.Record.Location))
+								VfSites.Add(e.Record.Location);
+							switch(e.Record.Bearer) {
+								case "2G":
+									if(!VfGsmCells.Contains(temp))
+										VfGsmCells.Add(temp);
+									if(e.Record.LastOccurrence < VfGsmTime)
+										VfGsmTime = e.Record.LastOccurrence;
+									break;
+								case "3G":
+									if(!VfUmtsCells.Contains(temp))
+										VfUmtsCells.Add(temp);
+									if(e.Record.LastOccurrence < VfUmtsTime)
+										VfUmtsTime = e.Record.LastOccurrence;
+									break;
+								case "4G":
+									if(!VfLteCells.Contains(temp))
+										VfLteCells.Add(temp);
+									if(e.Record.LastOccurrence < VfLteTime)
+										VfLteTime = e.Record.LastOccurrence;
+									break;
+							}
+							break;
+						case "TEF":
+							if(!TefLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
+								TefLocations.Add(e.Record.County);
+							if(!TefSites.Contains(e.Record.Location) && !string.IsNullOrEmpty(e.Record.Location))
+								TefSites.Add(e.Record.Location);
+							switch(e.Record.Bearer) {
+								case "2G":
+									if(!TefGsmCells.Contains(temp))
+										TefGsmCells.Add(temp);
+									if(e.Record.LastOccurrence < TefGsmTime)
+										TefGsmTime = e.Record.LastOccurrence;
+									break;
+								case "3G":
+									if(!TefUmtsCells.Contains(temp))
+										TefUmtsCells.Add(temp);
+									if(e.Record.LastOccurrence < TefUmtsTime)
+										TefUmtsTime = e.Record.LastOccurrence;
+									break;
+								case "4G":
+									if(!TefLteCells.Contains(temp))
+										TefLteCells.Add(temp);
+									if(e.Record.LastOccurrence < TefLteTime)
+										TefLteTime = e.Record.LastOccurrence;
+									break;
+							}
+							break;
+					}
+				};
+				
+				OutageAlarms = engine.ReadStringAsList(toparse);
+			}
+			catch(FileHelpersException e) {
+				var m = e.Message;
+			}
+			
+			st.Stop();
+			var t = st.Elapsed;
+			
+			generateReports();
+			
+			// TODO: Build both reports
+			
+			LogType = "Outage";
+			fullLog = generateFullLog();
+		}
 		
 		public Outage(List<Site> sites) {
-			Sites = sites;
+			List<Site> Sites = sites;
+			List<Cell> Cells = new List<Cell>();
+			List<string> Locations = new List<string>();
 			foreach (Site site in Sites) {
 				Cells.AddRange(site.Cells);
 				Locations.Add(site.Town);
 //			VFlocationsArrayList.Add(new string[]{address[address.Length - 2].Trim(' '),siteHasVF2G.ToString(),siteHasVF3G.ToString(),siteHasVF4G.ToString()});
 			}
 			LogType = "Outage";
-		}
-		
-		public Outage(Parser alarms) {
-			// Get LTE O&M alarms to get all affected cells
-			// Take COOS alarms on the OutageAlarms list
-			List<Alarm> resolved4gCoosAlarms = new List<Alarm>();
-			foreach(Alarm alarm in alarms.AlarmsList) {
-				if(alarm.Bearer == "4G") {
-					if(alarm.OnM) {
-						List<Cell> LTEcells = alarm.ParentSite.Cells.Where(s => s.Bearer == "4G").ToList();
-						foreach (Cell cell in LTEcells)
-							resolved4gCoosAlarms.Add(new Alarm(cell, true, alarm.LastOccurrence));
-					}
-				}
-				else
-					if(alarm.COOS)
-						OutageAlarms.Add(alarm);
-			}
-			
-			OutageAlarms.AddRange(resolved4gCoosAlarms);
-			
-			generateReports();
-			
-			// TODO: Build both reports
-			
-//			VFoutage = op.genReport(parserTable,"VF");
-//			VFbulkCI = op.bulkCi(sites);
-//			TFoutage = op.genReport(parserTable,"TF");
-//			TFbulkCI = op.bulkCi(sites);
-			
-			LogType = "Outage";
-			fullLog = generateFullLog();
 		}
 		
 		public Outage(Outage existingOutage) {
@@ -111,42 +196,60 @@ namespace appCore.Templates.Types
 		}
 		
 		void generateReports() {
-			List<string> VfLocations = new List<string>();
-			List<string> TefLocations = new List<string>();
-			List<string> VfSites = new List<string>();
-			List<string> TefSites = new List<string>();
+			int cellTotal = VfGsmCells.Count + VfUmtsCells.Count + VfLteCells.Count;
+			VfLocations.Sort();
+			VfSites.Sort();
+			VfGsmCells.Sort();
+			VfUmtsCells.Sort();
+			VfLteCells.Sort();
+			VfOutage = cellTotal + "x COOS (" + VfSites.Count;
+			VfOutage += VfSites.Count == 1 ? " Site)" : " Sites)";
+			VfOutage += Environment.NewLine + Environment.NewLine + "Locations (" + VfLocations.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine, VfLocations) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine, VfSites);
 			
-			foreach (Alarm alarm in OutageAlarms) {
-				switch (alarm.Operator) {
-					case "VF":
-						if(!VfLocations.Contains(alarm.County) && !string.IsNullOrEmpty(alarm.County))
-							VfLocations.Add(alarm.County);
-						if(!VfSites.Contains(alarm.Location) && !string.IsNullOrEmpty(alarm.Location))
-							VfSites.Add(alarm.Location);
-						break;
-					case "TEF":
-						if(!TefLocations.Contains(alarm.County) && !string.IsNullOrEmpty(alarm.County))
-							TefLocations.Add(alarm.County);
-						if(!TefSites.Contains(alarm.Location) && !string.IsNullOrEmpty(alarm.Location))
-							TefSites.Add(alarm.Location);
-						break;
-				}
+			if ( VfGsmCells.Count > 0 )
+				VfOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + VfGsmCells.Count + ") Event Time - " + VfGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfGsmCells);
+			if ( VfUmtsCells.Count > 0)
+				VfOutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + VfUmtsCells.Count + ") Event Time - " + VfUmtsTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfUmtsCells);
+			if ( VfLteCells.Count > 0)
+				VfOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VfLteCells.Count + ") Event Time - " + VfGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfLteCells);
+			
+			foreach (string site in VfSites) {
+				string tempSite = site;
+				while(tempSite.Length < 4)
+					tempSite = "0" + site;
+				VfBulkCI += tempSite + ";";
+			}
+			
+			cellTotal = TefGsmCells.Count + TefUmtsCells.Count + TefLteCells.Count;
+			TefLocations.Sort();
+			TefSites.Sort();
+			TefGsmCells.Sort();
+			TefUmtsCells.Sort();
+			TefLteCells.Sort();
+			TefOutage = cellTotal + "x COOS (" + TefSites.Count;
+			TefOutage += TefSites.Count == 1 ? " Site)" : " Sites)";
+			TefOutage += Environment.NewLine + Environment.NewLine + "Locations (" + TefLocations.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine, TefLocations) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine, TefSites);
+			
+			if ( TefGsmCells.Count > 0 )
+				TefOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TefGsmCells.Count + ") Event Time - " + TefGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefGsmCells);
+			if ( TefUmtsCells.Count > 0)
+				TefOutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + TefUmtsCells.Count + ") Event Time - " + TefUmtsTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefUmtsCells);
+			if ( TefLteCells.Count > 0)
+				TefOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TefLteCells.Count + ") Event Time - " + TefGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefLteCells);
+			
+			foreach (string site in TefSites) {
+				string tempSite = site;
+				while(tempSite.Length < 4)
+					tempSite = "0" + site;
+				TefBulkCI += tempSite + ";";
 			}
 		}
 		
 		string generateFullLog() {
-			
-//			List<Site> sitesList = new List<Site>();
-//			foreach(string site in sites)
-//				sitesList.Add(Finder.getSite(site));
-//
-//			List<Cell> cellsList = new List<Cell>();
-//			foreach(string cell in cells)
-//				cellsList.Add(Finder.getCell(cell));
-//
-//			List<string> locations = new List<string>();
-//			foreach (Site site in sitesList)
-//				locations.Add(site.County);
+//			VFoutage = op.genReport(parserTable,"VF");
+//			VFbulkCI = op.bulkCi(sites);
+//			TFoutage = op.genReport(parserTable,"TF");
+//			TFbulkCI = op.bulkCi(sites);
 			
 			return string.Empty;
 		}

@@ -89,13 +89,13 @@ namespace appCore.SiteFinder
 		public string OuterIP4G { get { return IP_4G_E; } }
 		[FieldOrder(24)]
 		string VENDOR_2G;
-		public Site.Vendors Vendor2G { get { return getVendor(VENDOR_2G); } }
+//		public Site.Vendors Vendor2G { get { return getVendor(VENDOR_2G); } }
 		[FieldOrder(25)]
 		string VENDOR_3G;
-		public Site.Vendors Vendor3G { get { return getVendor(VENDOR_3G); } }
+//		public Site.Vendors Vendor3G { get { return getVendor(VENDOR_3G); } }
 		[FieldOrder(26)]
 		string VENDOR_4G;
-		public Site.Vendors Vendor4G { get { return getVendor(VENDOR_4G); } }
+//		public Site.Vendors Vendor4G { get { return getVendor(VENDOR_4G); } }
 		
 		[FieldHidden]
 		string celloperator;

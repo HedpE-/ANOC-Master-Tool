@@ -175,31 +175,31 @@ namespace appCore.Templates.UI
 			try {
 				// TODO: Finish revamped outages
 				
-				Parser alarms = new Parser(textBox10.Text, false);
+				AlarmsParser alarms = new AlarmsParser(textBox10.Text, false, true);
 				currentOutage = alarms.GenerateOutage();
 
-				if(!string.IsNullOrEmpty(currentOutage.VFoutage) && !string.IsNullOrEmpty(currentOutage.TFoutage)) {
+				if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage)) {
 					tabControl4.Visible = true;
 					tabControl4.SelectTab(0);
 				}
 				else {
-					if(string.IsNullOrEmpty(currentOutage.VFoutage) && string.IsNullOrEmpty(currentOutage.TFoutage)) {
+					if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
 						MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
 						textBox10.Text = string.Empty;
 						return;
 					}
-					if(!string.IsNullOrEmpty(currentOutage.VFoutage)) {
+					if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
 						tabControl4.Visible = false;
 						tabControl4.SelectTab(0);
 					}
 					else {
-						if(!string.IsNullOrEmpty(currentOutage.TFoutage)) {
+						if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
 							tabControl4.Visible = false;
 							tabControl4.SelectTab(1);
 						}
 					}
 				}
-				if(!string.IsNullOrEmpty(currentOutage.VFoutage) || !string.IsNullOrEmpty(currentOutage.TFoutage)) {
+				if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
 					VFTFReportTabControlSelectedIndexChanged(null,null);
 					button4.Text = "Outage Follow Up"; // HACK: Outage Follow Up button on outage report processing
 					button4.Width = 100;
@@ -240,7 +240,7 @@ namespace appCore.Templates.UI
 		}
 		
 		void OutageFollowUp() {
-			string[] outageSites = (currentOutage.VFbulkCI + currentOutage.TFbulkCI).Split(';');
+			string[] outageSites = (currentOutage.VfBulkCI + currentOutage.TefBulkCI).Split(';');
 			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			Thread thread = new Thread(() => {
@@ -257,12 +257,12 @@ namespace appCore.Templates.UI
 		void VFTFReportTabControlSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if(tabControl4.SelectedIndex == 0) {
-				textBox10.Text = currentOutage.VFoutage;
-				textBox11.Text = currentOutage.VFbulkCI;
+				textBox10.Text = currentOutage.VfOutage;
+				textBox11.Text = currentOutage.VfBulkCI;
 			}
 			else {
-				textBox10.Text = currentOutage.TFoutage;
-				textBox11.Text = currentOutage.TFbulkCI;
+				textBox10.Text = currentOutage.TefOutage;
+				textBox11.Text = currentOutage.TefBulkCI;
 			}
 			textBox10.Select(0,0);
 			textBox11.Select(0,0);

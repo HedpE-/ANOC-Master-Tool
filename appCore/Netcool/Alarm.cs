@@ -10,42 +10,126 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using appCore.SiteFinder;
+using FileHelpers;
 
 namespace appCore.Netcool
 {
 	/// <summary>
 	/// Description of Alarm.
 	/// </summary>
+	[DelimitedRecord("\t"), IgnoreFirst(1)]
 	public class Alarm
 	{
-		DateTime lastOccurrence;
-		public DateTime LastOccurrence { get { return lastOccurrence; } protected set { lastOccurrence = value; } }
-		string summary;
-		public string Summary { get { return summary; } protected set { summary = value; } }
-		string rncBsc;
-		public string RncBsc { get { return rncBsc; } protected set { rncBsc = value; } }
-		string location;
-		public string Location { get { return location; } protected set { location = value; } }
-		string element;
-		public string Element { get { return element; } protected set { element = value; } }
+		[FieldOrder(1)]
+		string attributes;
+		public string[] Attributes { get { return attributes.Split('/'); } private set { } }
+		[FieldOrder(2)]
+		string serviceImpact;
+		public string ServiceImpact { get { return serviceImpact; } private set { } }
+		[FieldOrder(3)]
+		string vendor;
+		public Site.Vendors Vendor { get { return getVendor(vendor); } protected set { } }
+		[FieldOrder(4)]
+		string lastOccurrence;
+		public DateTime LastOccurrence { get { return Convert.ToDateTime(lastOccurrence); } protected set { } }
+		[FieldOrder(5)]
 		string alarmCount;
-		public string AlarmCount { get { return alarmCount; } protected set { alarmCount = value; } }
-		Site.Vendors vendor;
-		public Site.Vendors Vendor { get { return vendor; } protected set { vendor = value; } }
-		string county;
-		public string County { get { return county; } protected set { county = value; } }
+		public int AlarmCount { get { return Convert.ToInt32(alarmCount); } protected set { } }
+		[FieldOrder(6)]
+		string rncBsc;
+		public string RncBsc { get { return rncBsc; } protected set { } }
+		[FieldOrder(7)]
+		string location;
+		public string Location { get { return location; } protected set { } }
+		[FieldOrder(8)]
+		string element;
+		public string Element {
+			get {
+				if(string.IsNullOrEmpty(element))
+					element = ResolveCellName();
+				return element;
+			}
+			protected set { }
+		}
+		[FieldOrder(9)]
+		string summary;
+		public string Summary { get { return summary; } protected set { } }
+		[FieldOrder(10)]
+		string triagedBy;
+		public string TriagedBy { get { return triagedBy; } protected set { } }
+		[FieldOrder(11)]
+		string operatorComments;
+		public string OperatorComments { get { return operatorComments; } protected set { } }
+		[FieldOrder(12)]
+		string vfTtNumber;
+		public string VfTtNumber { get { return vfTtNumber; } protected set { } }
+		[FieldOrder(13)]
+		string vfTtPty;
+		public string VfTtPty { get { return vfTtPty; } protected set { } }
+		[FieldOrder(14)]
+		string assignedGroup;
+		public string AssignedGroup { get { return assignedGroup; } protected set { } }
+		[FieldOrder(15)]
+		string ttStatus;
+		public string TtStatus { get { return ttStatus; } protected set { } }
+		[FieldOrder(16)]
+		string rbsDetails;
+		public string RbsDetails { get { return rbsDetails; } protected set { } }
+		[FieldOrder(17)]
 		string town;
-		public string Town { get { return town; } protected set { town = value; } }
-		string poc;
-		public string POC { get { return poc; } protected set { poc = value; } }
+		public string Town { get { return town; } protected set { } }
+		[FieldOrder(18)]
+		string county;
+		public string County { get { return county; } protected set { } }
+		[FieldOrder(19)]
+		string specialEvent;
+		public string SpecialEvent { get { return specialEvent; } protected set { } }
+		[FieldOrder(20)]
+		string siteType;
+		public string SiteType { get { return siteType; } protected set { } }
+		[FieldOrder(21)]
+		string stateChange;
+		public string StateChange { get { return stateChange; } protected set { } }
+		[FieldOrder(22)]
+		string site;
+		public string Site { get { return site; } protected set { } }
+		[FieldOrder(23)]
 		string node;
-		public string Node { get { return node; } protected set { node = value; } }
+		public string Node { get { return node; } protected set { } }
+		[FieldOrder(24)]
+		string nodeAlias;
+		public string NodeAlias { get { return nodeAlias; } protected set { } }
+		[FieldOrder(25)]
 		string identifier;
-		public string Identifier { get { return identifier; } protected set { identifier = value; } }
-		string[] attributes;
-		public string[] Attributes { get { return attributes; } protected set { attributes = value; } }
+		public string Identifier { get { return identifier; } protected set { } }
+		[FieldOrder(26)]
+		string parentNode;
+		public string ParentNode { get { return parentNode; } protected set { } }
+		[FieldOrder(27)]
+		string techDomain6;
+		public string TechDomain6 { get { return techDomain6; } protected set { } }
+		[FieldOrder(28)]
+		string poc;
+		public string POC { get { return poc; } protected set { } }
+		[FieldOrder(29)]
+		string intermittent;
+		public string Intermittent { get { return intermittent; } protected set { } }
+		[FieldOrder(30)]
+		string weightage;
+		public string Weightage { get { return weightage; } protected set { } }
+		[FieldOrder(31)]
+		string _class;
+		public string Class { get { return _class; } protected set { } }
+		[FieldOrder(32)]
+		string opState;
+		public string OpState { get { return opState; } protected set { } }
+		[FieldOptional]
+		[FieldOrder(33)]
+		public string[] mDummyField;
+		
+		[FieldHidden]
 		string siteid;
-		public string SiteID {
+		public string SiteId {
 			get {
 				if(string.IsNullOrEmpty(siteid)) {
 					siteid = Element.Contains("RBS") ? Element : Location;
@@ -53,6 +137,7 @@ namespace appCore.Netcool
 						siteid = siteid.Replace("RBS", string.Empty);
 						while(siteid.StartsWith("0"))
 							siteid = siteid.Substring(1);
+//						siteid = Convert.ToInt32(siteid.Replace("RBS",string.Empty)).ToString();
 					}
 				}
 				
@@ -62,31 +147,61 @@ namespace appCore.Netcool
 				siteid = value;
 			}
 		}
+		[FieldHidden]
 		Site _site = null;
 		public Site ParentSite {
 			get {
 				if(_site == null)
-					_site = Finder.getSite(SiteID);
+					_site = Finder.getSite(SiteId);
 				return _site;
 			}
 			protected set {
 				_site = value;
 			}
 		}
-		public bool COOS { get; protected set; }
-		public bool OnM { get; protected set; }
-		public string Bearer { get; protected set; }
-		
-		string _parsedAlarm = string.Empty;
-		public string ParsedAlarm {
+		[FieldHidden]
+		bool coos;
+		public bool COOS {
 			get {
-				return _parsedAlarm;
+				if(!coos && !onm)
+					checkCoosOrOnM();
+				return coos;
 			}
-			private set {
-				_parsedAlarm = value;
+			protected set { }
+		}
+		[FieldHidden]
+		bool onm;
+		public bool OnM {
+			get {
+				if(!coos && !onm)
+					checkCoosOrOnM();
+				return onm;
 			}
+			protected set { }
+		}
+		[FieldHidden]
+		string bearer;
+		public string Bearer {
+			get {
+				if(string.IsNullOrEmpty(bearer))
+					try { bearer = resolveAlarmBearer(); } catch {}
+				return bearer;
+			}
+			protected set { }
 		}
 		
+		[FieldHidden]
+		string _parsedAlarm;
+		public string ParsedAlarm {
+			get {
+				if(string.IsNullOrEmpty(_parsedAlarm))
+					_parsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+				return _parsedAlarm;
+			}
+			private set { }
+		}
+		
+		[FieldHidden]
 		string celloperator;
 		public string Operator {
 			get {
@@ -97,143 +212,98 @@ namespace appCore.Netcool
 			private set { celloperator = value;}
 		}
 		
-		public Alarm(DataRow alarm, DataColumnCollection columns) {
-			int lastoccurIndex = columns.Contains("Last Occurrence") ? columns["Last Occurrence"].Ordinal : columns["LastOccurrence"].Ordinal; // Encontrar a posição da column Last Occurence
-			int switchIndex = columns["RNC/BSC"].Ordinal; // Encontrar a prosição da column RNC/BSC
-			int locationIndex = columns["Location"].Ordinal; // Encontrar a prosição da column Location
-			int elementIndex = columns["Element"].Ordinal; // Encontrar a prosição da column Element
-			int summaryIndex = columns["Summary"].Ordinal; // Encontrar a prosição da column Summary
-			int countIndex = columns["Count"].Ordinal; // Encontrar a prosição da column Count
-			int attributesIndex = columns["Attributes"].Ordinal; // Encontrar a prosição da column Attributes
-			int vendorIndex = columns["Vendor"].Ordinal; // Encontrar a prosição da column Vendor
-			int townIndex = columns["Town"].Ordinal; // Encontrar a prosição da column Town
-			int countyIndex = columns["County"].Ordinal; // Encontrar a prosição da column County
-			int pocIndex = columns["Poc"].Ordinal; // Encontrar a prosição da column Poc
-			int nodeIndex = columns["Node"].Ordinal; // Encontrar a prosição da column Node
-			int identifierIndex = columns["Identifier"].Ordinal; // Encontrar a prosição da column Identifier
-			
-			LastOccurrence = Convert.ToDateTime(alarm.ItemArray[lastoccurIndex]);
-			Summary = parseSummary(alarm.ItemArray[summaryIndex].ToString());
-			RncBsc = alarm.ItemArray[switchIndex].ToString();
-			Location = alarm.ItemArray[locationIndex].ToString();
-			Element = alarm.ItemArray[elementIndex].ToString();
-			AlarmCount = alarm.ItemArray[countIndex].ToString();
-			Vendor = getVendor(alarm.ItemArray[vendorIndex].ToString());
-			Attributes = alarm.ItemArray[attributesIndex].ToString().Split('/');
-			County = alarm.ItemArray[countyIndex].ToString();
-			Town = alarm.ItemArray[townIndex].ToString();
-			POC = alarm.ItemArray[pocIndex].ToString();
-			Node = alarm.ItemArray[nodeIndex].ToString();
-			Identifier = alarm.ItemArray[identifierIndex].ToString();
-			
-			if(string.IsNullOrEmpty(Element))
-				ResolveCellName();
-			
-			try { Bearer = resolveAlarmBearer(); } catch {}
-
-			checkCoosOrOnM();
-			
-			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
-		}
+		public Alarm() {}
 		
-		public Alarm(Cell cell, bool coos, DateTime alarmTime) {
-			RncBsc = cell.BscRnc_Id;
-			LastOccurrence = alarmTime;
-			Element = cell.Name;
-			COOS = coos;
-			Bearer = cell.Bearer;
+		public Alarm(Cell cell, bool alarmCOOS, DateTime alarmTime) {
+			rncBsc = cell.BscRnc_Id;
+			lastOccurrence = alarmTime.ToString();
+			element = cell.Name;
+			coos = alarmCOOS;
+			bearer = cell.Bearer;
 			string temp = cell.ParentSite;
 			while(temp.Length < 5)
 				temp = "0" + temp;
-			Location = "RBS" + temp;
+			location = "RBS" + temp;
 			
-			Vendor = cell.Vendor;
+			vendor = cell.Vendor.ToString();
 			
-			County = ParentSite.County;
-			Town = ParentSite.Town;
-			
-			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+			county = ParentSite.County;
+			town = ParentSite.Town;
 		}
 		
-		public Alarm(Cell cell, bool coos, Alarm parentAlarm) {
-			RncBsc = cell.BscRnc_Id;
-			LastOccurrence = parentAlarm.LastOccurrence;
-			Element = cell.Name;
-			COOS = coos;
-			Bearer = cell.Bearer;
-//			string temp = cell.ParentSite;
-//			while(temp.Length < 5)
-//				temp = "0" + temp;
-//			Location = "RBS" + temp;
-			Location = parentAlarm.Location;
+		public Alarm(Cell cell, bool alarmCOOS, Alarm parentAlarm) {
+			rncBsc = cell.BscRnc_Id;
+			lastOccurrence = parentAlarm.LastOccurrence.ToString();
+			element = cell.Name;
+			coos = alarmCOOS;
+			bearer = cell.Bearer;
+			location = parentAlarm.Location;
 			
-			Vendor = cell.Vendor;
+			vendor = cell.Vendor.ToString();
 			
-			Summary = parentAlarm.Summary + "(Auto generated alarm)";
-			AlarmCount = parentAlarm.AlarmCount;
-			Attributes = parentAlarm.Attributes;
-			POC = parentAlarm.POC;
-			Node = parentAlarm.Node;
-			Identifier = parentAlarm.Identifier;
+			summary = parentAlarm.Summary + "(Auto generated alarm)";
+			alarmCount = parentAlarm.AlarmCount.ToString();
+			attributes = string.Join("/",parentAlarm.Attributes);
+			poc = parentAlarm.POC;
+			node = parentAlarm.Node;
+			identifier = parentAlarm.Identifier;
 			
-			County = parentAlarm.County;
-			Town = parentAlarm.Town;
+			county = parentAlarm.County;
+			town = parentAlarm.Town;
 			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
 		}
 		
 		void checkCoosOrOnM() { // FIXME: O&M alarms for proper filtering
 			switch (Vendor) {
-				case Site.Vendors.ALU:
-					COOS = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
+				case SiteFinder.Site.Vendors.ALU:
+					coos = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
 					break;
-				case Site.Vendors.Ericsson:
+				case SiteFinder.Site.Vendors.Ericsson:
 					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable") || Summary.Contains("UtranCell_NbapMessageFailure"))
-						COOS = true;
+						coos = true;
 					else
-						OnM = Summary.Contains("Heartbeat Failure") || Summary.Contains("OML FAULT");
+						onm = Summary.Contains("Heartbeat Failure") || Summary.Contains("OML FAULT");
 					break;
-				case Site.Vendors.Huawei:
+				case SiteFinder.Site.Vendors.Huawei:
 					if (Summary.Contains("Cell out of Service") || Summary.Contains("Cell Unavailable") || Summary.Contains("Local Cell Unusable"))
-						COOS = true;
+						coos = true;
 					else
-						OnM = Summary.Contains("NE Is Disconnected") || Summary.Contains("OML Fault");
+						onm = Summary.Contains("NE Is Disconnected") || Summary.Contains("OML Fault");
 					break;
-				case Site.Vendors.NSN:
+				case SiteFinder.Site.Vendors.NSN:
 					if (Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE"))
-						COOS = true;
+						coos = true;
 					else
-						OnM = Summary.Contains("NE O&M");
+						onm = Summary.Contains("O&M");
 					break;
 			}
 		}
 		
 		string resolveAlarmBearer() {
-			string bearer = string.Empty;
+			string tempBearer = string.Empty;
 			if(!string.IsNullOrEmpty(RncBsc)) {
 				switch(RncBsc.Substring(0, 1)) {
 					case "B":
-						bearer = "2G";
+						tempBearer = "2G";
 						break;
 					case "R":
-						bearer = "3G";
+						tempBearer = "3G";
 						break;
 					default:
 						if(Element.StartsWith("V"))
-							bearer = "4G";
+							tempBearer = "4G";
 						break;
 				}
 			}
 			else
 				if(!string.IsNullOrEmpty(Element))
-					bearer = !Element.StartsWith("V") ? Finder.getCell(Element).Bearer : "4G";
+					tempBearer = !Element.StartsWith("V") ? Finder.getCell(Element).Bearer : "4G";
 			
-			return bearer;
+			return tempBearer;
 		}
 		
 		string parseSummary(string toParse)
 		{
-//			toParse = toParse.TrimStart(' ');
-//			toParse = toParse.TrimEnd(' ');
 			toParse = toParse.Trim(' ');
 			
 			if ( toParse.Contains("CELL LOGICAL") )
@@ -339,65 +409,65 @@ namespace appCore.Netcool
 			return toParse;
 		}
 		
-		public void ResolveCellName() {
-			if(string.IsNullOrEmpty(Element)) {
-				switch(Vendor) {
-					case Site.Vendors.Huawei:
-						if(Identifier.Contains("Cell Name=")) {
-							string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
-							Element = temp.Substring(0, temp.IndexOf(','));
-						}
-						else
-							Element = Node;
-						break;
-					case Site.Vendors.NSN:
-						// FIXME: NSN Cell Name resolver
-						char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
-						string elementID = null;
-						if(nodeNSNcellID[2] == '4')
-							elementID = "M";
-						else
-							elementID = "W";
-						elementID += Location.Substring(3);
-						
-						if(nodeNSNcellID[2] == '1' || nodeNSNcellID[2] == '4')
-							elementID += "0";
-						else
-							elementID += nodeNSNcellID[2];
-						elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
-						Element = elementID;
-						break;
-					case Site.Vendors.Ericsson:
-						switch(RncBsc.Substring(0,1)) {
-							case "B":
-								string GCellId = Summary.Substring(Summary.IndexOf("CELL =  ") + 8);
-								Element = GCellId.Substring(0, GCellId.IndexOf(" ("));
-								break;
-							case "R":
-								string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
-								List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
-								foreach(Cell cell in results)
-									if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
-										Element = cell.Name;
-								break;
-						}
-						break;
-				}
+		public string ResolveCellName() {
+			string cellName = string.Empty;
+			switch(Vendor) {
+				case SiteFinder.Site.Vendors.Huawei:
+					if(Identifier.Contains("Cell Name=")) {
+						string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
+						cellName = temp.Substring(0, temp.IndexOf(','));
+					}
+					else
+						cellName = Node;
+					break;
+				case SiteFinder.Site.Vendors.NSN:
+					// FIXME: NSN Cell Name resolver
+					char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
+					string elementID = null;
+					if(nodeNSNcellID[2] == '4')
+						elementID = "M";
+					else
+						elementID = "W";
+					elementID += Location.Substring(3);
+					
+					if(nodeNSNcellID[2] == '1' || nodeNSNcellID[2] == '4')
+						elementID += "0";
+					else
+						elementID += nodeNSNcellID[2];
+					elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
+					cellName = elementID;
+					break;
+				case SiteFinder.Site.Vendors.Ericsson:
+					switch(RncBsc.Substring(0,1)) {
+						case "B":
+							string GCellId = Summary.Substring(Summary.IndexOf("CELL =  ") + 8);
+							cellName = GCellId.Substring(0, GCellId.IndexOf(" ("));
+							break;
+						case "R":
+							string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
+							List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
+							foreach(Cell cell in results)
+								if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
+									cellName = cell.Name;
+							break;
+					}
+					break;
 			}
+			return cellName;
 		}
 		
 		Site.Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
-					return Site.Vendors.Ericsson;
+					return SiteFinder.Site.Vendors.Ericsson;
 				case "HUAWEI":
-					return Site.Vendors.Huawei;
+					return SiteFinder.Site.Vendors.Huawei;
 				case "ALU":
-					return Site.Vendors.ALU;
+					return SiteFinder.Site.Vendors.ALU;
 				case "NSN":
-					return Site.Vendors.NSN;
+					return SiteFinder.Site.Vendors.NSN;
 				default:
-					return Site.Vendors.None;
+					return SiteFinder.Site.Vendors.None;
 			}
 		}
 		

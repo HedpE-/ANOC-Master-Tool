@@ -675,10 +675,10 @@ namespace appCore
 
 		public static DataView findCells(string site)
 		{
-			if(!site.IsAllDigits())
-				site = "00000";
 			while(site.StartsWith("0"))
 				site = site.Substring(1);
+			if(!site.IsAllDigits())
+				site = "00000";
 			
 			DataView dv = new DataView(Databases.cellDetailsTable);
 			dv.RowFilter = "SITE = '" + site + "'";
@@ -1437,7 +1437,7 @@ namespace appCore
 			                           		return;
 			                           	}
 			                           	try {
-			                           		Netcool.Parser netcool = new Netcool.Parser(textBox12.Text);
+			                           		Netcool.AlarmsParser netcool = new Netcool.AlarmsParser(textBox12.Text);
 			                           		textBox12.Text = netcool.ToString();
 			                           		
 			                           		textBox12.Select(0,0);

@@ -29,9 +29,11 @@ namespace appCore.SiteFinder
 	public partial class Site
 	{
 		[FieldOrder(1)]
-		public string Id;
+		string SITE;
+		public string Id { get { return SITE; } private set { SITE = value; } }
 		[FieldOrder(2)]
-		public string JVCO_Id;
+		string JVCO_ID;
+		public string JVCO_Id { get { return JVCO_ID; } private set { JVCO_ID = value; } }
 		[FieldOrder(3)]
 		public string GSM900;
 		[FieldOrder(4)]
@@ -47,15 +49,44 @@ namespace appCore.SiteFinder
 		[FieldOrder(9)]
 		public string LTE2100;
 		[FieldOrder(10)]
-		public double Easting;
+		double Easting;
 		[FieldOrder(11)]
-		public double Northing;
+		double Northing;
+		[FieldHidden]
+		LLPoint coordinates;
+		public LLPoint Coordinates {
+			get {
+				if(coordinates == null)
+					coordinates = coordConvert.toLat_Long(new CoordPoint { Easting = Easting, Northing = Northing }, "OSGB36");
+				return coordinates;
+			}
+			private set { }
+		}
 		[FieldOrder(12)]
 		public string HostedBy;
 		[FieldOrder(13)]
 		public string Priority;
 		[FieldOrder(14)]
 		string ADDRESS;
+		public string Address {
+			get {
+				return ADDRESS.Replace(';',',');
+			}
+			private set {
+				ADDRESS = value;
+				string[] address = ADDRESS.Split(';');
+				int addressLastIndex = address.Length - 1;
+				try { PostCode = address[addressLastIndex].Trim(); } catch (Exception) { }
+				try { County = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
+				try { Town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
+			}
+		}
+		[FieldHidden]
+		public string PostCode;
+		[FieldHidden]
+		public string Town;
+		[FieldHidden]
+		public string County;
 		[FieldOrder(15)]
 		public string TellabsAtRisk;
 		[FieldOrder(16)]
@@ -76,8 +107,10 @@ namespace appCore.SiteFinder
 		public string Special;
 		[FieldOrder(24)]
 		string SPECIAL_START;
+		public DateTime SpecialEvent_StartDate { get { return Convert.ToDateTime(SPECIAL_START); } private set { SPECIAL_START = value.ToString(); } }
 		[FieldOrder(25)]
 		string SPECIAL_END;
+		public DateTime SpecialEvent_EndDate { get { return Convert.ToDateTime(SPECIAL_END); } private set { SPECIAL_END = value.ToString(); } }
 		[FieldOrder(26)]
 		public string VIP;
 		[FieldOrder(27)]
@@ -142,52 +175,24 @@ namespace appCore.SiteFinder
 		public string IP_4G_E;
 		[FieldOrder(55)]
 		string VENDOR_2G;
+		public Site.Vendors Vendor2G { get { return resolveVendor(VENDOR_2G); } private set { VENDOR_2G = value.ToString(); } }
 		[FieldOrder(56)]
 		string VENDOR_3G;
+		public Site.Vendors Vendor3G { get { return resolveVendor(VENDOR_3G); } private set { VENDOR_3G = value.ToString(); } }
 		[FieldOrder(57)]
 		string VENDOR_4G;
+		public Site.Vendors Vendor4G { get { return resolveVendor(VENDOR_4G); } private set { VENDOR_4G = value.ToString(); } }
 		[FieldOrder(58)]
 		string DATE;
+		public DateTime DeploymentDate { get { return Convert.ToDateTime(DATE); } private set { DATE = value.ToString(); } }
 		[FieldOrder(59)]
 		public string MTX_Related;
 		
-//		[FieldHidden]
 		public bool Exists { get { return !string.IsNullOrEmpty(JVCO_Id); } private set { } }
 		[FieldHidden]
-		LLPoint coordinates;
-		public LLPoint Coordinates {
-			get {
-				if(coordinates == null)
-					coordinates = coordConvert.toLat_Long(new CoordPoint { Easting = Easting, Northing = Northing }, "OSGB36");
-				return coordinates;
-			}
-			private set { }
-		}
-//		[FieldHidden]
-		public string Address {
-			get {
-				return ADDRESS.Replace(';',',');
-			}
-			private set {
-				ADDRESS = value;
-				string[] address = ADDRESS.Split(';');
-				int addressLastIndex = address.Length - 1;
-				try { PostCode = address[addressLastIndex].Trim(); } catch (Exception) { }
-				try { County = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
-				try { Town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
-			}
-		}
+		string POWER_COMPANY;
 		[FieldHidden]
-		public string PostCode;
-		[FieldHidden]
-		public string Town;
-		[FieldHidden]
-		public string County;
-		[FieldHidden]
-		string POWER_COMPANY = string.Empty;
-		[FieldHidden]
-		string POWER_CONTACT = string.Empty;
-//		[FieldHidden]
+		string POWER_CONTACT;
 		public string PowerCompany {
 			get {
 				return (POWER_COMPANY + " " + POWER_CONTACT).Trim();
@@ -198,18 +203,6 @@ namespace appCore.SiteFinder
 				POWER_CONTACT = temp[1].Trim();
 			}
 		}
-//		[FieldHidden]
-		public DateTime SpecialEvent_StartDate { get { return Convert.ToDateTime(SPECIAL_START); } }
-//		[FieldHidden]
-		public DateTime SpecialEvent_EndDate { get { return Convert.ToDateTime(SPECIAL_END); } }
-//		[FieldHidden]
-		public Site.Vendors Vendor2G { get { return resolveVendor(VENDOR_2G); } }
-//		[FieldHidden]
-		public Site.Vendors Vendor3G { get { return resolveVendor(VENDOR_3G); } }
-//		[FieldHidden]
-		public Site.Vendors Vendor4G { get { return resolveVendor(VENDOR_4G); } }
-//		[FieldHidden]
-		public DateTime DeploymentDate { get { return Convert.ToDateTime(DATE); } }
 		
 		[FieldHidden]
 		public DataTable ActiveAlarms;
@@ -243,26 +236,24 @@ namespace appCore.SiteFinder
 		}
 		
 		[FieldHidden]
-		List<Cell> cells = new List<Cell>();
+		List<Cell> cells;
 		public List<Cell> Cells {
 			get {
-				if(cells.Count == 0 && Exists) {
-					try {
-						var engine = new FileHelperEngine<Cell>();
-						var res = engine.ReadFileAsList(DB.Databases.all_cells.FullName);
-						foreach (Cell s in res)
-						{
-							if(s.ParentSite == Id)
-								cells.Add(s);
-						}
-					}
-					catch(FileHelpersException e) {
-						string f = e.Message;
-					}
-				}
+				if(cells == null && Exists)
+					cells = Finder.getCells(Id);
 				return cells;
 			}
 			private set { }
+		}
+		[FieldHidden]
+		List<Cell> cellsInOutage;
+		public List<Cell> CellsInOutage {
+			get {
+				return cellsInOutage;
+			}
+			set {
+				cellsInOutage = value;
+			}
 		}
 		
 		/// <summary>
