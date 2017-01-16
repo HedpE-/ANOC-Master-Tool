@@ -191,7 +191,7 @@ namespace appCore.Netcool
 		public string ParsedAlarm {
 			get {
 				if(string.IsNullOrEmpty(_parsedAlarm))
-					_parsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+					_parsedAlarm = LastOccurrence + " - " + parseSummary(Summary) + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
 				return _parsedAlarm;
 			}
 			private set { }
