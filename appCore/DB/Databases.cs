@@ -49,10 +49,10 @@ namespace appCore.DB
 			private set {
 				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
 				{
-					bool sameFile = value.FullName == _all_cells.FullName && value.Length == _all_cells.Length;
+//					bool sameFile = value.FullName == _all_cells.FullName && value.Length == _all_cells.Length;
 					_all_cells = value;
-					if (!sameFile || cellDetailsTable == null)
-						cellDetailsTable = _all_cells.Exists ? Tools.GetDataTableFromCsv(_all_cells, true) : null;
+//					if (!sameFile || cellDetailsTable == null)
+//						cellDetailsTable = _all_cells.Exists ? Tools.GetDataTableFromCsv(_all_cells, true) : null;
 				}
 			}
 		}
