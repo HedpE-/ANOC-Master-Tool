@@ -324,15 +324,14 @@ namespace appCore.Logs
 				UpdateLogFile(n, existingLogIndex);
 		}
 
-//		public void HandleLog(T n, string bcpForm) {
-//			CheckLogFileIntegrity();
-//			int existingLogIndex = CheckLogExists(n);
-//			AddBcpToLog(bcpForm, CheckLogExists(n));
-//			if(existingLogIndex == -1)
-//				UpdateLogFile(n);
-//			else
-//				UpdateLogFile(n, existingLogIndex);
-//		}
+		public void HandleOutageLog(T n) {
+			CheckLogFileIntegrity();
+			int existingLogIndex = CheckLogExists(n);
+			if(existingLogIndex == -1)
+				WriteLog(n);
+			else
+				UpdateLogFile(n, existingLogIndex);
+		}
 
 		void WriteLog(T n) {
 //			FileInfo fi = new FileInfo(@"c:\MyTest.txt");
