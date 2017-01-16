@@ -133,12 +133,8 @@ namespace appCore.Netcool
 			get {
 				if(string.IsNullOrEmpty(siteid)) {
 					siteid = Element.Contains("RBS") ? Element : Location;
-					if(!string.IsNullOrEmpty(siteid)) {
-						siteid = siteid.Replace("RBS", string.Empty);
-						while(siteid.StartsWith("0"))
-							siteid = siteid.Substring(1);
-//						siteid = Convert.ToInt32(siteid.Replace("RBS",string.Empty)).ToString();
-					}
+					if(!string.IsNullOrEmpty(siteid))
+						siteid = Convert.ToInt32(siteid.RemoveLetters()).ToString();
 				}
 				
 				return siteid;
@@ -281,7 +277,7 @@ namespace appCore.Netcool
 		
 		string resolveAlarmBearer() {
 			string tempBearer = string.Empty;
-			if(!string.IsNullOrEmpty(RncBsc)) {
+//			if(!string.IsNullOrEmpty(RncBsc)) {
 				switch(RncBsc.Substring(0, 1)) {
 					case "B":
 						tempBearer = "2G";
@@ -290,14 +286,18 @@ namespace appCore.Netcool
 						tempBearer = "3G";
 						break;
 					default:
-						if(Element.StartsWith("V"))
+						if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
+							tempBearer = "2G";
+						if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
+							tempBearer = "3G";
+						if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
 							tempBearer = "4G";
 						break;
 				}
-			}
-			else
-				if(!string.IsNullOrEmpty(Element))
-					tempBearer = !Element.StartsWith("V") ? Finder.getCell(Element).Bearer : "4G";
+//			}
+//			else
+//				if(!string.IsNullOrEmpty(Element))
+//					tempBearer = !Element.StartsWith("V") ? Finder.getCell(Element).Bearer : "4G";
 			
 			return tempBearer;
 		}

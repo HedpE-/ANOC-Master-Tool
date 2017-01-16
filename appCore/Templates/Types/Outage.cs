@@ -18,7 +18,6 @@ namespace appCore.Templates.Types
 	/// <summary>
 	/// Description of Outage.
 	/// </summary>
-	//	[Serializable]
 	public class Outage : Template
 	{
 		public string VfOutage;
@@ -45,25 +44,25 @@ namespace appCore.Templates.Types
 		
 		List<Alarm> OutageAlarms;
 		
-		List<Alarm> VfAlarms {
-			get {
-				return OutageAlarms.FindAll(s => s.Operator == "VF");
-			}
-		}
-		List<Alarm> TefAlarms {
-			get {
-				return OutageAlarms.FindAll(s => s.Operator == "TEF");
-			}
-		}
+//		List<Alarm> VfAlarms {
+//			get {
+//				return OutageAlarms.FindAll(s => s.Operator == "VF");
+//			}
+//		}
+//		List<Alarm> TefAlarms {
+//			get {
+//				return OutageAlarms.FindAll(s => s.Operator == "TEF");
+//			}
+//		}
 		
 		public Outage(AlarmsParser alarms) {
-			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-			st.Start();
+//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+//			st.Start();
 			OutageAlarms = alarms.AlarmsList;
 			
 			List<Cell> LTEcells = new List<Cell>();
 			
-			TimeSpan t2;
+//			TimeSpan t2;
 			if(alarms.lteSites.Count > 0) {
 				LTEcells = Finder.getCells(alarms.lteSites, "4G");
 //				System.Diagnostics.Stopwatch st2 = new System.Diagnostics.Stopwatch();
@@ -94,8 +93,11 @@ namespace appCore.Templates.Types
 			try {
 				var engine = new FileHelperEngine<Alarm>();
 				engine.AfterReadRecord += (eng, e) => {
-					string temp = e.Record.RncBsc + " - " + e.Record.Element;
-					string temp2 = e.Record.Bearer;
+					string temp;
+					if(e.Record.Bearer == "4G")
+						temp = e.Record.Element;
+					else
+						temp = e.Record.RncBsc + " - " + e.Record.Element;
 					switch (e.Record.Operator) {
 						case "VF":
 							if(!VfLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
@@ -158,12 +160,10 @@ namespace appCore.Templates.Types
 				var m = e.Message;
 			}
 			
-			st.Stop();
-			var t = st.Elapsed;
+//			st.Stop();
+//			var t = st.Elapsed;
 			
 			generateReports();
-			
-			// TODO: Build both reports
 			
 			LogType = "Outage";
 			fullLog = generateFullLog();
@@ -176,7 +176,6 @@ namespace appCore.Templates.Types
 			foreach (Site site in Sites) {
 				Cells.AddRange(site.Cells);
 				Locations.Add(site.Town);
-//			VFlocationsArrayList.Add(new string[]{address[address.Length - 2].Trim(' '),siteHasVF2G.ToString(),siteHasVF3G.ToString(),siteHasVF4G.ToString()});
 			}
 			LogType = "Outage";
 		}
@@ -213,11 +212,13 @@ namespace appCore.Templates.Types
 			if ( VfLteCells.Count > 0)
 				VfOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VfLteCells.Count + ") Event Time - " + VfGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfLteCells);
 			
-			foreach (string site in VfSites) {
-				string tempSite = site;
+			for(int c = 1;c < VfSites.Count;c++) {
+				string tempSite = Convert.ToInt32(VfSites[c].RemoveLetters()).ToString();
 				while(tempSite.Length < 4)
-					tempSite = "0" + site;
+					tempSite = "0" + tempSite;
 				VfBulkCI += tempSite + ";";
+				if(c > 0 && c % 50 == 0)
+					VfBulkCI += Environment.NewLine + Environment.NewLine;
 			}
 			
 			cellTotal = TefGsmCells.Count + TefUmtsCells.Count + TefLteCells.Count;
@@ -237,19 +238,30 @@ namespace appCore.Templates.Types
 			if ( TefLteCells.Count > 0)
 				TefOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TefLteCells.Count + ") Event Time - " + TefGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefLteCells);
 			
-			foreach (string site in TefSites) {
-				string tempSite = site;
+			for(int c = 1;c < TefSites.Count;c++) {
+				string tempSite = Convert.ToInt32(TefSites[c].RemoveLetters()).ToString();
 				while(tempSite.Length < 4)
-					tempSite = "0" + site;
+					tempSite = "0" + tempSite;
 				TefBulkCI += tempSite + ";";
+				if(c > 0 && c % 50 == 0)
+					TefBulkCI += Environment.NewLine + Environment.NewLine;
 			}
 		}
 		
 		string generateFullLog() {
-//			VFoutage = op.genReport(parserTable,"VF");
-//			VFbulkCI = op.bulkCi(sites);
-//			TFoutage = op.genReport(parserTable,"TF");
-//			TFbulkCI = op.bulkCi(sites);
+			fullLog += DateTime.Now.ToString("HH:mm:ss");
+			if(!string.IsNullOrEmpty(VfOutage)) {
+				fullLog += Environment.NewLine + "----------VF Report----------" + Environment.NewLine;
+				fullLog += VfOutage + Environment.NewLine;
+				fullLog += "-----BulkCI-----" + Environment.NewLine;
+				fullLog += VfBulkCI;
+			}
+			if(!string.IsNullOrEmpty(TefOutage)) {
+				fullLog += Environment.NewLine + "----------TF Report----------" + Environment.NewLine;
+				fullLog += TefOutage + Environment.NewLine;
+				fullLog += "-----BulkCI-----" + Environment.NewLine;
+				fullLog += TefBulkCI;
+			}
 			
 			return string.Empty;
 		}

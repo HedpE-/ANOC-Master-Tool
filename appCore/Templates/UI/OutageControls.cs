@@ -175,8 +175,12 @@ namespace appCore.Templates.UI
 			try {
 				// TODO: Finish revamped outages
 				
+//				Action actionThreaded = new Action(delegate {
 				AlarmsParser alarms = new AlarmsParser(textBox10.Text, false, true);
 				currentOutage = alarms.GenerateOutage();
+//				                                   });
+//				LoadingPanel load = new LoadingPanel();
+//				load.Show(actionThreaded, actionNonThreaded, true, this);
 
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage)) {
 					tabControl4.Visible = true;
@@ -211,7 +215,7 @@ namespace appCore.Templates.UI
 					button25.Visible = true;
 					textBox10.Focus();
 					label33.Text = "Generated Outage Report";
-//					LogOutageReport();
+					MainForm.logFile.HandleOutageLog(currentOutage);
 //					if (op.tableRemoved)
 //						MessageBox.Show("WARNING!!!" + Environment.NewLine + Environment.NewLine + "One or more tables to parse have been removed." + Environment.NewLine + "All tables must have the same columns and order.","Warning",MessageBoxButtons.OK,MessageBoxIcon.Warning);
 				}
@@ -244,7 +248,7 @@ namespace appCore.Templates.UI
 			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			Thread thread = new Thread(() => {
-			                           	SiteFinder.UI.siteDetails sd = new SiteFinder.UI.siteDetails(true,outageSites);
+			                           	SiteFinder.UI.siteDetails sd = new SiteFinder.UI.siteDetails(true, outageSites);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
