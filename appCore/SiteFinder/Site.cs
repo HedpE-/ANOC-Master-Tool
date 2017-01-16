@@ -239,11 +239,11 @@ namespace appCore.SiteFinder
 		List<Cell> cells;
 		public List<Cell> Cells {
 			get {
-				if(cells == null && Exists)
-					cells = Finder.getCells(Id);
 				return cells;
 			}
-			private set { }
+			private set {
+				cells = value;
+			}
 		}
 		[FieldHidden]
 		List<Cell> cellsInOutage;
@@ -254,6 +254,9 @@ namespace appCore.SiteFinder
 			set {
 				cellsInOutage = value;
 			}
+		}
+		
+		public Site() {
 		}
 		
 		/// <summary>
@@ -479,6 +482,10 @@ namespace appCore.SiteFinder
 				default:
 					return Site.Vendors.None;
 			}
+		}
+		
+		public void populateCells() {
+			cells = Finder.getCells(Id);
 		}
 	}
 	
