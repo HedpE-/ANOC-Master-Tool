@@ -167,6 +167,8 @@ namespace appCore.Templates.UI
 
 		void GenerateReport(object sender, EventArgs e)
 		{
+			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+			st.Start();
 //			Action action = new Action(delegate {
 			if (string.IsNullOrEmpty(textBox10.Text)) {
 				FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -241,6 +243,8 @@ namespace appCore.Templates.UI
 //			                           	}
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+			st.Stop();
+			var t = st.Elapsed;
 		}
 		
 		void OutageFollowUp() {

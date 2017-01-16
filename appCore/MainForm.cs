@@ -1264,6 +1264,8 @@ namespace appCore
 		void Button4Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
+			                           	Stopwatch st = new Stopwatch();
+			                           	st.Start();
 			                           	if (string.IsNullOrEmpty(textBox10.Text)) {
 			                           		FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			                           		return;
@@ -1347,6 +1349,8 @@ namespace appCore
 			                           		thread.SetApartmentState(ApartmentState.STA);
 			                           		thread.Start();
 			                           	}
+			                           	st.Stop();
+			                           	var t = st.Elapsed;
 			                           });
 			Tools.darkenBackgroundForm(action,true,this);
 		}

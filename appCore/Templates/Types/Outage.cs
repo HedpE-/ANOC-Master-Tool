@@ -98,12 +98,13 @@ namespace appCore.Templates.Types
 						temp = e.Record.Element;
 					else
 						temp = e.Record.RncBsc + " - " + e.Record.Element;
+					string tempSite = string.IsNullOrEmpty(e.Record.POC) ? e.Record.Location : e.Record.Location + " - " + e.Record.POC;
 					switch (e.Record.Operator) {
 						case "VF":
 							if(!VfLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
 								VfLocations.Add(e.Record.County);
 							if(!VfSites.Contains(e.Record.Location) && !string.IsNullOrEmpty(e.Record.Location))
-								VfSites.Add(e.Record.Location);
+								VfSites.Add(tempSite);
 							switch(e.Record.Bearer) {
 								case "2G":
 									if(!VfGsmCells.Contains(temp))
@@ -129,7 +130,7 @@ namespace appCore.Templates.Types
 							if(!TefLocations.Contains(e.Record.County) && !string.IsNullOrEmpty(e.Record.County))
 								TefLocations.Add(e.Record.County);
 							if(!TefSites.Contains(e.Record.Location) && !string.IsNullOrEmpty(e.Record.Location))
-								TefSites.Add(e.Record.Location);
+								TefSites.Add(tempSite);
 							switch(e.Record.Bearer) {
 								case "2G":
 									if(!TefGsmCells.Contains(temp))
