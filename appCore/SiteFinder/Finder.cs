@@ -45,13 +45,16 @@ namespace appCore.SiteFinder
 		public static List<Cell> queryAllCellsDB(string columnName, string pattern) {
 			List<Cell> filtered = new List<Cell>();
 			try {
-				var engine2 = new FileHelperEngine<Cell>();
-				var res = engine2.ReadFileAsList(Databases.all_cells.FullName);
-				switch(columnName) {
-					case "CELL_ID":
-						filtered = res.FindAll(s => s.Id == pattern);
-						break;
-				}
+				var engine = new FileHelperEngine<Cell>();
+				engine.AfterReadRecord +=  (eng, e) => {
+					switch(columnName) {
+						case "CELL_ID":
+							if(e.Record.Id != pattern)
+								e.SkipThisRecord = true;
+							break;
+					}
+				};
+				var res = engine.ReadFileAsList(Databases.all_cells.FullName);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
@@ -59,39 +62,28 @@ namespace appCore.SiteFinder
 			return filtered;
 		}
 		
-		public static Site getSite(string Site)
+		public static Site getSite(string site)
 		{
-			Site site = null;
-			try {
-				var engine = new FileHelperEngine<Site>();
-				engine.AfterReadRecord +=  (eng, e) => {
-					if(e.Record.Id != Site)
-						e.SkipThisRecord = true;
-					else
-						e.Record.populateCells();
-				};
-				var res = engine.ReadFileAsList(Databases.all_sites.FullName);
-				site = res.Count > 0 ? res[0] : new Site();
-			}
-			catch(FileHelpersException e) {
-				string f = e.Message;
-			}
+			List<string> sitesList = new List<string>();
+			sitesList.Add(site);
 			
-			return site;
+			List<Site> res = getSites(sitesList);
+			
+			return res.Count > 0 ? res[0] : new Site();
 		}
 		
 		public static List<Site> getSites(List<string> Sites)
 		{
 			List<Site> sites = new List<Site>();
 			try {
-				var engine2 = new FileHelperEngine<Site>();
-				engine2.AfterReadRecord +=  (eng, e) => {
+				var engine = new FileHelperEngine<Site>();
+				engine.AfterReadRecord +=  (eng, e) => {
 					if(!Sites.Contains(e.Record.Id))
 						e.SkipThisRecord = true;
 					else
 						e.Record.populateCells();
 				};
-				sites = engine2.ReadFileAsList(Databases.all_sites.FullName);
+				sites = engine.ReadFileAsList(Databases.all_sites.FullName);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
@@ -100,20 +92,17 @@ namespace appCore.SiteFinder
 			return sites;
 		}
 
-		public static Cell getCell(string cell)
+		public static Cell getCell(string cellName)
 		{
-			if(!cell.IsAllDigits())
-				cell = "00000";
-			
 			Cell tempCell = null;
 			
 			try {
-				var engine2 = new FileHelperEngine<Cell>();
-				engine2.AfterReadRecord +=  (eng, e) => {
-					if(e.Record.Name != cell)
+				var engine = new FileHelperEngine<Cell>();
+				engine.AfterReadRecord +=  (eng, e) => {
+					if(e.Record.Name != cellName)
 						e.SkipThisRecord = true;
 				};
-				var res = engine2.ReadFileAsList(Databases.all_cells.FullName);
+				var res = engine.ReadFileAsList(Databases.all_cells.FullName);
 				tempCell = res.Count > 0 ? res[0] : null;
 			}
 			catch(FileHelpersException e) {
@@ -127,8 +116,8 @@ namespace appCore.SiteFinder
 		{
 			List<Cell> foundCells = new List<Cell>();
 			try {
-				var engine2 = new FileHelperEngine<Cell>();
-				engine2.AfterReadRecord +=  (eng, e) => {
+				var engine = new FileHelperEngine<Cell>();
+				engine.AfterReadRecord +=  (eng, e) => {
 					if(!bearers.Contains(e.Record.Bearer))
 						e.SkipThisRecord = true;
 					else {
@@ -136,7 +125,7 @@ namespace appCore.SiteFinder
 							e.SkipThisRecord = true;
 					}
 				};
-				foundCells = engine2.ReadFileAsList(Databases.all_cells.FullName);
+				foundCells = engine.ReadFileAsList(Databases.all_cells.FullName);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
