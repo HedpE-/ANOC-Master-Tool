@@ -30,15 +30,17 @@ namespace appCore.Netcool
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\n-ProbableCause", StringComparison.Ordinal), 1);
 			
 			try {
-				var cb = new DelimitedClassBuilder("Alarm2", "\t") { IgnoreFirstLines = 0, IgnoreEmptyLines = true, Delimiter = "\t"  };
+				var cb = new DelimitedClassBuilder("Alarm2", "\t");
+				cb.Namespace = "appCore.Netcool";
+				
 				var headerArray = netcoolAlarms.Split('\n')[0].Split('\t');
 				foreach (var header in headerArray)
 				{
 					var fieldName = header.Replace("/", "").Replace("\"", "").Replace(" ", "");
 					cb.AddField(fieldName, typeof(string));
 				}
-				var cbc = cb.CreateRecordClass();
-				var engine = new FileHelperEngine(cbc);
+				
+				var engine = new FileHelperEngine(cb.CreateRecordClass());
 				
 				engine.BeforeReadRecord += (eng, e) => {
 					var tx = e.RecordLine;
