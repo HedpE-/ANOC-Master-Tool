@@ -12,7 +12,6 @@ using System.Threading;
 using System.IO;
 using System.Timers;
 using appCore.Settings;
-using appCore.Toolbox;
 using appCore.Web;
 
 namespace appCore.DB
@@ -122,31 +121,6 @@ namespace appCore.DB
 		}
 		
 		public static void PopulateDatabases() {
-//			Stopwatch sw = new Stopwatch();
-//			sw.Start();
-//
-//			bool finishedTask = false;
-//			Thread thread = new Thread(() => {
-//			                           	all_sites = new FileInfo(all_sites.FullName);
-//			                           	all_cells = new FileInfo(all_cells.FullName);
-//			                           	shiftsFile = new ShiftsFile();
-//			                           	finishedTask = true;
-//			                           });
-//			thread.IsBackground = true;
-//			thread.Start();
-			
-//			while(!finishedTask) {}
-//
-//			sw.Stop();
-//			FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-//			TimeSpan sol1Time = sw.Elapsed;
-//
-//			siteDetailsTable = null;
-//			cellDetailsTable = null;
-//
-//			sw = new Stopwatch();
-//			sw.Start();
-			
 			bool loadingAllSitesFinished = false;
 			bool loadingAllCellsFinished = false;
 			bool loadingShiftsFileFinished = false;
@@ -172,10 +146,6 @@ namespace appCore.DB
 			
 			while(!loadingAllSitesFinished || !loadingAllCellsFinished || !loadingShiftsFileFinished) {}
 			
-//			sw.Stop();
-//			System.Windows.Forms.MessageBox.Show("Old way\nElapsed = " + sol1Time + "\n\nNew stuff\nElapsed = " + sw.Elapsed);
-//			FlexibleMessageBox.Show("Old way\nElapsed = " + sol1Time + "\n\nNew stuff\nElapsed = " + sw.Elapsed);
-			
 //			LoadDBFiles(null, null);
 //			AutoUpdateTimer.Elapsed += LoadDBFiles;
 			ResetAutoUpdateTimer();
@@ -197,20 +167,5 @@ namespace appCore.DB
 			}
 			catch(ThreadAbortException) { }
 		}
-		
-//		public static void RefreshDBFiles(string files) {
-//			if(files == "all" || files.Contains("all_sites")) {
-//				all_sites = new FileInfo(all_sites.FullName);
-//				siteDetailsTable = all_sites.Exists ? Tools.GetDataTableFromCsv(all_sites, true) : buildSitesTable();
-//			}
-//
-//			if(files == "all" || files.Contains("all_cells")) {
-//				all_cells = new FileInfo(all_cells.FullName);
-//				cellDetailsTable = all_cells.Exists ? Tools.GetDataTableFromCsv(all_cells, true) : buildCellsTable();
-//			}
-//
-//			if(files == "all" || files.Contains("shifts"))
-//				shiftsFile = new ShiftsFile();
-//		}
 	}
 }

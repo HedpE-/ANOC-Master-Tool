@@ -176,8 +176,6 @@ namespace appCore.Templates.UI
 				return;
 			}
 			try {
-				// TODO: Finish revamped outages
-				
 //				Action actionThreaded = new Action(delegate {
 				AlarmsParser alarms = new AlarmsParser(textBox10.Text, false, true);
 				currentOutage = alarms.GenerateOutage();
