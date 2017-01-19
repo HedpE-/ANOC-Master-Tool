@@ -49,7 +49,7 @@ namespace appCore.Netcool
 					element = ResolveCellName();
 				return element;
 			}
-			protected set { }
+			set { element = value; }
 		}
 		[FieldOrder(9)]
 		string summary;

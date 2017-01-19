@@ -21,7 +21,7 @@ namespace appCore.Netcool
 	{
 		string parsedOutput;
 		public List<Alarm> AlarmsList = new List<Alarm>();
-		public List<string> lteSites = new List<string>();
+		public List<string> lteSitesOnM = new List<string>();
 		
 		public AlarmsParser(string netcoolAlarms, bool generateOutput = true, bool outage = false) {
 			while(netcoolAlarms.Contains("\n-ProbableCause"))
@@ -44,8 +44,10 @@ namespace appCore.Netcool
 				
 				if(outage) {
 					engine.AfterReadRecord += (eng, e) => {
-						if(e.Record.Bearer == "4G")
-							lteSites.Add(e.Record.SiteId);
+						if(string.IsNullOrEmpty(e.Record.Element))
+							e.Record.Element = e.Record.ResolveCellName();
+						if(e.Record.Bearer == "4G" && !e.Record.COOS)
+							lteSitesOnM.Add(e.Record.SiteId);
 					};
 				}
 				else {
@@ -64,8 +66,8 @@ namespace appCore.Netcool
 				var m = e.Message;
 			}
 			
-			if(lteSites.Any())
-				lteSites = lteSites.Distinct().ToList();
+			if(lteSitesOnM.Any())
+				lteSitesOnM = lteSitesOnM.Distinct().ToList();
 			if(generateOutput)
 				parsedOutput = parsedOutput.Substring(0, parsedOutput.Length - 4);
 		}

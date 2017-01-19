@@ -38,9 +38,11 @@ namespace appCore.Templates.UI
 		
 		Button button23 = new Button(); // BulkCILargeTextButton
 		Button button22 = new Button(); // Alarms_ReportLargeTextButton
-		TabControl tabControl4 = new TabControl(); // VFTFReportTabControl
-		TabPage tabPage15 = new TabPage(); // VFReportTabPage
-		TabPage tabPage16 = new TabPage(); // TFReportTabPage
+		RadioButton radioButton1 = new RadioButton();
+		RadioButton radioButton2 = new RadioButton();
+//		TabControl tabControl4 = new TabControl(); // VFTFReportTabControl
+//		TabPage tabPage15 = new TabPage(); // VFReportTabPage
+//		TabPage tabPage16 = new TabPage(); // TFReportTabPage
 		Label label33 = new Label(); // Alarms_ReportLabel
 		Label label32 = new Label(); // BulkCILabel
 		AMTRichTextBox textBox11 = new AMTRichTextBox(); // BulkCITextBox
@@ -184,28 +186,40 @@ namespace appCore.Templates.UI
 //				load.Show(actionThreaded, actionNonThreaded, true, this);
 
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-					tabControl4.Visible = true;
-					tabControl4.SelectTab(0);
+//					tabControl4.Visible = true;
+//					tabControl4.SelectTab(0);
+					radioButton1.Enabled = radioButton2.Enabled = radioButton1.Checked = true;
 				}
 				else {
 					if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
 						MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
 						textBox10.Text = string.Empty;
+						radioButton1.Enabled = radioButton2.Enabled = false;
 						return;
 					}
 					if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-						tabControl4.Visible = false;
-						tabControl4.SelectTab(0);
+//						tabControl4.Visible = true;
+//						foreach (TabPage tp in tabControl4.TabPages)
+//							tabControl4.TabPages.Remove(tp);
+//						tabControl4.TabPages.Add(tabPage15);
+//						tabControl4.SelectTab(0);
+						radioButton1.Enabled = radioButton1.Checked = true;
+						radioButton2.Enabled = false;
 					}
 					else {
 						if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-							tabControl4.Visible = false;
-							tabControl4.SelectTab(1);
+//							tabControl4.Visible = true;
+//							foreach (TabPage tp in tabControl4.TabPages)
+//								tabControl4.TabPages.Remove(tp);
+//							tabControl4.TabPages.Add(tabPage16);
+//							tabControl4.SelectTab(0);
+							radioButton2.Enabled = radioButton2.Checked = true;
+							radioButton1.Enabled = false;
 						}
 					}
 				}
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-					VFTFReportTabControlSelectedIndexChanged(null,null);
+//					VFTFReportTabControlSelectedIndexChanged(null,null);
 					button4.Text = "Outage Follow Up"; // HACK: Outage Follow Up button on outage report processing
 					button4.Width = 100;
 					button46.Visible = false;
@@ -269,18 +283,34 @@ namespace appCore.Templates.UI
 			thread.Start();
 		}
 
-		void VFTFReportTabControlSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if(tabControl4.SelectedIndex == 0) {
-				textBox10.Text = currentOutage.VfOutage;
-				textBox11.Text = currentOutage.VfBulkCI;
+//		void VFTFReportTabControlSelectedIndexChanged(object sender, EventArgs e)
+//		{
+//			if(tabControl4.SelectedTab.Text == "VF Report") {
+//				textBox10.Text = currentOutage.VfOutage;
+//				textBox11.Text = currentOutage.VfBulkCI;
+//			}
+//			else {
+//				textBox10.Text = currentOutage.TefOutage;
+//				textBox11.Text = currentOutage.TefBulkCI;
+//			}
+//			textBox10.Select(0,0);
+//			textBox11.Select(0,0);
+//		}
+		
+		void VFTFReportRadioButtonsCheckedChanged(object sender, EventArgs e) {
+			RadioButton rb = sender as RadioButton;
+			if(rb.Checked) {
+				if(rb.Text == "VF Report") {
+					textBox10.Text = currentOutage.VfOutage;
+					textBox11.Text = currentOutage.VfBulkCI;
+				}
+				else {
+					textBox10.Text = currentOutage.TefOutage;
+					textBox11.Text = currentOutage.TefBulkCI;
+				}
+				textBox10.Select(0,0);
+				textBox11.Select(0,0);
 			}
-			else {
-				textBox10.Text = currentOutage.TefOutage;
-				textBox11.Text = currentOutage.TefBulkCI;
-			}
-			textBox10.Select(0,0);
-			textBox11.Select(0,0);
 		}
 
 		void GenerateFromSitesList(object sender, EventArgs e)
@@ -789,7 +819,8 @@ namespace appCore.Templates.UI
 			textBox11.Text = string.Empty;
 			button12.Visible = false;
 			button25.Visible = false;
-			tabControl4.Visible = false;
+			radioButton1.Enabled = radioButton1.Checked = radioButton2.Enabled = radioButton2.Checked = false;
+//			tabControl4.Visible = false;
 			textBox10.Focus();
 		}
 
@@ -842,10 +873,12 @@ namespace appCore.Templates.UI
 			Controls.Add(label33);
 			Controls.Add(textBox10);
 			Controls.Add(button22);
-			Controls.Add(tabControl4);
+//			Controls.Add(tabControl4);
 			Controls.Add(label32);
 			Controls.Add(textBox11);
 			Controls.Add(button23);
+			Controls.Add(radioButton1);
+			Controls.Add(radioButton2);
 //			Controls.Add(button46);
 //			Controls.Add(button25);
 //			Controls.Add(button12);
@@ -924,38 +957,61 @@ namespace appCore.Templates.UI
 			button22.UseVisualStyleBackColor = true;
 			button22.Click += LargeTextButtonsClick;
 			// 
+			// radioButton1
+			// 
+			radioButton1.Appearance = Appearance.Button;
+			radioButton1.Enabled = false;
+			radioButton1.Name = "VFReportRadioButton";
+			radioButton1.TabIndex = 34;
+			radioButton1.TabStop = true;
+			radioButton1.Text = "VF Report";
+			radioButton1.TextAlign = ContentAlignment.MiddleCenter;
+			radioButton1.UseVisualStyleBackColor = true;
+			radioButton1.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
+			// 
+			// radioButton2
+			// 
+			radioButton2.Appearance = Appearance.Button;
+			radioButton2.Enabled = false;
+			radioButton2.Name = "TFReportRadioButton";
+			radioButton2.TabIndex = 35;
+			radioButton2.Text = "TF Report";
+			radioButton2.TextAlign = ContentAlignment.MiddleCenter;
+			radioButton2.UseVisualStyleBackColor = true;
+			radioButton2.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
+			// 
 			// VFTFReportTabControl
 			// 
-			tabControl4.Appearance = TabAppearance.Buttons;
-			tabControl4.Controls.Add(tabPage15);
-			tabControl4.Controls.Add(tabPage16);
-//			tabControl4.Size = new Size(127, 24);
-//			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
-			tabControl4.Name = "VFTFReportTabControl";
-			tabControl4.SelectedIndex = 0;
-			tabControl4.TabIndex = 31;
-			tabControl4.Visible = false;
-			tabControl4.SelectedIndexChanged += VFTFReportTabControlSelectedIndexChanged;
-			// 
-			// VFReportTabPage
-			// 
-			tabPage15.Location = new Point(0, 25); // 4, 25
-			tabPage15.Name = "VFReportTabPage";
-			tabPage15.Padding = new Padding(3);
-			tabPage15.Size = new Size(119, 0);
-			tabPage15.TabIndex = 0;
-			tabPage15.Text = "VF Report";
-			tabPage15.UseVisualStyleBackColor = true;
-			// 
-			// TFReportTabPage
-			// 
-			tabPage16.Location = new Point(0, 25); // 4, 25
-			tabPage16.Size = new Size(119, 0);
-			tabPage16.Name = "TFReportTabPage";
-			tabPage16.Padding = new Padding(3);
-			tabPage16.TabIndex = 1;
-			tabPage16.Text = "TF Report";
-			tabPage16.UseVisualStyleBackColor = true;
+//			tabControl4.Appearance = TabAppearance.Buttons;
+//			tabControl4.Controls.Add(tabPage15);
+//			tabControl4.Controls.Add(tabPage16);
+////			tabControl4.Size = new Size(127, 24);
+////			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
+//			tabControl4.Name = "VFTFReportTabControl";
+//			tabControl4.SelectedIndex = 0;
+//			tabControl4.TabIndex = 31;
+//			tabControl4.Visible = false;
+//			tabControl4.SelectedIndexChanged += VFTFReportTabControlSelectedIndexChanged;
+//			// 
+//			// VFReportTabPage
+//			// 
+//			tabPage15.Location = new Point(0, 25); // 4, 25
+//			tabPage15.Name = "VFReportTabPage";
+//			tabPage15.Padding = new Padding(3);
+//			tabPage15.Size = new Size(119, 0);
+//			tabPage15.TabIndex = 0;
+//			tabPage15.Text = "VF Report";
+//			tabPage15.UseVisualStyleBackColor = true;
+//			// 
+//			// TFReportTabPage
+//			// 
+//			tabPage16.Location = new Point(0, 25); // 4, 25
+//			tabPage16.Size = new Size(119, 0);
+//			tabPage16.Name = "TFReportTabPage";
+//			tabPage16.Padding = new Padding(3);
+//			tabPage16.TabIndex = 1;
+//			tabPage16.Text = "TF Report";
+//			tabPage16.UseVisualStyleBackColor = true;
 			// 
 			// BulkCILabel
 			// 
@@ -1070,8 +1126,14 @@ namespace appCore.Templates.UI
 			button22.Size = new Size(24, 20);
 			button22.Location = new Point(textBox10.Right - button22.Width, MainMenu.Bottom + 4);
 			
-			tabControl4.Size = new Size(127, 24);
-			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
+			radioButton2.Size = new Size(64, 21);
+			radioButton2.Location = new Point(button22.Left - radioButton2.Width - 5, MainMenu.Bottom + 4);
+			
+			radioButton1.Size = new Size(64, 21);
+			radioButton1.Location = new Point(radioButton2.Left - radioButton1.Width - 5, MainMenu.Bottom + 4);
+			
+//			tabControl4.Size = new Size(127, 24);
+//			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
 			
 			label32.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
 			label32.Size = new Size(198, 20);

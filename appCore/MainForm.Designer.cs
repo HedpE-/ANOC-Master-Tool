@@ -71,6 +71,8 @@ namespace appCore
 		private System.Windows.Forms.TabPage tabPage17;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.RadioButton radioButton2;
+		private System.Windows.Forms.RadioButton radioButton1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -150,6 +152,8 @@ namespace appCore
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -517,6 +521,8 @@ namespace appCore
 			// tabPage4
 			// 
 			this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage4.Controls.Add(this.radioButton2);
+			this.tabPage4.Controls.Add(this.radioButton1);
 			this.tabPage4.Controls.Add(this.button46);
 			this.tabPage4.Controls.Add(this.button25);
 			this.tabPage4.Controls.Add(this.tabControl4);
@@ -803,6 +809,30 @@ namespace appCore
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 22);
 			this.toolStripMenuItem2.Text = "Choose from file...";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.radioButton1.Checked = true;
+			this.radioButton1.Location = new System.Drawing.Point(216, 4);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(64, 21);
+			this.radioButton1.TabIndex = 34;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "VF Report";
+			this.radioButton1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.radioButton1.UseVisualStyleBackColor = true;
+			// 
+			// radioButton2
+			// 
+			this.radioButton2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.radioButton2.Location = new System.Drawing.Point(284, 4);
+			this.radioButton2.Name = "radioButton2";
+			this.radioButton2.Size = new System.Drawing.Size(64, 21);
+			this.radioButton2.TabIndex = 35;
+			this.radioButton2.Text = "TF Report";
+			this.radioButton2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.radioButton2.UseVisualStyleBackColor = true;
 			// 
 			// MainForm
 			// 

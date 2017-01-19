@@ -54,7 +54,7 @@ namespace appCore.SiteFinder
 							break;
 					}
 				};
-				var res = engine.ReadFileAsList(Databases.all_cells.FullName);
+				filtered = engine.ReadFileAsList(Databases.all_cells.FullName);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
