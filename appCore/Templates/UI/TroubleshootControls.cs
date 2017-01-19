@@ -888,11 +888,11 @@ namespace appCore.Templates.UI
 								tempDt.Rows.Add(type, dr["Change Ref"], dr["Summary"], dr["Status"], dr["Scheduled Start"], dr["Scheduled End"]);
 						}
 					}
+					DataView dv = tempDt.DefaultView;
+					dv.Sort = "Start Date desc";
+					tempDt = dv.ToTable();
+					currentCases.AddRange(tempDt.AsEnumerable());
 				}
-				DataView dv = tempDt.DefaultView;
-				dv.Sort = "Start Date desc";
-				tempDt = dv.ToTable();
-				currentCases.AddRange(tempDt.AsEnumerable());
 			}
 			return currentCases;
 		}
