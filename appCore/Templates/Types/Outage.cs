@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using appCore.Netcool;
 using appCore.SiteFinder;
 using FileHelpers;
@@ -190,54 +191,68 @@ namespace appCore.Templates.Types
 			fullLog = generateFullLog();
 		}
 		
-		public Outage(List<string> sites) {
-			List<Cell> Cells = Finder.getCells(sites);
-			foreach (Cell cell in Cells) {
-				string temp;
+		public Outage(List<string> Sites) {
+			List<Site> sites = Finder.getSites(Sites);
+			List<Cell> cells = Finder.getCells(Sites);
+			foreach (Cell cell in cells) {
+				Site tempSite = sites.Find(s => s.Id == cell.ParentSite);
+				string cellString;
+				string tempSiteString = cell.ParentSite;
+				while(tempSiteString.Length < 5)
+					tempSiteString = "0" + tempSiteString;
+				tempSiteString = "RBS" + tempSiteString;
 				if(cell.Bearer == "4G")
-					temp = cell.Name;
+					cellString = cell.Name;
 				else
-					temp = cell.BscRnc_Id + " - " + cell.Name;
+					cellString = cell.BscRnc_Id + " - " + cell.Name;
 				switch(cell.Operator) {
 					case "VF":
-						if(!VfSites.Contains(cell.ParentSite))
-							VfSites.Add(cell.ParentSite);
+						if(!VfSites.Contains(tempSiteString))
+							VfSites.Add(tempSiteString);
 						switch(cell.Bearer) {
 							case "2G":
-								if(!VfGsmCells.Contains(temp))
-									VfGsmCells.Add(temp);
+								if(!VfGsmCells.Contains(cellString))
+									VfGsmCells.Add(cellString);
 								break;
 							case "3G":
-								if(!VfUmtsCells.Contains(temp))
-									VfUmtsCells.Add(temp);
+								if(!VfUmtsCells.Contains(cellString))
+									VfUmtsCells.Add(cellString);
 								break;
 							case "4G":
-								if(!VfLteCells.Contains(temp))
-									VfLteCells.Add(temp);
+								if(!VfLteCells.Contains(cellString))
+									VfLteCells.Add(cellString);
 								break;
 						}
+						if(!VfLocations.Contains(tempSite.Town))
+							VfLocations.Add(tempSite.Town);
 						break;
 					case "TEF":
 						if(!TefSites.Contains(cell.ParentSite))
-							TefSites.Add(cell.ParentSite);
+							TefSites.Add(tempSiteString);
 						switch(cell.Bearer) {
 							case "2G":
-								if(!TefGsmCells.Contains(temp))
-									TefGsmCells.Add(temp);
+								if(!TefGsmCells.Contains(cellString))
+									TefGsmCells.Add(cellString);
 								break;
 							case "3G":
-								if(!TefUmtsCells.Contains(temp))
-									TefUmtsCells.Add(temp);
+								if(!TefUmtsCells.Contains(cellString))
+									TefUmtsCells.Add(cellString);
 								break;
 							case "4G":
-								if(!TefLteCells.Contains(temp))
-									TefLteCells.Add(temp);
+								if(!TefLteCells.Contains(cellString))
+									TefLteCells.Add(cellString);
 								break;
 						}
+						if(!TefLocations.Contains(tempSite.Town))
+							TefLocations.Add(tempSite.Town);
 						break;
 				}
 			}
+			showIncludeListForm();
+			generateReports();
+			
 			LogType = "Outage";
+			fullLog = generateFullLog();
 		}
 		
 		public Outage(Outage existingOutage) {
@@ -418,6 +433,176 @@ namespace appCore.Templates.Types
 //				}
 //			}
 //			TabControl4SelectedIndexChanged(null,null);
+		}
+
+		void showIncludeListForm() {
+			List<string[]> includeList = new List<string[]>();
+			Form form = new Form();
+			using (form) {
+				// 
+				// cb2G
+				// 
+				CheckBox cb2G = new CheckBox();
+				cb2G.Location = new System.Drawing.Point(3, 34);
+				cb2G.Name = "cb2G";
+				cb2G.Size = new System.Drawing.Size(42, 20);
+				cb2G.TabIndex = 0;
+				cb2G.Text = "2G";
+				cb2G.Enabled = VfGsmCells.Any() || TefGsmCells.Any();
+				cb2G.CheckedChanged += IncludeListForm_cbCheckedChanged;
+				// 
+				// cb3G
+				// 
+				CheckBox cb3G = new CheckBox();
+				cb3G.Location = new System.Drawing.Point(3, 60);
+				cb3G.Name = "cb3G";
+				cb3G.Size = new System.Drawing.Size(42, 20);
+				cb3G.TabIndex = 2;
+				cb3G.Text = "3G";
+				cb3G.Enabled = VfUmtsCells.Any() || TefUmtsCells.Any();
+				cb3G.CheckedChanged += IncludeListForm_cbCheckedChanged;
+				// 
+				// cb4G
+				// 
+				CheckBox cb4G = new CheckBox();
+				cb4G.Location = new System.Drawing.Point(3, 86);
+				cb4G.Name = "cb4G";
+				cb4G.Size = new System.Drawing.Size(42, 20);
+				cb4G.TabIndex = 4;
+				cb4G.Text = "4G";
+				cb4G.Enabled = VfLteCells.Any() || TefLteCells.Any();
+				cb4G.CheckedChanged += IncludeListForm_cbCheckedChanged;
+				// 
+				// continueButton
+				// 
+				Button continueButton = new Button();
+				continueButton.Location = new System.Drawing.Point(3, 112);
+				continueButton.Name = "continueButton";
+				continueButton.Size = new System.Drawing.Size(221, 23);
+				continueButton.TabIndex = 6;
+				continueButton.Text = "Continue";
+				continueButton.Click += IncludeListForm_buttonClick;
+				// 
+				// dtp2G
+				// 
+				DateTimePicker dtp2G = new DateTimePicker();
+				dtp2G.Checked = false;
+				dtp2G.CustomFormat = "dd/MM/yyyy HH:mm";
+				dtp2G.Format = DateTimePickerFormat.Custom;
+				dtp2G.Location = new System.Drawing.Point(51, 34);
+				dtp2G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
+				dtp2G.Name = "dtp2G";
+				dtp2G.Size = new System.Drawing.Size(173, 20);
+				dtp2G.TabIndex = 1;
+				dtp2G.Value = DateTime.Now;
+				dtp2G.Visible = false;
+				// 
+				// dtp3G
+				// 
+				DateTimePicker dtp3G = new DateTimePicker();
+				dtp3G.Checked = false;
+				dtp3G.CustomFormat = "dd/MM/yyyy HH:mm";
+				dtp3G.Format = DateTimePickerFormat.Custom;
+				dtp3G.Location = new System.Drawing.Point(51, 60);
+				dtp3G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
+				dtp3G.Name = "dtp3G";
+				dtp3G.Size = new System.Drawing.Size(173, 20);
+				dtp3G.TabIndex = 3;
+				dtp3G.Value = DateTime.Now;
+				dtp3G.Visible = false;
+				// 
+				// dtp4G
+				// 
+				DateTimePicker dtp4G = new DateTimePicker();
+				dtp4G.Checked = false;
+				dtp4G.CustomFormat = "dd/MM/yyyy HH:mm";
+				dtp4G.Format = DateTimePickerFormat.Custom;
+				dtp4G.Location = new System.Drawing.Point(51, 86);
+				dtp4G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
+				dtp4G.Name = "dtp4G";
+				dtp4G.Size = new System.Drawing.Size(173, 20);
+				dtp4G.TabIndex = 5;
+				dtp4G.Value = DateTime.Now;
+				dtp4G.Visible = false;
+				// 
+				// IncludeListForm_label
+				// 
+				Label IncludeListForm_label = new Label();
+				IncludeListForm_label.Location = new System.Drawing.Point(3, 2);
+				IncludeListForm_label.Name = "label";
+				IncludeListForm_label.Size = new System.Drawing.Size(221, 29);
+				IncludeListForm_label.Text = "Which Technologies do you wish to include?";
+				IncludeListForm_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+				// 
+				// Form1
+				// 
+				form.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+				form.AutoScaleMode = AutoScaleMode.Font;
+				form.ClientSize = new System.Drawing.Size(228, 137);
+				form.Icon = appCore.UI.Resources.MB_0001_vodafone3;
+				form.MaximizeBox = false;
+				form.FormBorderStyle = FormBorderStyle.FixedSingle;
+				form.Controls.Add(IncludeListForm_label);
+				form.Controls.Add(dtp4G);
+				form.Controls.Add(dtp3G);
+				form.Controls.Add(dtp2G);
+				form.Controls.Add(continueButton);
+				form.Controls.Add(cb4G);
+				form.Controls.Add(cb3G);
+				form.Controls.Add(cb2G);
+				form.Name = "IncludeListForm";
+				form.Text = "Generate Outage Report";
+				form.ShowDialog();
+				
+				if(cb2G.Checked)
+					VfGsmTime = TefGsmTime = dtp2G.Value;
+				if(cb3G.Checked)
+					VfUmtsTime = TefUmtsTime = dtp3G.Value;
+				if(cb4G.Checked)
+					VfLteTime = TefLteTime = dtp4G.Value;
+			}
+		}
+
+		void IncludeListForm_cbCheckedChanged(object sender, EventArgs e)
+		{
+			CheckBox cb = (CheckBox)sender;
+			Form form = (Form)cb.Parent;
+			
+			switch(cb.Name) {
+				case "cb2G":
+					foreach (Control ctrl in form.Controls) {
+						if(ctrl.Name == "dtp2G") {
+							ctrl.Visible = cb.Checked;
+							break;
+						}
+					}
+					break;
+				case "cb3G":
+					foreach (Control ctrl in form.Controls) {
+						if(ctrl.Name == "dtp3G") {
+							ctrl.Visible = cb.Checked;
+							break;
+						}
+					}
+					break;
+				default:
+					foreach (Control ctrl in form.Controls) {
+						if(ctrl.Name == "dtp4G") {
+							ctrl.Visible = cb.Checked;
+							break;
+						}
+					}
+					break;
+			}
+		}
+
+		void IncludeListForm_buttonClick(object sender, EventArgs e)
+		{
+			Button btn = (Button)sender;
+			Form form = (Form)btn.Parent;
+			if(btn.Text == "Cancel")
+				form.Controls["sitesList_tb"].Text = string.Empty;
+			form.Close();
 		}
 	}
 }

@@ -229,315 +229,40 @@ namespace appCore.Templates.UI
 			}
 			currentOutage = new Outage(textBox10.Text.Split('\n').ToList());
 			
-//			Site foundSite = null;
-			                           ////			DataView foundCells = null;
-//			List<string[]> VFsitesArrayList = new List<string[]>();
-//			List<string[]> TFsitesArrayList = new List<string[]>();
-//			List<string[]> VFlocationsArrayList = new List<string[]>();
-//			List<string[]> TFlocationsArrayList = new List<string[]>();
-//			List<string> VFcells2G = new List<string>();
-//			List<string> VFcells3G = new List<string>();
-//			List<string> VFcells4G = new List<string>();
-//			List<string> TFcells2G = new List<string>();
-//			List<string> TFcells3G = new List<string>();
-//			List<string> TFcells4G = new List<string>();
-//
-//			sites = textBox10.Text.Split('\n');
-//			sites = sites.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-//			foreach(string site in sites) {
-//				foundSite = Finder.getSite(site);
-//
-//				List<string> VFcells2Gtemp = new List<string>();
-//				List<string> VFcells3Gtemp = new List<string>();
-//				List<string> VFcells4Gtemp = new List<string>();
-//				List<string> TFcells2Gtemp = new List<string>();
-//				List<string> TFcells3Gtemp = new List<string>();
-//				List<string> TFcells4Gtemp = new List<string>();
-//
-//				if(foundCells.Count > 0) {
-//					bool siteHasVF2G = false;
-//					bool siteHasVF3G = false;
-//					bool siteHasVF4G = false;
-//					bool siteHasTF2G = false;
-//					bool siteHasTF3G = false;
-//					bool siteHasTF4G = false;
-//					foundCells.RowFilter = "BEARER = '2G' AND (CELL_NAME NOT LIKE 'T*' AND CELL_NAME NOT LIKE '*W' AND CELL_NAME NOT LIKE '*X' AND CELL_NAME NOT LIKE '*Y')";
-//					foreach (DataRowView cell in foundCells) {
-//						VFcells2Gtemp.Add(cell[cell.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString() + " - " + cell[cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString());
-//						siteHasVF2G = true;
-//					}
-//					foundCells.RowFilter = "BEARER = '2G' AND (CELL_NAME LIKE 'T*' OR CELL_NAME LIKE '*W' OR CELL_NAME LIKE '*X' OR CELL_NAME LIKE '*Y')";
-//					foreach (DataRowView cell in foundCells) {
-//						TFcells2Gtemp.Add(cell[cell.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString() + " - " + cell[cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString());
-//						siteHasTF2G = true;
-//					}
-//					foundCells.RowFilter = "BEARER = '3G' AND CELL_NAME NOT LIKE 'T*'";
-//					foreach (DataRowView cell in foundCells) {
-//						VFcells3Gtemp.Add(cell[cell.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString() + " - " + cell[cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString());
-//						siteHasVF3G = true;
-//					}
-//					foundCells.RowFilter = "BEARER = '3G' AND CELL_NAME LIKE 'T*'";
-//					foreach (DataRowView cell in foundCells) {
-//						TFcells3Gtemp.Add(cell[cell.Row.Table.Columns.IndexOf("BSC_RNC_ID")].ToString() + " - " + cell[cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString());
-//						siteHasTF3G = true;
-//					}
-//					foundCells.RowFilter = "BEARER = '4G' AND CELL_NAME NOT LIKE 'T*'";
-//					foreach (DataRowView cell in foundCells) {
-//						VFcells4Gtemp.Add(cell[cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString());
-//						siteHasVF4G = true;
-//					}
-//					foundCells.RowFilter = "BEARER = '4G' AND CELL_NAME LIKE 'T*'";
-//					foreach (DataRowView cell in foundCells) {
-//						TFcells4Gtemp.Add(cell[cell.Row.Table.Columns.IndexOf("CELL_NAME")].ToString());
-//						siteHasTF4G = true;
-//					}
-//
-//					string[] address = foundSite[foundSite.Row.Table.Columns.IndexOf("ADDRESS")].ToString().Split(';');
-//					if(VFcells2Gtemp.Count > 0 || VFcells3Gtemp.Count > 0 || VFcells4Gtemp.Count > 0) {
-//						VFsitesArrayList.Add(new string[]{foundSite[foundSite.Row.Table.Columns.IndexOf("SITE")].ToString(),siteHasVF2G.ToString(),siteHasVF3G.ToString(),siteHasVF4G.ToString()});
-//						VFlocationsArrayList.Add(new string[]{address[address.Length - 2].Trim(' '),siteHasVF2G.ToString(),siteHasVF3G.ToString(),siteHasVF4G.ToString()});
-//						VFcells2G.AddRange(VFcells2Gtemp);
-//						VFcells3G.AddRange(VFcells3Gtemp);
-//						VFcells4G.AddRange(VFcells4Gtemp);
-//					}
-//					if(TFcells2Gtemp.Count > 0 || TFcells3Gtemp.Count > 0 || TFcells4Gtemp.Count > 0) {
-//						TFsitesArrayList.Add(new string[]{foundSite[foundSite.Row.Table.Columns.IndexOf("SITE")].ToString(),siteHasTF2G.ToString(),siteHasTF3G.ToString(),siteHasTF4G.ToString()});
-//						TFlocationsArrayList.Add(new string[]{address[address.Length - 2].Trim(' '),siteHasTF2G.ToString(),siteHasTF3G.ToString(),siteHasTF4G.ToString()});
-//						TFcells2G.AddRange(TFcells2Gtemp);
-//						TFcells3G.AddRange(TFcells3Gtemp);
-//						TFcells4G.AddRange(TFcells4Gtemp);
-//					}
-//				}
-//			}
-//
-//			for(int c = 0;c < VFsitesArrayList.Count;c++) {
-//				while (VFsitesArrayList[c][0].Length < 5) {
-//					VFsitesArrayList[c][0] = '0' + VFsitesArrayList[c][0];
-//				}
-//				VFsitesArrayList[c][0] = "RBS" + VFsitesArrayList[c][0];
-//			}
-//			for(int c = 0;c < TFsitesArrayList.Count;c++) {
-//				while (TFsitesArrayList[c][0].Length < 5) {
-//					TFsitesArrayList[c][0] = '0' + TFsitesArrayList[c][0];
-//				}
-//				TFsitesArrayList[c][0] = "RBS" + TFsitesArrayList[c][0];
-//			}
-
-			                           bool show2G = VFcells2G.Count > 0 || TFcells2G.Count > 0;
-			                           bool show3G = VFcells3G.Count > 0 || TFcells3G.Count > 0;
-			                           bool show4G = VFcells4G.Count > 0 || TFcells4G.Count > 0;
-
-			                           List<string[]> includeList = showIncludeListForm(show2G,show3G,show4G);
-
-			                           // FIXME: empty report on cancel IncludeListForm
-
-			                           // Get sites and locations list for VF and TF
-
-			                           List<string> VFsitesList = new List<string>();
-			                           List<string> TFsitesList = new List<string>();
-			                           List<string> VFlocationsList = new List<string>();
-			                           List<string> TFlocationsList = new List<string>();
-
-			                           foreach (string[] site in VFsitesArrayList) {
-			                           	if(site[1] == "True" && includeList[0][0] == "True") {
-			                           		VFsitesList.Add(site[0]);
-			                           		continue;
-			                           	}
-			                           	if(site[2] == "True" && includeList[1][0] == "True") {
-			                           		VFsitesList.Add(site[0]);
-			                           		continue;
-			                           	}
-			                           	if(site[3] == "True" && includeList[2][0] == "True") {
-			                           		VFsitesList.Add(site[0]);
-			                           	}
-			                           }
-			                           foreach (string[] location in VFlocationsArrayList) {
-			                           	if(location[1] == "True" && includeList[0][0] == "True") {
-			                           		VFlocationsList.Add(location[0]);
-			                           		continue;
-			                           	}
-			                           	if(location[2] == "True" && includeList[1][0] == "True") {
-			                           		VFlocationsList.Add(location[0]);
-			                           		continue;
-			                           	}
-			                           	if(location[3] == "True" && includeList[2][0] == "True") {
-			                           		VFlocationsList.Add(location[0]);
-			                           	}
-			                           }
-			                           foreach (string[] site in TFsitesArrayList) {
-			                           	if(site[1] == "True" && includeList[0][0] == "True") {
-			                           		TFsitesList.Add(site[0]);
-			                           		continue;
-			                           	}
-			                           	if(site[2] == "True" && includeList[1][0] == "True") {
-			                           		TFsitesList.Add(site[0]);
-			                           		continue;
-			                           	}
-			                           	if(site[3] == "True" && includeList[2][0] == "True") {
-			                           		TFsitesList.Add(site[0]);
-			                           	}
-			                           }
-			                           foreach (string[] location in TFlocationsArrayList) {
-			                           	if(location[1] == "True" && includeList[0][0] == "True") {
-			                           		TFlocationsList.Add(location[0]);
-			                           		continue;
-			                           	}
-			                           	if(location[2] == "True" && includeList[1][0] == "True") {
-			                           		TFlocationsList.Add(location[0]);
-			                           		continue;
-			                           	}
-			                           	if(location[3] == "True" && includeList[2][0] == "True") {
-			                           		TFlocationsList.Add(location[0]);
-			                           	}
-			                           }
-
-			                           VFsitesArrayList = null;
-			                           TFsitesArrayList = null;
-			                           VFlocationsArrayList = null;
-			                           TFlocationsArrayList = null;
-
-			                           VFsitesList = VFsitesList.Distinct().ToList();
-			                           VFsitesList.Sort();
-			                           TFsitesList = TFsitesList.Distinct().ToList();
-			                           TFsitesList.Sort();
-			                           VFlocationsList = VFlocationsList.Distinct().ToList();
-			                           VFlocationsList.Sort();
-			                           TFlocationsList = TFlocationsList.Distinct().ToList();
-			                           TFlocationsList.Sort();
-			                           VFcells2G = VFcells2G.Distinct().ToList();
-			                           VFcells2G.Sort();
-			                           TFcells2G = TFcells2G.Distinct().ToList();
-			                           TFcells2G.Sort();
-			                           VFcells3G = VFcells3G.Distinct().ToList();
-			                           VFcells3G.Sort();
-			                           TFcells3G = TFcells3G.Distinct().ToList();
-			                           TFcells3G.Sort();
-			                           VFcells4G = VFcells4G.Distinct().ToList();
-			                           VFcells4G.Sort();
-			                           TFcells4G = TFcells4G.Distinct().ToList();
-			                           TFcells4G.Sort();
-
-			                           // VF Outage
-
-			                           int totalCells = 0;
-			                           if(includeList[0][0] == "True")
-			                           	totalCells += VFcells2G.Count;
-			                           if(includeList[1][0] == "True")
-			                           	totalCells += VFcells3G.Count;
-			                           if(includeList[2][0] == "True")
-			                           	totalCells += VFcells4G.Count;
-
-			                           VFoutage = totalCells + "x COOS (" + VFsitesList.Count;
-			                           if(VFsitesList.Count == 1)
-			                           	VFoutage += " Site)";
-			                           else
-			                           	VFoutage += " Sites)";
-			                           VFoutage += Environment.NewLine + Environment.NewLine + "Locations (" + VFlocationsList.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine,VFlocationsList.ToArray()) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine,VFsitesList.ToArray());
-
-			                           if(VFcells2G.Count > 0 && includeList[0][0] == "True") {
-			                           	VFoutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + VFcells2G.Count + ")";
-			                           	if(includeList[0][0] == "True")
-			                           		VFoutage += " Event Time - " + includeList[0][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells2G.ToArray());
-			                           }
-			                           if(VFcells3G.Count > 0 && includeList[1][0] == "True") {
-			                           	VFoutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + VFcells3G.Count + ")";
-			                           	if(includeList[1][0] == "True")
-			                           		VFoutage += " Event Time - " + includeList[1][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells3G.ToArray());
-			                           }
-			                           if(VFcells4G.Count > 0 && includeList[2][0] == "True") {
-			                           	VFoutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VFcells4G.Count + ")";
-			                           	if(includeList[2][0] == "True")
-			                           		VFoutage += " Event Time - " + includeList[2][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells4G.ToArray());
-			                           }
-
-			                           VFbulkCI = string.Empty;
-			                           foreach (string site in VFsitesList) {
-			                           	string tempSite = Convert.ToInt32(site.Remove(0,3)).ToString();
-			                           	if(tempSite.Length < 4) {
-			                           		do {
-			                           			tempSite = '0' + tempSite;
-			                           		} while (tempSite.Length < 4);
-			                           	}
-			                           	VFbulkCI += tempSite + ';';
-			                           }
-
-			                           // TF Outage
-
-			                           totalCells = 0;
-			                           if(includeList[0][0] == "True")
-			                           	totalCells += TFcells2G.Count;
-			                           if(includeList[1][0] == "True")
-			                           	totalCells += TFcells3G.Count;
-			                           if(includeList[2][0] == "True")
-			                           	totalCells += TFcells4G.Count;
-
-			                           TFoutage = totalCells + "x COOS (" + TFsitesList.Count;
-			                           TFoutage += TFsitesList.Count == 1 ? " Site)" : " Sites)";
-			                           TFoutage += Environment.NewLine + Environment.NewLine + "Locations (" + TFlocationsList.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine,TFlocationsList.ToArray()) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine,TFsitesList.ToArray());
-
-			                           if(TFcells2G.Count > 0 && includeList[0][0] == "True") {
-			                           	TFoutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TFcells2G.Count + ")";
-			                           	if(includeList[0][0] == "True")
-			                           		TFoutage += " Event Time - " + includeList[0][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells2G.ToArray());
-			                           }
-			                           if(TFcells3G.Count > 0 && includeList[1][0] == "True") {
-			                           	TFoutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + TFcells3G.Count + ")";
-			                           	if(includeList[1][0] == "True")
-			                           		TFoutage += " Event Time - " + includeList[1][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells3G.ToArray());
-			                           }
-			                           if(TFcells4G.Count > 0 && includeList[2][0] == "True") {
-			                           	TFoutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TFcells4G.Count + ")";
-			                           	if(includeList[2][0] == "True")
-			                           		TFoutage += " Event Time - " + includeList[2][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells4G.ToArray());
-			                           }
-			                           TFbulkCI = string.Empty;
-			                           foreach (string site in TFsitesList) {
-			                           	string tempSite = Convert.ToInt32(site.Remove(0,3)).ToString();
-			                           	if(tempSite.Length < 4) {
-			                           		do {
-			                           			tempSite = '0' + tempSite;
-			                           		} while (tempSite.Length < 4);
-			                           	}
-			                           	TFbulkCI += tempSite + ';';
-			                           }
-
-			                           if(!string.IsNullOrEmpty(VFoutage) && !string.IsNullOrEmpty(TFoutage)) {
-			                           	tabControl4.Visible = true;
-			                           	tabControl4.SelectTab(0);
-			                           }
-			                           else {
-			                           	if(string.IsNullOrEmpty(VFoutage) && string.IsNullOrEmpty(TFoutage)) {
-			                           		MainForm.trayIcon.showBalloon("Empty report","No cells were found for the given sites");
-			                           		textBox10.Text = string.Empty;
-			                           		return;
-			                           	}
-			                           	if(!string.IsNullOrEmpty(VFoutage)) {
-			                           		tabControl4.Visible = false;
-			                           		tabControl4.SelectTab(0);
-			                           	}
-			                           	else {
-			                           		if(!string.IsNullOrEmpty(TFoutage)) {
-			                           			tabControl4.Visible = false;
-			                           			tabControl4.SelectTab(1);
-			                           		}
-			                           	}
-			                           }
-			                           if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                           	//button4.Enabled = false;
-			                           	button4.Text = "Outage Follow Up";
-			                           	button4.Width = 100;
-			                           	//button46.Enabled = false;
-			                           	button46.Visible = false;
-			                           	button3.Enabled = true;
-			                           	textBox10.ReadOnly = true;
-			                           	textBox11.ReadOnly = true;
-			                           	button12.Visible = true;
-			                           	button25.Visible = true;
-			                           	textBox10.Focus();
-			                           	label33.Text = "Generated Outage Report";
-//				LogOutageReport();
-			                           }
+			if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+				radioButton1.Enabled = radioButton2.Enabled = radioButton1.Checked = true;
+			else {
+				if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
+					MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
+					textBox10.Text = string.Empty;
+					radioButton1.Enabled = radioButton2.Enabled = false;
+					return;
+				}
+				if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
+					radioButton1.Enabled = radioButton1.Checked = true;
+					radioButton2.Enabled = false;
+				}
+				else {
+					if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
+						radioButton2.Enabled = radioButton2.Checked = true;
+						radioButton1.Enabled = false;
+					}
+				}
 			}
+			if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
+				button4.Text = "Outage Follow Up"; // HACK: Outage Follow Up button on outage report processing
+				button4.Width = 100;
+				button46.Visible = false;
+				button3.Enabled = true;
+				textBox10.ReadOnly = true;
+				textBox11.ReadOnly = true;
+				button12.Visible = true;
+				button25.Visible = true;
+				textBox10.Focus();
+				label33.Text = "Generated Outage Report";
+				MainForm.logFile.HandleOutageLog(currentOutage);
+			}
+		}
 
 		void IncludeListForm_cbCheckedChanged(object sender, EventArgs e)
 		{
