@@ -74,19 +74,39 @@ namespace appCore.SiteFinder
 			}
 			private set {
 				ADDRESS = value;
-				string[] address = ADDRESS.Split(';');
-				int addressLastIndex = address.Length - 1;
-				try { PostCode = address[addressLastIndex].Trim(); } catch (Exception) { }
-				try { County = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
-				try { Town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
+				SplitAddress();
 			}
 		}
 		[FieldHidden]
-		public string PostCode;
+		string postCode;
+		public string PostCode {
+			get {
+				if(string.IsNullOrEmpty(postCode))
+					SplitAddress();
+				return postCode;
+			}
+			private set { }
+		}
 		[FieldHidden]
-		public string Town;
+		string town;
+		public string Town {
+			get {
+				if(string.IsNullOrEmpty(town))
+					SplitAddress();
+				return town;
+			}
+			private set { }
+		}
 		[FieldHidden]
-		public string County;
+		string county;
+		public string County {
+			get {
+				if(string.IsNullOrEmpty(county))
+					SplitAddress();
+				return county;
+			}
+			private set { }
+		}
 		[FieldOrder(15)]
 		public string TellabsAtRisk;
 		[FieldOrder(16)]
@@ -224,7 +244,7 @@ namespace appCore.SiteFinder
 					mapMarker.ToolTip = new GMapBaloonToolTip(MapMarker);
 					mapMarker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
 					mapMarker.ToolTip.Fill = new SolidBrush(Color.FromArgb(180, Color.Black));
-					mapMarker.ToolTip.Font = new Font("Courier New", 9, FontStyle.Bold);
+					mapMarker.ToolTip.Font  = new Font("Courier New", 9, FontStyle.Bold);
 					mapMarker.ToolTip.Foreground = new SolidBrush(Color.White);
 					mapMarker.ToolTip.Stroke = new Pen(Color.Red);
 					mapMarker.ToolTip.Offset.X -= 15;
@@ -486,6 +506,14 @@ namespace appCore.SiteFinder
 		
 		public void populateCells() {
 			cells = Finder.getCells(Id);
+		}
+		
+		void SplitAddress() {
+			string[] address = ADDRESS.Split(';');
+			int addressLastIndex = address.Length - 1;
+			try { postCode = address[addressLastIndex].Trim(); } catch (Exception) { }
+			try { county = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
+			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 		}
 	}
 	
