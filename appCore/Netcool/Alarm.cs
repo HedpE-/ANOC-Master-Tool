@@ -17,7 +17,7 @@ namespace appCore.Netcool
 	/// <summary>
 	/// Description of Alarm.
 	/// </summary>
-	[DelimitedRecord("\t"), IgnoreFirst(1)]
+	[DelimitedRecord("\t")]
 	public class Alarm
 	{
 		[FieldOrder(1)]
@@ -202,13 +202,52 @@ namespace appCore.Netcool
 		public string Operator {
 			get {
 				if(string.IsNullOrEmpty(celloperator))
-					celloperator = Element.StartsWith("T") || Element.EndsWith("W") || Element.EndsWith("X") || Element.EndsWith("Y") ? "TEF" : "VF";
+					celloperator = Element.StartsWith("T")
+						|| Element.EndsWith("W")
+						|| Element.EndsWith("X")
+						|| Element.EndsWith("Y")
+						? "TEF" : "VF";
 				return celloperator;
 			}
 			private set { celloperator = value;}
 		}
 		
 		public Alarm() {}
+
+		public Alarm(string[] alarmArray, string[] headers) {
+			try { attributes = alarmArray[Array.IndexOf(headers, "Attributes")]; } catch {}
+			try { serviceImpact = alarmArray[Array.IndexOf(headers, "Service Impact")]; } catch {}
+			try { vendor = alarmArray[Array.IndexOf(headers, "Vendor")]; } catch {}
+			try { lastOccurrence = alarmArray[Array.IndexOf(headers, "Last Occurrence")]; } catch {}
+			try { alarmCount = alarmArray[Array.IndexOf(headers, "Count")]; } catch {}
+			try { rncBsc = alarmArray[Array.IndexOf(headers, "RNC/BSC")]; } catch {}
+			try { location = alarmArray[Array.IndexOf(headers, "Location")]; } catch {}
+			try { element = alarmArray[Array.IndexOf(headers, "Element")]; } catch {}
+			try { summary = alarmArray[Array.IndexOf(headers, "Summary")]; } catch {}
+			try { triagedBy = alarmArray[Array.IndexOf(headers, "Triaged By")]; } catch {}
+			try { operatorComments = alarmArray[Array.IndexOf(headers, "Operator Comments")]; } catch {}
+			try { vfTtNumber = alarmArray[Array.IndexOf(headers, "VF TT Number")]; } catch {}
+			try { vfTtPty = alarmArray[Array.IndexOf(headers, "VF TT Pty")]; } catch {}
+			try { assignedGroup = alarmArray[Array.IndexOf(headers, "Assigned Group")]; } catch {}
+			try { ttStatus = alarmArray[Array.IndexOf(headers, "TT Status")]; } catch {}
+			try { rbsDetails = alarmArray[Array.IndexOf(headers, "RBS Details")]; } catch {}
+			try { town = alarmArray[Array.IndexOf(headers, "Town")]; } catch {}
+			try { county = alarmArray[Array.IndexOf(headers, "County")]; } catch {}
+			try { specialEvent = alarmArray[Array.IndexOf(headers, "Special Event")]; } catch {}
+			try { siteType = alarmArray[Array.IndexOf(headers, "Site Type")]; } catch {}
+			try { stateChange = alarmArray[Array.IndexOf(headers, "StateChange")]; } catch {}
+			try { site = alarmArray[Array.IndexOf(headers, "Site")]; } catch {}
+			try { node = alarmArray[Array.IndexOf(headers, "Node")]; } catch {}
+			try { nodeAlias = alarmArray[Array.IndexOf(headers, "NodeAlias")]; } catch {}
+			try { identifier = alarmArray[Array.IndexOf(headers, "Identifier")]; } catch {}
+			try { parentNode = alarmArray[Array.IndexOf(headers, "ParentNode")]; } catch {}
+			try { techDomain6 = alarmArray[Array.IndexOf(headers, "TechDomain6")]; } catch {}
+			try { poc = alarmArray[Array.IndexOf(headers, "POC")]; } catch {}
+			try { intermittent = alarmArray[Array.IndexOf(headers, "Intermittent")]; } catch {}
+			try { weightage = alarmArray[Array.IndexOf(headers, "Weightage")]; } catch {}
+			try { _class = alarmArray[Array.IndexOf(headers, "Class")]; } catch {}
+			try { opState = alarmArray[Array.IndexOf(headers, "OpState")]; } catch {}
+		}
 		
 		public Alarm(Cell cell, bool alarmCOOS, DateTime alarmTime) {
 			rncBsc = cell.BscRnc_Id;
@@ -255,19 +294,28 @@ namespace appCore.Netcool
 					coos = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
 					break;
 				case SiteFinder.Site.Vendors.Ericsson:
-					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH")) || Summary.Contains("UtranCell_ServiceUnavailable") || Summary.Contains("UtranCell_NbapMessageFailure"))
+					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH"))
+					    || Summary.Contains("UtranCell_ServiceUnavailable")
+					    || Summary.Contains("UtranCell_NbapMessageFailure")
+					    || Summary.Contains("NbapCommon_Layer3SetupFailure")
+					   )
 						coos = true;
 					else
 						onm = Summary.Contains("Heartbeat Failure") || Summary.Contains("OML FAULT");
 					break;
 				case SiteFinder.Site.Vendors.Huawei:
-					if (Summary.Contains("Cell out of Service") || Summary.Contains("Cell Unavailable") || Summary.Contains("Local Cell Unusable"))
+					if (Summary.Contains("Cell out of Service")
+					    || Summary.Contains("Cell Unavailable")
+					    || Summary.Contains("Local Cell Unusable")
+					   )
 						coos = true;
 					else
 						onm = Summary.Contains("NE Is Disconnected") || Summary.Contains("OML Fault");
 					break;
 				case SiteFinder.Site.Vendors.NSN:
-					if (Summary.Contains("BCCH MISSING") || Summary.Contains("CELL FAULTY") || Summary.Contains("WCDMA CELL OUT OF USE"))
+					if (Summary.Contains("BCCH MISSING")
+					    || Summary.Contains("CELL FAULTY")
+					    || Summary.Contains("WCDMA CELL OUT OF USE"))
 						coos = true;
 					else
 						onm = Summary.Contains("O&M");
@@ -278,22 +326,22 @@ namespace appCore.Netcool
 		string resolveAlarmBearer() {
 			string tempBearer = string.Empty;
 //			if(!string.IsNullOrEmpty(RncBsc)) {
-				switch(RncBsc.Substring(0, 1)) {
-					case "B":
+			switch(RncBsc.Substring(0, 1)) {
+				case "B":
+					tempBearer = "2G";
+					break;
+				case "R":
+					tempBearer = "3G";
+					break;
+				default:
+					if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
 						tempBearer = "2G";
-						break;
-					case "R":
+					if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
 						tempBearer = "3G";
-						break;
-					default:
-						if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
-							tempBearer = "2G";
-						if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
-							tempBearer = "3G";
-						if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
-							tempBearer = "4G";
-						break;
-				}
+					if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
+						tempBearer = "4G";
+					break;
+			}
 //			}
 //			else
 //				if(!string.IsNullOrEmpty(Element))
@@ -409,7 +457,7 @@ namespace appCore.Netcool
 			return toParse;
 		}
 		
-		public string ResolveCellName() {
+		string ResolveCellName() {
 			string cellName = string.Empty;
 			switch(Vendor) {
 				case SiteFinder.Site.Vendors.Huawei:
