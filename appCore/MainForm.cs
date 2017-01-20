@@ -1441,8 +1441,8 @@ namespace appCore
 			                           		return;
 			                           	}
 			                           	try {
-			                           		Netcool.AlarmsParser2 netcool2 = new Netcool.AlarmsParser2(textBox12.Text);
-			                           		textBox12.Text = netcool2.ToString();
+//			                           		Netcool.AlarmsParser2 netcool2 = new Netcool.AlarmsParser2(textBox12.Text);
+//			                           		textBox12.Text = netcool2.ToString();
 			                           		
 			                           		Netcool.AlarmsParser netcool = new Netcool.AlarmsParser(textBox12.Text);
 			                           		textBox12.Text = netcool.ToString();
