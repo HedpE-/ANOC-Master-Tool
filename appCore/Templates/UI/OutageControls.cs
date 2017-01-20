@@ -7,16 +7,17 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Data;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using appCore.Netcool;
+using appCore.SiteFinder;
+using appCore.SiteFinder.UI;
 using appCore.Templates.Types;
 using appCore.UI;
-using appCore.SiteFinder.UI;
 
 namespace appCore.Templates.UI
 {
@@ -25,11 +26,6 @@ namespace appCore.Templates.UI
 	/// </summary>
 	public class OutageControls : Panel
 	{
-//		public Button Button_OuterRight = new Button();
-//		public Button Button_OuterLeft = new Button();
-//		public Button Button_InnerLeft = new Button();
-//		public Button Button_InnerRight = new Button();
-		
 		Button button3 = new Button();
 		Button button4 = new Button();
 		Button button12 = new Button();
@@ -38,11 +34,8 @@ namespace appCore.Templates.UI
 		
 		Button button23 = new Button(); // BulkCILargeTextButton
 		Button button22 = new Button(); // Alarms_ReportLargeTextButton
-		RadioButton radioButton1 = new RadioButton();
-		RadioButton radioButton2 = new RadioButton();
-//		TabControl tabControl4 = new TabControl(); // VFTFReportTabControl
-//		TabPage tabPage15 = new TabPage(); // VFReportTabPage
-//		TabPage tabPage16 = new TabPage(); // TFReportTabPage
+		RadioButton radioButton1 = new RadioButton(); // VFReportRadioButton
+		RadioButton radioButton2 = new RadioButton(); // TFReportRadioButton
 		Label label33 = new Label(); // Alarms_ReportLabel
 		Label label32 = new Label(); // BulkCILabel
 		AMTRichTextBox textBox11 = new AMTRichTextBox(); // BulkCITextBox
@@ -105,7 +98,6 @@ namespace appCore.Templates.UI
 				}
 				else {
 					InitializeComponent();
-//					TxTypeComboBox.SelectedIndexChanged += TxTypeComboBoxSelectedIndexChanged;
 					
 					MainMenu.MainMenu.DropDownItems.Add(generateReportToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add(generateFromSitesListToolStripMenuItem);
@@ -116,50 +108,7 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(copyToClipboardToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
-					// 
-					// Button_OuterLeft
-					// 
-//					Button_OuterLeft.Name = "Button_OuterLeft";
-//					Button_OuterLeft.Size = new Size(97, 23);
-//					Button_OuterLeft.TabIndex = 22;
-//					Button_OuterLeft.Text = "Generate Report";
-//					Button_OuterLeft.Click += GenerateReport;
-//					// 
-//					// Button_InnerLeft
-//					// 
-//					Button_InnerLeft.Name = "Button_InnerLeft";
-//					Button_InnerLeft.Size = new Size(133, 23);
-//					Button_InnerLeft.TabIndex = 23;
-//					Button_InnerLeft.Text = "Generate from sites list";
-//					Button_InnerLeft.Click += GenerateFromSitesList;
-//					// 
-//					// Button_OuterRight
-//					// 
-//					Button_OuterRight.Size = new Size(62, 23);
-//					Button_OuterRight.Name = "Button_OuterRight";
-//					Button_OuterRight.TabIndex = 24;
-//					Button_OuterRight.Text = "Clear";
-//					Button_OuterRight.Click += ClearAllControls;
-//					// 
-//					// Button_InnerRight
-//					// 
-					////					Button_InnerRight.Enabled = false;
-//					Button_InnerRight.Name = "Button_InnerRight";
-//					Button_InnerRight.Size = new Size(121, 23);
-//					Button_InnerRight.TabIndex = 72;
-//					Button_InnerRight.Text = "Copy to Clipboard";
-//					Button_InnerRight.Visible = false;
-					////					Button_InnerRight.Click += SendBCPForm;
-//					Controls.Add(Button_InnerRight);
 				}
-//				Controls.Add(Button_OuterLeft);
-//				Controls.Add(Button_InnerLeft);
-//				Controls.Add(Button_OuterRight);
-				
-//				Button_OuterLeft.Location = new Point(PaddingLeftRight, textBox11.Bottom + 5);
-//				Button_InnerLeft.Location = new Point(Button_OuterLeft.Right + 3, textBox11.Bottom + 5);
-//				Button_OuterRight.Location = new Point(textBox11.Right - Button_OuterRight.Width, textBox11.Bottom + 5);
-//				Button_InnerRight.Location = new Point(Button_OuterRight.Left - Button_InnerRight.Width - 3, textBox11.Bottom + 5);
 			}
 		}
 		
@@ -185,11 +134,8 @@ namespace appCore.Templates.UI
 //				LoadingPanel load = new LoadingPanel();
 //				load.Show(actionThreaded, actionNonThreaded, true, this);
 
-				if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-//					tabControl4.Visible = true;
-//					tabControl4.SelectTab(0);
+				if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
 					radioButton1.Enabled = radioButton2.Enabled = radioButton1.Checked = true;
-				}
 				else {
 					if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
 						MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
@@ -198,28 +144,17 @@ namespace appCore.Templates.UI
 						return;
 					}
 					if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-//						tabControl4.Visible = true;
-//						foreach (TabPage tp in tabControl4.TabPages)
-//							tabControl4.TabPages.Remove(tp);
-//						tabControl4.TabPages.Add(tabPage15);
-//						tabControl4.SelectTab(0);
 						radioButton1.Enabled = radioButton1.Checked = true;
 						radioButton2.Enabled = false;
 					}
 					else {
 						if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-//							tabControl4.Visible = true;
-//							foreach (TabPage tp in tabControl4.TabPages)
-//								tabControl4.TabPages.Remove(tp);
-//							tabControl4.TabPages.Add(tabPage16);
-//							tabControl4.SelectTab(0);
 							radioButton2.Enabled = radioButton2.Checked = true;
 							radioButton1.Enabled = false;
 						}
 					}
 				}
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-//					VFTFReportTabControlSelectedIndexChanged(null,null);
 					button4.Text = "Outage Follow Up"; // HACK: Outage Follow Up button on outage report processing
 					button4.Width = 100;
 					button46.Visible = false;
@@ -231,36 +166,19 @@ namespace appCore.Templates.UI
 					textBox10.Focus();
 					label33.Text = "Generated Outage Report";
 					MainForm.logFile.HandleOutageLog(currentOutage);
-//					if (op.tableRemoved)
-//						MessageBox.Show("WARNING!!!" + Environment.NewLine + Environment.NewLine + "One or more tables to parse have been removed." + Environment.NewLine + "All tables must have the same columns and order.","Warning",MessageBoxButtons.OK,MessageBoxIcon.Warning);
 				}
 			}
 			catch {
 				MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
 				return;
 			}
-//			}
-//			                           	else {
-//			                           		string[] outageSites = (VFbulkCI + TFbulkCI).Split(';');
-//			                           		outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
-//			                           		outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
-//			                           		Thread thread = new Thread(() => {
-//			                           		                           	siteDetails sd = new siteDetails(true,outageSites);
-//			                           		                           	sd.Name = "Outage Follow-up";
-//			                           		                           	sd.StartPosition = FormStartPosition.CenterParent;
-//			                           		                           	sd.ShowDialog();
-//			                           		                           });
-//
-//			                           		thread.SetApartmentState(ApartmentState.STA);
-//			                           		thread.Start();
-//			                           	}
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 			st.Stop();
 			var t = st.Elapsed;
 		}
 		
-		void OutageFollowUp() {
+		void OutageFollowUp(object sender, EventArgs e) {
 			string[] outageSites = (currentOutage.VfBulkCI + currentOutage.TefBulkCI).Split(';');
 			for(int c = 0;c < outageSites.Length;c++) {
 				if(outageSites[c].StartsWith("0")) {
@@ -272,6 +190,7 @@ namespace appCore.Templates.UI
 			}
 			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
+			
 			Thread thread = new Thread(() => {
 			                           	siteDetails sd = new siteDetails(true,outageSites);
 			                           	sd.Name = "Outage Follow-up";
@@ -282,20 +201,6 @@ namespace appCore.Templates.UI
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
-
-//		void VFTFReportTabControlSelectedIndexChanged(object sender, EventArgs e)
-//		{
-//			if(tabControl4.SelectedTab.Text == "VF Report") {
-//				textBox10.Text = currentOutage.VfOutage;
-//				textBox11.Text = currentOutage.VfBulkCI;
-//			}
-//			else {
-//				textBox10.Text = currentOutage.TefOutage;
-//				textBox11.Text = currentOutage.TefBulkCI;
-//			}
-//			textBox10.Select(0,0);
-//			textBox11.Select(0,0);
-//		}
 		
 		void VFTFReportRadioButtonsCheckedChanged(object sender, EventArgs e) {
 			RadioButton rb = sender as RadioButton;
@@ -315,16 +220,17 @@ namespace appCore.Templates.UI
 
 		void GenerateFromSitesList(object sender, EventArgs e)
 		{
-//			if (string.IsNullOrEmpty(textBox10.Text)) {
-			////				Action action = new Action(delegate {
-//				MessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			////				                           });
-			////				Toolbox.Tools.darkenBackgroundForm(action,false,this);
-//				return;
-//			}
-//
+			if (string.IsNullOrEmpty(textBox10.Text)) {
+//				Action action = new Action(delegate {
+				MessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+//				                           });
+//				Toolbox.Tools.darkenBackgroundForm(action,false,this);
+				return;
+			}
+			currentOutage = new Outage(textBox10.Text.Split('\n').ToList());
+			
 //			Site foundSite = null;
-			////			DataView foundCells = null;
+			                           ////			DataView foundCells = null;
 //			List<string[]> VFsitesArrayList = new List<string[]>();
 //			List<string[]> TFsitesArrayList = new List<string[]>();
 //			List<string[]> VFlocationsArrayList = new List<string[]>();
@@ -416,223 +322,222 @@ namespace appCore.Templates.UI
 //				}
 //				TFsitesArrayList[c][0] = "RBS" + TFsitesArrayList[c][0];
 //			}
-//
-//			bool show2G = VFcells2G.Count > 0 || TFcells2G.Count > 0;
-//			bool show3G = VFcells3G.Count > 0 || TFcells3G.Count > 0;
-//			bool show4G = VFcells4G.Count > 0 || TFcells4G.Count > 0;
-//
-//			List<string[]> includeList = showIncludeListForm(show2G,show3G,show4G);
-//
-//			// FIXME: empty report on cancel IncludeListForm
-//
-//			// Get sites and locations list for VF and TF
-//
-//			List<string> VFsitesList = new List<string>();
-//			List<string> TFsitesList = new List<string>();
-//			List<string> VFlocationsList = new List<string>();
-//			List<string> TFlocationsList = new List<string>();
-//
-//			foreach (string[] site in VFsitesArrayList) {
-//				if(site[1] == "True" && includeList[0][0] == "True") {
-//					VFsitesList.Add(site[0]);
-//					continue;
-//				}
-//				if(site[2] == "True" && includeList[1][0] == "True") {
-//					VFsitesList.Add(site[0]);
-//					continue;
-//				}
-//				if(site[3] == "True" && includeList[2][0] == "True") {
-//					VFsitesList.Add(site[0]);
-//				}
-//			}
-//			foreach (string[] location in VFlocationsArrayList) {
-//				if(location[1] == "True" && includeList[0][0] == "True") {
-//					VFlocationsList.Add(location[0]);
-//					continue;
-//				}
-//				if(location[2] == "True" && includeList[1][0] == "True") {
-//					VFlocationsList.Add(location[0]);
-//					continue;
-//				}
-//				if(location[3] == "True" && includeList[2][0] == "True") {
-//					VFlocationsList.Add(location[0]);
-//				}
-//			}
-//			foreach (string[] site in TFsitesArrayList) {
-//				if(site[1] == "True" && includeList[0][0] == "True") {
-//					TFsitesList.Add(site[0]);
-//					continue;
-//				}
-//				if(site[2] == "True" && includeList[1][0] == "True") {
-//					TFsitesList.Add(site[0]);
-//					continue;
-//				}
-//				if(site[3] == "True" && includeList[2][0] == "True") {
-//					TFsitesList.Add(site[0]);
-//				}
-//			}
-//			foreach (string[] location in TFlocationsArrayList) {
-//				if(location[1] == "True" && includeList[0][0] == "True") {
-//					TFlocationsList.Add(location[0]);
-//					continue;
-//				}
-//				if(location[2] == "True" && includeList[1][0] == "True") {
-//					TFlocationsList.Add(location[0]);
-//					continue;
-//				}
-//				if(location[3] == "True" && includeList[2][0] == "True") {
-//					TFlocationsList.Add(location[0]);
-//				}
-//			}
-//
-//			VFsitesArrayList = null;
-//			TFsitesArrayList = null;
-//			VFlocationsArrayList = null;
-//			TFlocationsArrayList = null;
-//
-//			VFsitesList = VFsitesList.Distinct().ToList();
-//			VFsitesList.Sort();
-//			TFsitesList = TFsitesList.Distinct().ToList();
-//			TFsitesList.Sort();
-//			VFlocationsList = VFlocationsList.Distinct().ToList();
-//			VFlocationsList.Sort();
-//			TFlocationsList = TFlocationsList.Distinct().ToList();
-//			TFlocationsList.Sort();
-//			VFcells2G = VFcells2G.Distinct().ToList();
-//			VFcells2G.Sort();
-//			TFcells2G = TFcells2G.Distinct().ToList();
-//			TFcells2G.Sort();
-//			VFcells3G = VFcells3G.Distinct().ToList();
-//			VFcells3G.Sort();
-//			TFcells3G = TFcells3G.Distinct().ToList();
-//			TFcells3G.Sort();
-//			VFcells4G = VFcells4G.Distinct().ToList();
-//			VFcells4G.Sort();
-//			TFcells4G = TFcells4G.Distinct().ToList();
-//			TFcells4G.Sort();
-//
-//			// VF Outage
-//
-//			int totalCells = 0;
-//			if(includeList[0][0] == "True")
-//				totalCells += VFcells2G.Count;
-//			if(includeList[1][0] == "True")
-//				totalCells += VFcells3G.Count;
-//			if(includeList[2][0] == "True")
-//				totalCells += VFcells4G.Count;
-//
-//			VFoutage = totalCells + "x COOS (" + VFsitesList.Count;
-//			if(VFsitesList.Count == 1)
-//				VFoutage += " Site)";
-//			else
-//				VFoutage += " Sites)";
-//			VFoutage += Environment.NewLine + Environment.NewLine + "Locations (" + VFlocationsList.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine,VFlocationsList.ToArray()) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine,VFsitesList.ToArray());
-//
-//			if(VFcells2G.Count > 0 && includeList[0][0] == "True") {
-//				VFoutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + VFcells2G.Count + ")";
-//				if(includeList[0][0] == "True")
-//					VFoutage += " Event Time - " + includeList[0][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells2G.ToArray());
-//			}
-//			if(VFcells3G.Count > 0 && includeList[1][0] == "True") {
-//				VFoutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + VFcells3G.Count + ")";
-//				if(includeList[1][0] == "True")
-//					VFoutage += " Event Time - " + includeList[1][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells3G.ToArray());
-//			}
-//			if(VFcells4G.Count > 0 && includeList[2][0] == "True") {
-//				VFoutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VFcells4G.Count + ")";
-//				if(includeList[2][0] == "True")
-//					VFoutage += " Event Time - " + includeList[2][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells4G.ToArray());
-//			}
-//
-//			VFbulkCI = string.Empty;
-//			foreach (string site in VFsitesList) {
-//				string tempSite = Convert.ToInt32(site.Remove(0,3)).ToString();
-//				if(tempSite.Length < 4) {
-//					do {
-//						tempSite = '0' + tempSite;
-//					} while (tempSite.Length < 4);
-//				}
-//				VFbulkCI += tempSite + ';';
-//			}
-//
-//			// TF Outage
-//
-//			totalCells = 0;
-//			if(includeList[0][0] == "True")
-//				totalCells += TFcells2G.Count;
-//			if(includeList[1][0] == "True")
-//				totalCells += TFcells3G.Count;
-//			if(includeList[2][0] == "True")
-//				totalCells += TFcells4G.Count;
-//
-//			TFoutage = totalCells + "x COOS (" + TFsitesList.Count;
-//			TFoutage += TFsitesList.Count == 1 ? " Site)" : " Sites)";
-//			TFoutage += Environment.NewLine + Environment.NewLine + "Locations (" + TFlocationsList.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine,TFlocationsList.ToArray()) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine,TFsitesList.ToArray());
-//
-//			if(TFcells2G.Count > 0 && includeList[0][0] == "True") {
-//				TFoutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TFcells2G.Count + ")";
-//				if(includeList[0][0] == "True")
-//					TFoutage += " Event Time - " + includeList[0][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells2G.ToArray());
-//			}
-//			if(TFcells3G.Count > 0 && includeList[1][0] == "True") {
-//				TFoutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + TFcells3G.Count + ")";
-//				if(includeList[1][0] == "True")
-//					TFoutage += " Event Time - " + includeList[1][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells3G.ToArray());
-//			}
-//			if(TFcells4G.Count > 0 && includeList[2][0] == "True") {
-//				TFoutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TFcells4G.Count + ")";
-//				if(includeList[2][0] == "True")
-//					TFoutage += " Event Time - " + includeList[2][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells4G.ToArray());
-//			}
-//			TFbulkCI = string.Empty;
-//			foreach (string site in TFsitesList) {
-//				string tempSite = Convert.ToInt32(site.Remove(0,3)).ToString();
-//				if(tempSite.Length < 4) {
-//					do {
-//						tempSite = '0' + tempSite;
-//					} while (tempSite.Length < 4);
-//				}
-//				TFbulkCI += tempSite + ';';
-//			}
-//
-//			if(!string.IsNullOrEmpty(VFoutage) && !string.IsNullOrEmpty(TFoutage)) {
-//				tabControl4.Visible = true;
-//				tabControl4.SelectTab(0);
-//			}
-//			else {
-//				if(string.IsNullOrEmpty(VFoutage) && string.IsNullOrEmpty(TFoutage)) {
-//					MainForm.trayIcon.showBalloon("Empty report","No cells were found for the given sites");
-//					textBox10.Text = string.Empty;
-//					return;
-//				}
-//				if(!string.IsNullOrEmpty(VFoutage)) {
-//					tabControl4.Visible = false;
-//					tabControl4.SelectTab(0);
-//				}
-//				else {
-//					if(!string.IsNullOrEmpty(TFoutage)) {
-//						tabControl4.Visible = false;
-//						tabControl4.SelectTab(1);
-//					}
-//				}
-//			}
-//			if(!string.IsNullOrEmpty(VFoutage) || !string.IsNullOrEmpty(TFoutage)) {
-//				VFTFReportTabControlSelectedIndexChanged(null,null);
-//				//button4.Enabled = false;
-//				button4.Text = "Outage Follow Up";
-//				button4.Width = 100;
-//				//button46.Enabled = false;
-//				button46.Visible = false;
-//				button3.Enabled = true;
-//				textBox10.ReadOnly = true;
-//				textBox11.ReadOnly = true;
-//				button12.Visible = true;
-//				button25.Visible = true;
-//				textBox10.Focus();
-//				label33.Text = "Generated Outage Report";
-			////				LogOutageReport();
-//			}
-		}
+
+			                           bool show2G = VFcells2G.Count > 0 || TFcells2G.Count > 0;
+			                           bool show3G = VFcells3G.Count > 0 || TFcells3G.Count > 0;
+			                           bool show4G = VFcells4G.Count > 0 || TFcells4G.Count > 0;
+
+			                           List<string[]> includeList = showIncludeListForm(show2G,show3G,show4G);
+
+			                           // FIXME: empty report on cancel IncludeListForm
+
+			                           // Get sites and locations list for VF and TF
+
+			                           List<string> VFsitesList = new List<string>();
+			                           List<string> TFsitesList = new List<string>();
+			                           List<string> VFlocationsList = new List<string>();
+			                           List<string> TFlocationsList = new List<string>();
+
+			                           foreach (string[] site in VFsitesArrayList) {
+			                           	if(site[1] == "True" && includeList[0][0] == "True") {
+			                           		VFsitesList.Add(site[0]);
+			                           		continue;
+			                           	}
+			                           	if(site[2] == "True" && includeList[1][0] == "True") {
+			                           		VFsitesList.Add(site[0]);
+			                           		continue;
+			                           	}
+			                           	if(site[3] == "True" && includeList[2][0] == "True") {
+			                           		VFsitesList.Add(site[0]);
+			                           	}
+			                           }
+			                           foreach (string[] location in VFlocationsArrayList) {
+			                           	if(location[1] == "True" && includeList[0][0] == "True") {
+			                           		VFlocationsList.Add(location[0]);
+			                           		continue;
+			                           	}
+			                           	if(location[2] == "True" && includeList[1][0] == "True") {
+			                           		VFlocationsList.Add(location[0]);
+			                           		continue;
+			                           	}
+			                           	if(location[3] == "True" && includeList[2][0] == "True") {
+			                           		VFlocationsList.Add(location[0]);
+			                           	}
+			                           }
+			                           foreach (string[] site in TFsitesArrayList) {
+			                           	if(site[1] == "True" && includeList[0][0] == "True") {
+			                           		TFsitesList.Add(site[0]);
+			                           		continue;
+			                           	}
+			                           	if(site[2] == "True" && includeList[1][0] == "True") {
+			                           		TFsitesList.Add(site[0]);
+			                           		continue;
+			                           	}
+			                           	if(site[3] == "True" && includeList[2][0] == "True") {
+			                           		TFsitesList.Add(site[0]);
+			                           	}
+			                           }
+			                           foreach (string[] location in TFlocationsArrayList) {
+			                           	if(location[1] == "True" && includeList[0][0] == "True") {
+			                           		TFlocationsList.Add(location[0]);
+			                           		continue;
+			                           	}
+			                           	if(location[2] == "True" && includeList[1][0] == "True") {
+			                           		TFlocationsList.Add(location[0]);
+			                           		continue;
+			                           	}
+			                           	if(location[3] == "True" && includeList[2][0] == "True") {
+			                           		TFlocationsList.Add(location[0]);
+			                           	}
+			                           }
+
+			                           VFsitesArrayList = null;
+			                           TFsitesArrayList = null;
+			                           VFlocationsArrayList = null;
+			                           TFlocationsArrayList = null;
+
+			                           VFsitesList = VFsitesList.Distinct().ToList();
+			                           VFsitesList.Sort();
+			                           TFsitesList = TFsitesList.Distinct().ToList();
+			                           TFsitesList.Sort();
+			                           VFlocationsList = VFlocationsList.Distinct().ToList();
+			                           VFlocationsList.Sort();
+			                           TFlocationsList = TFlocationsList.Distinct().ToList();
+			                           TFlocationsList.Sort();
+			                           VFcells2G = VFcells2G.Distinct().ToList();
+			                           VFcells2G.Sort();
+			                           TFcells2G = TFcells2G.Distinct().ToList();
+			                           TFcells2G.Sort();
+			                           VFcells3G = VFcells3G.Distinct().ToList();
+			                           VFcells3G.Sort();
+			                           TFcells3G = TFcells3G.Distinct().ToList();
+			                           TFcells3G.Sort();
+			                           VFcells4G = VFcells4G.Distinct().ToList();
+			                           VFcells4G.Sort();
+			                           TFcells4G = TFcells4G.Distinct().ToList();
+			                           TFcells4G.Sort();
+
+			                           // VF Outage
+
+			                           int totalCells = 0;
+			                           if(includeList[0][0] == "True")
+			                           	totalCells += VFcells2G.Count;
+			                           if(includeList[1][0] == "True")
+			                           	totalCells += VFcells3G.Count;
+			                           if(includeList[2][0] == "True")
+			                           	totalCells += VFcells4G.Count;
+
+			                           VFoutage = totalCells + "x COOS (" + VFsitesList.Count;
+			                           if(VFsitesList.Count == 1)
+			                           	VFoutage += " Site)";
+			                           else
+			                           	VFoutage += " Sites)";
+			                           VFoutage += Environment.NewLine + Environment.NewLine + "Locations (" + VFlocationsList.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine,VFlocationsList.ToArray()) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine,VFsitesList.ToArray());
+
+			                           if(VFcells2G.Count > 0 && includeList[0][0] == "True") {
+			                           	VFoutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + VFcells2G.Count + ")";
+			                           	if(includeList[0][0] == "True")
+			                           		VFoutage += " Event Time - " + includeList[0][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells2G.ToArray());
+			                           }
+			                           if(VFcells3G.Count > 0 && includeList[1][0] == "True") {
+			                           	VFoutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + VFcells3G.Count + ")";
+			                           	if(includeList[1][0] == "True")
+			                           		VFoutage += " Event Time - " + includeList[1][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells3G.ToArray());
+			                           }
+			                           if(VFcells4G.Count > 0 && includeList[2][0] == "True") {
+			                           	VFoutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VFcells4G.Count + ")";
+			                           	if(includeList[2][0] == "True")
+			                           		VFoutage += " Event Time - " + includeList[2][1] + Environment.NewLine + string.Join(Environment.NewLine,VFcells4G.ToArray());
+			                           }
+
+			                           VFbulkCI = string.Empty;
+			                           foreach (string site in VFsitesList) {
+			                           	string tempSite = Convert.ToInt32(site.Remove(0,3)).ToString();
+			                           	if(tempSite.Length < 4) {
+			                           		do {
+			                           			tempSite = '0' + tempSite;
+			                           		} while (tempSite.Length < 4);
+			                           	}
+			                           	VFbulkCI += tempSite + ';';
+			                           }
+
+			                           // TF Outage
+
+			                           totalCells = 0;
+			                           if(includeList[0][0] == "True")
+			                           	totalCells += TFcells2G.Count;
+			                           if(includeList[1][0] == "True")
+			                           	totalCells += TFcells3G.Count;
+			                           if(includeList[2][0] == "True")
+			                           	totalCells += TFcells4G.Count;
+
+			                           TFoutage = totalCells + "x COOS (" + TFsitesList.Count;
+			                           TFoutage += TFsitesList.Count == 1 ? " Site)" : " Sites)";
+			                           TFoutage += Environment.NewLine + Environment.NewLine + "Locations (" + TFlocationsList.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine,TFlocationsList.ToArray()) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine,TFsitesList.ToArray());
+
+			                           if(TFcells2G.Count > 0 && includeList[0][0] == "True") {
+			                           	TFoutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TFcells2G.Count + ")";
+			                           	if(includeList[0][0] == "True")
+			                           		TFoutage += " Event Time - " + includeList[0][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells2G.ToArray());
+			                           }
+			                           if(TFcells3G.Count > 0 && includeList[1][0] == "True") {
+			                           	TFoutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + TFcells3G.Count + ")";
+			                           	if(includeList[1][0] == "True")
+			                           		TFoutage += " Event Time - " + includeList[1][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells3G.ToArray());
+			                           }
+			                           if(TFcells4G.Count > 0 && includeList[2][0] == "True") {
+			                           	TFoutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TFcells4G.Count + ")";
+			                           	if(includeList[2][0] == "True")
+			                           		TFoutage += " Event Time - " + includeList[2][1] + Environment.NewLine + string.Join(Environment.NewLine,TFcells4G.ToArray());
+			                           }
+			                           TFbulkCI = string.Empty;
+			                           foreach (string site in TFsitesList) {
+			                           	string tempSite = Convert.ToInt32(site.Remove(0,3)).ToString();
+			                           	if(tempSite.Length < 4) {
+			                           		do {
+			                           			tempSite = '0' + tempSite;
+			                           		} while (tempSite.Length < 4);
+			                           	}
+			                           	TFbulkCI += tempSite + ';';
+			                           }
+
+			                           if(!string.IsNullOrEmpty(VFoutage) && !string.IsNullOrEmpty(TFoutage)) {
+			                           	tabControl4.Visible = true;
+			                           	tabControl4.SelectTab(0);
+			                           }
+			                           else {
+			                           	if(string.IsNullOrEmpty(VFoutage) && string.IsNullOrEmpty(TFoutage)) {
+			                           		MainForm.trayIcon.showBalloon("Empty report","No cells were found for the given sites");
+			                           		textBox10.Text = string.Empty;
+			                           		return;
+			                           	}
+			                           	if(!string.IsNullOrEmpty(VFoutage)) {
+			                           		tabControl4.Visible = false;
+			                           		tabControl4.SelectTab(0);
+			                           	}
+			                           	else {
+			                           		if(!string.IsNullOrEmpty(TFoutage)) {
+			                           			tabControl4.Visible = false;
+			                           			tabControl4.SelectTab(1);
+			                           		}
+			                           	}
+			                           }
+			                           if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
+			                           	//button4.Enabled = false;
+			                           	button4.Text = "Outage Follow Up";
+			                           	button4.Width = 100;
+			                           	//button46.Enabled = false;
+			                           	button46.Visible = false;
+			                           	button3.Enabled = true;
+			                           	textBox10.ReadOnly = true;
+			                           	textBox11.ReadOnly = true;
+			                           	button12.Visible = true;
+			                           	button25.Visible = true;
+			                           	textBox10.Focus();
+			                           	label33.Text = "Generated Outage Report";
+//				LogOutageReport();
+			                           }
+			}
 
 		void IncludeListForm_cbCheckedChanged(object sender, EventArgs e)
 		{
@@ -905,13 +810,15 @@ namespace appCore.Templates.UI
 			// 
 			copyToClipboardToolStripMenuItem.Name = "copyToClipboardToolStripMenuItem";
 			copyToClipboardToolStripMenuItem.Text = "Copy to Clipboard";
-//			copyToClipboardToolStripMenuItem.Click += LoadTemplateFromLog;
+			copyToClipboardToolStripMenuItem.Click += delegate {
+				Clipboard.SetText(textBox10.Text);
+			};
 			// 
 			// generateSitesListToolStripMenuItem
 			// 
 			generateSitesListToolStripMenuItem.Name = "generateSitesListToolStripMenuItem";
 			generateSitesListToolStripMenuItem.Text = "Generate sites list";
-//			generateSitesListToolStripMenuItem.Click += GenerateFromSitesList;
+			generateSitesListToolStripMenuItem.Click += GenerateFromSitesList;
 			// 
 			// generateFromSitesListToolStripMenuItem
 			// 
@@ -923,7 +830,7 @@ namespace appCore.Templates.UI
 			// 
 			outageFollowUpToolStripMenuItem.Name = "outageFollowUpToolStripMenuItem";
 			outageFollowUpToolStripMenuItem.Text = "Outage Follow Up";
-//			outageFollowUpToolStripMenuItem.Click += OutageFollowUp;generateFromSitesListToolStripMenuItem
+			outageFollowUpToolStripMenuItem.Click += OutageFollowUp;
 			// 
 			// Alarms_ReportLabel
 			// 
@@ -985,8 +892,8 @@ namespace appCore.Templates.UI
 //			tabControl4.Appearance = TabAppearance.Buttons;
 //			tabControl4.Controls.Add(tabPage15);
 //			tabControl4.Controls.Add(tabPage16);
-////			tabControl4.Size = new Size(127, 24);
-////			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
+			////			tabControl4.Size = new Size(127, 24);
+			////			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
 //			tabControl4.Name = "VFTFReportTabControl";
 //			tabControl4.SelectedIndex = 0;
 //			tabControl4.TabIndex = 31;
