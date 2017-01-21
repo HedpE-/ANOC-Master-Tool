@@ -43,6 +43,29 @@ namespace appCore.Templates.Types
 		DateTime TefUmtsTime = new DateTime(2500,1,1);
 		DateTime TefLteTime = new DateTime(2500,1,1);
 		
+		string sitesList;
+		public string SitesList {
+			get {
+				if(string.IsNullOrEmpty(sitesList) && (VfSites.Count > 0 || TefSites.Count > 0)) {
+					List<string> sites = VfSites;
+					sites.AddRange(TefSites);
+					sites.Distinct();
+					sites.Sort();
+					for(int c = 0;c < sites.Count;c++) {
+						string site = sites[c];
+						if(site.Contains(" - ")) {
+							string[] strToFind = { " - " };
+							site = site.Split(strToFind, StringSplitOptions.None)[0];
+						}
+						sites[c] = Convert.ToInt32(site.RemoveLetters()).ToString();
+					}
+					sitesList = string.Join(Environment.NewLine, sites);
+				}
+				return sitesList;
+			}
+			private set { }
+		}
+		
 		List<Alarm> OutageAlarms;
 		
 //		List<Alarm> VfAlarms {
@@ -227,7 +250,7 @@ namespace appCore.Templates.Types
 							VfLocations.Add(tempSite.Town);
 						break;
 					case "TEF":
-						if(!TefSites.Contains(cell.ParentSite))
+						if(!TefSites.Contains(tempSiteString))
 							TefSites.Add(tempSiteString);
 						switch(cell.Bearer) {
 							case "2G":
@@ -249,17 +272,18 @@ namespace appCore.Templates.Types
 				}
 			}
 			showIncludeListForm();
+			
 			generateReports();
 			
 			LogType = "Outage";
 			fullLog = generateFullLog();
 		}
 		
-		public Outage(Outage existingOutage) {
-			Toolbox.Tools.CopyProperties(this, existingOutage);
-			fullLog = generateFullLog();
-			LogType = "Outage";
-		}
+//		public Outage(Outage existingOutage) {
+//			Toolbox.Tools.CopyProperties(this, existingOutage);
+//			LogType = "Outage";
+//			fullLog = generateFullLog();
+//		}
 		
 		public Outage(string[] log, DateTime date) {
 			LoadOutageReport(log);
@@ -349,8 +373,7 @@ namespace appCore.Templates.Types
 			return string.Empty;
 		}
 		
-		public void LoadOutageReport(string[] log)
-		{
+		public void LoadOutageReport(string[] log) {
 //			int c = 0;
 //			VFoutage = string.Empty;
 //			TFoutage = string.Empty;
@@ -540,7 +563,8 @@ namespace appCore.Templates.Types
 				form.AutoScaleMode = AutoScaleMode.Font;
 				form.ClientSize = new System.Drawing.Size(228, 137);
 				form.Icon = appCore.UI.Resources.MB_0001_vodafone3;
-				form.MaximizeBox = false;
+//				form.MaximizeBox = false;
+				form.ControlBox = false;
 				form.FormBorderStyle = FormBorderStyle.FixedSingle;
 				form.Controls.Add(IncludeListForm_label);
 				form.Controls.Add(dtp4G);
@@ -556,10 +580,22 @@ namespace appCore.Templates.Types
 				
 				if(cb2G.Checked)
 					VfGsmTime = TefGsmTime = dtp2G.Value;
+				else {
+					VfGsmCells.Clear();
+					TefGsmCells.Clear();
+				}
 				if(cb3G.Checked)
 					VfUmtsTime = TefUmtsTime = dtp3G.Value;
+				else {
+					VfUmtsCells.Clear();
+					TefUmtsCells.Clear();
+				}
 				if(cb4G.Checked)
 					VfLteTime = TefLteTime = dtp4G.Value;
+				else {
+					VfLteCells.Clear();
+					TefLteCells.Clear();
+				}
 			}
 		}
 

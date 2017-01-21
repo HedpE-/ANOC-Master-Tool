@@ -8,13 +8,11 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using appCore.Netcool;
-using appCore.SiteFinder;
 using appCore.SiteFinder.UI;
 using appCore.Templates.Types;
 using appCore.UI;
@@ -26,20 +24,20 @@ namespace appCore.Templates.UI
 	/// </summary>
 	public class OutageControls : Panel
 	{
-		Button button3 = new Button();
-		Button button4 = new Button();
-		Button button12 = new Button();
-		Button button46 = new Button();
-		Button button25 = new Button();
+//		Button button3 = new Button();
+//		Button button4 = new Button();
+//		Button button12 = new Button();
+//		Button button46 = new Button();
+//		Button button25 = new Button();
 		
-		Button button23 = new Button(); // BulkCILargeTextButton
-		Button button22 = new Button(); // Alarms_ReportLargeTextButton
-		RadioButton radioButton1 = new RadioButton(); // VFReportRadioButton
-		RadioButton radioButton2 = new RadioButton(); // TFReportRadioButton
-		Label label33 = new Label(); // Alarms_ReportLabel
-		Label label32 = new Label(); // BulkCILabel
-		AMTRichTextBox textBox11 = new AMTRichTextBox(); // BulkCITextBox
-		AMTRichTextBox textBox10 = new AMTRichTextBox(); // Alarms_ReportTextBox
+		Button BulkCILargeTextButton = new Button(); // BulkCILargeTextButton
+		Button Alarms_ReportLargeTextButton = new Button(); // Alarms_ReportLargeTextButton
+		RadioButton VFReportRadioButton = new RadioButton(); // VFReportRadioButton
+		RadioButton TFReportRadioButton = new RadioButton(); // TFReportRadioButton
+		Label Alarms_ReportLabel = new Label(); // Alarms_ReportLabel
+		Label BulkCILabel = new Label(); // BulkCILabel
+		AMTRichTextBox BulkCITextBox = new AMTRichTextBox(); // BulkCITextBox
+		AMTRichTextBox Alarms_ReportTextBox = new AMTRichTextBox(); // Alarms_ReportTextBox
 
 		Outage currentOutage;
 		
@@ -69,18 +67,6 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-//		bool toggle;
-//		public bool ToggledState {
-//			get {
-//				return toggle;
-//			}
-//			set {
-//				if(value != toggle){
-//					toggle = value;
-//				}
-//			}
-//		}
-		
 		Template.UIenum _uiMode;
 		Template.UIenum UiMode {
 			get { return _uiMode; }
@@ -89,7 +75,7 @@ namespace appCore.Templates.UI
 				if(value == Template.UIenum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
-					textBox11.ReadOnly = true;
+					BulkCITextBox.ReadOnly = true;
 					
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -108,6 +94,11 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(copyToClipboardToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
+					
+					clearToolStripMenuItem.Enabled =
+						copyToClipboardToolStripMenuItem.Enabled =
+						generateSitesListToolStripMenuItem.Enabled =
+						outageFollowUpToolStripMenuItem.Enabled = false;
 				}
 			}
 		}
@@ -122,50 +113,49 @@ namespace appCore.Templates.UI
 			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
 			st.Start();
 //			Action action = new Action(delegate {
-			if (string.IsNullOrEmpty(textBox10.Text)) {
+			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
 				FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			try {
 //				Action actionThreaded = new Action(delegate {
-				AlarmsParser alarms = new AlarmsParser(textBox10.Text, false, true);
+				AlarmsParser alarms = new AlarmsParser(Alarms_ReportTextBox.Text, false, true);
 				currentOutage = alarms.GenerateOutage();
 //				                                   });
 //				LoadingPanel load = new LoadingPanel();
 //				load.Show(actionThreaded, actionNonThreaded, true, this);
 
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-					radioButton1.Enabled = radioButton2.Enabled = radioButton1.Checked = true;
+					VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
 				else {
 					if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
 						MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
-						textBox10.Text = string.Empty;
-						radioButton1.Enabled = radioButton2.Enabled = false;
+						Alarms_ReportTextBox.Text = string.Empty;
+						VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
 						return;
 					}
 					if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-						radioButton1.Enabled = radioButton1.Checked = true;
-						radioButton2.Enabled = false;
+						VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+						TFReportRadioButton.Enabled = false;
 					}
 					else {
 						if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-							radioButton2.Enabled = radioButton2.Checked = true;
-							radioButton1.Enabled = false;
+							TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+							VFReportRadioButton.Enabled = false;
 						}
 					}
 				}
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-					button4.Text = "Outage Follow Up"; // HACK: Outage Follow Up button on outage report processing
-					button4.Width = 100;
-					button46.Visible = false;
-					button3.Enabled = true;
-					textBox10.ReadOnly = true;
-					textBox11.ReadOnly = true;
-					button12.Visible = true;
-					button25.Visible = true;
-					textBox10.Focus();
-					label33.Text = "Generated Outage Report";
-					MainForm.logFile.HandleOutageLog(currentOutage);
+					generateReportToolStripMenuItem.Enabled =
+						generateFromSitesListToolStripMenuItem.Enabled = false;
+					Alarms_ReportTextBox.ReadOnly = true;
+					BulkCITextBox.ReadOnly = true;
+					outageFollowUpToolStripMenuItem.Enabled =
+						copyToClipboardToolStripMenuItem.Enabled =
+						generateSitesListToolStripMenuItem.Enabled = true;
+					Alarms_ReportTextBox.Focus();
+					Alarms_ReportLabel.Text = "Generated Outage Report";
+					MainForm.logFiles.HandleOutageLog(currentOutage);
 				}
 			}
 			catch {
@@ -206,61 +196,60 @@ namespace appCore.Templates.UI
 			RadioButton rb = sender as RadioButton;
 			if(rb.Checked) {
 				if(rb.Text == "VF Report") {
-					textBox10.Text = currentOutage.VfOutage;
-					textBox11.Text = currentOutage.VfBulkCI;
+					Alarms_ReportTextBox.Text = currentOutage.VfOutage;
+					BulkCITextBox.Text = currentOutage.VfBulkCI;
 				}
 				else {
-					textBox10.Text = currentOutage.TefOutage;
-					textBox11.Text = currentOutage.TefBulkCI;
+					Alarms_ReportTextBox.Text = currentOutage.TefOutage;
+					BulkCITextBox.Text = currentOutage.TefBulkCI;
 				}
-				textBox10.Select(0,0);
-				textBox11.Select(0,0);
+				Alarms_ReportTextBox.Select(0,0);
+				BulkCITextBox.Select(0,0);
 			}
 		}
 
 		void GenerateFromSitesList(object sender, EventArgs e)
 		{
-			if (string.IsNullOrEmpty(textBox10.Text)) {
+			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
 //				Action action = new Action(delegate {
 				MessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 //				                           });
 //				Toolbox.Tools.darkenBackgroundForm(action,false,this);
 				return;
 			}
-			currentOutage = new Outage(textBox10.Text.Split('\n').ToList());
+			currentOutage = new Outage(Alarms_ReportTextBox.Text.Split('\n').ToList());
 			
 			if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-				radioButton1.Enabled = radioButton2.Enabled = radioButton1.Checked = true;
+				VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
 			else {
 				if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
 					MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
-					textBox10.Text = string.Empty;
-					radioButton1.Enabled = radioButton2.Enabled = false;
+					Alarms_ReportTextBox.Text = string.Empty;
+					VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
 					return;
 				}
 				if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-					radioButton1.Enabled = radioButton1.Checked = true;
-					radioButton2.Enabled = false;
+					VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+					TFReportRadioButton.Enabled = false;
 				}
 				else {
 					if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-						radioButton2.Enabled = radioButton2.Checked = true;
-						radioButton1.Enabled = false;
+						TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+						VFReportRadioButton.Enabled = false;
 					}
 				}
 			}
 			if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-				button4.Text = "Outage Follow Up"; // HACK: Outage Follow Up button on outage report processing
-				button4.Width = 100;
-				button46.Visible = false;
-				button3.Enabled = true;
-				textBox10.ReadOnly = true;
-				textBox11.ReadOnly = true;
-				button12.Visible = true;
-				button25.Visible = true;
-				textBox10.Focus();
-				label33.Text = "Generated Outage Report";
-				MainForm.logFile.HandleOutageLog(currentOutage);
+				generateFromSitesListToolStripMenuItem.Enabled =
+					generateReportToolStripMenuItem.Enabled = false;
+				Alarms_ReportTextBox.ReadOnly =
+					BulkCITextBox.ReadOnly = true;
+				copyToClipboardToolStripMenuItem.Enabled =
+					generateSitesListToolStripMenuItem.Enabled =
+					outageFollowUpToolStripMenuItem.Enabled = true;
+				Alarms_ReportTextBox.Focus();
+				Alarms_ReportLabel.Text = "Generated Outage Report";
+				MainForm.logFiles.HandleOutageLog(currentOutage);
 			}
 		}
 
@@ -432,26 +421,33 @@ namespace appCore.Templates.UI
 			form.Close();
 		}
 
+		void GenerateSitesList(object sender, EventArgs e)
+		{
+//			Action action = new Action(delegate {
+			
+			FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + currentOutage.SitesList + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+			Clipboard.SetText(currentOutage.SitesList);
+//			                           });
+//			Tools.darkenBackgroundForm(action,false,this);
+		}
+
 		void ClearAllControls(object sender, EventArgs e)
 		{
-//			VFoutage = string.Empty;
-//			VFbulkCI = string.Empty;
-//			TFoutage = string.Empty;
-//			TFbulkCI = string.Empty;
-			label33.Text = "Copy Outage alarms from Netcool";
-//			button4.Enabled = true; // HACK: Outage Follow up button on clear
-			button4.Text = "Generate Report";
-			button4.Width = 97;
-			button46.Visible = true;
-			button3.Enabled = false;
-			textBox10.ReadOnly = false;
-			textBox10.Text = string.Empty;
-			textBox11.Text = string.Empty;
-			button12.Visible = false;
-			button25.Visible = false;
-			radioButton1.Enabled = radioButton1.Checked = radioButton2.Enabled = radioButton2.Checked = false;
-//			tabControl4.Visible = false;
-			textBox10.Focus();
+			currentOutage = null;
+			Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
+			generateReportToolStripMenuItem.Enabled =
+				generateFromSitesListToolStripMenuItem.Enabled = true;
+			Alarms_ReportTextBox.ReadOnly = false;
+			Alarms_ReportTextBox.Text =
+				BulkCITextBox.Text = string.Empty;
+			copyToClipboardToolStripMenuItem.Enabled =
+				generateSitesListToolStripMenuItem.Enabled =
+				outageFollowUpToolStripMenuItem.Enabled = false;
+			VFReportRadioButton.Enabled =
+				VFReportRadioButton.Checked =
+				TFReportRadioButton.Enabled =
+				TFReportRadioButton.Checked = false;
+			Alarms_ReportTextBox.Focus();
 		}
 
 		void TextBoxesTextChanged_LargeTextButtons(object sender, EventArgs e)
@@ -460,10 +456,11 @@ namespace appCore.Templates.UI
 			Button btn = null;
 			switch(tb.Name) {
 				case "BulkCITextBox":
-					btn = (Button)button23;
+					btn = (Button)BulkCILargeTextButton;
 					break;
 				case "Alarms_ReportTextBox":
-					btn = (Button)button22;
+					btn = (Button)Alarms_ReportLargeTextButton;
+					clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text);
 					break;
 			}
 			
@@ -478,12 +475,12 @@ namespace appCore.Templates.UI
 			TextBoxBase tb = null;
 			switch(btn.Name) {
 				case "BulkCILargeTextButton":
-					tb = (TextBoxBase)textBox11;
-					lbl = label32.Text;
+					tb = (TextBoxBase)BulkCITextBox;
+					lbl = BulkCILabel.Text;
 					break;
 				case "Alarms_ReportLargeTextButton":
-					tb = (TextBoxBase)textBox10;
-					lbl = label33.Text;
+					tb = (TextBoxBase)Alarms_ReportTextBox;
+					lbl = Alarms_ReportLabel.Text;
 					break;
 			}
 			
@@ -500,20 +497,14 @@ namespace appCore.Templates.UI
 			BackColor = SystemColors.Control;
 			Name = "Outages GUI";
 			Controls.Add(MainMenu);
-			Controls.Add(label33);
-			Controls.Add(textBox10);
-			Controls.Add(button22);
-//			Controls.Add(tabControl4);
-			Controls.Add(label32);
-			Controls.Add(textBox11);
-			Controls.Add(button23);
-			Controls.Add(radioButton1);
-			Controls.Add(radioButton2);
-//			Controls.Add(button46);
-//			Controls.Add(button25);
-//			Controls.Add(button12);
-//			Controls.Add(button3);
-//			Controls.Add(button4);
+			Controls.Add(Alarms_ReportLabel);
+			Controls.Add(Alarms_ReportTextBox);
+			Controls.Add(Alarms_ReportLargeTextButton);
+			Controls.Add(BulkCILabel);
+			Controls.Add(BulkCITextBox);
+			Controls.Add(BulkCILargeTextButton);
+			Controls.Add(VFReportRadioButton);
+			Controls.Add(TFReportRadioButton);
 			// 
 			// MainMenu
 			// 
@@ -524,6 +515,12 @@ namespace appCore.Templates.UI
 			generateReportToolStripMenuItem.Name = "generateReportToolStripMenuItem";
 			generateReportToolStripMenuItem.Text = "Generate Report";
 			generateReportToolStripMenuItem.Click += GenerateReport;
+			// 
+			// generateFromSitesListToolStripMenuItem
+			// 
+			generateFromSitesListToolStripMenuItem.Name = "generateFromSitesListToolStripMenuItem";
+			generateFromSitesListToolStripMenuItem.Text = "Generate Report from sites list";
+			generateFromSitesListToolStripMenuItem.Click += GenerateFromSitesList;
 			// 
 			// clearToolStripMenuItem
 			// 
@@ -536,20 +533,14 @@ namespace appCore.Templates.UI
 			copyToClipboardToolStripMenuItem.Name = "copyToClipboardToolStripMenuItem";
 			copyToClipboardToolStripMenuItem.Text = "Copy to Clipboard";
 			copyToClipboardToolStripMenuItem.Click += delegate {
-				Clipboard.SetText(textBox10.Text);
+				Clipboard.SetText(Alarms_ReportTextBox.Text);
 			};
 			// 
 			// generateSitesListToolStripMenuItem
 			// 
 			generateSitesListToolStripMenuItem.Name = "generateSitesListToolStripMenuItem";
 			generateSitesListToolStripMenuItem.Text = "Generate sites list";
-			generateSitesListToolStripMenuItem.Click += GenerateFromSitesList;
-			// 
-			// generateFromSitesListToolStripMenuItem
-			// 
-			generateFromSitesListToolStripMenuItem.Name = "generateFromSitesListToolStripMenuItem";
-			generateFromSitesListToolStripMenuItem.Text = "Generate Report from sites list";
-			generateFromSitesListToolStripMenuItem.Click += GenerateFromSitesList;
+			generateSitesListToolStripMenuItem.Click += GenerateSitesList;
 			// 
 			// outageFollowUpToolStripMenuItem
 			// 
@@ -559,224 +550,119 @@ namespace appCore.Templates.UI
 			// 
 			// Alarms_ReportLabel
 			// 
-//			label33.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
-//			label33.Size = new Size(179, 20);
-			label33.Name = "Alarms_ReportLabel";
-			label33.TabIndex = 30;
-			label33.Text = "Copy Outage alarms from Netcool";
-			label33.TextAlign = ContentAlignment.MiddleLeft;
+//			Alarms_ReportLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+//			Alarms_ReportLabel.Size = new Size(179, 20);
+			Alarms_ReportLabel.Name = "Alarms_ReportLabel";
+			Alarms_ReportLabel.TabIndex = 30;
+			Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
+			Alarms_ReportLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// Alarms_ReportTextBox
 			// 
-			textBox10.DetectUrls = false;
-			textBox10.Font = new Font("Courier New", 8.25F);
-//			textBox10.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
-//			textBox10.Size = new Size(510, 368);
-			textBox10.Name = "Alarms_ReportTextBox";
-			textBox10.TabIndex = 1;
-			textBox10.Text = "";
-			textBox10.WordWrap = false;
-			textBox10.TextChanged += TextBoxesTextChanged_LargeTextButtons;
+			Alarms_ReportTextBox.DetectUrls = false;
+			Alarms_ReportTextBox.Font = new Font("Courier New", 8.25F);
+//			Alarms_ReportTextBox.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
+//			Alarms_ReportTextBox.Size = new Size(510, 368);
+			Alarms_ReportTextBox.Name = "Alarms_ReportTextBox";
+			Alarms_ReportTextBox.TabIndex = 1;
+			Alarms_ReportTextBox.Text = "";
+			Alarms_ReportTextBox.WordWrap = false;
+			Alarms_ReportTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// Alarms_ReportLargeTextButton
 			// 
-			button22.Enabled = false;
-//			button22.Size = new Size(24, 20);
-//			button22.Location = new Point(textBox10.Right - button22.Width, MainMenu.Bottom + 4);
-			button22.Name = "Alarms_ReportLargeTextButton";
-			button22.TabIndex = 2;
-			button22.Text = "...";
-			button22.UseVisualStyleBackColor = true;
-			button22.Click += LargeTextButtonsClick;
+			Alarms_ReportLargeTextButton.Enabled = false;
+//			Alarms_ReportLargeTextButton.Size = new Size(24, 20);
+//			Alarms_ReportLargeTextButton.Location = new Point(textBox10.Right - button22.Width, MainMenu.Bottom + 4);
+			Alarms_ReportLargeTextButton.Name = "Alarms_ReportLargeTextButton";
+			Alarms_ReportLargeTextButton.TabIndex = 2;
+			Alarms_ReportLargeTextButton.Text = "...";
+			Alarms_ReportLargeTextButton.UseVisualStyleBackColor = true;
+			Alarms_ReportLargeTextButton.Click += LargeTextButtonsClick;
 			// 
-			// radioButton1
+			// VFReportRadioButton
 			// 
-			radioButton1.Appearance = Appearance.Button;
-			radioButton1.Enabled = false;
-			radioButton1.Name = "VFReportRadioButton";
-			radioButton1.TabIndex = 34;
-			radioButton1.TabStop = true;
-			radioButton1.Text = "VF Report";
-			radioButton1.TextAlign = ContentAlignment.MiddleCenter;
-			radioButton1.UseVisualStyleBackColor = true;
-			radioButton1.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
+			VFReportRadioButton.Appearance = Appearance.Button;
+			VFReportRadioButton.Enabled = false;
+			VFReportRadioButton.Name = "VFReportRadioButton";
+			VFReportRadioButton.TabIndex = 34;
+			VFReportRadioButton.TabStop = true;
+			VFReportRadioButton.Text = "VF Report";
+			VFReportRadioButton.TextAlign = ContentAlignment.MiddleCenter;
+			VFReportRadioButton.UseVisualStyleBackColor = true;
+			VFReportRadioButton.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
 			// 
-			// radioButton2
+			// TFReportRadioButton
 			// 
-			radioButton2.Appearance = Appearance.Button;
-			radioButton2.Enabled = false;
-			radioButton2.Name = "TFReportRadioButton";
-			radioButton2.TabIndex = 35;
-			radioButton2.Text = "TF Report";
-			radioButton2.TextAlign = ContentAlignment.MiddleCenter;
-			radioButton2.UseVisualStyleBackColor = true;
-			radioButton2.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
-			// 
-			// VFTFReportTabControl
-			// 
-//			tabControl4.Appearance = TabAppearance.Buttons;
-//			tabControl4.Controls.Add(tabPage15);
-//			tabControl4.Controls.Add(tabPage16);
-			////			tabControl4.Size = new Size(127, 24);
-			////			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
-//			tabControl4.Name = "VFTFReportTabControl";
-//			tabControl4.SelectedIndex = 0;
-//			tabControl4.TabIndex = 31;
-//			tabControl4.Visible = false;
-//			tabControl4.SelectedIndexChanged += VFTFReportTabControlSelectedIndexChanged;
-//			// 
-//			// VFReportTabPage
-//			// 
-//			tabPage15.Location = new Point(0, 25); // 4, 25
-//			tabPage15.Name = "VFReportTabPage";
-//			tabPage15.Padding = new Padding(3);
-//			tabPage15.Size = new Size(119, 0);
-//			tabPage15.TabIndex = 0;
-//			tabPage15.Text = "VF Report";
-//			tabPage15.UseVisualStyleBackColor = true;
-//			// 
-//			// TFReportTabPage
-//			// 
-//			tabPage16.Location = new Point(0, 25); // 4, 25
-//			tabPage16.Size = new Size(119, 0);
-//			tabPage16.Name = "TFReportTabPage";
-//			tabPage16.Padding = new Padding(3);
-//			tabPage16.TabIndex = 1;
-//			tabPage16.Text = "TF Report";
-//			tabPage16.UseVisualStyleBackColor = true;
+			TFReportRadioButton.Appearance = Appearance.Button;
+			TFReportRadioButton.Enabled = false;
+			TFReportRadioButton.Name = "TFReportRadioButton";
+			TFReportRadioButton.TabIndex = 35;
+			TFReportRadioButton.Text = "TF Report";
+			TFReportRadioButton.TextAlign = ContentAlignment.MiddleCenter;
+			TFReportRadioButton.UseVisualStyleBackColor = true;
+			TFReportRadioButton.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
 			// 
 			// BulkCILabel
 			// 
-//			label32.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
-//			label32.Size = new Size(198, 20);
-			label32.Name = "BulkCILabel";
-			label32.Text = "BulkCI (Divided into 50 sites chunks)";
-			label32.TextAlign = ContentAlignment.MiddleLeft;
+//			BulkCILabel.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
+//			BulkCILabel.Size = new Size(198, 20);
+			BulkCILabel.Name = "BulkCILabel";
+			BulkCILabel.Text = "BulkCI (Divided into 50 sites chunks)";
+			BulkCILabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// BulkCITextBox
 			// 
-			textBox11.DetectUrls = false;
-			textBox11.Font = new Font("Courier New", 8.25F);
-//			textBox11.Location = new Point(PaddingLeftRight, label32.Bottom + 4);
-//			textBox11.Size = new Size(510, 203);
-			textBox11.Name = "BulkCITextBox";
-			textBox11.ReadOnly = true;
-			textBox11.TabIndex = 3;
-			textBox11.Text = "";
-			textBox11.TextChanged += TextBoxesTextChanged_LargeTextButtons;
+			BulkCITextBox.DetectUrls = false;
+			BulkCITextBox.Font = new Font("Courier New", 8.25F);
+//			BulkCITextBox.Location = new Point(PaddingLeftRight, label32.Bottom + 4);
+//			BulkCITextBox.Size = new Size(510, 203);
+			BulkCITextBox.Name = "BulkCITextBox";
+			BulkCITextBox.ReadOnly = true;
+			BulkCITextBox.TabIndex = 3;
+			BulkCITextBox.Text = "";
+			BulkCITextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
 			// 
 			// BulkCILargeTextButton
 			// 
-			button23.Enabled = false;
-//			button23.Size = new Size(24, 20);
-//			button23.Location = new Point(textBox11.Right - button23.Width, label32.Top);
-			button23.Name = "BulkCILargeTextButton";
-			button23.TabIndex = 4;
-			button23.Text = "...";
-			button23.UseVisualStyleBackColor = true;
-			button23.Click += LargeTextButtonsClick;
-			// 
-			// button12
-			// 
-//			button12.Location = new Point(354, 630);
-//			button12.Name = "button12";
-//			button12.Size = new Size(99, 23);
-//			button12.TabIndex = 6;
-//			button12.Text = "Copy to Clipboard";
-//			button12.UseVisualStyleBackColor = true;
-//			button12.Visible = false;
-//			button12.Click += Button12Click;
-			// 
-			// button3
-			// 
-//			button3.Enabled = false;
-//			button3.Location = new Point(459, 630);
-//			button3.Name = "button3";
-//			button3.Size = new Size(62, 23);
-//			button3.TabIndex = 8;
-//			button3.Text = "Clear";
-//			button3.UseVisualStyleBackColor = true;
-//			button3.Click += Button3Click;
-			// 
-			// button4
-			// 
-//			button4.Location = new Point(8, 630);
-//			button4.Name = "button4";
-//			button4.Size = new Size(97, 23);
-//			button4.TabIndex = 5;
-//			button4.Text = "Generate Report";
-//			button4.UseVisualStyleBackColor = true;
-//			button4.Click += Button4Click;
-			// 
-			// button46
-			// 
-//			button46.Location = new Point(111, 630);
-//			button46.Name = "button46";
-//			button46.Size = new Size(133, 23);
-//			button46.TabIndex = 33;
-//			button46.Text = "Generate from sites list";
-//			button46.UseVisualStyleBackColor = true;
-//			button46.Click += Button46Click;
-			// 
-			// button25
-			// 
-//			button25.Location = new Point(250, 630);
-//			button25.Name = "button25";
-//			button25.Size = new Size(98, 23);
-//			button25.TabIndex = 32;
-//			button25.Text = "Generate sites list";
-//			button25.UseVisualStyleBackColor = true;
-//			button25.Visible = false;
-//			button25.Click += Button25Click;
-			// 
-			// Button_OuterLeft
-			// 
-//			Button_OuterLeft.UseVisualStyleBackColor = true;
-//			// 
-//			// Button_OuterRight
-//			// 
-//			Button_OuterRight.UseVisualStyleBackColor = true;
-//			// 
-//			// Button_InnerLeft
-//			// 
-//			Button_InnerLeft.UseVisualStyleBackColor = true;
-//			// 
-//			// Button_InnerRight
-//			// 
-//			Button_InnerRight.UseVisualStyleBackColor = true;
+			BulkCILargeTextButton.Enabled = false;
+//			BulkCILargeTextButton.Size = new Size(24, 20);
+//			BulkCILargeTextButton.Location = new Point(textBox11.Right - button23.Width, label32.Top);
+			BulkCILargeTextButton.Name = "BulkCILargeTextButton";
+			BulkCILargeTextButton.TabIndex = 4;
+			BulkCILargeTextButton.Text = "...";
+			BulkCILargeTextButton.UseVisualStyleBackColor = true;
+			BulkCILargeTextButton.Click += LargeTextButtonsClick;
 			
 			DynamicControlsSizesLocations();
 		}
 		
 		void DynamicControlsSizesLocations() {
-			label33.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
-			label33.Size = new Size(179, 20);
+			Alarms_ReportLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+			Alarms_ReportLabel.Size = new Size(179, 20);
 			
-			textBox10.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
-			textBox10.Size = new Size(510, 368);
+			Alarms_ReportTextBox.Location = new Point(PaddingLeftRight, Alarms_ReportLabel.Bottom + 4);
+			Alarms_ReportTextBox.Size = new Size(510, 368);
 			
-			button22.Size = new Size(24, 20);
-			button22.Location = new Point(textBox10.Right - button22.Width, MainMenu.Bottom + 4);
+			Alarms_ReportLargeTextButton.Size = new Size(24, 20);
+			Alarms_ReportLargeTextButton.Location = new Point(Alarms_ReportTextBox.Right - Alarms_ReportLargeTextButton.Width, MainMenu.Bottom + 4);
 			
-			radioButton2.Size = new Size(64, 21);
-			radioButton2.Location = new Point(button22.Left - radioButton2.Width - 5, MainMenu.Bottom + 4);
+			TFReportRadioButton.Size = new Size(64, 21);
+			TFReportRadioButton.Location = new Point(Alarms_ReportLargeTextButton.Left - TFReportRadioButton.Width - 5, MainMenu.Bottom + 4);
 			
-			radioButton1.Size = new Size(64, 21);
-			radioButton1.Location = new Point(radioButton2.Left - radioButton1.Width - 5, MainMenu.Bottom + 4);
+			VFReportRadioButton.Size = new Size(64, 21);
+			VFReportRadioButton.Location = new Point(TFReportRadioButton.Left - VFReportRadioButton.Width - 5, MainMenu.Bottom + 4);
 			
-//			tabControl4.Size = new Size(127, 24);
-//			tabControl4.Location = new Point(button22.Left - tabControl4.Width - 5, MainMenu.Bottom + 4);
+			BulkCILabel.Location = new Point(PaddingLeftRight, Alarms_ReportTextBox.Bottom + 4);
+			BulkCILabel.Size = new Size(198, 20);
 			
-			label32.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
-			label32.Size = new Size(198, 20);
+			BulkCITextBox.Location = new Point(PaddingLeftRight, BulkCILabel.Bottom + 4);
+			BulkCITextBox.Size = new Size(510, 203);
 			
-			textBox11.Location = new Point(PaddingLeftRight, label32.Bottom + 4);
-			textBox11.Size = new Size(510, 203);
+			BulkCILargeTextButton.Size = new Size(24, 20);
+			BulkCILargeTextButton.Location = new Point(BulkCITextBox.Right - BulkCILargeTextButton.Width, BulkCILabel.Top);
 			
-			button23.Size = new Size(24, 20);
-			button23.Location = new Point(textBox11.Right - button23.Width, label32.Top);
-			
-			Size = new Size(textBox11.Right + PaddingLeftRight, textBox11.Bottom + PaddingTopBottom);
+			Size = new Size(BulkCITextBox.Right + PaddingLeftRight, BulkCITextBox.Bottom + PaddingTopBottom);
 		}
 	}
 }
