@@ -49,7 +49,7 @@ namespace appCore
 		public static siteDetails2 SiteDetailsUI;
 		public static PictureBox SiteDetailsPictureBox = new PictureBox();
 		public static OutageControls OutageUI = new OutageControls();
-		public static LogsCollection<Template> logFile = new LogsCollection<Template>();
+		public static LogsCollection<Template> logFiles = new LogsCollection<Template>();
 		public static ShiftsCalendar shiftsCalendar;
 		static Label TicketCountLabel = new Label();
 		
@@ -446,15 +446,15 @@ namespace appCore
 		
 		public static void UpdateTicketCountLabel(bool ignoreLabelVisibility = false) {
 			if(!string.IsNullOrEmpty(TicketCountLabel.Text) || ignoreLabelVisibility)
-				TicketCountLabel.Text = logFile.FilterCounts(Template.Filters.TicketCount).ToString();
+				TicketCountLabel.Text = logFiles.FilterCounts(Template.Filters.TicketCount).ToString();
 		}
 
 		void TicketCountLabelMouseClick(object sender, MouseEventArgs e) {
 			switch(e.Button) {
 				case MouseButtons.Left:
-					if(logFile.Exists) {
+					if(logFiles.LogFile.Exists) {
 						if(string.IsNullOrEmpty(TicketCountLabel.Text)) {
-							logFile.CheckLogFileIntegrity();
+							logFiles.CheckLogFileIntegrity();
 							UpdateTicketCountLabel(true);
 						}
 						else
@@ -519,7 +519,7 @@ namespace appCore
 			
 			SplashForm.UpdateLabelText("Setting User Settings");
 			
-			logFile.Initialize();
+			logFiles.Initialize();
 			
 			SplashForm.UpdateLabelText("Loading UI");
 			
