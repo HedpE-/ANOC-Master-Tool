@@ -26,8 +26,8 @@ namespace appCore.Netcool
 		public List<string> lteSitesOnM = new List<string>();
 		
 		public AlarmsParser(string netcoolAlarms, bool generateOutput = true, bool outage = false) {
-			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-			
+//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+//			st.Start();
 			while(netcoolAlarms.Contains("\n-ProbableCause"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\n-ProbableCause", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.Contains("\t-ProbableCause"))
@@ -40,41 +40,7 @@ namespace appCore.Netcool
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nhas generated", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.EndsWith("\n"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.Length - 1);
-//			st.Start();
-//			try {
-//				var engine = new FileHelperEngine<Alarm>();
-//
-//				engine.BeforeReadRecord += (eng, e) => {
-//					var tx = e.RecordLine;
-//					if(e.RecordLine.StartsWith("Attributes\tService Impact\t"))
-//						e.SkipThisRecord = true;
-//				};
-//
-//				if(outage) {
-//					engine.AfterReadRecord += (eng, e) => {
-//						if(string.IsNullOrEmpty(e.Record.Element))
-//							e.Record.Element = e.Record.ResolveCellName();
-//						if(e.Record.Bearer == "4G" && !e.Record.COOS)
-//							lteSitesOnM.Add(e.Record.SiteId);
-//					};
-//				}
-//				else {
-//					if(generateOutput) {
-//						engine.AfterReadRecord +=  (eng, e) => {
-//							parsedOutput += e.Record + Environment.NewLine + Environment.NewLine;
-//						};
-//					}
-//				}
-//
-//				AlarmsList = engine.ReadStringAsList(netcoolAlarms);
-//			}
-//			catch(FileHelpersException e) {
-//				var m = e.Message;
-//			}
-//			st.Stop();
-//			var t = st.Elapsed;
-//			AlarmsList.Clear();
-//			st.Start();
+			
 			string[] temparr = netcoolAlarms.Split('\n');
 			string[] headers = null;
 			foreach (string line in temparr) {
@@ -107,8 +73,8 @@ namespace appCore.Netcool
 			
 			if(lteSitesOnM.Any())
 				lteSitesOnM = lteSitesOnM.Distinct().ToList();
-//			if(generateOutput)
-//				parsedOutput = parsedOutput.Substring(0, parsedOutput.Length - 4);
+//			st.Stop();
+//			var t = st.Elapsed;
 		}
 		
 		public Outage GenerateOutage() {
