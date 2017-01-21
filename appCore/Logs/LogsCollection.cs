@@ -43,8 +43,14 @@ namespace appCore.Logs
 			private set { }
 		}
 		
-		public bool Exists {
-			get { return LogFile.Exists; }
+		FileInfo _outagesLogFile;
+		public FileInfo OutagesLogFile {
+			get { return _outagesLogFile; }
+			set { _outagesLogFile = value; }
+		}
+		
+		new public int OutagesCount {
+			get { return this.List.Count; }
 			private set { }
 		}
 		
@@ -52,10 +58,6 @@ namespace appCore.Logs
 		System.Timers.Timer timer;
 		public DateTime logFileDate = DateTime.Now;
 		string logSeparator = getLogSeparator();
-		
-		public LogsCollection()
-		{
-		}
 		
 //		public static bool IsFileLocked(FileInfo file)
 //		{
@@ -117,10 +119,14 @@ namespace appCore.Logs
 			}
 		}
 		
-		public void CheckLogFileIntegrity() {
-			LogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + "\\" + DateTime.Now.ToString("dd") + ".txt");
+		public void CheckLogFileIntegrity(bool outage = false) {
+			if(outage)
+				OutagesLogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + @"\outages\"  + DateTime.Now.ToString("dd") + ".txt");
+			else
+				LogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + "\\" + DateTime.Now.ToString("dd") + ".txt");
 			
 			string logfile = string.Empty;
+			
 			if(LogFile.Exists) {
 //				logfile = LogFile.OpenText().ReadToEnd();
 				using (StreamReader reader = new StreamReader(LogFile.FullName))

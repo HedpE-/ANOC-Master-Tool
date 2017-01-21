@@ -178,7 +178,7 @@ namespace appCore.Templates.UI
 				
 				prevTemp = currentTemplate;
 				
-				MainForm.logFile.HandleLog(currentTemplate);
+				MainForm.logFiles.HandleLog(currentTemplate);
 			}
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,true,this);

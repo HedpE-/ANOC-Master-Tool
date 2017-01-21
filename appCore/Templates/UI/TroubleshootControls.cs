@@ -688,7 +688,7 @@ namespace appCore.Templates.UI
 			                                      			
 //															currentTemplate.AddBcpLog(bcp.mailBody);
 			                                      			
-			                                      			MainForm.logFile.HandleLog(currentTemplate, true);
+			                                      			MainForm.logFiles.HandleLog(currentTemplate, true);
 			                                      		}
 			                                      		else
 			                                      			FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -844,7 +844,7 @@ namespace appCore.Templates.UI
 				// Store this template for future warning on no changes
 				prevTemp = currentTemplate;
 				
-				MainForm.logFile.HandleLog(currentTemplate);
+				MainForm.logFiles.HandleLog(currentTemplate);
 			}
 		}
 		

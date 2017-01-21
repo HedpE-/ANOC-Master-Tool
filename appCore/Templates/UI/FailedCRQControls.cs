@@ -310,7 +310,7 @@ namespace appCore.Templates.UI
 			if(UiMode == Template.UIenum.Template) {
 				prevTemp = currentTemplate;
 				
-				MainForm.logFile.HandleLog(currentTemplate);
+				MainForm.logFiles.HandleLog(currentTemplate);
 			}
 		}
 		
