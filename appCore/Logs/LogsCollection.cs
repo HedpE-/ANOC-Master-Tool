@@ -35,6 +35,7 @@ namespace appCore.Logs
 				month_year[0] = DateTime.ParseExact(month_year[0],"MMM",CultureInfo.GetCultureInfo("pt-PT")).ToString("MM",CultureInfo.GetCultureInfo("en-GB"));
 				logFileDate = new DateTime(Convert.ToInt16(month_year[1]), Convert.ToInt16(month_year[0]), Convert.ToInt16(day));
 				_logFile = value;
+				OutagesLogFile = new FileInfo(_logFile.DirectoryName + @"\outages\" + day + ".txt");
 			}
 		}
 		
@@ -43,14 +44,15 @@ namespace appCore.Logs
 			private set { }
 		}
 		
-		FileInfo _outagesLogFile;
 		public FileInfo OutagesLogFile {
-			get { return _outagesLogFile; }
-			set { _outagesLogFile = value; }
+			get;
+			private set;
 		}
 		
-		new public int OutagesCount {
-			get { return this.List.Count; }
+		List<Outage> OutagesList = new List<Outage>();
+		
+		public int OutagesCount {
+			get { return OutagesList.Count; }
 			private set { }
 		}
 		
@@ -119,11 +121,8 @@ namespace appCore.Logs
 			}
 		}
 		
-		public void CheckLogFileIntegrity(bool outage = false) {
-			if(outage)
-				OutagesLogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + @"\outages\"  + DateTime.Now.ToString("dd") + ".txt");
-			else
-				LogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + "\\" + DateTime.Now.ToString("dd") + ".txt");
+		public void CheckLogFileIntegrity() {
+			LogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + "\\" + DateTime.Now.ToString("dd") + ".txt");
 			
 			string logfile = string.Empty;
 			
@@ -139,6 +138,24 @@ namespace appCore.Logs
 				if(logsCount > 0)
 					ImportLogFile();
 				MainForm.UpdateTicketCountLabel();
+			}
+		}
+		
+		public void CheckOutagesLogFileIntegrity() {
+			OutagesLogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + @"\outages\" + DateTime.Now.ToString("dd") + ".txt");
+			
+			string logfile = string.Empty;
+			
+			if(OutagesLogFile.Exists) {
+				using (StreamReader reader = new StreamReader(OutagesLogFile.FullName))
+					logfile = reader.ReadToEnd();
+			}
+			
+			int logsCount = logfile.CountStringOccurrences(logSeparator);
+			if(logsCount != OutagesList.Count) {
+				OutagesList.Clear();
+				if(logsCount > 0)
+					ImportOutagesLogFile();
 			}
 		}
 
@@ -168,6 +185,22 @@ namespace appCore.Logs
 				}
 				if(log != null)
 					this.List.Add(log);
+			}
+		}
+
+		void ImportOutagesLogFile() {
+			List<string> temp = ReadOutagesLogFile();
+
+			foreach (string logStr in temp) {
+				string[] strTofind = { "\r\n" };
+				string[] logArray = logStr.Split(strTofind, StringSplitOptions.None);
+				string[] hour = logArray[0].Split('-')[0].Substring(0,8).Split(':');
+				DateTime logtime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt16(hour[0]), Convert.ToInt16(hour[1]), Convert.ToInt16(hour[2]));
+				
+				Outage log = new Outage(logArray, logtime);
+				
+				if(log != null)
+					OutagesList.Add(log);
 			}
 		}
 
@@ -206,6 +239,28 @@ namespace appCore.Logs
 			List<string> list = new List<string>();
 			string[] strTofind = { "\r\n" };
 			using (StreamReader sr = LogFile.OpenText())
+			{
+				string s = "";
+				string tempLog = string.Empty;
+				string sepline = logSeparator.Split(strTofind, StringSplitOptions.None)[0]; // get separator 1st line
+				while ((s = sr.ReadLine()) != null) {
+					if(s == sepline) {
+						if(!string.IsNullOrEmpty(tempLog)) {
+							list.Add(tempLog.Substring(0, tempLog.Length - Environment.NewLine.Length));
+							tempLog = string.Empty;
+						}
+					}
+					else
+						tempLog += s + Environment.NewLine;
+				}
+			}
+			return list;
+		}
+		
+		List<string> ReadOutagesLogFile() {
+			List<string> list = new List<string>();
+			string[] strTofind = { "\r\n" };
+			using (StreamReader sr = OutagesLogFile.OpenText())
 			{
 				string s = "";
 				string tempLog = string.Empty;
@@ -277,6 +332,20 @@ namespace appCore.Logs
 			return existingLog;
 		}
 		
+		int CheckOutageLogExists(Outage n)
+		{
+			int existingLog = -1;
+			
+			foreach(Outage log in OutagesList) {
+				if(log.fullLog.Contains(log.ToString())) {
+					existingLog = OutagesList.IndexOf(log);
+					break;
+				}
+			}
+			
+			return existingLog;
+		}
+		
 		void UpdateLogFile(T n, int existingLogIndex)
 		{
 //			TODO: BCP Template - search on logs
@@ -319,6 +388,27 @@ namespace appCore.Logs
 					break;
 			}
 		}
+		
+		void UpdateOutagesLogFile(Outage n, int existingLogIndex)
+		{
+			Outage existingLog = OutagesList[existingLogIndex];
+			if (n.fullLog != existingLog.fullLog) {
+				
+				DialogResult res = DialogResult.No;
+//						Action actionNonThreaded = new Action(delegate {
+				if (!ForceOverwriteLog)
+					res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+//						                           });
+//						LoadingPanel load = new LoadingPanel();
+//						load.Show(actionNonThreaded, false, this);
+//						Toolbox.Tools.darkenBackgroundForm(action,false,this);
+				if (res == DialogResult.Yes || ForceOverwriteLog) {
+					RemoveLog(existingLogIndex);
+					WriteOutageLog(n);
+				}
+				else return;
+			}
+		}
 
 		public void HandleLog(T n, bool overwrite = false) {
 			CheckLogFileIntegrity();
@@ -330,13 +420,13 @@ namespace appCore.Logs
 				UpdateLogFile(n, existingLogIndex);
 		}
 
-		public void HandleOutageLog(T n) {
-			CheckLogFileIntegrity();
-			int existingLogIndex = CheckLogExists(n);
+		public void HandleOutageLog(Outage n) {
+			CheckOutagesLogFileIntegrity();
+			int existingLogIndex = CheckOutageLogExists(n);
 			if(existingLogIndex == -1)
-				WriteLog(n);
+				WriteOutageLog(n);
 			else
-				UpdateLogFile(n, existingLogIndex);
+				UpdateOutagesLogFile(n, existingLogIndex);
 		}
 
 		void WriteLog(T n) {
@@ -457,6 +547,69 @@ namespace appCore.Logs
 //			}
 			this.List.Add(n);
 			MainForm.UpdateTicketCountLabel();
+		}
+
+		void WriteOutageLog(Outage n) {
+			if (OutagesLogFile.Exists) {
+			Retry:
+				try {
+					using (StreamWriter sw = LogFile.AppendText())
+					{
+						sw.WriteLine();
+						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss"));
+						sw.WriteLine(n.fullLog);
+						sw.Write(logSeparator);
+					}
+				}
+				catch (Exception e) {
+					int errorCode = (int)(e.HResult & 0x0000FFFF);
+					DialogResult ans;
+					switch(errorCode) {
+						case 32:
+							ans = ErrorHandling.showFileInUseDuringLogFileOperation;
+							break;
+						case 112:
+							ans = ErrorHandling.showLowSpaceWarningDuringLogFileOperation;
+							break;
+						default:
+							ans = DialogResult.None;
+							break;
+					}
+					if(ans == DialogResult.Retry)
+						goto Retry;
+				}
+			}
+			else {
+			Retry2:
+				try {
+					using (StreamWriter sw = LogFile.CreateText())
+					{
+						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss"));
+						sw.WriteLine(n.fullLog);
+						sw.Write(logSeparator);
+					}
+					LogFile = new FileInfo(LogFile.FullName);
+				}
+				catch (Exception e) {
+					int errorCode = (int)(e.HResult & 0x0000FFFF);
+					DialogResult ans;
+					switch(errorCode) {
+						case 32:
+							ans = ErrorHandling.showFileInUseDuringLogFileOperation;
+							break;
+						case 112:
+							ans = ErrorHandling.showLowSpaceWarningDuringLogFileOperation;
+							break;
+						default:
+							ans = DialogResult.None;
+							break;
+					}
+					if(ans == DialogResult.Retry)
+						goto Retry2;
+				}
+			}
+			
+			OutagesList.Add(n);
 		}
 		
 		void RemoveLog(int index) {
