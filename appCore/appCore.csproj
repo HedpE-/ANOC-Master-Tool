@@ -117,7 +117,6 @@
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
-    <Compile Include="Netcool\outage_parser.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />
@@ -1183,12 +1182,6 @@
     <Compile Include="Logs\UI\LogEditor.Designer.cs">
       <DependentUpon>LogEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logs\UI\LogEditor2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Logs\UI\LogEditor2.Designer.cs">
-      <DependentUpon>LogEditor2.cs</DependentUpon>
-    </Compile>
     <Compile Include="Netcool\Alarm.cs" />
     <Compile Include="Netcool\AlarmsParser.cs" />
     <Compile Include="OssScripts\UI\EricssonScriptsControls.cs" />
@@ -1437,9 +1430,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Logs\UI\LogEditor.resx">
       <DependentUpon>LogEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Logs\UI\LogEditor2.resx">
-      <DependentUpon>LogEditor2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

@@ -7,295 +7,260 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.IO;
 using System.Windows.Forms;
 using System.Threading;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using appCore.Settings;
-using appCore.UI;
+using appCore.Templates;
+using appCore.Templates.UI;
+using appCore.Templates.Types;
 
 namespace appCore.Logs.UI
 {
 	/// <summary>
 	/// Description of LogEditor.
 	/// </summary>
-	public sealed partial class LogEditor : Form
+	public sealed partial class LogEditor2 : Form
 	{
-		public string[] Logs;
+		public string[] globalLogs;
 		public string GlobalLogType;
 		List<string> LTEsites = new List<string>();
 		public static string VFoutage;
 		public static string TFoutage;
 		public static string VFbulkCI;
 		public static string TFbulkCI;
+		public static LogsCollection<Template> Logs;
+		public static LogsCollection<Outage> OutageLogs;
+		public static TroubleshootControls TroubleshootUI;
+		public static FailedCRQControls FailedCRQUI;
+		public static UpdateControls UpdateUI;
+		public static TXControls TXUI;
+		public static OutageControls OutageUI;
 		MainForm myFormControl1;
 		
-		public static string[] ParseLogs(string LogFile)
-		{
-			string separator = string.Empty;
-			for (int c = 1; c < 301; c++) {
-				if (c == 151) separator += "\r\n";
-				separator += "*";
-			}
-			string[] strTofind = { "\r\n" + separator + "\r\n" }; // build logs separator
-			
-			string[] temp = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None); // parse all logs using previously built separator
-			
-			strTofind[0] = strTofind[0].Substring(0,strTofind[0].Length - 2); // remove last line feed for last log removal
-			
-			if (temp[temp.Length - 1].Contains(strTofind[0])) temp[temp.Length - 1] = temp[temp.Length - 1].Substring(0, temp[temp.Length - 1].Length - strTofind[0].Length); // remove separator from last log since strTofind needs to change to be removed from last
-			
-			return temp;
-		}
-		
-		public LogEditor(string LogFile, string LogType, string WindowTitle, MainForm myForm)
+		public LogEditor2(LogsCollection<Template> logs, MainForm myForm)
 		{
 			InitializeComponent();
 			
 			myFormControl1 = myForm;
+			Logs = logs;
+			
+			string WindowTitle = Logs.logFileDate.Day.ToString();
+			switch (Logs.logFileDate.Day) {
+				case 1: case 21: case 31:
+					WindowTitle += "st of ";
+					break;
+				case 2: case 22:
+					WindowTitle += "nd of ";
+					break;
+				case 3: case 23:
+					WindowTitle += "rd of ";
+					break;
+				default:
+					WindowTitle += "th of ";
+					break;
+			}
+			WindowTitle += Logs.logFileDate.ToString("MMMM, yyyy",CultureInfo.GetCultureInfo("en-GB"));// + ", " + Logs.logFileDate.Year;
+			
+			GlobalLogType = "Templates";
 			
 			this.Height = 152;
-			this.Text = "Log Editor - " + WindowTitle + " - " + LogType + " logs";
-			
-			GlobalLogType = LogType;
-			Logs = ParseLogs(LogFile); // Parse logs on log file
-//			List<Log> logs = new List<Log>();
-			if (Logs[Logs.Length - 1].Substring(Logs[Logs.Length - 1].Length - 3,3) == "***") {
-				Logs[Logs.Length - 1] = Logs[Logs.Length - 1].Substring(0,Logs[Logs.Length - 1].Length - 304);
-			}
-			
+			this.Text = "Log Editor - " + WindowTitle + " - " + GlobalLogType + " logs";
 			
 			listView1.View = View.Details;
 			
-			switch (LogType) {
-				case "Templates":
-					// Populate ListView1 with logs
+			// Populate ListView1 with logs
 
-					listView1.Columns.Add("Log Type").Width = -2;
-					listView1.Columns.Add("INC").Width = -2;
-					listView1.Columns.Add("Target").Width = -2;
-					listView1.Columns.Add("Timestamp").Width = -2;
-					
-					for (int c = 0; c < Logs.Length; c++) {
-						string[] strTofind = { "\r\n" };
-						string[] log = Logs[c].Split(strTofind, StringSplitOptions.None);
-						strTofind[0] = " - ";
-						
-						switch (log[0].Split(strTofind, StringSplitOptions.None)[1]) {
-							case "Troubleshoot Template":
-								listView1.Items.Add(new ListViewItem(new string[]{"Troubleshoot Template",log[1].Substring(5,15),log[2].Substring(9,log[2].Length - 9),log[0].Split(strTofind, StringSplitOptions.None)[0]}));
-								break;
-							case "Failed CRQ":
-								if (log[2].Contains("Site: "))
-									listView1.Items.Add(new ListViewItem(new string[]{"Failed CRQ",log[1].Substring(12,log[1].Length - 12),log[2].Substring(6,log[2].Length - 6) + " - " + log[3].Substring(5,15), log[0].Split(strTofind, StringSplitOptions.None)[0]}));
-								else
-									listView1.Items.Add(new ListViewItem(new string[]{"Failed CRQ",log[1].Substring(12,log[1].Length - 12),log[2].Substring(5,15), log[0].Split(strTofind, StringSplitOptions.None)[0]}));
-								break;
-							case "TX Template":
-								listView1.Items.Add(new ListViewItem(new string[]{"TX Template","-",log[1].Substring(13,log[1].Length - 13),log[0].Split(strTofind, StringSplitOptions.None)[0]}));
-								break;
-							case "Update Template":
-								listView1.Items.Add(new ListViewItem(new string[]{"Update Template",log[1].Substring(5,15),log[2].Substring(6,log[2].Length - 6),log[0].Split(strTofind, StringSplitOptions.None)[0]}));
-								break;
-						}
-					}
-					break;
-				case "Outages":
-					listView1.Columns.Add("Timestamp").Width = -2;
-					listView1.Columns.Add("Summary").Width = -2;
-					listView1.Columns.Add("2G").Width = -2;
-					listView1.Columns.Add("3G").Width = -2;
-					listView1.Columns.Add("4G").Width = -2;
-					listView1.Columns.Add("Event Time").Width = -2;
-					listView1.Columns.Add("VF Report").Width = -2;
-					listView1.Columns[listView1.Columns.Count -1].TextAlign = HorizontalAlignment.Center;
-					listView1.Columns.Add("TF Report").Width = -2;
-					listView1.Columns[listView1.Columns.Count -1].TextAlign = HorizontalAlignment.Center;
-					
-					for (int c = 0; c < Logs.Length; c++) {
-						string[] strTofind = { "\r\n" };
-						string[] log = Logs[c].Split(strTofind, StringSplitOptions.None);
-						
-						string GSMcells = string.Empty;
-						string UMTScells = string.Empty;
-						string LTEcells = string.Empty;
-						
-						ArrayList eventTimeList = new ArrayList();
-						CultureInfo culture = new CultureInfo("pt-PT");
-						
-						strTofind[0] = "G Cells (";
-						string eventTime = string.Empty;
-						
-						// Manipulate log array to make it compatible with VF/TF new logs
-						if(Array.FindIndex(log,element => element.Contains("F Report----------")) == -1) {
-							List<string> log2 = log.ToList(); // Create new List with log array values
-							string Report = log2[1]; // Store outage report to string
-							log2.RemoveAt(1); // Remove outage report previously stored on Report string
-							string[] SplitReport = Report.Split('\n'); // Split Report string to new array
-							log2.Insert(1,"----------VF Report----------"); // Insert VF Report header to match code checks
-							log2.InsertRange(2,SplitReport); // Insert SplitReport array into list after header
-							log = log2.ToArray(); // Replace original log array with new generated List values
-						}
-						
-						char VFReportExists;
-						VFReportExists = Array.FindIndex(log, element => element.Equals("----------VF Report----------")) > -1 ? '\u2714' : '\u2718';
-
-						char TFReportExists;
-						TFReportExists = Array.FindIndex(log, element => element.Equals("----------TF Report----------")) > -1 ? '\u2714' : '\u2718';
-						
-						if(!string.IsNullOrEmpty(Array.Find(log, element => element.StartsWith("2G Cells", StringComparison.Ordinal)))) {
-							string[] tmp = Array.Find(log, element => element.StartsWith("2G Cells", StringComparison.Ordinal)).Split(strTofind, StringSplitOptions.None);
-							GSMcells = tmp[1].Substring(0, tmp[1].IndexOf(")", StringComparison.Ordinal));
-							eventTime  = tmp[1].Substring(tmp[1].IndexOf("- ", StringComparison.Ordinal) + 2,16);
-							eventTimeList.Add(eventTime);
-						}
-						else
-							GSMcells = "0";
-						
-						if(!string.IsNullOrEmpty(Array.Find(log, element => element.StartsWith("3G Cells", StringComparison.Ordinal)))) {
-							string[] tmp = Array.Find(log, element => element.StartsWith("3G Cells", StringComparison.Ordinal)).Split(strTofind, StringSplitOptions.None);
-							UMTScells = tmp[1].Substring(0, tmp[1].IndexOf(")", StringComparison.Ordinal));
-							eventTime  = tmp[1].Substring(tmp[1].IndexOf("- ", StringComparison.Ordinal) + 2,16);
-							eventTimeList.Add(eventTime);
-						}
-						else
-							UMTScells = "0";
-						
-						if(!string.IsNullOrEmpty(Array.Find(log, element => element.StartsWith("4G Cells", StringComparison.Ordinal)))) {
-							string[] tmp = Array.Find(log, element => element.StartsWith("4G Cells", StringComparison.Ordinal)).Split(strTofind, StringSplitOptions.None);
-							LTEcells = tmp[1].Substring(0, tmp[1].IndexOf(")", StringComparison.Ordinal));
-							eventTime = tmp[1].Substring(tmp[1].IndexOf("- ", StringComparison.Ordinal) + 2,16);
-							eventTimeList.Add(eventTime);
-						}
-						else
-							LTEcells = "0";
-						
-						eventTimeList.Sort();
-						
-						if(eventTimeList.Count == 0)
-							eventTimeList.Add("-"); // Adiciona 1
-						
-						listView1.Items.Add(new ListViewItem(new string[]{log[0], log[2], GSMcells, UMTScells, LTEcells, eventTimeList[0].ToString(), VFReportExists.ToString(), TFReportExists.ToString()}));
-					}
-					break;
-				case "Updates":
-					break;
-			}
+			listView1.Columns.Add("Log Type").Width = -2;
+			listView1.Columns.Add("INC").Width = -2;
+			listView1.Columns.Add("Target").Width = -2;
+			listView1.Columns.Add("Timestamp").Width = -2;
 			
+			for (int c = 0; c < Logs.Count; c++) {
+				switch (Logs[c].LogType) {
+					case "Troubleshoot":
+						TroubleShoot TSlog = new TroubleShoot();
+						Toolbox.Tools.CopyProperties(TSlog, Logs[c]);
+						listView1.Items.Add(new ListViewItem(
+							new []{
+								"Troubleshoot Template",
+								TSlog.INC,
+								TSlog.SiteId,
+								TSlog.GenerationDate.ToString("HH:mm:ss")
+							}
+						));
+						break;
+					case "Failed CRQ":
+						FailedCRQ FCRQlog = new FailedCRQ();
+						Toolbox.Tools.CopyProperties(FCRQlog, Logs[c]);
+						listView1.Items.Add(new ListViewItem(
+							new []{
+								"Failed CRQ",
+								FCRQlog.INC,
+								FCRQlog.SiteId,
+								FCRQlog.GenerationDate.ToString("HH:mm:ss")
+							}
+						));
+						break;
+					case "TX":
+						TX TXlog = new TX();
+						Toolbox.Tools.CopyProperties(TXlog, Logs[c]);
+						listView1.Items.Add(new ListViewItem(
+							new []{
+								"TX Template",
+								"-",
+								TXlog.SiteIDs,
+								TXlog.GenerationDate.ToString("HH:mm:ss")
+							}
+						));
+						break;
+					case "Update":
+						Update UPDlog = new Update();
+						Toolbox.Tools.CopyProperties(UPDlog, Logs[c]);
+						listView1.Items.Add(new ListViewItem(
+							new []{
+								"Update Template",
+								UPDlog.INC,
+								UPDlog.SiteId,
+								UPDlog.GenerationDate.ToString("HH:mm:ss")
+							}
+						));
+						break;
+				}
+			}
 		}
 		
-		public void LoadOutages()
+		public LogEditor2(LogsCollection<Outage> logs, MainForm myForm)
 		{
-			int c = 0;
-			VFoutage = string.Empty;
-			TFoutage = string.Empty;
-			VFbulkCI = string.Empty;
-			TFbulkCI = string.Empty;
-			string[] strTofind = { "\r\n" };
-			string[] log = Logs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
+			InitializeComponent();
 			
-			if(string.IsNullOrEmpty(log[log.Length - 1])) {
-				log = log.Where((source, index) => index != log.Length - 1).ToArray();
+			myFormControl1 = myForm;
+			OutageLogs = logs;
+			
+			string WindowTitle = OutageLogs.logFileDate.Day.ToString();
+			switch (OutageLogs.logFileDate.Day) {
+				case 1: case 21: case 31:
+					WindowTitle += "st of ";
+					break;
+				case 2: case 22:
+					WindowTitle += "nd of ";
+					break;
+				case 3: case 23:
+					WindowTitle += "rd of ";
+					break;
+				default:
+					WindowTitle += "th of ";
+					break;
 			}
+			WindowTitle += OutageLogs.logFileDate.ToString("MMMM, yyyy",CultureInfo.GetCultureInfo("en-GB"));
 			
-			// Manipulate log array to make it compatible with VF/TF new logs
-			if(Array.FindIndex(log,element => element.Contains("F Report----------")) == -1) {
-				List<string> log2 = log.ToList(); // Create new List with log array values
-				string Report = log2[1]; // Store outage report to string
-				log2.RemoveAt(1); // Remove outage report previously stored on Report string
-				string[] SplitReport = Report.Split('\n'); // Split Report string to new array
-				log2.Insert(1,"----------VF Report----------"); // Insert VF Report header to match code checks
-				log2.InsertRange(2,SplitReport); // Insert SplitReport array into list after header
-				log = log2.ToArray(); // Replace original log array with new generated List values
-				if(Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal)) > -1) // Check if log contains LTE sites
-					log[Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal))] = "----------LTE sites----------"; // Convert header to match code checks
-			}
+			GlobalLogType = "Outages";
 			
-			int VFreportIndex = Array.FindIndex(log, element => element.Equals("----------VF Report----------", StringComparison.Ordinal));
-			int VFbulkciIndex = Array.FindIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
-			int TFreportIndex = Array.FindIndex(log, element => element.Equals("----------TF Report----------", StringComparison.Ordinal));
-			int TFbulkciIndex = Array.FindLastIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
+			this.Height = 152;
+			this.Text = "Log Editor - " + WindowTitle + " - " + GlobalLogType + " logs";
 			
-			if(VFreportIndex > -1) {
-				for(c = VFreportIndex + 1;c < VFbulkciIndex;c++) {
-					VFoutage += log[c];
-					if(c < VFbulkciIndex - 1)
-						VFoutage += Environment.NewLine;
-				}
-				
-				if(TFreportIndex == -1) {
-					TFreportIndex = log.Length;
-				}
-				
-				for(c = VFbulkciIndex + 1;c < TFreportIndex;c++) {
-					VFbulkCI += log[c];
-					if(c < TFreportIndex - 1)
-						VFbulkCI += Environment.NewLine;
-				}
-			}
+			listView1.View = View.Details;
 			
-			if(TFreportIndex == log.Length)
-				TFreportIndex--;
+			listView1.Columns.Add("Timestamp").Width = -2;
+			listView1.Columns.Add("Summary").Width = -2;
+			listView1.Columns.Add("2G").Width = -2;
+			listView1.Columns.Add("3G").Width = -2;
+			listView1.Columns.Add("4G").Width = -2;
+			listView1.Columns.Add("Event Time").Width = -2;
+			listView1.Columns.Add("VF Report").Width = -2;
+			listView1.Columns[listView1.Columns.Count -1].TextAlign = HorizontalAlignment.Center;
+			listView1.Columns.Add("TF Report").Width = -2;
+			listView1.Columns[listView1.Columns.Count -1].TextAlign = HorizontalAlignment.Center;
 			
-			if(log[TFreportIndex].Equals("----------TF Report----------")) {
-				for(c = TFreportIndex + 1;c < TFbulkciIndex;c++) {
-					TFoutage += log[c];
-					if(c < TFbulkciIndex - 1)
-						TFoutage += Environment.NewLine;
-				}
-				
-				for(c = TFbulkciIndex + 1;c < log.Length;c++) {
-					TFbulkCI += log[c];
-					if(c < log.Length - 1)
-						VFbulkCI += Environment.NewLine;
-				}
-			}
-			
-			if(!string.IsNullOrEmpty(VFoutage) && !string.IsNullOrEmpty(TFoutage)) {
-				tabControl1.Visible = true;
-				tabControl1.SelectTab(0);
-			}
-			else {
-				if(!string.IsNullOrEmpty(VFoutage)) {
-					tabControl1.Visible = false;
-					tabControl1.SelectTab(0);
-				}
-				else {
-					if(!string.IsNullOrEmpty(TFoutage)) {
-						tabControl1.Visible = false;
-						tabControl1.SelectTab(1);
+			for (int c = 0; c < OutageLogs.Count; c++) {
+				char VfReportExists = !string.IsNullOrEmpty(OutageLogs[c].VfOutage) ? '\u2714' : '\u2718';
+				char TefReportExists = !string.IsNullOrEmpty(OutageLogs[c].TefOutage) ? '\u2714' : '\u2718';
+				listView1.Items.Add(new ListViewItem(
+					new []{
+						OutageLogs[c].GenerationDate.ToString(),
+						OutageLogs[c].Summary,
+						OutageLogs[c].GsmCells.ToString(),
+						OutageLogs[c].UmtsCells.ToString(),
+						OutageLogs[c].LteCells.ToString(),
+						OutageLogs[c].EventTime.ToString(),
+						VfReportExists.ToString(),
+						TefReportExists.ToString()
 					}
-				}
+				));
 			}
-			TabControl4SelectedIndexChanged(null,null);
 		}
 		
 		void ListView1SelectedIndexChanged(object sender, EventArgs e)
 		{
+			this.SuspendLayout();
 			if (listView1.SelectedItems.Count > 0) {
 				switch (GlobalLogType) {
+					case "Templates":
+						switch (listView1.SelectedItems[0].Text) {
+							case "Troubleshoot Template":
+								if(TroubleshootUI != null)
+									TroubleshootUI.Dispose();
+								
+								TroubleshootUI = new TroubleshootControls(Logs[listView1.SelectedItems[0].Index].ToTroubleShootTemplate());
+								TroubleshootUI.Location = new System.Drawing.Point(0, listView1.Bottom + 10);
+								this.Controls.Add(TroubleshootUI);
+								
+								this.Size = new System.Drawing.Size(TroubleshootUI.Right + 6, TroubleshootUI.Bottom + 29);
+								break;
+							case "Failed CRQ":
+								if(FailedCRQUI != null)
+									FailedCRQUI.Dispose();
+								
+								FailedCRQUI = new FailedCRQControls(Logs[listView1.SelectedItems[0].Index].ToFailedCRQTemplate());
+								FailedCRQUI.Location = new System.Drawing.Point(0, listView1.Bottom + 10);
+								this.Controls.Add(FailedCRQUI);
+								this.Size = new System.Drawing.Size(FailedCRQUI.Right + 6, FailedCRQUI.Bottom + 29);
+								break;
+							case "TX Template":
+								if(TXUI != null)
+									TXUI.Dispose();
+								
+								TXUI = new TXControls(Logs[listView1.SelectedItems[0].Index].ToTXTemplate());
+								TXUI.Location = new System.Drawing.Point(0, listView1.Bottom + 10);
+								this.Controls.Add(TXUI);
+								this.Size = new System.Drawing.Size(TXUI.Right + 6, TXUI.Bottom + 29);
+								break;
+							case "Update Template":
+								if(UpdateUI != null)
+									UpdateUI.Dispose();
+								
+								UpdateUI = new UpdateControls(Logs[listView1.SelectedItems[0].Index].ToUpdateTemplate());
+								UpdateUI.Location = new System.Drawing.Point(0, listView1.Bottom + 10);
+								this.Controls.Add(UpdateUI);
+								this.Size = new System.Drawing.Size(UpdateUI.Right + 6, UpdateUI.Bottom + 29);
+								break;
+						}
+						break;
 					case "Outages":
-						groupBox7.Visible = true;
-						button12.Visible = true;
-						button11.Visible = true;
-						button11.Text = "Generate sites list";
-						button11.Size = new System.Drawing.Size(99, 23);
-						button11.Location = new System.Drawing.Point(434, 707);
-						LoadOutages();
-						button10.Text = "Copy Outage";
+						if(OutageUI != null)
+							OutageUI.Dispose();
+						
+						OutageUI = new OutageControls(OutageLogs[listView1.SelectedItems[0].Index]);
+						OutageUI.Location = new System.Drawing.Point(0, listView1.Bottom + 10);
+						this.Controls.Add(OutageUI);
+						this.Size = new System.Drawing.Size(OutageUI.Right + 6, OutageUI.Bottom + 29);
 						break;
 				}
-				this.Height = 765;
-				button10.Visible = true;
 			}
 			else {
-				this.Height = 153;
-				button10.Visible = false;
-				button11.Visible = false;
+				if(TroubleshootUI != null)
+					TroubleshootUI.Dispose();
+				if(FailedCRQUI != null)
+					FailedCRQUI.Dispose();
+				if(UpdateUI != null)
+					UpdateUI.Dispose();
+				if(TXUI != null)
+					TXUI.Dispose();
+				if(OutageUI != null)
+					OutageUI.Dispose();
 			}
+			this.ResumeLayout();
 		}
 		
 		void LogEditorFormClosing(object sender, FormClosingEventArgs e)
@@ -311,129 +276,6 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		void TextBox10TextChanged(object sender, EventArgs e)
-		{
-			button14.Enabled = !string.IsNullOrEmpty(textBox10.Text);
-		}
-		
-		void Button14Click(object sender, EventArgs e)
-		{
-			Action actionNonThreaded = new Action(delegate {
-			                                      	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox10.Text,label33.Text,true);
-			                                      	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                                      	enlarge.ShowDialog();
-			                                      	textBox10.Text = enlarge.finaltext;
-			                                      });
-			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded,false,this);
-		}
-		
-		void TextBox11TextChanged(object sender, EventArgs e)
-		{
-			button1.Enabled = textBox11.Text != string.Empty;
-		}
-		
-		void Button1Click(object sender, EventArgs e)
-		{
-			Action actionNonThreaded = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox11.Text,label32.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           	textBox11.Text = enlarge.finaltext;
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded,false,this);
-		}
-		
-		void Button10Click(object sender, EventArgs e)
-		{
-			if(button10.Text == "Copy Outage") {
-				try {
-					Clipboard.SetText(textBox10.Text);
-				}
-				catch (Exception) {
-					try {
-						Clipboard.SetText(textBox10.Text);
-					}
-					catch (Exception) {
-						FlexibleMessageBox.Show("An error occurred while copying the outage report to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-					}
-				}
-				
-				FlexibleMessageBox.Show(textBox10.Text, "Success", MessageBoxButtons.OK);
-			}
-		}
-		
-		void Button11Click(object sender, EventArgs e)
-		{
-			if(button11.Text == "Copy to Clipboard") {
-				Action actionThreaded = new Action(delegate {
-				                           	// Generate outage sites list
-				                           	string[] temp = textBox10.Text.Split('\n');
-				                           	int c;
-				                           	for(c = 0;c < temp.Length;c++) {
-				                           		if(temp[c] != "Site List") {
-				                           			temp = temp.Where((source, index) => index != c).ToArray();
-				                           			c--;
-				                           		}
-				                           		else {
-				                           			temp = temp.Where((source, index) => index != c).ToArray();
-				                           			break;
-				                           		}
-				                           	}
-				                           	
-				                           	for(c = 0;c < temp.Length;c++) {
-				                           		if(string.IsNullOrEmpty(temp[c]))
-				                           			break;
-				                           	}
-				                           	
-				                           	for(int i = 0;i < temp.Length;i++) {
-				                           		if(temp[i].Length > 8) {
-				                           			temp[i] = temp[i].Substring(0,8);
-				                           			i--;
-				                           		}
-				                           	}
-				                           	
-				                           	List<string> temp2 = temp.ToList();
-				                           	temp2.RemoveRange(c,temp.Length - c);
-				                           	temp = temp2.ToArray();
-				                           	
-				                           	for(c = 0;c < temp.Length;c++) {
-				                           		temp[c] = Convert.ToInt32(temp[c].Replace("RBS",string.Empty)).ToString();
-				                           	}
-				                           	
-				                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,temp) + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
-				                           	try {
-				                           		Clipboard.SetText(string.Join(Environment.NewLine,temp));
-				                           	}
-				                           	catch (Exception) {
-				                           		try {
-				                           			Clipboard.SetText(string.Join(Environment.NewLine,temp));
-				                           		}
-				                           		catch (Exception) {
-				                           			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-				                           		}
-				                           	}
-				                           });
-				LoadingPanel load = new LoadingPanel();
-				load.Show(actionThreaded, null, false, this);
-			}
-		}
-		
-		void TabControl4SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if(tabControl1.SelectedIndex == 0) {
-				textBox10.Text = VFoutage;
-				textBox11.Text = VFbulkCI;
-			}
-			else {
-				textBox10.Text = TFoutage;
-				textBox11.Text = TFbulkCI;
-			}
-			textBox10.Select(0,0);
-			textBox11.Select(0,0);
-		}
-		
 		void LogEditorActivated(object sender, EventArgs e)
 		{
 			FormCollection fc = Application.OpenForms;
@@ -447,51 +289,23 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		void RichTextBox_CtrlVFix(object sender, KeyEventArgs e)
-		{
-			if (e.Control && e.KeyCode == Keys.V)
-			{
-				RichTextBox rtb = (RichTextBox)sender;
-				if(!rtb.ReadOnly) {
-					// suspend layout to avoid blinking
-					rtb.SuspendLayout();
-
-					// get insertion point
-					if (rtb.SelectionLength > 1) {
-						rtb.SelectedText = ""; // clear selected text before paste
-					}
-					int insPt = rtb.SelectionStart;
-
-					// preserve text from after insertion pont to end of RTF content
-					string postRTFContent = rtb.Text.Substring(insPt);
-
-					// remove the content after the insertion point
-					rtb.Text = rtb.Text.Substring(0, insPt);
-
-					// add the clipboard content and then the preserved postRTF content
-					rtb.Text += (string)Clipboard.GetData("Text") + postRTFContent;
-
-					// adjust the insertion point to just after the inserted text
-					rtb.SelectionStart = rtb.TextLength - postRTFContent.Length;
-
-					// restore layout
-					rtb.ResumeLayout();
-
-					// cancel the paste
-					e.Handled = true;
-				}
-			}
-		}
-		
 		void Form_Resize(object sender, EventArgs e)
 		{
 			// Fire Resize event to check if the window was minimized and minimize LogBrowser as well
 			if (WindowState == FormWindowState.Minimized)
 			{
-				Form frm = (Form)this.Parent;
-				frm.WindowState = FormWindowState.Minimized;
+//				Form frm = (Form)this.Parent;
+				Form frm = this.Owner;
+				// FIXME: App crashes when minimizin both windows
+//				frm.WindowState = FormWindowState.Minimized;
+				frm.Invoke((MethodInvoker)delegate
+				           {
+				           	frm.WindowState = FormWindowState.Minimized;
+				           });
+//				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
 			}
 		}
+		
 		void Button12Click(object sender, EventArgs e)
 		{
 			string[] outageSites = (VFbulkCI + TFbulkCI).Split(';');

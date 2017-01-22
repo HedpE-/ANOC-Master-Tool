@@ -251,6 +251,7 @@ namespace appCore.Logs
 			foreach (string logStr in temp) {
 				string[] strTofind = { "\r\n" };
 				string[] logArray = logStr.Split(strTofind, StringSplitOptions.None);
+				
 				Outage log = new Outage(logArray, list.logFileDate);
 				
 				if(log != null)
