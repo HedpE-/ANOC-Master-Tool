@@ -108,9 +108,11 @@ namespace appCore.Templates.UI
 			currentOutage = outage;
 			
 			if(!string.IsNullOrEmpty(currentOutage.VfOutage))
-				VFReportRadioButton.Checked = true;
+				VFReportRadioButton.Checked = VFReportRadioButton.Enabled = true;
 			else
 				TFReportRadioButton.Checked = true;
+			
+			TFReportRadioButton.Enabled = !string.IsNullOrEmpty(currentOutage.TefOutage);
 		}
 
 		void GenerateReport(object sender, EventArgs e)

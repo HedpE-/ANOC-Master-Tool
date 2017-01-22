@@ -325,8 +325,8 @@ namespace appCore.Templates.Types
 		
 		public Outage(string[] log, DateTime date) {
 			LoadOutageReport(log);
-			string[] strTofind = { " - " };
-			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
+//			string[] strTofind = { " - " };
+			string[] time = log[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
 			LogType = "Outage";
 		}
@@ -394,21 +394,21 @@ namespace appCore.Templates.Types
 		}
 		
 		string generateFullLog() {
-			fullLog += DateTime.Now.ToString("HH:mm:ss");
+			string Log = DateTime.Now.ToString("HH:mm:ss");
 			if(!string.IsNullOrEmpty(VfOutage)) {
-				fullLog += Environment.NewLine + "----------VF Report----------" + Environment.NewLine;
-				fullLog += VfOutage + Environment.NewLine;
-				fullLog += "-----BulkCI-----" + Environment.NewLine;
-				fullLog += VfBulkCI;
+				Log += Environment.NewLine + "----------VF Report----------" + Environment.NewLine;
+				Log += VfOutage + Environment.NewLine;
+				Log += "-----BulkCI-----" + Environment.NewLine;
+				Log += VfBulkCI;
 			}
 			if(!string.IsNullOrEmpty(TefOutage)) {
-				fullLog += Environment.NewLine + "----------TF Report----------" + Environment.NewLine;
-				fullLog += TefOutage + Environment.NewLine;
-				fullLog += "-----BulkCI-----" + Environment.NewLine;
-				fullLog += TefBulkCI;
+				Log += Environment.NewLine + "----------TF Report----------" + Environment.NewLine;
+				Log += TefOutage + Environment.NewLine;
+				Log += "-----BulkCI-----" + Environment.NewLine;
+				Log += TefBulkCI;
 			}
 			
-			return string.Empty;
+			return Log;
 		}
 		
 		public void LoadOutageReport(string[] log) {
@@ -424,41 +424,154 @@ namespace appCore.Templates.Types
 				if(Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal)) > -1) // Check if log contains LTE sites
 					log[Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal))] = "----------LTE sites----------"; // Convert header to match code checks
 			}
+			string[] strToFind = { " - " };
+			int VfReportIndex = Array.FindIndex(log, element => element.Equals("----------VF Report----------", StringComparison.Ordinal));
+			int VfBulkCiIndex = Array.FindIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
+			int TefReportIndex = Array.FindIndex(log, element => element.Equals("----------TF Report----------", StringComparison.Ordinal));
+			int TefBulkCiIndex = Array.FindLastIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
 			
-			int VFreportIndex = Array.FindIndex(log, element => element.Equals("----------VF Report----------", StringComparison.Ordinal));
-			int VFbulkciIndex = Array.FindIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
-			int TFreportIndex = Array.FindIndex(log, element => element.Equals("----------TF Report----------", StringComparison.Ordinal));
-			int TFbulkciIndex = Array.FindLastIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
-			
-			if(VFreportIndex > -1) {
-				for(int c = VFreportIndex + 1;c < VFbulkciIndex;c++) {
+			if(VfReportIndex > -1) {
+				int VfLocationsIndex = Array.FindIndex(log, element => element.StartsWith("Locations", StringComparison.Ordinal));
+				int VfSitesListIndex = Array.FindIndex(log, element => element.Equals("Site List", StringComparison.Ordinal));
+				int VfGsmCellsIndex = Array.FindIndex(log, element => element.StartsWith("2G Cells", StringComparison.Ordinal));
+				int VfUmtsCellsIndex = Array.FindIndex(log, element => element.StartsWith("3G Cells", StringComparison.Ordinal));
+				int VfLteCellsIndex = Array.FindIndex(log, element => element.StartsWith("4G Cells", StringComparison.Ordinal));
+				if(VfGsmCellsIndex == -1)
+					VfGsmCellsIndex = VfUmtsCellsIndex == -1 ? VfLteCellsIndex : VfUmtsCellsIndex;
+				if(VfUmtsCellsIndex == -1)
+					VfUmtsCellsIndex = VfLteCellsIndex == -1 ? VfBulkCiIndex : VfLteCellsIndex;
+				if(VfLteCellsIndex == -1)
+					VfLteCellsIndex = VfBulkCiIndex;
+				
+				for(int c = VfReportIndex + 1;c < VfBulkCiIndex;c++) {
 					VfOutage += log[c];
-					if(c < VFbulkciIndex - 1)
+					if(c < VfBulkCiIndex - 1)
 						VfOutage += Environment.NewLine;
+					
+					if(c == VfReportIndex)
+						Summary = log[c];
+					else {
+						if(c > VfLocationsIndex) {
+							if(c < VfSitesListIndex) {
+								if(!string.IsNullOrEmpty(log[c]))
+									VfLocations.Add(log[c]);
+							}
+							else {
+								if(c < VfGsmCellsIndex) {
+									if(c > VfSitesListIndex && !string.IsNullOrEmpty(log[c]))
+										VfSites.Add(log[c]);
+								}
+								else {
+									if(c == VfGsmCellsIndex)
+										try { VfGsmTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+									else {
+										if(c < VfUmtsCellsIndex) {
+											if(!string.IsNullOrEmpty(log[c]))
+												VfGsmCells.Add(log[c]);
+										}
+										else {
+											if(c == VfUmtsCellsIndex)
+												try { VfUmtsTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+											else {
+												if(c < VfLteCellsIndex) {
+													if(!string.IsNullOrEmpty(log[c]))
+														VfUmtsCells.Add(log[c]);
+												}
+												else {
+													if(c == VfLteCellsIndex)
+														try { VfLteTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+													else {
+														if(c < VfBulkCiIndex) {
+															if(!string.IsNullOrEmpty(log[c]))
+																VfLteCells.Add(log[c]);
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 				
-				if(TFreportIndex == -1) {
-					TFreportIndex = log.Length;
-				}
+				if(TefReportIndex == -1)
+					TefReportIndex = log.Length;
 				
-				for(int c = VFbulkciIndex + 1;c < TFreportIndex;c++) {
+				for(int c = VfBulkCiIndex + 1;c < TefReportIndex;c++) {
 					VfBulkCI += log[c];
-					if(c < TFreportIndex - 1)
+					if(c < TefReportIndex - 1)
 						VfBulkCI += Environment.NewLine;
 				}
 			}
 			
-			if(TFreportIndex == log.Length)
-				TFreportIndex--;
+			if(TefReportIndex == log.Length)
+				TefReportIndex = -1;
 			
-			if(log[TFreportIndex].Equals("----------TF Report----------")) {
-				for(int c = TFreportIndex + 1;c < TFbulkciIndex;c++) {
+			if(TefReportIndex > -1) {
+				int TefLocationsIndex = Array.FindLastIndex(log, element => element.StartsWith("Locations", StringComparison.Ordinal));
+				int TefSitesListIndex = Array.FindLastIndex(log, element => element.Equals("Site List", StringComparison.Ordinal));
+				int TefGsmCellsIndex = Array.FindLastIndex(log, element => element.StartsWith("2G Cells", StringComparison.Ordinal));
+				int TefUmtsCellsIndex = Array.FindLastIndex(log, element => element.StartsWith("3G Cells", StringComparison.Ordinal));
+				int TefLteCellsIndex = Array.FindLastIndex(log, element => element.StartsWith("4G Cells", StringComparison.Ordinal));
+				if(TefGsmCellsIndex == -1)
+					TefGsmCellsIndex = TefUmtsCellsIndex == -1 ? TefLteCellsIndex : TefUmtsCellsIndex;
+				if(TefUmtsCellsIndex == -1)
+					TefUmtsCellsIndex = TefLteCellsIndex == -1 ? TefBulkCiIndex : TefLteCellsIndex;
+				if(TefLteCellsIndex == -1)
+					TefLteCellsIndex = TefBulkCiIndex;
+				
+				for(int c = TefReportIndex + 1;c < TefBulkCiIndex;c++) {
 					TefOutage += log[c];
-					if(c < TFbulkciIndex - 1)
+					if(c < TefBulkCiIndex - 1)
 						TefOutage += Environment.NewLine;
+					
+					if(c > TefLocationsIndex) {
+						if(c < TefSitesListIndex) {
+							if(!string.IsNullOrEmpty(log[c]))
+								TefLocations.Add(log[c]);
+						}
+						else {
+							if(c < TefGsmCellsIndex) {
+								if(c > TefSitesListIndex && !string.IsNullOrEmpty(log[c]))
+									TefSites.Add(log[c]);
+							}
+							else {
+								if(c == TefGsmCellsIndex)
+									try { TefGsmTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+								else {
+									if(c < TefUmtsCellsIndex) {
+										if(!string.IsNullOrEmpty(log[c]))
+											TefGsmCells.Add(log[c]);
+									}
+									else {
+										if(c == TefUmtsCellsIndex)
+											try { TefUmtsTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+										else {
+											if(c < TefLteCellsIndex) {
+												if(!string.IsNullOrEmpty(log[c]))
+													TefUmtsCells.Add(log[c]);
+											}
+											else {
+												if(c == TefLteCellsIndex)
+													try { TefLteTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+												else {
+													if(c < TefBulkCiIndex) {
+														if(!string.IsNullOrEmpty(log[c]))
+															TefLteCells.Add(log[c]);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 				
-				for(int c = TFbulkciIndex + 1;c < log.Length;c++) {
+				for(int c = TefBulkCiIndex + 1;c < log.Length;c++) {
 					TefBulkCI += log[c];
 					if(c < log.Length - 1)
 						TefBulkCI += Environment.NewLine;
@@ -647,6 +760,14 @@ namespace appCore.Templates.Types
 			if(btn.Text == "Cancel")
 				form.Controls["sitesList_tb"].Text = string.Empty;
 			form.Close();
+		}
+		
+		public override string ToString()
+		{
+			if(string.IsNullOrEmpty(fullLog))
+				fullLog = generateFullLog();
+			
+			return fullLog;
 		}
 	}
 }
