@@ -12,6 +12,9 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Globalization;
 using appCore.UI;
+using appCore.Settings;
+using appCore.Templates;
+using appCore.Templates.Types;
 
 namespace appCore.Logs.UI
 {
@@ -77,7 +80,7 @@ namespace appCore.Logs.UI
 				
 				switch (chkrb) {
 					case "Templates": // get available months list for templates
-						foreach (var folder in Settings.UserFolder.LogsFolder.GetDirectories("*-" + listBox1.Text)) {
+						foreach (var folder in UserFolder.LogsFolder.GetDirectories("*-" + listBox1.Text)) {
 							if (folder.GetFiles("*.txt").Length > 0) {
 								month = folder.Name.Substring(0,3);
 								monthsList.Add(DateTime.ParseExact(month,"MMM",culture));
@@ -85,8 +88,8 @@ namespace appCore.Logs.UI
 						}
 						break;
 					case "Outages": // get available months list for outages
-						foreach (var folder in Settings.UserFolder.LogsFolder.GetDirectories("*-" + listBox1.Text)) {
-							DirectoryInfo tempdir = new DirectoryInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + folder.Name);
+						foreach (var folder in UserFolder.LogsFolder.GetDirectories("*-" + listBox1.Text)) {
+							DirectoryInfo tempdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + folder.Name);
 							foreach (var tempfolder in tempdir.GetDirectories()) {
 								if (tempfolder.Name == "outages") {
 									month = folder.Name.Substring(0,3);
@@ -112,14 +115,14 @@ namespace appCore.Logs.UI
 			label1.Text = string.Empty;
 			if (listBox2.SelectedIndex != -1) {
 				if (chkrb == "Templates") {
-					DirectoryInfo monthdir = new DirectoryInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text);
+					DirectoryInfo monthdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text);
 					foreach (var file in monthdir.GetFiles("*.txt")) {
 						listBox3.Items.Add(file.Name.Substring(0,2));
 					}
 				}
 				else {
 					if (chkrb == "Outages") {
-						DirectoryInfo monthdir = new DirectoryInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages");
+						DirectoryInfo monthdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages");
 						foreach (var file in monthdir.GetFiles("*.txt")) {
 							listBox3.Items.Add(file.Name.Substring(0,2));
 						}
@@ -134,7 +137,7 @@ namespace appCore.Logs.UI
 		void ListBox3SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (listBox3.SelectedIndex != -1) {
-				string logfile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
+				string logfile = UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
 				if (radioButton2.Checked)
 					logfile += "outages\\";
 				logfile += listBox3.Text + ".txt";
@@ -148,24 +151,25 @@ namespace appCore.Logs.UI
 //			Action actionNonThreaded = null;
 			Action actionThreaded = new Action(delegate {
 			                                   	if (listBox3.SelectedIndex != -1) {
-			                                   		string LogFile;
+			                                   		string separator = string.Empty;
+			                                   		for (int c = 1; c < 301; c++) {
+			                                   			if (c == 151) separator += "\r\n";
+			                                   			separator += "*";
+			                                   		}
+			                                   		string LogFile = UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
+			                                   		string[] strTofind = { "\r\n" };
+			                                   		string[] Logs;
+			                                   		
 			                                   		if (chkrb == "Templates") {
-			                                   			string separator = string.Empty;
-			                                   			for (int c = 1; c < 301; c++) {
-			                                   				if (c == 151) separator += "\r\n";
-			                                   				separator += "*";
-			                                   			}
-			                                   			LogFile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\" + listBox3.Text + ".txt";
-			                                   			string[] strTofind = { "\r\n" };
-			                                   			string[] Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                                   			
+			                                   			LogFile += listBox3.Text + ".txt";
+			                                   			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
 			                                   			if (Logs[0].Contains(" - ")) {
-			                                   				LogsCollection<Templates.Template> logs = new LogsCollection<Templates.Template>();
+			                                   				LogsCollection<Template> logs = new LogsCollection<Template>();
 //			                                   				actionNonThreaded = delegate {
-			                                   					logs = logs.ImportLogFile(new FileInfo(LogFile));
-			                                   					LogEditor2 LogEdit = new LogEditor2(logs, "Templates", myFormControl1);
-			                                   					LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                                   					LogEdit.ShowDialog(this);
+			                                   				logs = logs.ImportLogFile(new FileInfo(LogFile));
+			                                   				LogEditor2 LogEdit = new LogEditor2(logs, myFormControl1);
+			                                   				LogEdit.StartPosition = FormStartPosition.CenterParent;
+			                                   				LogEdit.ShowDialog(this);
 //			                                   				};
 			                                   			}
 			                                   			else {
@@ -174,26 +178,19 @@ namespace appCore.Logs.UI
 			                                   				System.Diagnostics.Process.Start("notepad.exe", LogFile);
 			                                   			}
 			                                   		}
-			                                   		else if (chkrb == "Outages") {
-			                                   			string separator = string.Empty;
-			                                   			for (int i = 1; i < 301; i++) {
-			                                   				if (i == 151) separator = separator + Environment.NewLine;
-			                                   				separator = separator + "*";
-			                                   			}
+			                                   		else {
+			                                   			LogFile += "outages\\" + listBox3.Text + ".txt";
 			                                   			
-			                                   			LogFile = Settings.UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages\\" + listBox3.Text + ".txt";
-			                                   			
-			                                   			string[] strTofind = { separator + "\r\n" };
-			                                   			string[] Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                                   			
+			                                   			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			                                   			LogsCollection<Outage> logs = new LogsCollection<Outage>();
+//			                                   				actionNonThreaded = delegate {
+			                                   			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
 //			                                   			actionNonThreaded = delegate {
-			                                   				LogEditor LogEdit = new LogEditor(LogFile, "Outages", WindowTitle(),myFormControl1);
-			                                   				LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                                   				LogEdit.ShowDialog();
+			                                   			LogEditor2 LogEdit = new LogEditor2(logs, myFormControl1);
+			                                   			LogEdit.StartPosition = FormStartPosition.CenterParent;
+			                                   			LogEdit.ShowDialog();
 //			                                   			};
 			                                   		}
-			                                   		else
-			                                   			if(chkrb == "Updates") {}
 			                                   	}
 			                                   });
 			Toolbox.Tools.darkenBackgroundForm(actionThreaded, false, this);

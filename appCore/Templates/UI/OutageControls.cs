@@ -24,12 +24,6 @@ namespace appCore.Templates.UI
 	/// </summary>
 	public class OutageControls : Panel
 	{
-//		Button button3 = new Button();
-//		Button button4 = new Button();
-//		Button button12 = new Button();
-//		Button button46 = new Button();
-//		Button button25 = new Button();
-		
 		Button BulkCILargeTextButton = new Button(); // BulkCILargeTextButton
 		Button Alarms_ReportLargeTextButton = new Button(); // Alarms_ReportLargeTextButton
 		RadioButton VFReportRadioButton = new RadioButton(); // VFReportRadioButton
@@ -75,7 +69,7 @@ namespace appCore.Templates.UI
 				if(value == Template.UIenum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
-					BulkCITextBox.ReadOnly = true;
+					BulkCITextBox.ReadOnly = Alarms_ReportTextBox.ReadOnly = true;
 					
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -107,11 +101,22 @@ namespace appCore.Templates.UI
 		{
 			UiMode = Template.UIenum.Template;
 		}
+		
+		public OutageControls(Outage outage, Template.UIenum uimode = Template.UIenum.Log)
+		{
+			UiMode = uimode;
+			currentOutage = outage;
+			
+			if(!string.IsNullOrEmpty(currentOutage.VfOutage))
+				VFReportRadioButton.Checked = true;
+			else
+				TFReportRadioButton.Checked = true;
+		}
 
 		void GenerateReport(object sender, EventArgs e)
 		{
-			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-			st.Start();
+//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+//			st.Start();
 //			Action action = new Action(delegate {
 			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
 				FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -164,8 +169,8 @@ namespace appCore.Templates.UI
 			}
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,true,this);
-			st.Stop();
-			var t = st.Elapsed;
+//			st.Stop();
+//			var t = st.Elapsed;
 		}
 		
 		void OutageFollowUp(object sender, EventArgs e) {
@@ -203,8 +208,11 @@ namespace appCore.Templates.UI
 					Alarms_ReportTextBox.Text = currentOutage.TefOutage;
 					BulkCITextBox.Text = currentOutage.TefBulkCI;
 				}
-				Alarms_ReportTextBox.Select(0,0);
-				BulkCITextBox.Select(0,0);
+				
+				if(UiMode == Template.UIenum.Template) {
+					Alarms_ReportTextBox.Select(0,0);
+					BulkCITextBox.Select(0,0);
+				}
 			}
 		}
 

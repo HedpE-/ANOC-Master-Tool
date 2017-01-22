@@ -43,6 +43,42 @@ namespace appCore.Templates.Types
 		DateTime TefUmtsTime = new DateTime(2500,1,1);
 		DateTime TefLteTime = new DateTime(2500,1,1);
 		
+		public int GsmCells {
+			get {
+				return VfGsmCells.Count;
+			}
+			private set { }
+		}
+		
+		public int UmtsCells {
+			get {
+				return VfUmtsCells.Count;
+			}
+			private set { }
+		}
+		
+		public int LteCells {
+			get {
+				return VfLteCells.Count;
+			}
+			private set { }
+		}
+		
+		public string Summary {
+			get;
+			private set;
+		}
+		
+		public DateTime EventTime {
+			get {
+				DateTime dt = new DateTime(Math.Min(VfGsmTime.Ticks, VfUmtsTime.Ticks));
+				if(VfLteTime.Year < 2500)
+					dt = new DateTime(Math.Min(dt.Ticks, VfLteTime.Ticks));
+				return dt;
+			}
+			private set { }
+		}
+		
 		string sitesList;
 		public string SitesList {
 			get {
@@ -78,6 +114,8 @@ namespace appCore.Templates.Types
 //				return OutageAlarms.FindAll(s => s.Operator == "TEF");
 //			}
 //		}
+		
+		public Outage() { }
 		
 		public Outage(AlarmsParser alarms) {
 //			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
@@ -279,11 +317,11 @@ namespace appCore.Templates.Types
 			fullLog = generateFullLog();
 		}
 		
-//		public Outage(Outage existingOutage) {
-//			Toolbox.Tools.CopyProperties(this, existingOutage);
-//			LogType = "Outage";
-//			fullLog = generateFullLog();
-//		}
+		public Outage(Outage existingOutage) {
+			Toolbox.Tools.CopyProperties(this, existingOutage);
+			LogType = "Outage";
+			fullLog = generateFullLog();
+		}
 		
 		public Outage(string[] log, DateTime date) {
 			LoadOutageReport(log);
@@ -301,7 +339,7 @@ namespace appCore.Templates.Types
 				VfGsmCells.Sort();
 				VfUmtsCells.Sort();
 				VfLteCells.Sort();
-				VfOutage = cellTotal + "x COOS (" + VfSites.Count;
+				VfOutage = Summary = cellTotal + "x COOS (" + VfSites.Count;
 				VfOutage += VfSites.Count == 1 ? " Site)" : " Sites)";
 				VfOutage += Environment.NewLine + Environment.NewLine + "Locations (" + VfLocations.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine, VfLocations) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine, VfSites);
 				
@@ -374,88 +412,58 @@ namespace appCore.Templates.Types
 		}
 		
 		public void LoadOutageReport(string[] log) {
-//			int c = 0;
-//			VFoutage = string.Empty;
-//			TFoutage = string.Empty;
-//			VFbulkCI = string.Empty;
-//			TFbulkCI = string.Empty;
-//			string[] strTofind = { "\r\n" };
-//			string[] log = globalLogs[listView1.SelectedItems[0].Index].Split(strTofind, StringSplitOptions.None);
-//
-//			if(string.IsNullOrEmpty(log[log.Length - 1])) {
-//				log = log.Where((source, index) => index != log.Length - 1).ToArray();
-//			}
-//
-//			// Manipulate log array to make it compatible with VF/TF new logs
-//			if(Array.FindIndex(log,element => element.Contains("F Report----------")) == -1) {
-//				List<string> log2 = log.ToList(); // Create new List with log array values
-//				string Report = log2[1]; // Store outage report to string
-//				log2.RemoveAt(1); // Remove outage report previously stored on Report string
-//				string[] SplitReport = Report.Split('\n'); // Split Report string to new array
-//				log2.Insert(1,"----------VF Report----------"); // Insert VF Report header to match code checks
-//				log2.InsertRange(2,SplitReport); // Insert SplitReport array into list after header
-//				log = log2.ToArray(); // Replace original log array with new generated List values
-//				if(Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal)) > -1) // Check if log contains LTE sites
-//					log[Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal))] = "----------LTE sites----------"; // Convert header to match code checks
-//			}
-//
-//			int VFreportIndex = Array.FindIndex(log, element => element.Equals("----------VF Report----------", StringComparison.Ordinal));
-//			int VFbulkciIndex = Array.FindIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
-//			int TFreportIndex = Array.FindIndex(log, element => element.Equals("----------TF Report----------", StringComparison.Ordinal));
-//			int TFbulkciIndex = Array.FindLastIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
-//
-//			if(VFreportIndex > -1) {
-//				for(c = VFreportIndex + 1;c < VFbulkciIndex;c++) {
-//					VFoutage += log[c];
-//					if(c < VFbulkciIndex - 1)
-//						VFoutage += Environment.NewLine;
-//				}
-//
-//				if(TFreportIndex == -1) {
-//					TFreportIndex = log.Length;
-//				}
-//
-//				for(c = VFbulkciIndex + 1;c < TFreportIndex;c++) {
-//					VFbulkCI += log[c];
-//					if(c < TFreportIndex - 1)
-//						VFbulkCI += Environment.NewLine;
-//				}
-//			}
-//
-//			if(TFreportIndex == log.Length)
-//				TFreportIndex--;
-//
-//			if(log[TFreportIndex].Equals("----------TF Report----------")) {
-//				for(c = TFreportIndex + 1;c < TFbulkciIndex;c++) {
-//					TFoutage += log[c];
-//					if(c < TFbulkciIndex - 1)
-//						TFoutage += Environment.NewLine;
-//				}
-//
-//				for(c = TFbulkciIndex + 1;c < log.Length;c++) {
-//					TFbulkCI += log[c];
-//					if(c < log.Length - 1)
-//						VFbulkCI += Environment.NewLine;
-//				}
-//			}
-//
-//			if(!string.IsNullOrEmpty(VFoutage) && !string.IsNullOrEmpty(TFoutage)) {
-//				tabControl1.Visible = true;
-//				tabControl1.SelectTab(0);
-//			}
-//			else {
-//				if(!string.IsNullOrEmpty(VFoutage)) {
-//					tabControl1.Visible = false;
-//					tabControl1.SelectTab(0);
-//				}
-//				else {
-//					if(!string.IsNullOrEmpty(TFoutage)) {
-//						tabControl1.Visible = false;
-//						tabControl1.SelectTab(1);
-//					}
-//				}
-//			}
-//			TabControl4SelectedIndexChanged(null,null);
+			// Manipulate log array to make it compatible with VF/TF new logs
+			if(Array.FindIndex(log,element => element.Contains("F Report----------")) == -1) {
+				List<string> log2 = log.ToList(); // Create new List with log array values
+				string Report = log2[1]; // Store outage report to string
+				log2.RemoveAt(1); // Remove outage report previously stored on Report string
+				string[] SplitReport = Report.Split('\n'); // Split Report string to new array
+				log2.Insert(1,"----------VF Report----------"); // Insert VF Report header to match code checks
+				log2.InsertRange(2,SplitReport); // Insert SplitReport array into list after header
+				log = log2.ToArray(); // Replace original log array with new generated List values
+				if(Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal)) > -1) // Check if log contains LTE sites
+					log[Array.FindIndex(log, element => element.Equals("-----LTE sites-----", StringComparison.Ordinal))] = "----------LTE sites----------"; // Convert header to match code checks
+			}
+			
+			int VFreportIndex = Array.FindIndex(log, element => element.Equals("----------VF Report----------", StringComparison.Ordinal));
+			int VFbulkciIndex = Array.FindIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
+			int TFreportIndex = Array.FindIndex(log, element => element.Equals("----------TF Report----------", StringComparison.Ordinal));
+			int TFbulkciIndex = Array.FindLastIndex(log, element => element.Equals("-----BulkCI-----", StringComparison.Ordinal));
+			
+			if(VFreportIndex > -1) {
+				for(int c = VFreportIndex + 1;c < VFbulkciIndex;c++) {
+					VfOutage += log[c];
+					if(c < VFbulkciIndex - 1)
+						VfOutage += Environment.NewLine;
+				}
+				
+				if(TFreportIndex == -1) {
+					TFreportIndex = log.Length;
+				}
+				
+				for(int c = VFbulkciIndex + 1;c < TFreportIndex;c++) {
+					VfBulkCI += log[c];
+					if(c < TFreportIndex - 1)
+						VfBulkCI += Environment.NewLine;
+				}
+			}
+			
+			if(TFreportIndex == log.Length)
+				TFreportIndex--;
+			
+			if(log[TFreportIndex].Equals("----------TF Report----------")) {
+				for(int c = TFreportIndex + 1;c < TFbulkciIndex;c++) {
+					TefOutage += log[c];
+					if(c < TFbulkciIndex - 1)
+						TefOutage += Environment.NewLine;
+				}
+				
+				for(int c = TFbulkciIndex + 1;c < log.Length;c++) {
+					TefBulkCI += log[c];
+					if(c < log.Length - 1)
+						TefBulkCI += Environment.NewLine;
+				}
+			}
 		}
 
 		void showIncludeListForm() {

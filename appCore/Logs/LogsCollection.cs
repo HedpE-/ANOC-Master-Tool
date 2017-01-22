@@ -30,11 +30,13 @@ namespace appCore.Logs
 				return _logFile;
 			}
 			set {
-				string[] month_year = value.Directory.Name.Split('-');
-				string day = value.Name.Remove(value.Name.Length - 4);
+				_logFile = value;
+				string[] month_year = _logFile.Directory.Name == "outages" ?
+					_logFile.Directory.Parent.Name.Split('-') :
+					_logFile.Directory.Name.Split('-');
+				string day = _logFile.Name.Replace(_logFile.Extension, string.Empty);
 				month_year[0] = DateTime.ParseExact(month_year[0],"MMM",CultureInfo.GetCultureInfo("pt-PT")).ToString("MM",CultureInfo.GetCultureInfo("en-GB"));
 				logFileDate = new DateTime(Convert.ToInt16(month_year[1]), Convert.ToInt16(month_year[0]), Convert.ToInt16(day));
-				_logFile = value;
 				OutagesLogFile = new FileInfo(_logFile.DirectoryName + @"\outages\" + day + ".txt");
 			}
 		}
@@ -97,13 +99,13 @@ namespace appCore.Logs
 			timer.Elapsed += midnightTimer_Elapsed;
 			timer.Enabled = true;
 
-			getLogFile();
+			getLogFiles();
 		}
 
 		void midnightTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
 			if (LogFile.Name.Split('.')[0] != DateTime.Now.Day.ToString("dd")) {
-				getLogFile();
+				getLogFiles();
 				
 				DateTime midnight = new DateTime(DateTime.Now.AddDays(1).Year,DateTime.Now.AddDays(1).Month,DateTime.Now.AddDays(1).Day,0,0,1);
 				TimeSpan timeSpanToMidnight = midnight - DateTime.Now;
@@ -111,13 +113,19 @@ namespace appCore.Logs
 			}
 		}
 		
-		void getLogFile() {
+		void getLogFiles() {
 			LogFile = new FileInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + DateTime.Now.ToString("MMM-yyyy") + "\\" + DateTime.Now.ToString("dd") + ".txt");
 			if(LogFile.Exists)
 				ImportLogFile();
 			else {
 				if(!LogFile.Directory.Exists)
 					LogFile.Directory.Create();
+			}
+			if(OutagesLogFile.Exists)
+				ImportOutagesLogFile();
+			else {
+				if(!OutagesLogFile.Directory.Exists)
+					OutagesLogFile.Directory.Create();
 			}
 		}
 		
@@ -234,6 +242,23 @@ namespace appCore.Logs
 
 			return list;
 		}
+
+		public LogsCollection<Outage> ImportOutagesLogFile(FileInfo logfile) {
+			LogsCollection<Outage> list = new LogsCollection<Outage>();
+			list.LogFile = logfile;
+			List<string> temp = ReadLogFile(logfile);
+
+			foreach (string logStr in temp) {
+				string[] strTofind = { "\r\n" };
+				string[] logArray = logStr.Split(strTofind, StringSplitOptions.None);
+				Outage log = new Outage(logArray, list.logFileDate);
+				
+				if(log != null)
+					list.Add(log);
+			}
+
+			return list;
+		}
 		
 		List<string> ReadLogFile() {
 			List<string> list = new List<string>();
@@ -332,20 +357,6 @@ namespace appCore.Logs
 			return existingLog;
 		}
 		
-		int CheckOutageLogExists(Outage n)
-		{
-			int existingLog = -1;
-			
-			foreach(Outage log in OutagesList) {
-				if(log.fullLog.Contains(log.ToString())) {
-					existingLog = OutagesList.IndexOf(log);
-					break;
-				}
-			}
-			
-			return existingLog;
-		}
-		
 		void UpdateLogFile(T n, int existingLogIndex)
 		{
 //			TODO: BCP Template - search on logs
@@ -388,27 +399,6 @@ namespace appCore.Logs
 					break;
 			}
 		}
-		
-		void UpdateOutagesLogFile(Outage n, int existingLogIndex)
-		{
-			Outage existingLog = OutagesList[existingLogIndex];
-			if (n.fullLog != existingLog.fullLog) {
-				
-				DialogResult res = DialogResult.No;
-//						Action actionNonThreaded = new Action(delegate {
-				if (!ForceOverwriteLog)
-					res = FlexibleMessageBox.Show("Overwrite existing log?" + Environment.NewLine + Environment.NewLine + existingLog.fullLog, "Existing log found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-//						                           });
-//						LoadingPanel load = new LoadingPanel();
-//						load.Show(actionNonThreaded, false, this);
-//						Toolbox.Tools.darkenBackgroundForm(action,false,this);
-				if (res == DialogResult.Yes || ForceOverwriteLog) {
-					RemoveLog(existingLogIndex);
-					WriteOutageLog(n);
-				}
-				else return;
-			}
-		}
 
 		public void HandleLog(T n, bool overwrite = false) {
 			CheckLogFileIntegrity();
@@ -422,11 +412,7 @@ namespace appCore.Logs
 
 		public void HandleOutageLog(Outage n) {
 			CheckOutagesLogFileIntegrity();
-			int existingLogIndex = CheckOutageLogExists(n);
-			if(existingLogIndex == -1)
-				WriteOutageLog(n);
-			else
-				UpdateOutagesLogFile(n, existingLogIndex);
+			WriteOutageLog(n);
 		}
 
 		void WriteLog(T n) {
@@ -582,13 +568,13 @@ namespace appCore.Logs
 			else {
 			Retry2:
 				try {
-					using (StreamWriter sw = LogFile.CreateText())
+					using (StreamWriter sw = OutagesLogFile.CreateText())
 					{
 						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss"));
 						sw.WriteLine(n.fullLog);
 						sw.Write(logSeparator);
 					}
-					LogFile = new FileInfo(LogFile.FullName);
+					OutagesLogFile = new FileInfo(OutagesLogFile.FullName);
 				}
 				catch (Exception e) {
 					int errorCode = (int)(e.HResult & 0x0000FFFF);
