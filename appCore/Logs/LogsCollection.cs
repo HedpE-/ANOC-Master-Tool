@@ -245,7 +245,7 @@ namespace appCore.Logs
 
 		public LogsCollection<Outage> ImportOutagesLogFile(FileInfo logfile) {
 			LogsCollection<Outage> list = new LogsCollection<Outage>();
-			list.LogFile = logfile;
+			list.LogFile = new FileInfo(logfile.FullName.Remove(logfile.FullName.IndexOf(@"\outages"), @"\outages".Length));
 			List<string> temp = ReadLogFile(logfile);
 
 			foreach (string logStr in temp) {
@@ -540,7 +540,7 @@ namespace appCore.Logs
 			if (OutagesLogFile.Exists) {
 			Retry:
 				try {
-					using (StreamWriter sw = LogFile.AppendText())
+					using (StreamWriter sw = OutagesLogFile.AppendText())
 					{
 						sw.WriteLine();
 						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss"));
