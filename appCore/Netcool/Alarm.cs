@@ -28,101 +28,145 @@ namespace appCore.Netcool
 		public string ServiceImpact { get { return serviceImpact; } private set { } }
 		[FieldOrder(3)]
 		string vendor;
-		public Site.Vendors Vendor { get { return getVendor(vendor); } protected set { } }
+		public Site.Vendors Vendor { get { return getVendor(vendor); } private set { } }
 		[FieldOrder(4)]
 		string lastOccurrence;
-		public DateTime LastOccurrence { get { return Convert.ToDateTime(lastOccurrence); } protected set { } }
+		public DateTime LastOccurrence { get { return Convert.ToDateTime(lastOccurrence); } private set { } }
 		[FieldOrder(5)]
 		string alarmCount;
-		public int AlarmCount { get { return Convert.ToInt32(alarmCount); } protected set { } }
+		public int AlarmCount { get { return Convert.ToInt32(alarmCount); } private set { } }
 		[FieldOrder(6)]
 		string rncBsc;
-		public string RncBsc { get { return rncBsc; } protected set { } }
+		public string RncBsc { get { return rncBsc; } private set { } }
 		[FieldOrder(7)]
 		string location;
-		public string Location { get { return location; } protected set { } }
+		public string Location { get { return location; } private set { } }
 		[FieldOrder(8)]
 		string element;
 		public string Element {
 			get {
-				if(string.IsNullOrEmpty(element))
-					element = ResolveCellName();
+				if(string.IsNullOrEmpty(element)) {
+					try {
+						switch(Vendor) {
+							case SiteFinder.Site.Vendors.Huawei:
+								if(Identifier.Contains("Cell Name=")) {
+									string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
+									element = temp.Substring(0, temp.IndexOf(','));
+								}
+								else
+									element = Node;
+								break;
+							case SiteFinder.Site.Vendors.NSN:
+								// FIXME: NSN Cell Name resolver
+								char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
+								string elementID = null;
+								if(nodeNSNcellID[2] == '4')
+									elementID = "M";
+								else
+									elementID = "W";
+								elementID += Location.Substring(3);
+								
+								if(nodeNSNcellID[2] == '1' || nodeNSNcellID[2] == '4')
+									elementID += "0";
+								else
+									elementID += nodeNSNcellID[2];
+								elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
+								element = elementID;
+								break;
+							case SiteFinder.Site.Vendors.Ericsson:
+								switch(RncBsc.Substring(0,1)) {
+									case "B":
+										string GCellId = Summary.Substring(Summary.IndexOf("CELL =  ") + 8);
+										element = GCellId.Substring(0, GCellId.IndexOf(" ("));
+										break;
+									case "R":
+										string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
+										List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
+										foreach(Cell cell in results)
+											if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
+												element = cell.Name;
+										break;
+								}
+								break;
+						}
+					} catch { }
+				}
 				return element;
 			}
 			set { element = value; }
 		}
 		[FieldOrder(9)]
 		string summary;
-		public string Summary { get { return summary; } protected set { } }
+		public string Summary { get { return summary; } private set { } }
 		[FieldOrder(10)]
 		string triagedBy;
-		public string TriagedBy { get { return triagedBy; } protected set { } }
+		public string TriagedBy { get { return triagedBy; } private set { } }
 		[FieldOrder(11)]
 		string operatorComments;
-		public string OperatorComments { get { return operatorComments; } protected set { } }
+		public string OperatorComments { get { return operatorComments; } private set { } }
 		[FieldOrder(12)]
 		string vfTtNumber;
-		public string VfTtNumber { get { return vfTtNumber; } protected set { } }
+		public string VfTtNumber { get { return vfTtNumber; } private set { } }
 		[FieldOrder(13)]
 		string vfTtPty;
-		public string VfTtPty { get { return vfTtPty; } protected set { } }
+		public string VfTtPty { get { return vfTtPty; } private set { } }
 		[FieldOrder(14)]
 		string assignedGroup;
-		public string AssignedGroup { get { return assignedGroup; } protected set { } }
+		public string AssignedGroup { get { return assignedGroup; } private set { } }
 		[FieldOrder(15)]
 		string ttStatus;
-		public string TtStatus { get { return ttStatus; } protected set { } }
+		public string TtStatus { get { return ttStatus; } private set { } }
 		[FieldOrder(16)]
 		string rbsDetails;
-		public string RbsDetails { get { return rbsDetails; } protected set { } }
+		public string RbsDetails { get { return rbsDetails; } private set { } }
 		[FieldOrder(17)]
 		string town;
-		public string Town { get { return town; } protected set { } }
+		public string Town { get { return town; } private set { } }
 		[FieldOrder(18)]
 		string county;
-		public string County { get { return county; } protected set { } }
+		public string County { get { return county; } private set { } }
 		[FieldOrder(19)]
 		string specialEvent;
-		public string SpecialEvent { get { return specialEvent; } protected set { } }
+		public string SpecialEvent { get { return specialEvent; } private set { } }
 		[FieldOrder(20)]
 		string siteType;
-		public string SiteType { get { return siteType; } protected set { } }
+		public string SiteType { get { return siteType; } private set { } }
 		[FieldOrder(21)]
 		string stateChange;
-		public string StateChange { get { return stateChange; } protected set { } }
+		public string StateChange { get { return stateChange; } private set { } }
 		[FieldOrder(22)]
 		string site;
-		public string Site { get { return site; } protected set { } }
+		public string Site { get { return site; } private set { } }
 		[FieldOrder(23)]
 		string node;
-		public string Node { get { return node; } protected set { } }
+		public string Node { get { return node; } private set { } }
 		[FieldOrder(24)]
 		string nodeAlias;
-		public string NodeAlias { get { return nodeAlias; } protected set { } }
+		public string NodeAlias { get { return nodeAlias; } private set { } }
 		[FieldOrder(25)]
 		string identifier;
-		public string Identifier { get { return identifier; } protected set { } }
+		public string Identifier { get { return identifier; } private set { } }
 		[FieldOrder(26)]
 		string parentNode;
-		public string ParentNode { get { return parentNode; } protected set { } }
+		public string ParentNode { get { return parentNode; } private set { } }
 		[FieldOrder(27)]
 		string techDomain6;
-		public string TechDomain6 { get { return techDomain6; } protected set { } }
+		public string TechDomain6 { get { return techDomain6; } private set { } }
 		[FieldOrder(28)]
 		string poc;
-		public string POC { get { return poc; } protected set { } }
+		public string POC { get { return poc; } private set { } }
 		[FieldOrder(29)]
 		string intermittent;
-		public string Intermittent { get { return intermittent; } protected set { } }
+		public string Intermittent { get { return intermittent; } private set { } }
 		[FieldOrder(30)]
 		string weightage;
-		public string Weightage { get { return weightage; } protected set { } }
+		public string Weightage { get { return weightage; } private set { } }
 		[FieldOrder(31)]
 		string _class;
-		public string Class { get { return _class; } protected set { } }
+		public string Class { get { return _class; } private set { } }
 		[FieldOrder(32)]
 		string opState;
-		public string OpState { get { return opState; } protected set { } }
+		public string OpState { get { return opState; } private set { } }
 		[FieldOptional]
 		[FieldOrder(33)]
 		public string[] mDummyField;
@@ -134,12 +178,12 @@ namespace appCore.Netcool
 				if(string.IsNullOrEmpty(siteid)) {
 					siteid = Element.Contains("RBS") ? Element : Location;
 					if(!string.IsNullOrEmpty(siteid))
-						siteid = Convert.ToInt32(siteid.RemoveLetters()).ToString();
+						try { siteid = Convert.ToInt32(siteid.RemoveLetters()).ToString(); } catch { siteid = string.Empty; }
 				}
 				
 				return siteid;
 			}
-			protected set {
+			private set {
 				siteid = value;
 			}
 		}
@@ -151,7 +195,7 @@ namespace appCore.Netcool
 					_site = Finder.getSite(SiteId);
 				return _site;
 			}
-			protected set {
+			private set {
 				_site = value;
 			}
 		}
@@ -163,7 +207,7 @@ namespace appCore.Netcool
 					checkCoosOrOnM();
 				return coos;
 			}
-			protected set { }
+			private set { }
 		}
 		[FieldHidden]
 		bool onm;
@@ -173,25 +217,56 @@ namespace appCore.Netcool
 					checkCoosOrOnM();
 				return onm;
 			}
-			protected set { }
+			private set { }
 		}
 		[FieldHidden]
 		string bearer;
 		public string Bearer {
 			get {
-				if(string.IsNullOrEmpty(bearer))
-					try { bearer = resolveAlarmBearer(); } catch {}
+				if(string.IsNullOrEmpty(bearer)) {
+					if(!string.IsNullOrEmpty(RncBsc)) {
+						switch(RncBsc.Substring(0, 1)) {
+							case "B":
+								bearer = "2G";
+								break;
+							case "R":
+								bearer = "3G";
+								break;
+							case "X":
+								bearer = "4G";
+								break;
+						}
+					}
+					else{
+						try {
+							if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
+								bearer = "2G";
+						} catch { }
+						try {
+							if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
+								bearer = "3G";
+						} catch { }
+						try {
+							if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
+								bearer = "4G";
+						} catch { }
+					}
+				}
 				return bearer;
 			}
-			protected set { }
+			private set { }
 		}
 		
 		[FieldHidden]
 		string _parsedAlarm;
 		public string ParsedAlarm {
 			get {
-				if(string.IsNullOrEmpty(_parsedAlarm))
-					_parsedAlarm = LastOccurrence + " - " + parseSummary(Summary) + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
+				if(string.IsNullOrEmpty(_parsedAlarm)) {
+					_parsedAlarm = LastOccurrence + " - " + parseSummary(Summary) + Environment.NewLine + RncBsc + " > " + Location;
+					if(!string.IsNullOrEmpty(Element))
+						_parsedAlarm += " > " + Element;
+					_parsedAlarm += Environment.NewLine + "Alarm count: " + AlarmCount;
+				}
 				return _parsedAlarm;
 			}
 			private set { }
@@ -223,7 +298,7 @@ namespace appCore.Netcool
 			try { rncBsc = alarmArray[Array.IndexOf(headers, "RNC/BSC")]; } catch {}
 			try { location = alarmArray[Array.IndexOf(headers, "Location")]; } catch {}
 			try { element = alarmArray[Array.IndexOf(headers, "Element")]; } catch {}
-			try { summary = alarmArray[Array.IndexOf(headers, "Summary")]; } catch {}
+			try { summary = alarmArray[Array.IndexOf(headers, "Summary")].Trim(); } catch {}
 			try { triagedBy = alarmArray[Array.IndexOf(headers, "Triaged By")]; } catch {}
 			try { operatorComments = alarmArray[Array.IndexOf(headers, "Operator Comments")]; } catch {}
 			try { vfTtNumber = alarmArray[Array.IndexOf(headers, "VF TT Number")]; } catch {}
@@ -288,7 +363,7 @@ namespace appCore.Netcool
 			ParsedAlarm = LastOccurrence + " - " + Summary + Environment.NewLine + RncBsc + " > " + Location + " > " + Element + Environment.NewLine + "Alarm count: " + AlarmCount;
 		}
 		
-		void checkCoosOrOnM() { // FIXME: O&M alarms for proper filtering
+		void checkCoosOrOnM() {
 			switch (Vendor) {
 				case SiteFinder.Site.Vendors.ALU:
 					coos = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
@@ -298,6 +373,7 @@ namespace appCore.Netcool
 					    || Summary.Contains("UtranCell_ServiceUnavailable")
 					    || Summary.Contains("UtranCell_NbapMessageFailure")
 					    || Summary.Contains("NbapCommon_Layer3SetupFailure")
+					    || Summary.Contains("Service Unavailable")
 					   )
 						coos = true;
 					else
@@ -321,33 +397,6 @@ namespace appCore.Netcool
 						onm = Summary.Contains("O&M");
 					break;
 			}
-		}
-		
-		string resolveAlarmBearer() {
-			string tempBearer = string.Empty;
-//			if(!string.IsNullOrEmpty(RncBsc)) {
-			switch(RncBsc.Substring(0, 1)) {
-				case "B":
-					tempBearer = "2G";
-					break;
-				case "R":
-					tempBearer = "3G";
-					break;
-				default:
-					if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
-						tempBearer = "2G";
-					if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
-						tempBearer = "3G";
-					if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
-						tempBearer = "4G";
-					break;
-			}
-//			}
-//			else
-//				if(!string.IsNullOrEmpty(Element))
-//					tempBearer = !Element.StartsWith("V") ? Finder.getCell(Element).Bearer : "4G";
-			
-			return tempBearer;
 		}
 		
 		string parseSummary(string toParse)
@@ -455,53 +504,6 @@ namespace appCore.Netcool
 			}
 			
 			return toParse;
-		}
-		
-		string ResolveCellName() {
-			string cellName = string.Empty;
-			switch(Vendor) {
-				case SiteFinder.Site.Vendors.Huawei:
-					if(Identifier.Contains("Cell Name=")) {
-						string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
-						cellName = temp.Substring(0, temp.IndexOf(','));
-					}
-					else
-						cellName = Node;
-					break;
-				case SiteFinder.Site.Vendors.NSN:
-					// FIXME: NSN Cell Name resolver
-					char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
-					string elementID = null;
-					if(nodeNSNcellID[2] == '4')
-						elementID = "M";
-					else
-						elementID = "W";
-					elementID += Location.Substring(3);
-					
-					if(nodeNSNcellID[2] == '1' || nodeNSNcellID[2] == '4')
-						elementID += "0";
-					else
-						elementID += nodeNSNcellID[2];
-					elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
-					cellName = elementID;
-					break;
-				case SiteFinder.Site.Vendors.Ericsson:
-					switch(RncBsc.Substring(0,1)) {
-						case "B":
-							string GCellId = Summary.Substring(Summary.IndexOf("CELL =  ") + 8);
-							cellName = GCellId.Substring(0, GCellId.IndexOf(" ("));
-							break;
-						case "R":
-							string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
-							List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
-							foreach(Cell cell in results)
-								if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
-									cellName = cell.Name;
-							break;
-					}
-					break;
-			}
-			return cellName;
 		}
 		
 		Site.Vendors getVendor(string strVendor) {
