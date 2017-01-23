@@ -91,8 +91,8 @@ namespace appCore.UI
 				case "Update Template GUI":
 					currentSite = ((Templates.UI.UpdateControls)Parent).currentSite;
 					break;
-				case "siteDetails2":
-					currentSite = ((SiteFinder.UI.siteDetails2)Parent).currentSite;
+				case "siteDetails":
+					currentSite = ((SiteFinder.UI.siteDetails)Parent).currentSite;
 					break;
 			}
 			foreach (ToolStripMenuItem tsmi in Items) {

@@ -69,7 +69,7 @@ namespace appCore.DB
 		}
 		
 		public static void Initialize() {
-			if((CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "SANTOSS2") && GlobalProperties.autoUpdateDbFiles)
+			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") && GlobalProperties.autoUpdateDbFiles)
 				UpdateSourceDBFiles();
 			
 			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");

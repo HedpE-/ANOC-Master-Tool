@@ -63,7 +63,7 @@ namespace appCore.Web
 			
 			IWebProxy proxy;
 			try {
-				proxy = Settings.CurrentUser.networkDomain == "internal.vodafone.com" ?
+				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
 					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
 					WebRequest.GetSystemWebProxy();
 			}
@@ -115,7 +115,7 @@ namespace appCore.Web
 			
 			IWebProxy proxy;
 			try {
-				proxy = Settings.CurrentUser.networkDomain == "internal.vodafone.com" ?
+				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
 					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
 					WebRequest.GetSystemWebProxy();
 			}

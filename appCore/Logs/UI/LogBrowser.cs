@@ -23,39 +23,14 @@ namespace appCore.Logs.UI
 	/// </summary>
 	public partial class LogBrowser : Form
 	{
-		public string chkrb;
+		string chkrb {
+			get {
+				if(radioButton1.Checked)
+					return radioButton1.Text;
+				return radioButton2.Checked ? radioButton2.Text : string.Empty;
+			}
+		}
 		MainForm myFormControl1;
-		
-		public string LogCount(string logfile)
-		{
-			string strTofind = string.Empty;
-			for (int c = 1; c < 301; c++) {
-				if (c == 151) strTofind = strTofind + Environment.NewLine;
-				strTofind = strTofind + "*";
-			}
-			
-			return File.ReadAllText(logfile).CountStringOccurrences(strTofind).ToString();
-		}
-		
-		public string WindowTitle()
-		{
-			string temp = listBox3.Text;
-			switch (temp) {
-				case "1": case "21": case "31":
-					temp += "st of ";
-					break;
-				case "2": case "22":
-					temp += "nd of ";
-					break;
-				case "3": case "23":
-					temp += "rd of ";
-					break;
-				default:
-					temp += "th of ";
-					break;
-			}
-			return temp + DateTime.ParseExact(listBox2.Text,"MMM",CultureInfo.GetCultureInfo("pt-PT")).ToString("MMMM",CultureInfo.GetCultureInfo("en-GB")) + ", " + listBox1.Text;
-		}
 		
 		public LogBrowser(MainForm myForm)
 		{
@@ -75,10 +50,9 @@ namespace appCore.Logs.UI
 			if (listBox1.SelectedIndex != -1) {
 				string month = string.Empty;
 				ArrayList monthsList = new ArrayList();
-				CultureInfo culture = new CultureInfo("pt-PT");
+				CultureInfo culture = new CultureInfo("pt-PT");				
 				
-				
-				switch (chkrb) {
+				switch(chkrb) {
 					case "Templates": // get available months list for templates
 						foreach (var folder in UserFolder.LogsFolder.GetDirectories("*-" + listBox1.Text)) {
 							if (folder.GetFiles("*.txt").Length > 0) {
@@ -98,14 +72,10 @@ namespace appCore.Logs.UI
 							}
 						}
 						break;
-					case "Updates": // get available months list for outages
-						break;
 				}
 				monthsList.Sort();
 				foreach(DateTime obj in monthsList)
-				{
-					listBox2.Items.Add(obj.ToString("MMM",culture));
-				}
+					listBox2.Items.Add(obj.ToString("MMM", culture));
 			}
 		}
 		
@@ -116,20 +86,13 @@ namespace appCore.Logs.UI
 			if (listBox2.SelectedIndex != -1) {
 				if (chkrb == "Templates") {
 					DirectoryInfo monthdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text);
-					foreach (var file in monthdir.GetFiles("*.txt")) {
+					foreach (var file in monthdir.GetFiles("*.txt"))
 						listBox3.Items.Add(file.Name.Substring(0,2));
-					}
 				}
 				else {
-					if (chkrb == "Outages") {
-						DirectoryInfo monthdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages");
-						foreach (var file in monthdir.GetFiles("*.txt")) {
-							listBox3.Items.Add(file.Name.Substring(0,2));
-						}
-					}
-					else {
-						if (radioButton3.Checked) {}
-					}
+					DirectoryInfo monthdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\outages");
+					foreach (var file in monthdir.GetFiles("*.txt"))
+						listBox3.Items.Add(file.Name.Substring(0,2));
 				}
 			}
 		}
@@ -167,14 +130,15 @@ namespace appCore.Logs.UI
 			                                   				LogsCollection<Template> logs = new LogsCollection<Template>();
 //			                                   				actionNonThreaded = delegate {
 			                                   				logs = logs.ImportLogFile(new FileInfo(LogFile));
-			                                   				LogEditor2 LogEdit = new LogEditor2(logs, myFormControl1);
+			                                   				LogEditor LogEdit = new LogEditor(logs, myFormControl1);
 			                                   				LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                                   				LogEdit.ShowDialog(this);
 //			                                   				};
 			                                   			}
 			                                   			else {
 			                                   				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-			                                   				if (ans == DialogResult.No)	return;
+			                                   				if(ans == DialogResult.No)
+			                                   					return;
 			                                   				System.Diagnostics.Process.Start("notepad.exe", LogFile);
 			                                   			}
 			                                   		}
@@ -186,7 +150,7 @@ namespace appCore.Logs.UI
 //			                                   				actionNonThreaded = delegate {
 			                                   			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
 //			                                   			actionNonThreaded = delegate {
-			                                   			LogEditor2 LogEdit = new LogEditor2(logs, myFormControl1);
+			                                   			LogEditor LogEdit = new LogEditor(logs, myFormControl1);
 			                                   			LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                                   			LogEdit.ShowDialog();
 //			                                   			};
@@ -219,47 +183,74 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		void RadioButton1CheckedChanged(object sender, EventArgs e)
-		{
+		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
+			RadioButton rb = sender as RadioButton;
 			listBox1.Items.Clear();
 			listBox2.Items.Clear();
 			listBox3.Items.Clear();
-			foreach (var folder in Settings.UserFolder.LogsFolder.GetDirectories()) {
-				if (folder.GetFiles("*.txt").Length > 0) {
-					string year = folder.Name.Substring(4,4);
-					if (!listBox1.Items.Contains(year))
-						listBox1.Items.Add(year);
-				}
-			}
-			label1.Text = string.Empty;
-			chkrb = radioButton1.Text;
-		}
-		
-		void RadioButton2CheckedChanged(object sender, EventArgs e)
-		{
-			listBox1.Items.Clear();
-			listBox2.Items.Clear();
-			listBox3.Items.Clear();
-			foreach (var folder in Settings.UserFolder.LogsFolder.GetDirectories()) {
-				string year = folder.Name.Substring(4,4);
-				DirectoryInfo tempdir = new DirectoryInfo(Settings.UserFolder.LogsFolder.FullName + "\\" + folder.Name);
-				foreach (var tempfolder in tempdir.GetDirectories()) {
-					if (tempfolder.Name == "outages") {
-						if (!listBox1.Items.Contains(year))
-							listBox1.Items.Add(year);
+			ArrayList items = new ArrayList();
+			
+			switch(rb.Name) {
+				case "radioButton1":
+					foreach (var folder in UserFolder.LogsFolder.GetDirectories()) {
+						if (folder.GetFiles("*.txt").Length > 0) {
+							string year = folder.Name.Substring(4,4);
+							if (!items.Contains(year))
+								items.Add(year);
+						}
 					}
-				}
-				
+					break;
+				case "radioButton2":
+					foreach (var folder in UserFolder.LogsFolder.GetDirectories()) {
+						string year = folder.Name.Substring(4,4);
+						DirectoryInfo tempdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + folder.Name);
+						foreach (var tempfolder in tempdir.GetDirectories()) {
+							if (tempfolder.Name == "outages") {
+								if (!items.Contains(year))
+									items.Add(year);
+							}
+						}
+						
+					}
+					break;
 			}
 			
+			items.Sort();
+			foreach(string item in items)
+				listBox1.Items.Add(item);
+			
 			label1.Text = string.Empty;
-			chkrb = radioButton2.Text;
 		}
 		
-		void RadioButton3CheckedChanged(object sender, EventArgs e)
+		public string LogCount(string logfile)
 		{
-			label1.Text = string.Empty;
-			chkrb = radioButton3.Text;
+			string strTofind = string.Empty;
+			for (int c = 1; c < 301; c++) {
+				if (c == 151) strTofind = strTofind + Environment.NewLine;
+				strTofind = strTofind + "*";
+			}
+			
+			return File.ReadAllText(logfile).CountStringOccurrences(strTofind).ToString();
+		}
+		
+		public string WindowTitle()
+		{
+			string temp = listBox3.Text;
+			switch (temp) {
+				case "1": case "21": case "31":
+					temp += "st of ";
+					break;
+				case "2": case "22":
+					temp += "nd of ";
+					break;
+				case "3": case "23":
+					temp += "rd of ";
+					break;
+				default:
+					temp += "th of ";
+					break;
+			}
+			return temp + DateTime.ParseExact(listBox2.Text,"MMM",CultureInfo.GetCultureInfo("pt-PT")).ToString("MMMM",CultureInfo.GetCultureInfo("en-GB")) + ", " + listBox1.Text;
 		}
 	}
 }

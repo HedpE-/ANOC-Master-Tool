@@ -38,7 +38,7 @@ namespace appCore
 		public static FailedCRQControls FailedCRQUI = new FailedCRQControls();
 		public static UpdateControls UpdateUI = new UpdateControls();
 		public static TXControls TXUI = new TXControls();
-		public static siteDetails2 SiteDetailsUI;
+		public static siteDetails SiteDetailsUI;
 		public static PictureBox SiteDetailsPictureBox = new PictureBox();
 		public static OutageControls OutageUI = new OutageControls();
 		public static LogsCollection<Template> logFiles = new LogsCollection<Template>();
@@ -48,6 +48,170 @@ namespace appCore
 		EricssonScriptsControls ericssonScriptsControls = new EricssonScriptsControls();
 		NokiaScriptsControls nokiaScriptsControls = new NokiaScriptsControls();
 		HuaweiScriptsControls huaweiScriptsControls = new HuaweiScriptsControls();
+		
+		public MainForm(NotifyIcon tray)
+		{
+			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+			GlobalProperties.resolveOfficePath();
+			
+			SplashForm.ShowSplashScreen();
+			trayIcon = new TrayIcon(tray);
+			
+			EmbeddedAssemblies.Init();
+			
+			SplashForm.UpdateLabelText("Getting network access");
+			
+			// Initialize Properties
+			
+			GlobalProperties.CheckShareAccess();
+			
+			SplashForm.UpdateLabelText("Setting User Folder");
+			
+			CurrentUser.InitializeUserProperties();
+			
+			SplashForm.UpdateLabelText("Setting User Settings");
+			
+			logFiles.Initialize();
+			
+			SplashForm.UpdateLabelText("Loading UI");
+			
+			InitializeComponent();
+			panel1.BackColor = CurrentUser.UserName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
+			
+			string img = SettingsFile.BackgroundImage;
+			
+			if(img != "Default") {
+				if(File.Exists(img))
+					tabPage1.BackgroundImage = Image.FromFile(img);
+				else
+					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
+			}
+			
+			panel1.Controls.Add(SiteDetailsPictureBox);
+			// 
+			// SiteDetailsPictureBox
+			// 
+			SiteDetailsPictureBox.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
+			SiteDetailsPictureBox.BackColor = Color.Transparent;
+			SiteDetailsPictureBox.Image = Resources.radio_tower;
+			SiteDetailsPictureBox.Location = new Point(6, 49);
+			SiteDetailsPictureBox.Name = "pictureBox5";
+			SiteDetailsPictureBox.Size = new Size(40, 40);
+			SiteDetailsPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+			SiteDetailsPictureBox.TabIndex = 8;
+			SiteDetailsPictureBox.TabStop = false;
+			SiteDetailsPictureBox.Click += PictureBoxesClick;
+			SiteDetailsPictureBox.MouseLeave += PictureBoxesMouseLeave;
+			SiteDetailsPictureBox.MouseHover += PictureBoxesMouseHover;
+			
+			tabPage1.Controls.Add(TicketCountLabel);
+			// 
+			// TicketCountLabel
+			// 
+			TicketCountLabel.BackColor = Color.Transparent;
+			TicketCountLabel.Size = new Size(40, 20);
+			TicketCountLabel.Location = new Point(tabPage1.Width - TicketCountLabel.Width - 5, tabPage1.Height - TicketCountLabel.Height - 5);
+			TicketCountLabel.Name = "TicketCountLabel";
+			TicketCountLabel.TabIndex = 5;
+			TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
+			TicketCountLabel.MouseClick += TicketCountLabelMouseClick;
+			
+			// UNDONE: Developer specific action
+			if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "Caramelos" || CurrentUser.UserName == "SANTOSS2") {
+				Button butt2 = new Button();
+				butt2.Name = "butt2";
+				butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
+				butt2.Text = "Update OI DB Files";
+				butt2.AutoSize = true;
+				butt2.Click += delegate {
+					Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
+					t.Start();
+				};
+				tabPage1.Controls.Add(butt2);
+				if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "Caramelos") {
+					Button butt = new Button();
+					butt.Name = "butt";
+					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
+					butt.Click += delegate {
+//						if(OutageUI != null)
+//							OutageUI.Dispose();
+//						tabControl1.SelectTab(6);
+//						OutageUI = new OutageControls();
+//						tabPage17.Controls.Add(OutageUI);
+						
+//						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
+//						wb.Show();
+						ShiftsSwapForm ss = new ShiftsSwapForm();
+						ss.Show();
+					};
+					tabPage1.Controls.Add(butt);
+					
+//					OutageUI.Location = new Point(1, 2);
+//					tabPage17.Controls.Add(OutageUI);
+				}
+			}
+			if(CurrentUser.UserName != "GONCARJ3" && CurrentUser.UserName != "Caramelos") {
+				tabControl1.TabPages.Remove(tabPage17); // new outage reports
+				tabControl3.TabPages.Remove(tabPage14); // Alcatel scripts tab
+			}
+			
+			TroubleshootUI.Location = new Point(1, 2);
+			tabPage8.Controls.Add(TroubleshootUI);
+			FailedCRQUI.Location = new Point(1, 2);
+			tabPage10.Controls.Add(FailedCRQUI);
+			UpdateUI.Location = new Point(1, 2);
+			tabPage6.Controls.Add(UpdateUI);
+			TXUI.Location = new Point(1, 2);
+			tabPage9.Controls.Add(TXUI);
+			
+			nokiaScriptsControls.Location = new Point(1, 2);
+			tabPage12.Controls.Add(nokiaScriptsControls);
+			huaweiScriptsControls.Location = new Point(1, 2);
+			tabPage11.Controls.Add(huaweiScriptsControls);
+			ericssonScriptsControls.Location = new Point(1, 2);
+			tabPage13.Controls.Add(ericssonScriptsControls);
+			
+			OutageUI.Location = new Point(1, 2);
+			tabPage4.Controls.Add(OutageUI);
+			
+			SplashForm.UpdateLabelText("Loading Databases");
+			
+			Databases.PopulateDatabases();
+			
+			comboBox1.Items.AddRange(new []{ "CBV", CurrentUser.ClosureCode });
+			comboBox1.Text = CurrentUser.ClosureCode;
+			
+			GlobalProperties.siteFinder_mainswitch = false;
+			GlobalProperties.siteFinder_mainswitch = Databases.all_sites.Exists || Databases.all_cells.Exists;
+			
+			if((CurrentUser.Department.Contains("1st Line RAN") || CurrentUser.Department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
+				string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], DateTime.Now.Month);
+				
+				if(monthShifts.Length > 0) {
+					pictureBox6.Visible = true;
+					shiftsCalendar = new ShiftsCalendar();
+					shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
+					tabPage1.Controls.Add(shiftsCalendar);
+				}
+			}
+			
+			// TODO: get sites list from alarms
+			
+			SplashForm.UpdateLabelText("Almost finished");
+			
+			trayIcon.toggleShareAccess();
+			
+			toolTipDeploy();
+			
+			string thisfn = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll";
+			
+			SplashForm.CloseForm();
+			
+			if (SettingsFile.LastRunVersion != GlobalProperties.AssemblyFileVersionInfo.FileVersion) {
+				SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;
+				FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
+			}
+		}
 		
 		public void FillTemplateFromLog(Template log)
 		{
@@ -133,212 +297,6 @@ namespace appCore
 			toolTip.SetToolTip(pictureBox3, "Notes");
 			toolTip.SetToolTip(pictureBox4, "Log Browser");
 			toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
-		}
-		
-		public MainForm(NotifyIcon tray)
-		{
-			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
-			GlobalProperties.resolveOfficePath();
-			
-			SplashForm.ShowSplashScreen();
-			trayIcon = new TrayIcon(tray);
-			
-			EmbeddedAssemblies.Init();
-			
-			SplashForm.UpdateLabelText("Getting network access");
-			
-			// Initialize Properties
-			
-			GlobalProperties.CheckShareAccess();
-			
-			SplashForm.UpdateLabelText("Setting User Folder");
-			
-			CurrentUser.InitializeUserProperties();
-			
-			SplashForm.UpdateLabelText("Setting User Settings");
-			
-			logFiles.Initialize();
-			
-			SplashForm.UpdateLabelText("Loading UI");
-			
-			InitializeComponent();
-			panel1.BackColor = CurrentUser.userName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
-			
-			string img = SettingsFile.BackgroundImage;
-			
-			if(img != "Default") {
-				if(File.Exists(img))
-					tabPage1.BackgroundImage = Image.FromFile(img);
-				else
-					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
-			}
-			
-			panel1.Controls.Add(SiteDetailsPictureBox);
-			// 
-			// SiteDetailsPictureBox
-			// 
-			SiteDetailsPictureBox.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
-			SiteDetailsPictureBox.BackColor = Color.Transparent;
-			SiteDetailsPictureBox.Image = Resources.radio_tower;
-			SiteDetailsPictureBox.Location = new Point(6, 49);
-			SiteDetailsPictureBox.Name = "pictureBox5";
-			SiteDetailsPictureBox.Size = new Size(40, 40);
-			SiteDetailsPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-			SiteDetailsPictureBox.TabIndex = 8;
-			SiteDetailsPictureBox.TabStop = false;
-			SiteDetailsPictureBox.Click += PictureBoxesClick;
-			SiteDetailsPictureBox.MouseLeave += PictureBoxesMouseLeave;
-			SiteDetailsPictureBox.MouseHover += PictureBoxesMouseHover;
-			
-			tabPage1.Controls.Add(TicketCountLabel);
-			// 
-			// TicketCountLabel
-			// 
-			TicketCountLabel.BackColor = Color.Transparent;
-			TicketCountLabel.Size = new Size(40, 20);
-			TicketCountLabel.Location = new Point(tabPage1.Width - TicketCountLabel.Width - 5, tabPage1.Height - TicketCountLabel.Height - 5);
-			TicketCountLabel.Name = "TicketCountLabel";
-			TicketCountLabel.TabIndex = 5;
-			TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
-			TicketCountLabel.MouseClick += TicketCountLabelMouseClick;
-			
-			// UNDONE: Developer specific action
-			if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos" || CurrentUser.userName == "SANTOSS2") {
-				Button butt2 = new Button();
-				butt2.Name = "butt2";
-				butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
-				butt2.Text = "Update OI DB Files";
-				butt2.AutoSize = true;
-				butt2.Click += delegate {
-					Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
-					t.Start();
-				};
-				tabPage1.Controls.Add(butt2);
-				if(CurrentUser.userName == "GONCARJ3" || CurrentUser.userName == "Caramelos") {
-					Button butt = new Button();
-					butt.Name = "butt";
-					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
-					butt.Click += delegate {
-//						if(OutageUI != null)
-//							OutageUI.Dispose();
-//						tabControl1.SelectTab(6);
-//						OutageUI = new OutageControls();
-//						tabPage17.Controls.Add(OutageUI);
-						
-//						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
-//						wb.Show();
-						ShiftsSwapForm ss = new ShiftsSwapForm();
-						ss.Show();
-					};
-					tabPage1.Controls.Add(butt);
-					
-//					OutageUI.Location = new Point(1, 2);
-//					tabPage17.Controls.Add(OutageUI);
-				}
-			}
-			if(CurrentUser.userName != "GONCARJ3" && CurrentUser.userName != "Caramelos") {
-				tabControl1.TabPages.Remove(tabPage17); // new outage reports
-				tabControl3.TabPages.Remove(tabPage14); // Alcatel scripts tab
-			}
-			
-			TroubleshootUI.Location = new Point(1, 2);
-			tabPage8.Controls.Add(TroubleshootUI);
-			FailedCRQUI.Location = new Point(1, 2);
-			tabPage10.Controls.Add(FailedCRQUI);
-			UpdateUI.Location = new Point(1, 2);
-			tabPage6.Controls.Add(UpdateUI);
-			TXUI.Location = new Point(1, 2);
-			tabPage9.Controls.Add(TXUI);
-			
-			nokiaScriptsControls.Location = new Point(1, 2);
-			tabPage12.Controls.Add(nokiaScriptsControls);
-			huaweiScriptsControls.Location = new Point(1, 2);
-			tabPage11.Controls.Add(huaweiScriptsControls);
-			ericssonScriptsControls.Location = new Point(1, 2);
-			tabPage13.Controls.Add(ericssonScriptsControls);
-			
-			OutageUI.Location = new Point(1, 2);
-			tabPage4.Controls.Add(OutageUI);
-			
-			SplashForm.UpdateLabelText("Loading Databases");
-			
-			Databases.PopulateDatabases();
-			
-			comboBox1.Items.AddRange(new []{ "CBV", CurrentUser.ClosureCode });
-			comboBox1.Text = CurrentUser.ClosureCode;
-			
-			GlobalProperties.siteFinder_mainswitch = false;
-			GlobalProperties.siteFinder_mainswitch = Databases.all_sites.Exists || Databases.all_cells.Exists;
-			
-			if((CurrentUser.department.Contains("1st Line RAN") || CurrentUser.department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
-				string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.fullName[1] + " " + CurrentUser.fullName[0], DateTime.Now.Month);
-				
-				if(monthShifts.Length > 0) {
-					pictureBox6.Visible = true;
-					shiftsCalendar = new ShiftsCalendar();
-					shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
-					tabPage1.Controls.Add(shiftsCalendar);
-				}
-			}
-			
-			// TODO: get sites list from alarms
-			
-			SplashForm.UpdateLabelText("Almost finished");
-			
-			trayIcon.toggleShareAccess();
-			
-			toolTipDeploy();
-			
-			string thisfn = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll";
-			
-			SplashForm.CloseForm();
-			
-			if (SettingsFile.LastRunVersion != GlobalProperties.AssemblyFileVersionInfo.FileVersion) {
-				SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;
-				FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
-			}
-		}
-
-		public static DataRowView findSite(string site)
-		{
-			if(!site.IsAllDigits())
-				site = "00000";
-			while(site.StartsWith("0"))
-				site = site.Substring(1);
-			
-			DataView dv = new DataView(Databases.siteDetailsTable);
-			dv.RowFilter = "SITE = '" + site + "'"; // query example = "id = 10"
-			DataRowView dr = null;
-			if(dv.Count == 1)
-				dr = dv[0];
-			return dr;
-		}
-
-		public static DataView findCells(string site)
-		{
-			while(site.StartsWith("0"))
-				site = site.Substring(1);
-			if(!site.IsAllDigits())
-				site = "00000";
-			
-			DataView dv = new DataView(Databases.cellDetailsTable);
-			dv.RowFilter = "SITE = '" + site + "'";
-			DataTable dt = null;
-			if (dv.Count > 0)
-			{
-				dt = dv.ToTable();
-				//clone the source table
-				DataTable filtered = dt.Clone();
-
-				//fill the clone with the filtered rows
-				foreach (DataRowView drv in dt.DefaultView)
-				{
-					filtered.Rows.Add(drv.Row.ItemArray);
-				}
-				dt = filtered;
-			}
-			
-			return new DataView(dt);
 		}
 
 		void TextBox13TextChanged(object sender, EventArgs e)
@@ -688,7 +646,7 @@ namespace appCore
 			}
 			
 			Thread thread = new Thread(() => {
-			                           	siteDetails2 sd = new siteDetails2();
+			                           	siteDetails sd = new siteDetails();
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
 			                           });

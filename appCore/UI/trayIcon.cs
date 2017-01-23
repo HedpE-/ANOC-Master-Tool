@@ -198,7 +198,7 @@ namespace appCore.UI
 					if(FoundFiles.Length == 1)
 						VFcontactsDoc = FoundFiles[0];
 				
-				if(CurrentUser.userName == "GONCARJ3") {
+				if(CurrentUser.UserName == "GONCARJ3") {
 					string errmsg = string.Empty;
 					if(!ProcessesDoc.Exists)
 						errmsg += "Processes Document";

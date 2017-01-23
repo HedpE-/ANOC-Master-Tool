@@ -16,48 +16,48 @@ namespace appCore.Settings
 	/// </summary>
 	public static class CurrentUser
 	{
-		public static bool hasOICredentials
+		public static bool HasOICredentials
 		{
 			get;
 			private set;
 		}
-		public static string userName
+		public static string UserName
 		{
 			get;
 			private set;
 		}
-		public static string[] fullName
+		public static string[] FullName
 		{
 			get;
 			private set;
 		}
-		public static string department
+		public static string Department
 		{
 			get;
 			private set;
 		}
-		public static string networkDomain
+		public static string NetworkDomain
 		{
 			get { return GetUserDetails("NetworkDomain"); }
 			private set { }
 		}
 		public static string ClosureCode {
 			get {
-				return DB.Databases.shiftsFile.GetClosureCode(fullName[1] + " " + fullName[0]);			
+				return DB.Databases.shiftsFile.GetClosureCode(FullName[1] + " " + FullName[0]);			
 			}
 			private set { }
 		}
 
 		public static void InitializeUserProperties()
 		{
-			userName = GetUserDetails("Username");
-			fullName = GetUserDetails("Name").Split(' ');
-			for (int c = 0; c < fullName.Length; c++)
-				fullName[c] = fullName[c].Replace(",", string.Empty);
-			department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
+			UserName = GetUserDetails("Username");
+			FullName = GetUserDetails("Name").Split(' ');
+			for (int c = 0; c < FullName.Length; c++)
+				FullName[c] = FullName[c].Replace(",", string.Empty);
+			Department = GetUserDetails("Department").Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
 			UserFolder.ResolveUserFolder();
 			SettingsFile.ResolveSettingsFile();
-			hasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
+			HasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
 			UserFolder.Initialize();
 		}
 

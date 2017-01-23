@@ -8,7 +8,7 @@
  */
 namespace appCore.Logs.UI
 {
-	partial class LogEditor2
+	partial class LogEditor
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.

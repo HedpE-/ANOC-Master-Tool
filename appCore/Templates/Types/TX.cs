@@ -109,7 +109,7 @@ namespace appCore.Templates.Types
 			complete = log[++c].Substring("Detailed RAN troubleshooting (RAN findings, HW replaced, Field visits troubleshooting): ".Length);
 			for (c++; c < log.Length - 4; c++) {
 				if(string.IsNullOrEmpty(log[c]))
-					if(log[c + 1] == Settings.CurrentUser.fullName[1] + " " + Settings.CurrentUser.fullName[0])
+					if(log[c + 1] == Settings.CurrentUser.FullName[1] + " " + Settings.CurrentUser.FullName[0])
 						break;
 				complete += Environment.NewLine + log[c];
 			}

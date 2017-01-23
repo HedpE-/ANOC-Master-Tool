@@ -138,7 +138,7 @@ namespace appCore.Shifts
 				return;
 			
 //			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
-			string shift = Databases.shiftsFile.GetShift(CurrentUser.fullName[1] + " " + CurrentUser.fullName[0], shiftsChosenDate);
+			string shift = Databases.shiftsFile.GetShift(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], shiftsChosenDate);
 			if(string.IsNullOrEmpty(shift))
 				return;
 			
@@ -177,7 +177,7 @@ namespace appCore.Shifts
 			int panelHeaderWidth = this.Controls["shiftsPanel_refresh"].Left - this.Controls["shiftsPanel_icon"].Right;
 			int panelBodyHeight = (int)((shiftsRectHeight * 2) + 3 + ((num_lines * 2) * shiftsRectHeight) + 10); // (height * 2) + 3 for title and weedays headers; + 10 for 5 padding on top&bottom
 //			DataRow[] foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
-			string[] foundRows = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.fullName[1] + " " + CurrentUser.fullName[0], date.Month);
+			string[] foundRows = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], date.Month);
 				
 //			shiftsHeaderSnap = new Bitmap(MainForm.shiftsPanel.Controls["shiftsPanel_refresh"].Right + MainForm.shiftsPanel.Controls["shiftsPanel_icon"].Right, shiftsRectHeight);
 			shiftsBodySnap = new Bitmap(224, panelBodyHeight);

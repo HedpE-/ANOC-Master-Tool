@@ -45,7 +45,7 @@ namespace appCore.Settings.UI
 			textBox1.Text = UserFolder.FullName;
 
 
-			if (!CurrentUser.hasOICredentials)
+			if (!CurrentUser.HasOICredentials)
 			{
 				DialogResult ans = FlexibleMessageBox.Show("No OI credentials stored, do you want to store your logon credentials now?", "OI Login", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (ans == DialogResult.Yes)

@@ -74,7 +74,7 @@ namespace appCore.Templates.UI
 		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem sendBCPToolStripMenuItem = new ToolStripMenuItem();
 		
-		public static siteDetails2 SiteDetailsUI;
+		public static siteDetails SiteDetailsUI;
 		
 		public Site currentSite { get; private set; }
 		TroubleShoot currentTemplate;
@@ -474,7 +474,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails2(currentSite);
+			SiteDetailsUI = new siteDetails(currentSite);
 			SiteDetailsUI.Show();
 		}
 

@@ -84,11 +84,11 @@ namespace appCore.Settings
 		
 		public static void ResolveSettingsFile() {
 			if(GlobalProperties.shareAccess) {
-				settingsFile = new FileInfo(GlobalProperties.ShareRootDir.FullName + @"\UserSettings\" + CurrentUser.userName + ".xml");
+				settingsFile = new FileInfo(GlobalProperties.ShareRootDir.FullName + @"\UserSettings\" + CurrentUser.UserName + ".xml");
 				// TODO: CHECK FOR SETTINGS FILE ON DESKTOP AND ASK TO MIGRATE INSTEAD OF CREATING NEW
 			}
 			else
-				settingsFile = new FileInfo(GlobalProperties.FallbackRootDir.FullName + @"\UserSettings\" + CurrentUser.userName + ".xml");
+				settingsFile = new FileInfo(GlobalProperties.FallbackRootDir.FullName + @"\UserSettings\" + CurrentUser.UserName + ".xml");
 			if(!settingsFile.Exists)
 				CreateSettingsFile();
 			CheckXMLIntegrity();

@@ -23,7 +23,6 @@ namespace appCore.Logs.UI
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.RadioButton radioButton2;
-		private System.Windows.Forms.RadioButton radioButton3;
 		private System.Windows.Forms.GroupBox groupBox1;
 		
 		/// <summary>
@@ -56,7 +55,6 @@ namespace appCore.Logs.UI
 			this.label4 = new System.Windows.Forms.Label();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
-			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -66,7 +64,7 @@ namespace appCore.Logs.UI
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.Location = new System.Drawing.Point(7, 58);
 			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(128, 82);
+			this.listBox1.Size = new System.Drawing.Size(100, 82);
 			this.listBox1.TabIndex = 0;
 			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1SelectedIndexChanged);
 			// 
@@ -75,14 +73,14 @@ namespace appCore.Logs.UI
 			this.listBox2.FormattingEnabled = true;
 			this.listBox2.Location = new System.Drawing.Point(7, 162);
 			this.listBox2.Name = "listBox2";
-			this.listBox2.Size = new System.Drawing.Size(128, 173);
+			this.listBox2.Size = new System.Drawing.Size(100, 173);
 			this.listBox2.TabIndex = 1;
 			this.listBox2.SelectedIndexChanged += new System.EventHandler(this.ListBox2SelectedIndexChanged);
 			// 
 			// listBox3
 			// 
 			this.listBox3.FormattingEnabled = true;
-			this.listBox3.Location = new System.Drawing.Point(141, 58);
+			this.listBox3.Location = new System.Drawing.Point(113, 58);
 			this.listBox3.Name = "listBox3";
 			this.listBox3.Size = new System.Drawing.Size(128, 277);
 			this.listBox3.TabIndex = 2;
@@ -111,7 +109,7 @@ namespace appCore.Logs.UI
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(141, 41);
+			this.label3.Location = new System.Drawing.Point(113, 41);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(137, 14);
 			this.label3.TabIndex = 5;
@@ -137,7 +135,7 @@ namespace appCore.Logs.UI
 			this.radioButton1.TabStop = true;
 			this.radioButton1.Text = "Templates";
 			this.radioButton1.UseVisualStyleBackColor = true;
-			this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton1CheckedChanged);
+			this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButtonsCheckedChanged);
 			// 
 			// radioButton2
 			// 
@@ -149,29 +147,16 @@ namespace appCore.Logs.UI
 			this.radioButton2.TabStop = true;
 			this.radioButton2.Text = "Outages";
 			this.radioButton2.UseVisualStyleBackColor = true;
-			this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton2CheckedChanged);
-			// 
-			// radioButton3
-			// 
-			this.radioButton3.AutoSize = true;
-			this.radioButton3.Location = new System.Drawing.Point(157, 13);
-			this.radioButton3.Name = "radioButton3";
-			this.radioButton3.Size = new System.Drawing.Size(65, 17);
-			this.radioButton3.TabIndex = 9;
-			this.radioButton3.TabStop = true;
-			this.radioButton3.Text = "Updates";
-			this.radioButton3.UseVisualStyleBackColor = true;
-			this.radioButton3.Visible = false;
-			this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton3CheckedChanged);
+			this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButtonsCheckedChanged);
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.radioButton1);
-			this.groupBox1.Controls.Add(this.radioButton3);
 			this.groupBox1.Controls.Add(this.radioButton2);
-			this.groupBox1.Location = new System.Drawing.Point(1, 0);
+			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupBox1.Location = new System.Drawing.Point(0, 0);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(277, 38);
+			this.groupBox1.Size = new System.Drawing.Size(248, 38);
 			this.groupBox1.TabIndex = 10;
 			this.groupBox1.TabStop = false;
 			// 
@@ -179,7 +164,7 @@ namespace appCore.Logs.UI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(278, 353);
+			this.ClientSize = new System.Drawing.Size(248, 353);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);

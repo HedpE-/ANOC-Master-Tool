@@ -192,7 +192,7 @@ namespace appCore.Templates.UI
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			
 			Thread thread = new Thread(() => {
-			                           	siteDetails2 sd = new siteDetails2(true, outageSites);
+			                           	siteDetails sd = new siteDetails(true, outageSites);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();

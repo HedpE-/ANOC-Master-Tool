@@ -8,10 +8,7 @@
  */
 using System;
 using System.Windows.Forms;
-using System.Threading;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using appCore.Templates;
 using appCore.Templates.UI;
 using appCore.Templates.Types;
@@ -21,25 +18,24 @@ namespace appCore.Logs.UI
 	/// <summary>
 	/// Description of LogEditor.
 	/// </summary>
-	public sealed partial class LogEditor2 : Form
+	public sealed partial class LogEditor : Form
 	{
-		public string[] globalLogs;
-		public string GlobalLogType;
-		List<string> LTEsites = new List<string>();
-		public static string VFoutage;
-		public static string TFoutage;
-		public static string VFbulkCI;
-		public static string TFbulkCI;
+		MainForm myFormControl1;
+		string GlobalLogType {
+			get;
+			set;
+		}
+		
 		public static LogsCollection<Template> Logs;
 		public static LogsCollection<Outage> OutageLogs;
+		
 		public static TroubleshootControls TroubleshootUI;
 		public static FailedCRQControls FailedCRQUI;
 		public static UpdateControls UpdateUI;
 		public static TXControls TXUI;
 		public static OutageControls OutageUI;
-		MainForm myFormControl1;
 		
-		public LogEditor2(LogsCollection<Template> logs, MainForm myForm)
+		public LogEditor(LogsCollection<Template> logs, MainForm myForm)
 		{
 			InitializeComponent();
 			
@@ -131,7 +127,7 @@ namespace appCore.Logs.UI
 			}
 		}
 		
-		public LogEditor2(LogsCollection<Outage> logs, MainForm myForm)
+		public LogEditor(LogsCollection<Outage> logs, MainForm myForm)
 		{
 			InitializeComponent();
 			
@@ -296,7 +292,7 @@ namespace appCore.Logs.UI
 			{
 //				Form frm = (Form)this.Parent;
 				Form frm = this.Owner;
-				// FIXME: App crashes when minimizin both windows
+				// FIXME: App crashes when minimizing both windows
 //				frm.WindowState = FormWindowState.Minimized;
 				frm.Invoke((MethodInvoker)delegate
 				           {
@@ -304,22 +300,6 @@ namespace appCore.Logs.UI
 				           });
 //				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
 			}
-		}
-		
-		void Button12Click(object sender, EventArgs e)
-		{
-			string[] outageSites = (VFbulkCI + TFbulkCI).Split(';');
-			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
-			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
-			Thread thread = new Thread(() => {
-			                           	SiteFinder.UI.siteDetails sd = new SiteFinder.UI.siteDetails(true,outageSites);
-			                           	sd.Name = "Outage Follow-up";
-			                           	sd.StartPosition = FormStartPosition.CenterParent;
-			                           	sd.ShowDialog();
-			                           });
-			
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
 		}
 	}
 }

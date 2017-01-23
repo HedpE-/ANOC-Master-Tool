@@ -1222,12 +1222,6 @@
     <Compile Include="SiteFinder\UI\siteDetails.Designer.cs">
       <DependentUpon>siteDetails.cs</DependentUpon>
     </Compile>
-    <Compile Include="SiteFinder\UI\siteDetails2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SiteFinder\UI\siteDetails2.Designer.cs">
-      <DependentUpon>siteDetails2.cs</DependentUpon>
-    </Compile>
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1448,9 +1442,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\siteDetails.resx">
       <DependentUpon>siteDetails.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SiteFinder\UI\siteDetails2.resx">
-      <DependentUpon>siteDetails2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Templates\UI\SendBCP.resx">
       <DependentUpon>SendBCP.cs</DependentUpon>

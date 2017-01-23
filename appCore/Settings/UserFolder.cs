@@ -26,7 +26,7 @@ namespace appCore.Settings
 			get { return _userFolder; }
 			set {
 				_userFolder = value;
-				usernameFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\" + CurrentUser.userName);
+				usernameFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\" + CurrentUser.UserName);
 			}
 		}
 		static DirectoryInfo _usernameFolder;
@@ -162,7 +162,7 @@ namespace appCore.Settings
 				if(prevFolder != null) {
 					if(prevFolder.Exists) {
 						bool isPrevFallbackFolder = prevFolder.FullName == GlobalProperties.FallbackRootDir.FullName;
-						DirectoryInfo prevUsernameFolder = new DirectoryInfo(prevFolder.FullName + "\\" + CurrentUser.userName);
+						DirectoryInfo prevUsernameFolder = new DirectoryInfo(prevFolder.FullName + "\\" + CurrentUser.UserName);
 						if(prevUsernameFolder.Exists) {
 							DialogResult res;
 							res = FlexibleMessageBox.Show("Previous User Folder exists. Do you want to copy all contents to the new Folder?","Copy Contents",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
@@ -177,7 +177,7 @@ namespace appCore.Settings
 									newFolder.Delete(true);
 									return false;
 								}
-								prevUsernameFolder.CopyTo(newFolder.FullName + "\\" + CurrentUser.userName);
+								prevUsernameFolder.CopyTo(newFolder.FullName + "\\" + CurrentUser.UserName);
 								
 								if(!newFolder.FullName.Contains(prevUsernameFolder.FullName))
 									prevUsernameFolder.Delete(true);

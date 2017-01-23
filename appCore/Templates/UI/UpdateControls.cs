@@ -46,7 +46,7 @@ namespace appCore.Templates.UI
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		
-		public static siteDetails2 SiteDetailsUI;
+		public static siteDetails SiteDetailsUI;
 		
 		public Site currentSite { get; private set; }
 		Update currentTemplate;
@@ -385,7 +385,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails2(currentSite);
+			SiteDetailsUI = new siteDetails(currentSite);
 			SiteDetailsUI.Show();
 		}
 		
