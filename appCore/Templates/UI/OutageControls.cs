@@ -69,7 +69,9 @@ namespace appCore.Templates.UI
 				if(value == Template.UIenum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
-					BulkCITextBox.ReadOnly = Alarms_ReportTextBox.ReadOnly = true;
+					BulkCITextBox.ReadOnly =
+						Alarms_ReportTextBox.ReadOnly = true;
+					Alarms_ReportLabel.Text = "Generated Outage Report";
 					
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -78,6 +80,7 @@ namespace appCore.Templates.UI
 				}
 				else {
 					InitializeComponent();
+					Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
 					
 					MainMenu.MainMenu.DropDownItems.Add(generateReportToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add(generateFromSitesListToolStripMenuItem);
@@ -189,7 +192,7 @@ namespace appCore.Templates.UI
 			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			
 			Thread thread = new Thread(() => {
-			                           	siteDetails sd = new siteDetails(true,outageSites);
+			                           	siteDetails2 sd = new siteDetails2(true, outageSites);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
@@ -564,7 +567,6 @@ namespace appCore.Templates.UI
 //			Alarms_ReportLabel.Size = new Size(179, 20);
 			Alarms_ReportLabel.Name = "Alarms_ReportLabel";
 			Alarms_ReportLabel.TabIndex = 30;
-			Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
 			Alarms_ReportLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// Alarms_ReportTextBox
