@@ -45,21 +45,21 @@ namespace appCore.Templates.Types
 		
 		public int GsmCells {
 			get {
-				return VfGsmCells.Count;
+				return !string.IsNullOrEmpty(VfOutage) ? VfGsmCells.Count : TefGsmCells.Count;
 			}
 			private set { }
 		}
 		
 		public int UmtsCells {
 			get {
-				return VfUmtsCells.Count;
+				return !string.IsNullOrEmpty(VfOutage) ? VfUmtsCells.Count : TefUmtsCells.Count;
 			}
 			private set { }
 		}
 		
 		public int LteCells {
 			get {
-				return VfLteCells.Count;
+				return !string.IsNullOrEmpty(VfOutage) ? VfLteCells.Count : TefLteCells.Count;
 			}
 			private set { }
 		}
@@ -71,9 +71,17 @@ namespace appCore.Templates.Types
 		
 		public DateTime EventTime {
 			get {
-				DateTime dt = new DateTime(Math.Min(VfGsmTime.Ticks, VfUmtsTime.Ticks));
-				if(VfLteTime.Year < 2500)
-					dt = new DateTime(Math.Min(dt.Ticks, VfLteTime.Ticks));
+				DateTime dt;
+				if(!string.IsNullOrEmpty(VfOutage)) {
+					dt = new DateTime(Math.Min(VfGsmTime.Ticks, VfUmtsTime.Ticks));
+					if(VfLteTime.Year < 2500)
+						dt = new DateTime(Math.Min(dt.Ticks, VfLteTime.Ticks));
+				}
+				else {
+					dt = new DateTime(Math.Min(TefGsmTime.Ticks, TefUmtsTime.Ticks));
+					if(TefLteTime.Year < 2500)
+						dt = new DateTime(Math.Min(dt.Ticks, TefLteTime.Ticks));
+				}
 				return dt;
 			}
 			private set { }
@@ -131,8 +139,12 @@ namespace appCore.Templates.Types
 //				st2.Start();
 				
 				foreach(Cell cell in LTEcells) {
-					Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
-					OutageAlarms.Add(new Alarm(cell, true, temp));
+					try {
+						Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
+						OutageAlarms.Add(new Alarm(cell, true, temp));
+					} catch(Exception e) {
+						var m = e.Message;
+					}
 				}
 //				st2.Stop();
 //				t2 = st2.Elapsed;
@@ -142,7 +154,7 @@ namespace appCore.Templates.Types
 				var engine = new FileHelperEngine<Alarm>();
 
 				engine.BeforeWriteRecord += (eng, e) => {
-					if(e.Record.OnM && !e.Record.COOS)
+					if(!e.Record.COOS || e.Record.Summary.Contains("FREQUENT"))
 						e.SkipThisRecord = true;
 				};
 
@@ -156,6 +168,7 @@ namespace appCore.Templates.Types
 				var engine = new FileHelperEngine<Alarm>();
 				engine.AfterReadRecord += (eng, e) => {
 					string temp;
+					Alarm al = e.Record;
 					if(e.Record.Bearer == "4G")
 						temp = e.Record.Element;
 					else
@@ -325,7 +338,6 @@ namespace appCore.Templates.Types
 		
 		public Outage(string[] log, DateTime date) {
 			LoadOutageReport(log);
-//			string[] strTofind = { " - " };
 			string[] time = log[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
 			LogType = "Outage";
@@ -339,8 +351,8 @@ namespace appCore.Templates.Types
 				VfGsmCells.Sort();
 				VfUmtsCells.Sort();
 				VfLteCells.Sort();
-				VfOutage = Summary = cellTotal + "x COOS (" + VfSites.Count;
-				VfOutage += VfSites.Count == 1 ? " Site)" : " Sites)";
+				VfOutage = cellTotal + "x COOS (" + VfSites.Count;
+				Summary = VfOutage += VfSites.Count == 1 ? " Site)" : " Sites)";
 				VfOutage += Environment.NewLine + Environment.NewLine + "Locations (" + VfLocations.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine, VfLocations) + Environment.NewLine + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine, VfSites);
 				
 				if ( VfGsmCells.Count > 0 )
@@ -394,15 +406,18 @@ namespace appCore.Templates.Types
 		}
 		
 		string generateFullLog() {
-			string Log = DateTime.Now.ToString("HH:mm:ss");
+//			string Log = DateTime.Now.ToString("HH:mm:ss");
+			string Log = string.Empty;
 			if(!string.IsNullOrEmpty(VfOutage)) {
-				Log += Environment.NewLine + "----------VF Report----------" + Environment.NewLine;
+				Log += "----------VF Report----------" + Environment.NewLine;
 				Log += VfOutage + Environment.NewLine;
 				Log += "-----BulkCI-----" + Environment.NewLine;
 				Log += VfBulkCI;
 			}
 			if(!string.IsNullOrEmpty(TefOutage)) {
-				Log += Environment.NewLine + "----------TF Report----------" + Environment.NewLine;
+				if(!string.IsNullOrEmpty(VfBulkCI))
+					Log += Environment.NewLine;
+				Log += "----------TF Report----------" + Environment.NewLine;
 				Log += TefOutage + Environment.NewLine;
 				Log += "-----BulkCI-----" + Environment.NewLine;
 				Log += TefBulkCI;
@@ -443,48 +458,46 @@ namespace appCore.Templates.Types
 				if(VfLteCellsIndex == -1)
 					VfLteCellsIndex = VfBulkCiIndex;
 				
+				Summary = log[VfReportIndex + 1];
+				
 				for(int c = VfReportIndex + 1;c < VfBulkCiIndex;c++) {
 					VfOutage += log[c];
 					if(c < VfBulkCiIndex - 1)
 						VfOutage += Environment.NewLine;
 					
-					if(c == VfReportIndex)
-						Summary = log[c];
-					else {
-						if(c > VfLocationsIndex) {
-							if(c < VfSitesListIndex) {
-								if(!string.IsNullOrEmpty(log[c]))
-									VfLocations.Add(log[c]);
+					if(c > VfLocationsIndex) {
+						if(c < VfSitesListIndex) {
+							if(!string.IsNullOrEmpty(log[c]))
+								VfLocations.Add(log[c]);
+						}
+						else {
+							if(c < VfGsmCellsIndex) {
+								if(c > VfSitesListIndex && !string.IsNullOrEmpty(log[c]))
+									VfSites.Add(log[c]);
 							}
 							else {
-								if(c < VfGsmCellsIndex) {
-									if(c > VfSitesListIndex && !string.IsNullOrEmpty(log[c]))
-										VfSites.Add(log[c]);
-								}
-								else {
-									if(c == VfGsmCellsIndex)
-										try { VfGsmTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+								if(c > VfGsmCellsIndex) {
+//										try { VfGsmTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+//									else {
+									if(c < VfUmtsCellsIndex) {
+										if(!string.IsNullOrEmpty(log[c]))
+											VfGsmCells.Add(log[c]);
+									}
 									else {
-										if(c < VfUmtsCellsIndex) {
-											if(!string.IsNullOrEmpty(log[c]))
-												VfGsmCells.Add(log[c]);
-										}
-										else {
-											if(c == VfUmtsCellsIndex)
-												try { VfUmtsTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+										if(c > VfUmtsCellsIndex) {
+//												try { VfUmtsTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+//											else {
+											if(c < VfLteCellsIndex) {
+												if(!string.IsNullOrEmpty(log[c]))
+													VfUmtsCells.Add(log[c]);
+											}
 											else {
-												if(c < VfLteCellsIndex) {
-													if(!string.IsNullOrEmpty(log[c]))
-														VfUmtsCells.Add(log[c]);
-												}
+												if(c == VfLteCellsIndex)
+													try { VfLteTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
 												else {
-													if(c == VfLteCellsIndex)
-														try { VfLteTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
-													else {
-														if(c < VfBulkCiIndex) {
-															if(!string.IsNullOrEmpty(log[c]))
-																VfLteCells.Add(log[c]);
-														}
+													if(c < VfBulkCiIndex) {
+														if(!string.IsNullOrEmpty(log[c]))
+															VfLteCells.Add(log[c]);
 													}
 												}
 											}
@@ -496,11 +509,24 @@ namespace appCore.Templates.Types
 					}
 				}
 				
+				try {
+					if(log[VfGsmCellsIndex].Contains("2G Cells"))
+						VfGsmTime = Convert.ToDateTime(log[VfGsmCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
+				} catch { }
+				try {
+					if(log[VfUmtsCellsIndex].Contains("3G Cells"))
+						VfUmtsTime = Convert.ToDateTime(log[VfUmtsCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
+				} catch { }
+				try {
+					if(log[VfLteCellsIndex].Contains("4G Cells"))
+						VfLteTime = Convert.ToDateTime(log[VfLteCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
+				} catch { }
+				
 				if(TefReportIndex == -1)
 					TefReportIndex = log.Length;
 				
 				for(int c = VfBulkCiIndex + 1;c < TefReportIndex;c++) {
-					VfBulkCI += log[c];
+					VfBulkCI += log[c].Replace("\r", string.Empty).Replace("\n", string.Empty);
 					if(c < TefReportIndex - 1)
 						VfBulkCI += Environment.NewLine;
 				}
@@ -522,6 +548,9 @@ namespace appCore.Templates.Types
 				if(TefLteCellsIndex == -1)
 					TefLteCellsIndex = TefBulkCiIndex;
 				
+				if(VfReportIndex == -1)
+					Summary = log[TefReportIndex + 1];
+				
 				for(int c = TefReportIndex + 1;c < TefBulkCiIndex;c++) {
 					TefOutage += log[c];
 					if(c < TefBulkCiIndex - 1)
@@ -538,25 +567,25 @@ namespace appCore.Templates.Types
 									TefSites.Add(log[c]);
 							}
 							else {
-								if(c == TefGsmCellsIndex)
-									try { TefGsmTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
-								else {
+								if(c > TefGsmCellsIndex) {
+//									try { TefGsmTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+//								else {
 									if(c < TefUmtsCellsIndex) {
 										if(!string.IsNullOrEmpty(log[c]))
 											TefGsmCells.Add(log[c]);
 									}
 									else {
-										if(c == TefUmtsCellsIndex)
-											try { TefUmtsTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
-										else {
+										if(c > TefUmtsCellsIndex) {
+//											try { TefUmtsTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+//										else {
 											if(c < TefLteCellsIndex) {
 												if(!string.IsNullOrEmpty(log[c]))
 													TefUmtsCells.Add(log[c]);
 											}
 											else {
-												if(c == TefLteCellsIndex)
-													try { TefLteTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
-												else {
+												if(c > TefLteCellsIndex) {
+//													try { TefLteTime = Convert.ToDateTime(log[c].Split(strToFind, StringSplitOptions.None)[1]); } catch { }
+//												else {
 													if(c < TefBulkCiIndex) {
 														if(!string.IsNullOrEmpty(log[c]))
 															TefLteCells.Add(log[c]);
@@ -571,8 +600,21 @@ namespace appCore.Templates.Types
 					}
 				}
 				
+				try {
+					if(log[TefGsmCellsIndex].Contains("2G Cells"))
+						TefGsmTime = Convert.ToDateTime(log[TefGsmCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
+				} catch { }
+				try {
+					if(log[TefUmtsCellsIndex].Contains("3G Cells"))
+						TefUmtsTime = Convert.ToDateTime(log[TefUmtsCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
+				} catch { }
+				try {
+					if(log[TefLteCellsIndex].Contains("4G Cells"))
+						TefLteTime = Convert.ToDateTime(log[TefLteCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
+				} catch { }
+				
 				for(int c = TefBulkCiIndex + 1;c < log.Length;c++) {
-					TefBulkCI += log[c];
+					TefBulkCI += log[c].Replace("\r", string.Empty).Replace("\n", string.Empty);
 					if(c < log.Length - 1)
 						TefBulkCI += Environment.NewLine;
 				}
