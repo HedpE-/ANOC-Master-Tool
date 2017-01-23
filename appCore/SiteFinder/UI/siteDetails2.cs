@@ -96,15 +96,13 @@ namespace appCore.SiteFinder.UI
 				_siteDetails_UIMode = value;
 			}
 		}
-//		DataView cellsList = null;
-//		DataTable foundSites = Databases.siteDetailsTable.Clone();
-//		DataTable foundCells = Databases.cellDetailsTable.Clone();
 		GMapControl myMap;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
 		List<GMapMarker> markersList = new List<GMapMarker>();
 		public Site currentSite;
-		List<Site> outageSites = new List<Site>(); // for outages site list
+		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
+		string[] sites; // for outages site list
 		byte listView2_EventCount = 1;
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(560);
@@ -147,14 +145,14 @@ namespace appCore.SiteFinder.UI
 			Toolbox.Tools.darkenBackgroundForm(action,true, this);
 		}
 		
-		public siteDetails2(bool outage, List<Site> sitesList)
+		public siteDetails2(bool outage, string[] sitesList)
 		{
 			InitializeComponent();
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
 			if(outage) {
 				siteDetails_UIMode = "outage";
-				outageSites = sitesList;
+				sites = sitesList;
 			}
 			else
 				siteDetails_UIMode = "single";
@@ -180,7 +178,7 @@ namespace appCore.SiteFinder.UI
 			                           	if(siteDetails_UIMode.Contains("outage")) {
 			                           		this.Name = "Outage Follow-up";
 			                           		this.Text = this.Name;
-//			                           		siteFinder(sites);
+			                           		siteFinder(sites);
 			                           	}
 			                           	else
 			                           		textBox1.Select();
@@ -524,18 +522,18 @@ namespace appCore.SiteFinder.UI
 				return;
 			
 			string[] input = sitesList_tb.Text.Split('\n');
-			if(outageSites != null)
-				outageSites.Clear();
-			foreach(string site in input) {
-				currentSite = Finder.getSite(site);
-				if(currentSite.Exists)
-					outageSites.Add(currentSite);
-			}
-			siteFinder(outageSites);
+//			if(outageSites != null)
+//				outageSites.Clear();
+//			foreach(string site in input) {
+//				currentSite = Finder.getSite(site);
+//				if(currentSite.Exists)
+//					outageSites.Add(currentSite);
+//			}
+			siteFinder(input);
 		}
 		
-		void searchResultsPopulate(List<Site> foundSites) {
-			outageSites = foundSites;
+		void searchResultsPopulate() {
+//			outageSites = foundSites;
 			foreach (Site site in foundSites) {
 				listView2.Items.Add(new ListViewItem(new[]{ site.Id,site.JVCO_Id,site.Priority,site.HostedBy,site.PostCode }));
 				
@@ -550,7 +548,7 @@ namespace appCore.SiteFinder.UI
 				col.Width = -2;
 			listView2.ResumeLayout();
 			
-			label11.Text = label11.Text.Split('(')[0] + '(' + outageSites.Count + ')';
+			label11.Text = label11.Text.Split('(')[0] + '(' + foundSites.Count + ')';
 		}
 		
 		void bulkSearchForm_buttonClick(object sender, EventArgs e)
@@ -604,7 +602,7 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void siteFinder(List<Site> sitesList)
+		void siteFinder(string[] src)
 		{
 			Action action = new Action(delegate {
 			                           	try {
@@ -615,21 +613,22 @@ namespace appCore.SiteFinder.UI
 			                           	}
 			                           	catch (Exception) {
 			                           	}
+			                           	foundSites = Finder.getSites(src.ToList());
 			                           	
-			                           	if(sitesList.Count > 1) {
+			                           	if(foundSites.Count > 1) {
 			                           		if(!siteDetails_UIMode.Contains("outage"))
 			                           			siteDetails_UIMode = "multi";
-			                           		searchResultsPopulate(sitesList);
+			                           		searchResultsPopulate();
 			                           		listView2.Items[0].Focused = true;
 			                           		listView2.Items[0].Selected = true;
 			                           		myMap.Overlays.Add(markersOverlay);
 			                           		myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 			                           	}
 			                           	else {
-			                           		if(sitesList.Count == 1) {
+			                           		if(foundSites.Count == 1) {
 			                           			siteDetails_UIMode = "single";
-			                           			selectedSiteDetailsPopulate(sitesList[0]);
-			                           			selectedSiteOverlay.Markers.Add(sitesList[0].MapMarker);
+			                           			selectedSiteDetailsPopulate(foundSites[0]);
+			                           			selectedSiteOverlay.Markers.Add(foundSites[0].MapMarker);
 			                           			myMap.Overlays.Add(selectedSiteOverlay);
 			                           			myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           		}
@@ -638,13 +637,47 @@ namespace appCore.SiteFinder.UI
 			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 		}
 		
+//		void siteFinder(List<Site> sitesList)
+//		{
+//			Action action = new Action(delegate {
+//			                           	try {
+//			                           		myMap.Overlays.Remove(markersOverlay);
+//			                           		myMap.Overlays.Remove(selectedSiteOverlay);
+//			                           		markersOverlay.Clear();
+//			                           		selectedSiteOverlay.Clear();
+//			                           	}
+//			                           	catch (Exception) {
+//			                           	}
+//			                           	
+//			                           	if(sitesList.Count > 1) {
+//			                           		if(!siteDetails_UIMode.Contains("outage"))
+//			                           			siteDetails_UIMode = "multi";
+//			                           		searchResultsPopulate(sitesList);
+//			                           		listView2.Items[0].Focused = true;
+//			                           		listView2.Items[0].Selected = true;
+//			                           		myMap.Overlays.Add(markersOverlay);
+//			                           		myMap.ZoomAndCenterMarkers(markersOverlay.Id);
+//			                           	}
+//			                           	else {
+//			                           		if(sitesList.Count == 1) {
+//			                           			siteDetails_UIMode = "single";
+//			                           			selectedSiteDetailsPopulate(sitesList[0]);
+//			                           			selectedSiteOverlay.Markers.Add(sitesList[0].MapMarker);
+//			                           			myMap.Overlays.Add(selectedSiteOverlay);
+//			                           			myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
+//			                           		}
+//			                           	}
+//			                           });
+//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+//		}
+		
 		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
 			if(listView2_EventCount == 0)
 				listView2_EventCount++;
 			else {
 				if(listView2.SelectedItems.Count > 0) {
-					Site site = outageSites[listView2.SelectedItems[0].Index];
+					Site site = foundSites[listView2.SelectedItems[0].Index];
 					
 //					if(!Toolbox.Tools.IsAllDigits(site))
 //						site = "00000";

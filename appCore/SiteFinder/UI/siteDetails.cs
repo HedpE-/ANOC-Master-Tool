@@ -26,9 +26,7 @@ namespace appCore.SiteFinder.UI
 	public partial class siteDetails : Form
 	{
 		string _siteDetails_UIMode = "single/readonly";
-//		DataView cellsList = null;
 		List<Site> foundSites;
-//		DataTable foundCells = Databases.cellDetailsTable.Clone();
 		GMapControl myMap;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
