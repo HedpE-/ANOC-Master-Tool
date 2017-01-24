@@ -14,7 +14,6 @@ namespace appCore.UI
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-		private System.Windows.Forms.RichTextBox textBox1;
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
@@ -23,6 +22,7 @@ namespace appCore.UI
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.RichTextBox textBox3;
+		private System.Windows.Forms.DataGridView dataGridView1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -45,9 +45,10 @@ namespace appCore.UI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBox1 = new System.Windows.Forms.RichTextBox();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.textBox2 = new System.Windows.Forms.RichTextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -56,25 +57,12 @@ namespace appCore.UI
 			this.textBox3 = new System.Windows.Forms.RichTextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.tabPage4.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// textBox1
-			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox1.Location = new System.Drawing.Point(3, 3);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(478, 526);
-			this.textBox1.TabIndex = 0;
-			this.textBox1.Text = "";
-			this.textBox1.WordWrap = false;
 			// 
 			// tabControl1
 			// 
@@ -88,19 +76,50 @@ namespace appCore.UI
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(492, 558);
+			this.tabControl1.Size = new System.Drawing.Size(546, 558);
 			this.tabControl1.TabIndex = 1;
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.textBox1);
+			this.tabPage1.Controls.Add(this.dataGridView1);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(484, 532);
+			this.tabPage1.Size = new System.Drawing.Size(538, 532);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Contacts";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// dataGridView1
+			// 
+			this.dataGridView1.AllowUserToAddRows = false;
+			this.dataGridView1.AllowUserToDeleteRows = false;
+			this.dataGridView1.AllowUserToResizeColumns = false;
+			this.dataGridView1.AllowUserToResizeRows = false;
+			this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+			this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+			this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
+			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+			this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+			this.dataGridView1.MultiSelect = false;
+			this.dataGridView1.Name = "dataGridView1";
+			this.dataGridView1.ReadOnly = true;
+			this.dataGridView1.RowHeadersVisible = false;
+			this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+			this.dataGridView1.ShowEditingIcon = false;
+			this.dataGridView1.Size = new System.Drawing.Size(532, 526);
+			this.dataGridView1.StandardTab = true;
+			this.dataGridView1.TabIndex = 1;
 			// 
 			// tabPage2
 			// 
@@ -180,7 +199,7 @@ namespace appCore.UI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(492, 558);
+			this.ClientSize = new System.Drawing.Size(546, 558);
 			this.Controls.Add(this.tabControl1);
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
 			this.MinimumSize = new System.Drawing.Size(500, 585);
@@ -188,6 +207,7 @@ namespace appCore.UI
 			this.Text = "Notes";
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage3.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

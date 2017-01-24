@@ -200,38 +200,23 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to {\rtf1\fbidis\ansi\ansicpg1252\deff0\deflang2070{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri;}{\f1\fnil\fcharset0 Microsoft Sans Serif;}}
-		///\viewkind4\uc1\trowd\trgaph108\trleft-108\trbrdrt\brdrs\brdrw10 \trbrdrl\brdrs\brdrw10 \trbrdrb\brdrs\brdrw10 \trbrdrr\brdrs\brdrw10 \clbrdrt\brdrw15\brdrs\clbrdrl\brdrw15\brdrs\clbrdrb\brdrw15\brdrs\clbrdrr\brdrw15\brdrs \cellx2062\clbrdrt\brdrw15\brdrs\clbrdrl\brdrw15\brdrs\clbrdrb\brdrw15\brdrs\clbrdrr\brdrw15\brdrs \cellx4007\clbrdrt\brdrw15\brdrs\clbrdrl\brdrw15\brd [rest of string was truncated]&quot;;.
+		///   Looks up a localized string similar to ANOC UK 1ª Linha,00441635692067,210950195,1stLineANOCUK@vodafone.com
+		///ANOC UK 2ª Linha,00441635692069,210915260
+		///Helpdesk (UK),00448454420304,,Service.Desk@gb.vodafone.co.uk
+		///Helpdesk (PT),210915100
+		///CAM,00447971389341,,maintenance@cellularasset.com
+		///BT,00448009170355
+		///O2,00441753281000 1-4,,legacyfaults@o2.com
+		///Orange,00441189024222
+		///EGI,00441189562400 1-3,00441189024661/2,egi.vodafone.shiftleader@ericsson.com
+		///Mitie,00441329332884,,CTIL.Reactive@mitie.com
+		///C&amp;W,00448000928939
+		///Vdf NOC,00441635682025
+		///Chang [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Contacts {
 			get {
 				return ResourceManager.GetString("Contacts", resourceCulture);
-			}
-		}
-		
-		/// <summary>
-		///   Looks up a localized string similar to ANOC UK 1ª Linha\t00441635692067\t1stLineANOCUK@vodafone.com
-		///ANOC UK 2ª Linha\t00441635692069
-		///\t210915260
-		///
-		///Helpdesk (UK)\t00448454420304\tService.Desk@gb.vodafone.co.uk
-		///Helpdesk (PT)\t210915100
-		///
-		///BT\t00448009170355
-		///O2\t00441753281000 1-4\tlegacyfaults@o2.com
-		///Orange\t00441189024222
-		///C3\t00441189562400 1-3
-		///\t00441189024662
-		///Mittie\t00441329332884\tcatriona.mcgrory@mitie.com
-		///C&amp;W\t00448000928939
-		///Vdf NOC\t00441635682025
-		///Change Management\t00441635674999\tSiteShutdowns@vodafone.com
-		///
-		///HNOC 4G Huawei\t [rest of string was truncated]&quot;;.
-		/// </summary>
-		internal static string Contacts_1 {
-			get {
-				return ResourceManager.GetString("Contacts 1", resourceCulture);
 			}
 		}
 		
