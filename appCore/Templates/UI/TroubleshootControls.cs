@@ -749,8 +749,8 @@ namespace appCore.Templates.UI
 						return;
 					if(relatedCasesForm.selectedCases.Count > 0) {
 						int c = 0;
-						foreach(ListViewItem lvi in relatedCasesForm.selectedCases) {
-							relatedCases += lvi.SubItems[1].Text + " - " + lvi.SubItems[2].Text + " - " + lvi.SubItems[3].Text;
+						foreach(DataGridViewRow row in relatedCasesForm.selectedCases) {
+							relatedCases += row.Cells[2].Value + " - " + row.Cells[3].Value + " - " + row.Cells[4].Value;
 							if(++c < relatedCasesForm.selectedCases.Count)
 								relatedCases += Environment.NewLine;
 						}
