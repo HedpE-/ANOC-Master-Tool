@@ -21,7 +21,7 @@ namespace appCore.SiteFinder.UI
 		DataTable Datatable;
 		int maxWidth;
 		public bool Cancel;
-		public string DataType { get; private set; }
+		string DataType { get; set; }
 		public List<DataGridViewRow> selectedCases;
 		
 		int checkedCount {
