@@ -111,7 +111,6 @@ namespace appCore.UI
 			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-			this.dataGridView1.MultiSelect = false;
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.ReadOnly = true;
 			this.dataGridView1.RowHeadersVisible = false;
@@ -127,7 +126,7 @@ namespace appCore.UI
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(484, 532);
+			this.tabPage2.Size = new System.Drawing.Size(538, 532);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Cells Prefix";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -141,7 +140,7 @@ namespace appCore.UI
 			this.textBox2.Location = new System.Drawing.Point(3, 3);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.ReadOnly = true;
-			this.textBox2.Size = new System.Drawing.Size(478, 526);
+			this.textBox2.Size = new System.Drawing.Size(532, 526);
 			this.textBox2.TabIndex = 1;
 			this.textBox2.Text = "";
 			// 
@@ -153,7 +152,7 @@ namespace appCore.UI
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(484, 532);
+			this.tabPage3.Size = new System.Drawing.Size(538, 532);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Alphabet";
 			// 
@@ -165,7 +164,7 @@ namespace appCore.UI
 			this.pictureBox1.Image = global::appCore.UI.Resources.Phonetic_Chart;
 			this.pictureBox1.Location = new System.Drawing.Point(3, 3);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(460, 525);
+			this.pictureBox1.Size = new System.Drawing.Size(514, 525);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox1.TabIndex = 0;
 			this.pictureBox1.TabStop = false;
@@ -176,7 +175,7 @@ namespace appCore.UI
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(484, 532);
+			this.tabPage4.Size = new System.Drawing.Size(538, 532);
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "Usefull Info";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -191,7 +190,7 @@ namespace appCore.UI
 			this.textBox3.Name = "textBox3";
 			this.textBox3.ReadOnly = true;
 			this.textBox3.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.textBox3.Size = new System.Drawing.Size(478, 526);
+			this.textBox3.Size = new System.Drawing.Size(532, 526);
 			this.textBox3.TabIndex = 2;
 			this.textBox3.Text = "";
 			// 
