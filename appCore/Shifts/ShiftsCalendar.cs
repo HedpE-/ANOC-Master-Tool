@@ -178,7 +178,7 @@ namespace appCore.Shifts
 			int panelBodyHeight = (int)((shiftsRectHeight * 2) + 3 + ((num_lines * 2) * shiftsRectHeight) + 10); // (height * 2) + 3 for title and weedays headers; + 10 for 5 padding on top&bottom
 //			DataRow[] foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
 			string[] foundRows = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], date.Month);
-				
+			
 //			shiftsHeaderSnap = new Bitmap(MainForm.shiftsPanel.Controls["shiftsPanel_refresh"].Right + MainForm.shiftsPanel.Controls["shiftsPanel_icon"].Right, shiftsRectHeight);
 			shiftsBodySnap = new Bitmap(224, panelBodyHeight);
 			
@@ -192,7 +192,7 @@ namespace appCore.Shifts
 				drawStringFormat.Alignment = StringAlignment.Center;
 				drawStringFormat.LineAlignment = StringAlignment.Far;
 				using (Pen pen = new Pen(Color.Black, 1)) {
-					string title = Enum.GetName(typeof(Tools.Months),date.Month - 1) + " " + date.Year;
+					string title = Enum.GetName(typeof(Months),date.Month - 1) + " " + date.Year;
 					Rectangle rectangle = new Rectangle(new Point(7, 0), new Size(shiftsRectWidth * 7, shiftsRectHeight + 3));
 					g.DrawString(title, new Font("Tahoma",12, FontStyle.Bold), Brushes.Black, rectangle, drawStringFormat);
 					drawStringFormat.LineAlignment = StringAlignment.Center;
@@ -281,3 +281,17 @@ namespace appCore.Shifts
 		}
 	}
 }
+public enum Months : byte {
+	January,
+	February,
+	March,
+	April,
+	May,
+	June,
+	July,
+	August,
+	September,
+	October,
+	November,
+	December
+};

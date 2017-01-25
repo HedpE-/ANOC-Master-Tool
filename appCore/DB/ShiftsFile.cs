@@ -148,7 +148,7 @@ namespace appCore.DB
 		}
 		
 		public List<SingleShift> GetWholeShift(string shift, DateTime date) {
-			if(shift.StartsWith("H"))
+			if(shift.StartsWith("H") || shift == "B")
 				return null;
 			
 			string dayColumn = FindDayColumn(date);
@@ -159,7 +159,7 @@ namespace appCore.DB
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "A" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L" && !cell.Text.IsAllDigits())
+								if(cell.Text != "A" && cell.Text != "N" && !cell.Text.StartsWith("H") && cell.Text != "HA" && cell.Text != "L" && cell.Text != "B" && !cell.Text.IsAllDigits())
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
@@ -169,7 +169,7 @@ namespace appCore.DB
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "M" && cell.Text != "MT" && cell.Text != "QM" && cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L" && !cell.Text.IsAllDigits())
+								if(cell.Text != "M" && cell.Text != "MT" && cell.Text != "QM" && cell.Text != "N" && !cell.Text.StartsWith("H") && cell.Text != "HA" && cell.Text != "L" && cell.Text != "B" && !cell.Text.IsAllDigits())
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
@@ -189,7 +189,7 @@ namespace appCore.DB
 					foreach(var cell in columnRange) {
 						if(cell.Start.Row > 3) {
 							if(cell.Value != null) {
-								if(cell.Text != "N" && cell.Text != "H" && cell.Text != "HA" && cell.Text != "L" && !cell.Text.IsAllDigits())
+								if(cell.Text != "N" && !cell.Text.StartsWith("H") && cell.Text != "HA" && cell.Text != "L" && cell.Text != "B" && !cell.Text.IsAllDigits())
 									foundRows.Add(new SingleShift(package.Workbook.Worksheets[1].Cells[cell.Start.Row, 3].Text, cell.Text, date));
 							}
 						}
