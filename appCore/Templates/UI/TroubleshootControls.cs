@@ -266,6 +266,22 @@ namespace appCore.Templates.UI
 				                                      			SiteOwnerComboBox.Text = "VF";
 				                                      			TefSiteTextBox.Text = string.Empty;
 				                                      		}
+				                                      		
+				                                      		List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
+				                                      		COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
+				                                      		COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                                      		COOS2GNumericUpDown.Value = 0;
+				                                      		
+				                                      		cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
+				                                      		COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
+				                                      		COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                                      		COOS3GNumericUpDown.Value = 0;
+
+				                                      		cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
+				                                      		COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
+				                                      		COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
+				                                      		COOS4GNumericUpDown.Value = 0;
+				                                      		COOSCheckBox.Checked = false;
 				                                      	}
 				                                      	else {
 				                                      		AddressTextBox.Text = string.Empty;
@@ -278,25 +294,10 @@ namespace appCore.Templates.UI
 				                                      		MainMenu.INCsButton.Enabled = false;
 				                                      	}
 				                                      	siteFinder_Toggle(true, currentSite.Exists);
-				                                      	generateTemplateToolStripMenuItem.Enabled = true;
-				                                      	generateTaskToolStripMenuItem.Enabled = true;
-				                                      	sendBCPToolStripMenuItem.Enabled = true;
-				                                      	
-				                                      	List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
-				                                      	COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
-				                                      	COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                                      	COOS2GNumericUpDown.Value = 0;
-				                                      	
-				                                      	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
-				                                      	COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
-				                                      	COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                                      	COOS3GNumericUpDown.Value = 0;
-
-				                                      	cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
-				                                      	COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
-				                                      	COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                                      	COOS4GNumericUpDown.Value = 0;
-				                                      	COOSCheckBox.Checked = false;
+				                                      	generateTemplateToolStripMenuItem.Enabled =
+				                                      		generateTaskToolStripMenuItem.Enabled =
+				                                      		sendBCPToolStripMenuItem.Enabled = true;
+				                                      	SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
 				                                      });
 				LoadingPanel load = new LoadingPanel();
 				load.Show(actionThreaded, actionNonThreaded, true, this);
@@ -336,7 +337,7 @@ namespace appCore.Templates.UI
 					Label lbl = (Label)Controls["COOS" + c + "GLabel"];
 					lbl.Visible = true;
 					nupd.Visible = true;
-					nupd.Enabled = nupd.Maximum < 999;
+//					nupd.Enabled = nupd.Maximum < 999;
 				}
 				FullSiteOutageCheckBox.Visible = true;
 			}
@@ -354,43 +355,47 @@ namespace appCore.Templates.UI
 		
 		void NumericUpDownValueChanged(object sender, EventArgs e)
 		{
-			int nupdTotal = 0;
-			int nupdMaxed = 0;
-			for(int c = 2;c<5;c++) {
-				NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-				if(nupd.Maximum < 999) {
-					nupdTotal++;
-					if(nupd.Value == nupd.Maximum)
-						nupdMaxed++;
+			if(currentSite.Exists) {
+				int nupdTotal = 0;
+				int nupdMaxed = 0;
+				for(int c = 2;c<5;c++) {
+					NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+					if(nupd.Maximum < 999) {
+						nupdTotal++;
+						if(nupd.Value == nupd.Maximum)
+							nupdMaxed++;
+					}
 				}
+				if(nupdMaxed == nupdTotal)
+					if(!FullSiteOutageCheckBox.Checked)
+						FullSiteOutageCheckBox.Checked = true;
 			}
-			if(nupdMaxed == nupdTotal)
-				if(!FullSiteOutageCheckBox.Checked)
-					FullSiteOutageCheckBox.Checked = true;
 		}
 
 		void COOSLabelDoubleClick(object sender, EventArgs e)
 		{
-			Label lbl = (Label)sender;
-			NumericUpDown nupd = null;
-			switch(lbl.Name) {
-				case "COOS2GLabel":
-					nupd = COOS2GNumericUpDown;
-					break;
-				case "COOS3GLabel":
-					nupd = COOS3GNumericUpDown;
-					break;
-				case "COOS4GLabel":
-					nupd = COOS4GNumericUpDown;
-					break;
-			}
-			if(nupd.Enabled) {
-				int max = Convert.ToInt16(lbl.Text.Split('(')[1].Replace(")",string.Empty));
-				if(nupd.Value < max)
-					nupd.Value = max;
-				else {
-					if(nupd.Value == max)
-						nupd.Value = 0;
+			if(currentSite.Exists) {
+				Label lbl = (Label)sender;
+				NumericUpDown nupd = null;
+				switch(lbl.Name) {
+					case "COOS2GLabel":
+						nupd = COOS2GNumericUpDown;
+						break;
+					case "COOS3GLabel":
+						nupd = COOS3GNumericUpDown;
+						break;
+					case "COOS4GLabel":
+						nupd = COOS4GNumericUpDown;
+						break;
+				}
+				if(nupd.Enabled) {
+					int max = Convert.ToInt16(lbl.Text.Split('(')[1].Replace(")",string.Empty));
+					if(nupd.Value < max)
+						nupd.Value = max;
+					else {
+						if(nupd.Value == max)
+							nupd.Value = 0;
+					}
 				}
 			}
 		}
@@ -410,58 +415,62 @@ namespace appCore.Templates.UI
 
 		void OtherSitesImpactedCheckedChanged(object sender, EventArgs e)
 		{
-			for(int c=2;c<5;c++) {
-				NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-				if(OtherSitesImpactedCheckBox.Checked) {
-					Label lbl = (Label)Controls["COOS" + c + "GLabel"];
-					lbl.Text = c + "G cells";
-					nupd.Maximum = 9999;
-					nupd.Enabled = true;
-				}
-				else {
-					int max;
-					switch(c) {
-						case 2:
-							max = currentSite.Cells.Filter(Cell.Filters.VF_2G).Count();
-							break;
-						case 3:
-							max = currentSite.Cells.Filter(Cell.Filters.VF_3G).Count();
-							break;
-						default:
-							max = currentSite.Cells.Filter(Cell.Filters.VF_4G).Count();
-							break;
-					}
-					if(max == 0)
-						nupd.Enabled = false;
-					else
+			if(currentSite.Exists) {
+				for(int c=2;c<5;c++) {
+					NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+					if(OtherSitesImpactedCheckBox.Checked) {
+						Label lbl = (Label)Controls["COOS" + c + "GLabel"];
+						lbl.Text = c + "G cells";
+						nupd.Maximum = 9999;
 						nupd.Enabled = true;
-					nupd.Maximum = max;
-					Label lbl = (Label)Controls["COOS" + c + "GLabel"];
-					lbl.Text = c + "G cells(" + max + ")";
+					}
+					else {
+						int max;
+						switch(c) {
+							case 2:
+								max = currentSite.Cells.Filter(Cell.Filters.VF_2G).Count();
+								break;
+							case 3:
+								max = currentSite.Cells.Filter(Cell.Filters.VF_3G).Count();
+								break;
+							default:
+								max = currentSite.Cells.Filter(Cell.Filters.VF_4G).Count();
+								break;
+						}
+						if(max == 0)
+							nupd.Enabled = false;
+						else
+							nupd.Enabled = true;
+						nupd.Maximum = max;
+						Label lbl = (Label)Controls["COOS" + c + "GLabel"];
+						lbl.Text = c + "G cells(" + max + ")";
+					}
 				}
 			}
 		}
 		
 		void FullSiteOutageCheckedChanged(object sender, EventArgs e) {
-			if(!OtherSitesImpactedCheckBox.Checked) {
-				if(FullSiteOutageCheckBox.Checked) {
-					if(GlobalProperties.siteFinder_mainswitch) {
-						for(int c=2;c<5;c++) {
-							NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-							if (nupd.Maximum < 999) {
-								nupd.Value = nupd.Maximum;
-								nupd.Enabled = false;
+			if(currentSite.Exists) {
+				if(!OtherSitesImpactedCheckBox.Checked) {
+					if(FullSiteOutageCheckBox.Checked) {
+						if(GlobalProperties.siteFinder_mainswitch) {
+							for(int c=2;c<5;c++) {
+								NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+								if (nupd.Maximum < 999) {
+									nupd.Value = nupd.Maximum;
+									nupd.Enabled = false;
+								}
 							}
 						}
 					}
-				}
-				else {
-					for(int c=2;c<5;c++) {
-						NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-						nupd.Value = 0;
-						if (nupd.Maximum < 999) {
+					else {
+						for(int c=2;c<5;c++) {
+							NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
 							nupd.Value = 0;
-							nupd.Enabled = true;
+							if (nupd.Maximum < 999) {
+								nupd.Value = 0;
+								nupd.Enabled = true;
+							}
 						}
 					}
 				}
@@ -740,6 +749,7 @@ namespace appCore.Templates.UI
 			
 			string relatedCases = string.Empty;
 			if(currentSite.Exists) {
+				CheckOngoingCRQs();
 				List<DataRow> OngoingCases = getCurrentCases();
 				if(OngoingCases.Count > 0) {
 					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id);
@@ -845,6 +855,29 @@ namespace appCore.Templates.UI
 				prevTemp = currentTemplate;
 				
 				MainForm.logFiles.HandleLog(currentTemplate);
+			}
+		}
+		
+		void CheckOngoingCRQs() {
+			if(currentSite.CRQs != null) {
+				List<DataRow> OngoingCRQs = new List<DataRow>();
+				foreach(DataRow row in currentSite.CRQs.Rows) {
+					if((row["Status"].ToString() == "Scheduled" || row["Status"].ToString() == "Implementation In Progress")) {
+						if((Convert.ToDateTime(row["Scheduled Start"]) <= DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) > DateTime.Now))
+							OngoingCRQs.Add(row);
+					}
+				}
+				if(OngoingCRQs.Count > 0) {
+					string OngoingCRQsStr = string.Empty;
+					foreach (DataRow row in OngoingCRQs) {
+						OngoingCRQsStr += row["Change Ref"] + " - " + row["Summary"] + " - " + row["Project"] + " - " + row["Status"] + " - " + row["Scheduled Start"] + " - " + row["Scheduled End"];
+						if(row != OngoingCRQs.Last())
+							OngoingCRQsStr += Environment.NewLine;
+					}
+					DialogResult ans = MessageBox.Show("Site has Ongoing CRQ(s):" + Environment.NewLine + Environment.NewLine + OngoingCRQsStr + Environment.NewLine + Environment.NewLine + "Generate template anyway?","Ongoing CRQs",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+					if(ans == DialogResult.No)
+						return;
+				}
 			}
 		}
 		
