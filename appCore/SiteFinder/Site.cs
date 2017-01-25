@@ -17,6 +17,7 @@ using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
 using appCore.Toolbox;
+using appCore.Web;
 using HtmlAgilityPack;
 using FileHelpers;
 
@@ -384,21 +385,8 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response = string.Empty;
 			response = Web.OIConnection.requestPhpOutput("inc", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents")) {
-				var st = new System.Diagnostics.Stopwatch();
-				st.Start();
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
-				st.Stop();
-				var t = st.Elapsed;
-				st.Start();
-				var csv = Tools.ConvertHtmlTabletoCSV(response, "table_inc");
-				
-				var engine = new FileHelperEngine<INC>();
-				dt = engine.ReadStringAsDT(csv);
-				dt.TableName = "table_inc";
-				st.Stop();
-				var t2 = st.Elapsed;
-			}
 			return dt;
 		}
 		
@@ -424,21 +412,8 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response = string.Empty;
 			response = Web.OIConnection.requestPhpOutput("sitevisit", Id, 90);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
-				var st = new System.Diagnostics.Stopwatch();
-				st.Start();
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
-				st.Stop();
-				var t = st.Elapsed;
-				st.Start();
-				var csv = Tools.ConvertHtmlTabletoCSV(response, "table_visits");
-				
-				var engine = new FileHelperEngine<BookIns>();
-				dt = engine.ReadStringAsDT(csv);
-				dt.TableName = "table_visits";
-				st.Stop();
-				var t2 = st.Elapsed;
-			}
 			return dt;
 		}
 		

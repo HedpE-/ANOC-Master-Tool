@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-//	using System.DirectoryServices;
-//	using System.DirectoryServices.AccountManagement;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -13,33 +10,15 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
-//	using Excel;
-//	using msExcel = Microsoft.Office.Interop.Excel;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using appCore.UI;
 using appCore.Settings;
 using HtmlAgilityPack;
-using FileHelpers;
 
 namespace appCore.Toolbox
 {
 	public static class Tools
-	{
-		public enum Months : byte {
-			January,
-			February,
-			March,
-			April,
-			May,
-			June,
-			July,
-			August,
-			September,
-			October,
-			November,
-			December
-		};
-		
+	{		
 		public static string[] DirSearch(string sDir)
 		{
 			List<string> result = new List<string>();
@@ -82,15 +61,18 @@ namespace appCore.Toolbox
 		
 		public static Form getParentForm(Control control) {
 			Form parentForm = null;
-			if((Form)control == null) {
+			if(control is Form)
+				parentForm = (Form)control;
+			else {
 				while(parentForm == null) {
-					control = control.Parent;
-					if(control is Form)
-						parentForm = control as Form;
+					try {
+						control = control.Parent;
+						if(control is Form)
+							parentForm = (Form)control;
+					}
+					catch {}
 				}
 			}
-			else
-				parentForm = (Form)control;
 			return parentForm;
 		}
 		
@@ -296,18 +278,16 @@ namespace appCore.Toolbox
 			PropertyInfo[] srcProperties = src.GetType().GetProperties();
 			dynamic dstType = dst.GetType();
 
-			if (srcProperties == null || dstType.GetProperties() == null) {
+			if (srcProperties == null || dstType.GetProperties() == null)
 				return;
-			}
 
 			foreach (PropertyInfo srcProperty in srcProperties) {
 				PropertyInfo dstProperty = dstType.GetProperty(srcProperty.Name);
 
 				if (dstProperty != null) {
 					if(dstProperty.CanWrite) {
-						if(dstProperty.PropertyType.IsAssignableFrom(srcProperty.PropertyType)) {
+						if(dstProperty.PropertyType.IsAssignableFrom(srcProperty.PropertyType))
 							dstProperty.SetValue(dst, srcProperty.GetValue(src, null), null);
-						}
 					}
 				}
 			}
@@ -323,7 +303,6 @@ namespace appCore.Toolbox
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
 			dt.TableName = tableName;
-//			string csv = string.Empty;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
 			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
@@ -333,11 +312,6 @@ namespace appCore.Toolbox
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else
 					dt.Columns.Add(th.InnerText);
-//				csv += th.InnerText;
-//				if(th != descendantNodes.Last())
-//					csv += ',';
-//				else
-//					csv += Environment.NewLine;
 			}
 			
 			// Build DataTable
@@ -352,11 +326,6 @@ namespace appCore.Toolbox
 							continue;
 						
 						tableRow.Add(node.InnerText);
-//						csv += node.InnerText;
-//						if(node != childNodes.Last())
-//							csv += ',';
-//						else
-//							csv += Environment.NewLine;
 					}
 				}
 				
@@ -394,8 +363,6 @@ namespace appCore.Toolbox
 				csv += th.InnerText;
 				if(th != descendantNodes.Last())
 					csv += ',';
-//				else
-//					csv += Environment.NewLine;
 			}
 			
 			// Build DataTable
@@ -408,139 +375,91 @@ namespace appCore.Toolbox
 						if(node.Name != "td") // && node.Name != "th")
 							continue;
 						
-						csv += node.InnerText;
+						csv += node.InnerText.Replace(',',';').Replace("\n","<<lb>>");
 						if(node != childNodes.Last())
 							csv += ',';
-//						else
-//							csv += Environment.NewLine;
 					}
 				}
 			}
 			
 			return csv;
 		}
-		
-//		public static DataTable GetDataTableFromCsv(FileInfo CsvFile, bool isFirstRowHeader) {
-//			DataTable dataTable = new DataTable();
-//
-//			using (var stream = CsvFile.OpenRead())
-//				using (var reader = new StreamReader(stream))
-//			{
-//				dataTable = ParseCsv(reader, isFirstRowHeader);
-//			}
-//
-//			return dataTable;
-//		}
-		
-//		public static DataTable GetDataTableFromCsv(string CsvString, bool isFirstRowHeader) {
-//			DataTable dataTable = ParseCsv(new StringReader(CsvString), isFirstRowHeader);
-//
-//			return dataTable;
-//		}
-//
-//		static DataTable ParseCsv(TextReader reader, bool isFirstRowHeader) {
-//			DataTable dataTable = new DataTable();
-//
-//			string header = isFirstRowHeader ? "YES" : "NO";
-//
-//			var data = CsvParser.ParseHeadAndTail(reader, ',', '"');
-//
-//			var headers = data.Item1;
-//
-//			foreach (var head in headers) {
-//				DataColumn dataColumn = new DataColumn(head);
-//				dataTable.Columns.Add(dataColumn);
-//			}
-//
-//			var lines = data.Item2;
-//
-//			foreach (var line in lines)
-//			{
-//				DataRow dataRow = dataTable.NewRow();
-//				for(int c=0;c < line.Count();c++) {
-//					dataRow[c] = line[c];
-//				}
-//				dataTable.Rows.Add(dataRow);
-//			}
-//
-//			return dataTable;
-//		}
 	}
-	
-	[DelimitedRecord(",")]
-	public class INC {
-		public string Site;
-		public string IncidentRef;
-		public string Summary;
-		public string Priority;
-		public string Status;
-		public string AssigneeGroup;
-		string submitDate;
-		public DateTime SubmitDate {
-			get {
-				return Convert.ToDateTime(submitDate);
-			}
-			private set {}
-		}
-		public string ResolutionCategory2;
-		public string ResolutionCategory3;
-		public string Resolution;
-		string resolvedDate;
-		public DateTime ResolvedDate {
-			get {
-				return Convert.ToDateTime(resolvedDate);
-			}
-			private set {}
-		}
-		
-		public INC() {}
-	}
-	
-	[DelimitedRecord(",")]
-	public class BookIns {
-		public string Site;
-		public string Visit;
-		public string Company;
-		public string Engineer;
-		public string Mobile;
-		public string Reference;
-		public string VisitType;
-		public string Arrived;
-//		public DateTime Arrived {
+//	
+//	[DelimitedRecord(","), IgnoreFirst(1)]
+//	public class INC {
+//		public string Site;
+//		public string IncidentRef;
+//		public string Summary;
+//		public string Priority;
+//		public string Status;
+//		public string AssigneeGroup;
+//		string submitDate;
+//		public DateTime SubmitDate {
 //			get {
-//				return Convert.ToDateTime(arrived);
+//				return Convert.ToDateTime(submitDate);
 //			}
 //			private set {}
 //		}
-		public string PlannedFinish;
-//		public DateTime PlannedFinish {
+//		public string ResolutionCategory2;
+//		public string ResolutionCategory3;
+//		public string Resolution;
+//		string resolvedDate;
+//		public DateTime ResolvedDate {
 //			get {
-//				return Convert.ToDateTime(plannedFinish);
+//				return Convert.ToDateTime(resolvedDate);
 //			}
 //			private set {}
 //		}
-		public string TimeTaken;
-//		public DateTime TimeTaken {
-//			get {
-//				return Convert.ToDateTime(timeTaken);
-//			}
-//			private set {}
-//		}
-		public string TimeRemaining;
-//		public DateTime TimeRemaining {
-//			get {
-//				return Convert.ToDateTime(timeRemaining);
-//			}
-//			private set {}
-//		}
-		public string DepartedSite;
-//		public DateTime DepartedSite {
-//			get {
-//				return Convert.ToDateTime(departedSite);
-//			}
-//			private set {}
-//		}
-		
-		public BookIns() {}
-	}
+//		
+//		public INC() {}
+//	}
+//	
+//	[DelimitedRecord(","), IgnoreFirst(1), IgnoreEmptyLines]
+//	public class BookIns {
+//		public string Site;
+//		public string Visit;
+//		public string Company;
+//		public string Engineer;
+//		public string Mobile;
+//		public string Reference;
+//		public string VisitType;
+//		public string Arrived;
+////		public DateTime Arrived {
+////			get {
+////				return Convert.ToDateTime(arrived);
+////			}
+////			private set {}
+////		}
+//		public string PlannedFinish;
+////		public DateTime PlannedFinish {
+////			get {
+////				return Convert.ToDateTime(plannedFinish);
+////			}
+////			private set {}
+////		}
+//		public string TimeTaken;
+////		public DateTime TimeTaken {
+////			get {
+////				return Convert.ToDateTime(timeTaken);
+////			}
+////			private set {}
+////		}
+//		public string TimeRemaining;
+////		public DateTime TimeRemaining {
+////			get {
+////				return Convert.ToDateTime(timeRemaining);
+////			}
+////			private set {}
+////		}
+//		public string DepartedSite;
+////		public DateTime DepartedSite {
+////			get {
+////				return Convert.ToDateTime(departedSite);
+////			}
+////			private set {}
+////		}
+//		
+//		public BookIns() {}
+//	}
 }
