@@ -19,6 +19,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using appCore.UI;
 using appCore.Settings;
 using HtmlAgilityPack;
+using FileHelpers;
 
 namespace appCore.Toolbox
 {
@@ -322,7 +323,7 @@ namespace appCore.Toolbox
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
 			dt.TableName = tableName;
-			string csv = string.Empty;
+//			string csv = string.Empty;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
 			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
@@ -332,9 +333,9 @@ namespace appCore.Toolbox
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else
 					dt.Columns.Add(th.InnerText);
-				csv += th.InnerText;
-				if(th != descendantNodes.Last())
-					csv += ',';
+//				csv += th.InnerText;
+//				if(th != descendantNodes.Last())
+//					csv += ',';
 //				else
 //					csv += Environment.NewLine;
 			}
@@ -342,7 +343,7 @@ namespace appCore.Toolbox
 			// Build DataTable
 			descendantNodes = table.Descendants("tr");
 			foreach (HtmlNode tr in descendantNodes) {
-				csv += Environment.NewLine;
+//				csv += Environment.NewLine;
 				List<string> tableRow = new List<string>();
 				if(tr.Name != "#text") {
 					var childNodes = tr.ChildNodes;
@@ -351,9 +352,9 @@ namespace appCore.Toolbox
 							continue;
 						
 						tableRow.Add(node.InnerText);
-						csv += node.InnerText;
-						if(node != childNodes.Last())
-							csv += ',';
+//						csv += node.InnerText;
+//						if(node != childNodes.Last())
+//							csv += ',';
 //						else
 //							csv += Environment.NewLine;
 					}
@@ -382,43 +383,39 @@ namespace appCore.Toolbox
 		/// <param name="html">HTML returned from OI</param>
 		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits"</param>
 		public static string ConvertHtmlTabletoCSV(string html, string tableName) {
-			if(tableName == "table_visits") {
-				html = html.Substring(html.IndexOf("<table"));
-				html = html.Substring(0, html.IndexOf("</table>") + 8);
-			}
-			
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
 			string csv = string.Empty;
 			
-			// Build Headers CSV string ("table_visits" has headers inside <tr> tag, unlike the other tables)
-			if(tableName != "table_visits") {
-				foreach (HtmlNode th in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("th"))
-					csv += th.InnerText+ ',';
-				if(csv.Length > 0) {
-					csv = csv.Substring(0, csv.Length - 1);
-					csv += Environment.NewLine;
-				}
+			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
+			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
+			var descendantNodes = table.Descendants("th");
+			foreach (HtmlNode th in descendantNodes) {
+				csv += th.InnerText;
+				if(th != descendantNodes.Last())
+					csv += ',';
+//				else
+//					csv += Environment.NewLine;
 			}
 			
-			// Build Table CSV string
-			foreach (HtmlNode tr in doc.DocumentNode.SelectNodes("//table[@id='" + tableName + "']").Descendants("tr"))
-			{
+			// Build DataTable
+			descendantNodes = table.Descendants("tr");
+			foreach (HtmlNode tr in descendantNodes) {
+				csv += Environment.NewLine;
 				if(tr.Name != "#text") {
-					foreach(var node in tr.ChildNodes)
-					{
-						if(node.Name != "td" && node.Name != "th")
+					var childNodes = tr.ChildNodes;
+					foreach(var node in childNodes) {
+						if(node.Name != "td") // && node.Name != "th")
 							continue;
 						
-						csv += node.InnerText.Replace(',',';').Replace("\r\n", " ").Replace('\n', ' ') + ',';
-					}
-					if(csv.Length > 0) {
-						csv = csv.Substring(0, csv.Length - 1);
-						csv += Environment.NewLine;
+						csv += node.InnerText;
+						if(node != childNodes.Last())
+							csv += ',';
+//						else
+//							csv += Environment.NewLine;
 					}
 				}
 			}
-			csv = csv.Substring(0, csv.Length - 2); // Delete last Environment.NewLine \r\n
 			
 			return csv;
 		}
@@ -469,8 +466,81 @@ namespace appCore.Toolbox
 //			return dataTable;
 //		}
 	}
+	
+	[DelimitedRecord(",")]
 	public class INC {
-//		Site,Incident Ref,Summary,Priority,Status,Assignee Group,Submit Date,Resolution Category 2,Resolution Category 3,Resolution,Resolved Date
-//15,INC000002619261,ANOC TX-5601_ZA_12 / 0015_ZA_22 -TX MW,Low,Pending,TX A-NOC 1st Line,21/01/2017 15:53,,,,
+		public string Site;
+		public string IncidentRef;
+		public string Summary;
+		public string Priority;
+		public string Status;
+		public string AssigneeGroup;
+		string submitDate;
+		public DateTime SubmitDate {
+			get {
+				return Convert.ToDateTime(submitDate);
+			}
+			private set {}
+		}
+		public string ResolutionCategory2;
+		public string ResolutionCategory3;
+		public string Resolution;
+		string resolvedDate;
+		public DateTime ResolvedDate {
+			get {
+				return Convert.ToDateTime(resolvedDate);
+			}
+			private set {}
+		}
+		
+		public INC() {}
+	}
+	
+	[DelimitedRecord(",")]
+	public class BookIns {
+		public string Site;
+		public string Visit;
+		public string Company;
+		public string Engineer;
+		public string Mobile;
+		public string Reference;
+		public string VisitType;
+		public string Arrived;
+//		public DateTime Arrived {
+//			get {
+//				return Convert.ToDateTime(arrived);
+//			}
+//			private set {}
+//		}
+		public string PlannedFinish;
+//		public DateTime PlannedFinish {
+//			get {
+//				return Convert.ToDateTime(plannedFinish);
+//			}
+//			private set {}
+//		}
+		public string TimeTaken;
+//		public DateTime TimeTaken {
+//			get {
+//				return Convert.ToDateTime(timeTaken);
+//			}
+//			private set {}
+//		}
+		public string TimeRemaining;
+//		public DateTime TimeRemaining {
+//			get {
+//				return Convert.ToDateTime(timeRemaining);
+//			}
+//			private set {}
+//		}
+		public string DepartedSite;
+//		public DateTime DepartedSite {
+//			get {
+//				return Convert.ToDateTime(departedSite);
+//			}
+//			private set {}
+//		}
+		
+		public BookIns() {}
 	}
 }
