@@ -319,22 +319,23 @@ namespace appCore.Templates.UI
 
 			if (Convert.ToInt32(e.KeyChar) == 13)
 			{
-//				Stopwatch sw = new Stopwatch();
-//
-//				sw.Start();
-				TextBox tb =(TextBox)sender;
+				TextBox tb = (TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
-				currentSite = Finder.getSite(tb.Text);
+				
+				currentSite = Finder.getSite(tb.Text);				
 				if(currentSite.Exists) {
 					currentSite.requestOIData("INCCRQ");
 					PriorityTextBox.Text = currentSite.Priority;
 					RegionTextBox.Text = currentSite.Region;
+					SiteDetailsToolStripMenuItem.Enabled = true;
 				}
 				else {
 					RegionTextBox.Text = "No site found";
 					PriorityTextBox.Text = string.Empty;
+					SiteDetailsToolStripMenuItem.Enabled = false;
 				}
+				
 				siteFinder_Toggle(true, currentSite.Exists);
 			}
 		}
@@ -342,8 +343,8 @@ namespace appCore.Templates.UI
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
 			currentSite = null;
-//			if(GlobalProperties.siteFinder_mainswitch)
 			siteFinder_Toggle(false, false);
+			SiteDetailsToolStripMenuItem.Enabled = false;
 			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
