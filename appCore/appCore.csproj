@@ -1260,7 +1260,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Toolbox\coordConvert.cs" />
-    <Compile Include="Toolbox\CSVParser.cs" />
     <Compile Include="Toolbox\StringExtensions.cs" />
     <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\Tools.cs" />

@@ -326,23 +326,36 @@ namespace appCore.Toolbox
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
 			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
-			foreach (HtmlNode th in table.Descendants("th")) {
+			var descendantNodes = table.Descendants("th");
+			foreach (HtmlNode th in descendantNodes) {
 				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site" || th.InnerText == "Time")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else
 					dt.Columns.Add(th.InnerText);
+				csv += th.InnerText;
+				if(th != descendantNodes.Last())
+					csv += ',';
+//				else
+//					csv += Environment.NewLine;
 			}
 			
 			// Build DataTable
-			List<string> tableRow = new List<string>();
-			foreach (HtmlNode tr in table.Descendants("tr")) {
-				tableRow.Clear();
+			descendantNodes = table.Descendants("tr");
+			foreach (HtmlNode tr in descendantNodes) {
+				csv += Environment.NewLine;
+				List<string> tableRow = new List<string>();
 				if(tr.Name != "#text") {
-					foreach(var node in tr.ChildNodes) {
+					var childNodes = tr.ChildNodes;
+					foreach(var node in childNodes) {
 						if(node.Name != "td") // && node.Name != "th")
 							continue;
 						
 						tableRow.Add(node.InnerText);
+						csv += node.InnerText;
+						if(node != childNodes.Last())
+							csv += ',';
+//						else
+//							csv += Environment.NewLine;
 					}
 				}
 				
@@ -410,50 +423,54 @@ namespace appCore.Toolbox
 			return csv;
 		}
 		
-		public static DataTable GetDataTableFromCsv(FileInfo CsvFile, bool isFirstRowHeader) {
-			DataTable dataTable = new DataTable();
-			
-			using (var stream = CsvFile.OpenRead())
-				using (var reader = new StreamReader(stream))
-			{
-				dataTable = ParseCsv(reader, isFirstRowHeader);
-			}
-			
-			return dataTable;
-		}
+//		public static DataTable GetDataTableFromCsv(FileInfo CsvFile, bool isFirstRowHeader) {
+//			DataTable dataTable = new DataTable();
+//
+//			using (var stream = CsvFile.OpenRead())
+//				using (var reader = new StreamReader(stream))
+//			{
+//				dataTable = ParseCsv(reader, isFirstRowHeader);
+//			}
+//
+//			return dataTable;
+//		}
 		
-		public static DataTable GetDataTableFromCsv(string CsvString, bool isFirstRowHeader) {
-			DataTable dataTable = ParseCsv(new StringReader(CsvString), isFirstRowHeader);
-			
-			return dataTable;
-		}
-		
-		static DataTable ParseCsv(TextReader reader, bool isFirstRowHeader) {
-			DataTable dataTable = new DataTable();
-			
-			string header = isFirstRowHeader ? "YES" : "NO";
-			
-			var data = CsvParser.ParseHeadAndTail(reader, ',', '"');
-
-			var headers = data.Item1;
-			
-			foreach (var head in headers) {
-				DataColumn dataColumn = new DataColumn(head);
-				dataTable.Columns.Add(dataColumn);
-			}
-			
-			var lines = data.Item2;
-
-			foreach (var line in lines)
-			{
-				DataRow dataRow = dataTable.NewRow();
-				for(int c=0;c < line.Count();c++) {
-					dataRow[c] = line[c];
-				}
-				dataTable.Rows.Add(dataRow);
-			}
-			
-			return dataTable;
-		}
+//		public static DataTable GetDataTableFromCsv(string CsvString, bool isFirstRowHeader) {
+//			DataTable dataTable = ParseCsv(new StringReader(CsvString), isFirstRowHeader);
+//
+//			return dataTable;
+//		}
+//
+//		static DataTable ParseCsv(TextReader reader, bool isFirstRowHeader) {
+//			DataTable dataTable = new DataTable();
+//
+//			string header = isFirstRowHeader ? "YES" : "NO";
+//
+//			var data = CsvParser.ParseHeadAndTail(reader, ',', '"');
+//
+//			var headers = data.Item1;
+//
+//			foreach (var head in headers) {
+//				DataColumn dataColumn = new DataColumn(head);
+//				dataTable.Columns.Add(dataColumn);
+//			}
+//
+//			var lines = data.Item2;
+//
+//			foreach (var line in lines)
+//			{
+//				DataRow dataRow = dataTable.NewRow();
+//				for(int c=0;c < line.Count();c++) {
+//					dataRow[c] = line[c];
+//				}
+//				dataTable.Rows.Add(dataRow);
+//			}
+//
+//			return dataTable;
+//		}
+	}
+	public class INC {
+//		Site,Incident Ref,Summary,Priority,Status,Assignee Group,Submit Date,Resolution Category 2,Resolution Category 3,Resolution,Resolved Date
+//15,INC000002619261,ANOC TX-5601_ZA_12 / 0015_ZA_22 -TX MW,Low,Pending,TX A-NOC 1st Line,21/01/2017 15:53,,,,
 	}
 }
