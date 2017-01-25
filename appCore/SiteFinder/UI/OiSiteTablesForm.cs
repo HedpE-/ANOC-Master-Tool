@@ -50,6 +50,7 @@ namespace appCore.SiteFinder.UI
 				case "CRQs":
 					Name = "CRQsOiDataTableForm";
 					DataType = "CRQs";
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 					break;
 				case "ActiveAlarms":
 					Name = "ActiveAlarmsOiDataTableForm";
@@ -147,10 +148,7 @@ namespace appCore.SiteFinder.UI
 		void DataGridView1CellContentClick(object sender, DataGridViewCellEventArgs e) {
 			if(e.ColumnIndex == 0) {
 				DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
-				if(cell.Value != null)
-					cell.Value = !Convert.ToBoolean(cell.Value);
-				else
-					cell.Value = cell.TrueValue;
+				cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
 				
 				if(cell.Value == cell.TrueValue) {
 					checkBox1.Enabled = false;
@@ -159,6 +157,25 @@ namespace appCore.SiteFinder.UI
 				else {
 					checkBox1.Enabled = checkedCount == 0;
 					button1.Enabled = checkedCount > 0;
+				}
+			}
+		}
+		
+		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+		{
+			if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
+				switch(e.Value.ToString()) {
+					case "Scheduled": case "Implementation In Progress":
+						if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled Start"].Value) <= DateTime.Now &&
+						   Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled End"].Value) > DateTime.Now)
+							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+						else
+							e.CellStyle.BackColor = System.Drawing.Color.Yellow;
+						break;
+					default:
+						if(e.Value.ToString() != "Closed")
+							e.CellStyle.BackColor = System.Drawing.Color.Red;
+						break;
 				}
 			}
 		}
