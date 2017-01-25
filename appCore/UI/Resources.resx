@@ -15954,7 +15954,30 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
+    <value>####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
+
+- Reduced application loading time
+- Reduced drastically the RAM usage, now it should be under 100Mb most of the time
+- Shifts Calendar is much faster to show single day shifts
+- Queries to all_sites &amp; all_cells DBs are much faster, mainly on bulk searches
+- Alarms Parsing time dratically reduced to about 2000 alarms per second
+- Outage Reports generation time drastically reduced
+- Outage Follow Up opens much faster now
+- INCs/CRQs/BookIns/Alarms window optimizations
+- CRQs window now shows colors depending on the CRQ status
+- Fixed issue preventing COOS to be added when a site isn't found
+- Implemented new feature to check if a CRQ is ongoing and asks user confirmation before proceeding with Template generation
+- Tweaked Menu options on all templates
+- Fixed shifts filtering to hide people with H16, B &amp; MT
+- Reworked Contacts on Notes
+- The closure code generator now pre loads each persons closure code
+- Fixed crash when generating a Troubleshoot Template for a site with no INC's or CRQ's
+- Fixed CTRL+A not working on Read Only TextBoxes(like Power Company)
+- Connectivity to OI should be more reliable as it now works on the VF-UK proxy
+- Related cases selection window now sorts the found cases
+- Optimized Parsed alarms text
+
+####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
 
 ##### MERRY CHRISTMAS #####
 

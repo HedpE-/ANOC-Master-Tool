@@ -183,15 +183,16 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
 		///
-		///##### MERRY CHRISTMAS #####
-		///
-		///- Fixed Shifts calendar issues related with the year change
-		///- Fixed Failed CRQ Templates on FE called to ANOC flag returning always &quot;no&quot; result
-		///- Fixed connectivity to OI issue that wasn&apos;t detecting correctly if session timed out (The browser still doesn&apos;t work though)
-		///- Added context menu on all big text boxes to copy, cut, paste &amp; delete functions to work with mouse
-		///- Fixed loading icon still visible and floating  [rest of string was truncated]&quot;;.
+		///- Reduced application loading time
+		///- Reduced drastically the RAM usage, now it should be under 100Mb most of the time
+		///- Shifts Calendar is much faster to show single day shifts
+		///- Queries to all_sites &amp; all_cells DBs are much faster, mainly on bulk searches
+		///- Alarms Parsing time dratically reduced to about 2000 alarms per second
+		///- Outage Reports generation time drastically reduced
+		///- Outage Follow Up opens much faster now
+		///- INCs/CRQs/BookIns/Ala [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
