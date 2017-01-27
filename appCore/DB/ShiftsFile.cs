@@ -74,13 +74,22 @@ namespace appCore.DB
 			get;
 			private set;
 		}
-
+		
 		public ShiftsFile(int year)
 		{
 			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
-//			shiftsFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Shift 2017_JAN - Copy.xlsx");
 			
-			try { package = new ExcelPackage(shiftsFile); } finally { }
+			try {
+				package = new ExcelPackage(shiftsFile);
+			}
+			catch {
+				if(shiftsFile != null) {
+					UserFolder.CreateTempFolder();
+					FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder + "\\" + shiftsFile.Name, true);
+					package = new ExcelPackage(tempShiftsFile);
+				}
+				
+			}
 			
 			if (package.File != null) {
 				var allMergedCells = package.Workbook.Worksheets[1].MergedCells;
@@ -120,6 +129,8 @@ namespace appCore.DB
 				}
 			}
 			Year = year;
+			if(package.File.FullName.Contains(UserFolder.TempFolder.FullName))
+				UserFolder.ClearTempFolder();
 		}
 		
 		public String GetShift(String name, DateTime date) {
@@ -138,7 +149,9 @@ namespace appCore.DB
 		public String[] GetAllShiftsInMonth(String name, int month) {
 			List<string> list = new List<string>();
 			int personRow = FindPersonRow(name);
-			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[month - 1].ToString().Replace("1",personRow.ToString())]) {
+			var personRange = package.Workbook.Worksheets[1].Cells[monthRanges[month - 1].ToString().Replace("1",personRow.ToString())];
+			for(int c = personRange.Start.Column;c <= personRange.End.Column;c++) {
+				var cell = package.Workbook.Worksheets[1].Cells[personRow, c];
 				if(cell.Value == null)
 					list.Add(string.Empty);
 				else
@@ -202,14 +215,9 @@ namespace appCore.DB
 		}
 		
 		public String GetClosureCode(String name) {
-			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
-				if(cell.Value != null) {
-					string[] nameArr = name.Split(' ');
-					if(cell.Text.Contains(nameArr[0]) && cell.Text.Contains(nameArr[1]))
-						return cell.Offset(0, -2).Text;
-				}
-			}
-			return string.Empty;
+			int personRow = FindPersonRow(name);
+			try { return package.Workbook.Worksheets[1].Cells[personRow, 3].Offset(0, -2).Text; }
+			catch { return string.Empty; }
 		}
 		
 		public String[] GetAllClosureCodes() {
@@ -226,8 +234,9 @@ namespace appCore.DB
 		int FindPersonRow(String name) {
 			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
 				if(cell.Value != null) {
-					string[] nameArr = name.Split(' ');
-					if(cell.Text.Contains(nameArr[0]) && cell.Text.Contains(nameArr[1]))
+					string[] nameArr = name.ToUpper().Split(' ');
+					if(cell.Text.ToUpper().RemoveDiacritics().Contains(nameArr[0].ToUpper().RemoveDiacritics()) &&
+					   cell.Text.ToUpper().RemoveDiacritics().Contains(nameArr[1].ToUpper().RemoveDiacritics()))
 						return cell.Start.Row;
 				}
 			}
