@@ -49,8 +49,9 @@ namespace appCore
 		NokiaScriptsControls nokiaScriptsControls = new NokiaScriptsControls();
 		HuaweiScriptsControls huaweiScriptsControls = new HuaweiScriptsControls();
 		
-		public MainForm(NotifyIcon tray)
+		public MainForm(NotifyIcon tray, string[] args)
 		{
+//			args = new [] { "-otherUser", "SANTOSS2" }; // HACK: force login with another user
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			GlobalProperties.resolveOfficePath();
 			
@@ -67,7 +68,10 @@ namespace appCore
 			
 			SplashForm.UpdateLabelText("Setting User Folder");
 			
-			CurrentUser.InitializeUserProperties();
+			string otherUser = string.Empty;
+			if(args.Contains("-otherUser"))
+				try { otherUser = args[Array.FindIndex(args, str => str.Equals("-otherUser")) + 1]; } catch {}
+			CurrentUser.InitializeUserProperties(otherUser);
 			
 			SplashForm.UpdateLabelText("Setting User Settings");
 			
