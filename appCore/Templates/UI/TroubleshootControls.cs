@@ -355,46 +355,50 @@ namespace appCore.Templates.UI
 		
 		void NumericUpDownValueChanged(object sender, EventArgs e)
 		{
-			if(currentSite.Exists) {
-				int nupdTotal = 0;
-				int nupdMaxed = 0;
-				for(int c = 2;c<5;c++) {
-					NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-					if(nupd.Maximum < 999) {
-						nupdTotal++;
-						if(nupd.Value == nupd.Maximum)
-							nupdMaxed++;
+			if(currentSite != null) {
+				if(currentSite.Exists) {
+					int nupdTotal = 0;
+					int nupdMaxed = 0;
+					for(int c = 2;c<5;c++) {
+						NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+						if(nupd.Maximum < 999) {
+							nupdTotal++;
+							if(nupd.Value == nupd.Maximum)
+								nupdMaxed++;
+						}
 					}
+					if(nupdMaxed == nupdTotal)
+						if(!FullSiteOutageCheckBox.Checked)
+							FullSiteOutageCheckBox.Checked = true;
 				}
-				if(nupdMaxed == nupdTotal)
-					if(!FullSiteOutageCheckBox.Checked)
-						FullSiteOutageCheckBox.Checked = true;
 			}
 		}
 
 		void COOSLabelDoubleClick(object sender, EventArgs e)
 		{
-			if(currentSite.Exists) {
-				Label lbl = (Label)sender;
-				NumericUpDown nupd = null;
-				switch(lbl.Name) {
-					case "COOS2GLabel":
-						nupd = COOS2GNumericUpDown;
-						break;
-					case "COOS3GLabel":
-						nupd = COOS3GNumericUpDown;
-						break;
-					case "COOS4GLabel":
-						nupd = COOS4GNumericUpDown;
-						break;
-				}
-				if(nupd.Enabled) {
-					int max = Convert.ToInt16(lbl.Text.Split('(')[1].Replace(")",string.Empty));
-					if(nupd.Value < max)
-						nupd.Value = max;
-					else {
-						if(nupd.Value == max)
-							nupd.Value = 0;
+			if(currentSite != null) {
+				if(currentSite.Exists) {
+					Label lbl = (Label)sender;
+					NumericUpDown nupd = null;
+					switch(lbl.Name) {
+						case "COOS2GLabel":
+							nupd = COOS2GNumericUpDown;
+							break;
+						case "COOS3GLabel":
+							nupd = COOS3GNumericUpDown;
+							break;
+						case "COOS4GLabel":
+							nupd = COOS4GNumericUpDown;
+							break;
+					}
+					if(nupd.Enabled) {
+						int max = Convert.ToInt16(lbl.Text.Split('(')[1].Replace(")",string.Empty));
+						if(nupd.Value < max)
+							nupd.Value = max;
+						else {
+							if(nupd.Value == max)
+								nupd.Value = 0;
+						}
 					}
 				}
 			}
@@ -415,61 +419,65 @@ namespace appCore.Templates.UI
 
 		void OtherSitesImpactedCheckedChanged(object sender, EventArgs e)
 		{
-			if(currentSite.Exists) {
-				for(int c=2;c<5;c++) {
-					NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-					if(OtherSitesImpactedCheckBox.Checked) {
-						Label lbl = (Label)Controls["COOS" + c + "GLabel"];
-						lbl.Text = c + "G cells";
-						nupd.Maximum = 9999;
-						nupd.Enabled = true;
-					}
-					else {
-						int max;
-						switch(c) {
-							case 2:
-								max = currentSite.Cells.Filter(Cell.Filters.VF_2G).Count();
-								break;
-							case 3:
-								max = currentSite.Cells.Filter(Cell.Filters.VF_3G).Count();
-								break;
-							default:
-								max = currentSite.Cells.Filter(Cell.Filters.VF_4G).Count();
-								break;
-						}
-						if(max == 0)
-							nupd.Enabled = false;
-						else
+			if(currentSite != null) {
+				if(currentSite.Exists) {
+					for(int c=2;c<5;c++) {
+						NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+						if(OtherSitesImpactedCheckBox.Checked) {
+							Label lbl = (Label)Controls["COOS" + c + "GLabel"];
+							lbl.Text = c + "G cells";
+							nupd.Maximum = 9999;
 							nupd.Enabled = true;
-						nupd.Maximum = max;
-						Label lbl = (Label)Controls["COOS" + c + "GLabel"];
-						lbl.Text = c + "G cells(" + max + ")";
+						}
+						else {
+							int max;
+							switch(c) {
+								case 2:
+									max = currentSite.Cells.Filter(Cell.Filters.VF_2G).Count();
+									break;
+								case 3:
+									max = currentSite.Cells.Filter(Cell.Filters.VF_3G).Count();
+									break;
+								default:
+									max = currentSite.Cells.Filter(Cell.Filters.VF_4G).Count();
+									break;
+							}
+							if(max == 0)
+								nupd.Enabled = false;
+							else
+								nupd.Enabled = true;
+							nupd.Maximum = max;
+							Label lbl = (Label)Controls["COOS" + c + "GLabel"];
+							lbl.Text = c + "G cells(" + max + ")";
+						}
 					}
 				}
 			}
 		}
 		
 		void FullSiteOutageCheckedChanged(object sender, EventArgs e) {
-			if(currentSite.Exists) {
-				if(!OtherSitesImpactedCheckBox.Checked) {
-					if(FullSiteOutageCheckBox.Checked) {
-						if(GlobalProperties.siteFinder_mainswitch) {
-							for(int c=2;c<5;c++) {
-								NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-								if (nupd.Maximum < 999) {
-									nupd.Value = nupd.Maximum;
-									nupd.Enabled = false;
+			if(currentSite != null) {
+				if(currentSite.Exists) {
+					if(!OtherSitesImpactedCheckBox.Checked) {
+						if(FullSiteOutageCheckBox.Checked) {
+							if(GlobalProperties.siteFinder_mainswitch) {
+								for(int c=2;c<5;c++) {
+									NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
+									if (nupd.Maximum < 999) {
+										nupd.Value = nupd.Maximum;
+										nupd.Enabled = false;
+									}
 								}
 							}
 						}
-					}
-					else {
-						for(int c=2;c<5;c++) {
-							NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
-							nupd.Value = 0;
-							if (nupd.Maximum < 999) {
+						else {
+							for(int c=2;c<5;c++) {
+								NumericUpDown nupd = (NumericUpDown)Controls["COOS" + c + "GNumericUpDown"];
 								nupd.Value = 0;
-								nupd.Enabled = true;
+								if (nupd.Maximum < 999) {
+									nupd.Value = 0;
+									nupd.Enabled = true;
+								}
 							}
 						}
 					}
