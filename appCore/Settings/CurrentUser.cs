@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 
@@ -43,13 +44,16 @@ namespace appCore.Settings
 		}
 		public static string ClosureCode {
 			get {
-				return DB.Databases.shiftsFile.GetClosureCode(FullName[1] + " " + FullName[0]);			
+				return DB.Databases.shiftsFile.GetClosureCode(FullName[1] + " " + FullName[0]);
 			}
 			private set { }
 		}
+		static string OtherUser;
+		static UserPrincipal ActiveDirectoryUser;
 
-		public static void InitializeUserProperties()
+		public static void InitializeUserProperties(string logonAsOtherUser = "")
 		{
+			OtherUser = logonAsOtherUser;
 			UserName = GetUserDetails("Username");
 			FullName = GetUserDetails("Name").Split(' ');
 			for (int c = 0; c < FullName.Length; c++)
@@ -66,25 +70,40 @@ namespace appCore.Settings
 		/// </summary>
 		public static string GetUserDetails(string detail)
 		{
-			UserPrincipal current = UserPrincipal.Current;
+			if(ActiveDirectoryUser == null) {
+				if(string.IsNullOrEmpty(OtherUser))
+					ActiveDirectoryUser = UserPrincipal.Current;
+				else {
+					var ctx = new PrincipalContext(ContextType.Domain);
+					try {
+						ActiveDirectoryUser = UserPrincipal.FindByIdentity(ctx,
+						                                                   IdentityType.SamAccountName,
+						                                                   OtherUser);
+					}
+					catch (Exception e) {
+						var m = e.Message;
+						ActiveDirectoryUser = UserPrincipal.Current;
+					}
+				}
+			}
 			if (detail != null)
 			{
 				switch (detail)
 				{
 					case "Name":
-						if (current.SamAccountName.Contains("Caramelos"))
+						if (ActiveDirectoryUser.SamAccountName.Contains("Caramelos"))
 							return "Gonçalves, Rui";
-						if (current.SamAccountName.Contains("Hugo Gonçalves"))
+						if (ActiveDirectoryUser.SamAccountName.Contains("Hugo Gonçalves"))
 							return "Gonçalves, Hugo";
-						return current.DisplayName;
+						return ActiveDirectoryUser.DisplayName;
 					case "Username":
-						return current.SamAccountName;
+						return ActiveDirectoryUser.SamAccountName;
 					case "Department":
-						if (current.SamAccountName.Contains("Caramelos"))
+						if (ActiveDirectoryUser.SamAccountName.Contains("Caramelos"))
 							return "1st Line RAN";
 						else
 						{
-							DirectoryEntry underlyingObject = current.GetUnderlyingObject() as DirectoryEntry;
+							DirectoryEntry underlyingObject = ActiveDirectoryUser.GetUnderlyingObject() as DirectoryEntry;
 							if (underlyingObject.Properties.Contains("department"))
 								return underlyingObject.Properties["department"].Value.ToString();
 						}
