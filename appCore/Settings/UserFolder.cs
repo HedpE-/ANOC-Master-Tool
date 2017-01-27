@@ -414,7 +414,6 @@ namespace appCore.Settings
 				}
 			}
 			else
-//				Databases.shiftsFile = new ShiftsFile(DateTime.Now.Year);
 				Databases.shiftsFile = new ShiftsFile(DateTime.Now.Year);
 		}
 		

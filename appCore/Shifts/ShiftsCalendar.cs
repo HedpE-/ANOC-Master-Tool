@@ -7,7 +7,6 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Collections.Generic;
@@ -15,7 +14,6 @@ using System.Linq;
 using System.Timers;
 using System.Windows.Forms;
 using appCore.UI;
-using appCore.Toolbox;
 using appCore.DB;
 using appCore.Settings;
 using Transitions;
@@ -170,8 +168,10 @@ namespace appCore.Shifts
 		Bitmap loadShifts(DateTime date) {
 			rectCollection.Clear();
 			byte first_weekday = (byte)(new DateTime(date.Year,date.Month,1).DayOfWeek);
-			if(first_weekday == 0) first_weekday = 6; // if month starts on Sunday, 6 because Sunday is actually weekday 0
-			else first_weekday--;
+			if(first_weekday == 0)
+				first_weekday = 6; // if month starts on Sunday, 6 because Sunday is actually weekday 0
+			else
+				first_weekday--;
 			int num_days = DateTime.DaysInMonth(date.Year, date.Month); // find how many days are in the selected month
 			int num_lines = (int)Math.Ceiling((double)(first_weekday + num_days) / (double)7);
 			int panelHeaderWidth = this.Controls["shiftsPanel_refresh"].Left - this.Controls["shiftsPanel_icon"].Right;
@@ -211,6 +211,7 @@ namespace appCore.Shifts
 						g.DrawString(text, stringFont, Brushes.LightGray, rect, drawStringFormat);
 					}
 					
+					//
 					int curDay = 1 - first_weekday; // will get negative value if not monday, loop below will only write anything when this value is over 0
 					
 					for(int line = 1;line <= num_lines * 2;line+=2) {
@@ -255,7 +256,6 @@ namespace appCore.Shifts
 							g.DrawString(text, stringFont, drawBrush, rect2, drawStringFormat);
 							if(curDay > 0 && curDay <= num_days)
 								rectCollection.Add(rect2);
-//								MainForm.rectCollection.Add(Rectangle.Union(rect1,rect2));
 							curDay++;
 						}
 					}
@@ -267,7 +267,6 @@ namespace appCore.Shifts
 		
 		public void toggleShiftsPanel() {
 			// FIXME: UI glitch on shiftsPanel objects
-			// FIXME: If shiftFile doesn't exist and share access is denied, app crashes
 			if(this.Location.Y == 0) {
 				Transition t = new Transition(new TransitionType_EaseInEaseOut(500));
 				t.add(this, "Top", 0 - this.Height);
