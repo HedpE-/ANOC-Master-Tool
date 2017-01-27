@@ -384,7 +384,7 @@ namespace appCore.SiteFinder
 		DataTable FetchINCs(FileSystemInfo table_inc = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			response = Web.OIConnection.requestPhpOutput("inc", Id);
+			response = OIConnection.requestPhpOutput("inc", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
 			return dt;
@@ -393,7 +393,7 @@ namespace appCore.SiteFinder
 		DataTable FetchCRQs(FileSystemInfo table_crq = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			response = Web.OIConnection.requestPhpOutput("crq", Id);
+			response = OIConnection.requestPhpOutput("crq", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
 			return dt;
@@ -402,7 +402,7 @@ namespace appCore.SiteFinder
 		DataTable FetchActiveAlarms(FileSystemInfo table_alarms = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			response = Web.OIConnection.requestPhpOutput("alarms", Id);
+			response = OIConnection.requestPhpOutput("alarms", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
 			return dt;
@@ -411,7 +411,7 @@ namespace appCore.SiteFinder
 		DataTable FetchBookIns(FileSystemInfo table_visits = null) {
 			DataTable dt = new DataTable();
 			string response = string.Empty;
-			response = Web.OIConnection.requestPhpOutput("sitevisit", Id, 90);
+			response = OIConnection.requestPhpOutput("sitevisit", Id, 90);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
 			return dt;
@@ -419,7 +419,7 @@ namespace appCore.SiteFinder
 		
 		string getPowerCompany(string response = "") {
 			if(string.IsNullOrEmpty(response))
-				response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
+				response = OIConnection.requestPhpOutput("index", Id, string.Empty);
 			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
 				HtmlDocument doc = new HtmlDocument();
 				doc.Load(new StringReader(response));

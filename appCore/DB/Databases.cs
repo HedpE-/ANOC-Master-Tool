@@ -137,7 +137,6 @@ namespace appCore.DB
 			all_cellsThread.IsBackground = true;
 			all_cellsThread.Start();
 			Thread shiftsFileThread = new Thread(() => {
-//			                                     	shiftsFile = new ShiftsFile(DateTime.Now.Year);
 			                                     	shiftsFile = new ShiftsFile(DateTime.Now.Year);
 			                                     	loadingShiftsFileFinished = true;
 			                                     });
