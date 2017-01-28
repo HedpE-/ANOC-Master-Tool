@@ -48,6 +48,13 @@ namespace appCore.Settings
 			}
 			private set { }
 		}
+		public static string Role {
+			get {
+				return DB.Databases.shiftsFile.getRole(FullName[1] + " " + FullName[0]);
+			}
+			set { }
+		}
+		
 		static string OtherUser;
 		static UserPrincipal ActiveDirectoryUser;
 

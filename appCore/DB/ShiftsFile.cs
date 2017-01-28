@@ -214,6 +214,26 @@ namespace appCore.DB
 			return foundRows;
 		}
 		
+		int FindPersonRow(String name) {
+			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
+				if(cell.Value != null) {
+					string[] nameArr = name.ToUpper().Split(' ');
+					if(cell.Text.ToUpper().RemoveDiacritics().Contains(nameArr[0].ToUpper().RemoveDiacritics()) &&
+					   cell.Text.ToUpper().RemoveDiacritics().Contains(nameArr[1].ToUpper().RemoveDiacritics()))
+						return cell.Start.Row;
+				}
+			}
+			return 0;
+		}
+		
+		public string getRole(string name) {
+			int personRow = FindPersonRow(name);
+			if(personRow > 3 && personRow < 12)
+				return "Shift Leader";
+			
+			return "Agent";
+		}			
+		
 		public String GetClosureCode(String name) {
 			int personRow = FindPersonRow(name);
 			try { return package.Workbook.Worksheets[1].Cells[personRow, 3].Offset(0, -2).Text; }
@@ -229,18 +249,6 @@ namespace appCore.DB
 				}
 			}
 			return list.ToArray();
-		}
-		
-		int FindPersonRow(String name) {
-			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
-				if(cell.Value != null) {
-					string[] nameArr = name.ToUpper().Split(' ');
-					if(cell.Text.ToUpper().RemoveDiacritics().Contains(nameArr[0].ToUpper().RemoveDiacritics()) &&
-					   cell.Text.ToUpper().RemoveDiacritics().Contains(nameArr[1].ToUpper().RemoveDiacritics()))
-						return cell.Start.Row;
-				}
-			}
-			return 0;
 		}
 		
 		String FindDayColumn(DateTime date) {
