@@ -79,6 +79,10 @@ namespace appCore.Shifts
 			deployMidnightTimer();
 		}
 		
+		public ShiftsCalendar(string name, int month, int year) {
+			
+		}
+		
 		void Initiate() {
 			shiftsBodySnap = loadShifts(shiftsChosenDate);
 			Paint += shiftsPanelPaint;

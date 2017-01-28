@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace appCore.UI
 {
-    public class AMTRoundCornersPanel : Panel
+	public class AMTRoundCornersPanel : Panel
 	{
 		[Flags]
 		public enum Borders
@@ -29,7 +29,6 @@ namespace appCore.UI
 			All = Top | Left | Right | Bottom
 		}
 
-		[Flags]
 		public enum Corners
 		{
 			TopLeft = 1,
@@ -55,8 +54,11 @@ namespace appCore.UI
 		static int edgeBottomLeft;
 		static int edgeBottomRight;
 		
-		static Corners _roundCorners = Corners.TopLeft | Corners.TopRight | Corners.BottomRight | Corners.BottomLeft;
-		[Browsable(true)]
+		[Browsable(true), DefaultValue("All"), Description("Direction panel collapses. 0-none, 1-up, 2-right, 3-down, 4-left, 5-all")]
+		[ListBindable(true), Editor(typeof(ComboBox), typeof(System.Drawing.Design.UITypeEditor))]
+		static Corners _roundCorners = Corners.All;
+//		[Browsable(true)]
+//		[EditorAttribute(typeof(System.ComponentModel.Design.CollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
 		public virtual Corners CornersToRound {
 			get {
 				return _roundCorners;
@@ -190,9 +192,64 @@ namespace appCore.UI
 
 		void ExtendedDraw(PaintEventArgs e)
 		{
-			
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			path = e.Graphics.GenerateRoundedRectangle(ClientRectangle,CornerSize/2,RectangleEdgeFilter.BottomLeft | RectangleEdgeFilter.BottomRight);
+			RectangleEdgeFilter edgeFilter = RectangleEdgeFilter.None;
+			if(edgeTopLeft > 0)
+				edgeFilter = RectangleEdgeFilter.TopLeft;
+			
+			if(edgeTopRight > 0) {
+				if((edgeFilter & RectangleEdgeFilter.TopLeft) == RectangleEdgeFilter.TopLeft)
+					edgeFilter = RectangleEdgeFilter.TopLeft | RectangleEdgeFilter.TopRight;
+				else
+					edgeFilter = RectangleEdgeFilter.TopRight;
+			}
+			
+			if(edgeBottomLeft > 0) {
+				if((edgeFilter & RectangleEdgeFilter.TopLeft) == RectangleEdgeFilter.TopLeft) {
+					if((edgeFilter & RectangleEdgeFilter.TopRight) == RectangleEdgeFilter.TopRight)
+						edgeFilter = RectangleEdgeFilter.TopLeft | RectangleEdgeFilter.TopRight | RectangleEdgeFilter.BottomLeft;
+					else
+						edgeFilter = RectangleEdgeFilter.TopLeft | RectangleEdgeFilter.BottomLeft;
+				}
+				if((edgeFilter & RectangleEdgeFilter.TopRight) == RectangleEdgeFilter.TopRight)
+					edgeFilter = RectangleEdgeFilter.TopRight | RectangleEdgeFilter.BottomLeft;
+				else
+					edgeFilter = RectangleEdgeFilter.BottomLeft;
+//				}
+			}
+			
+			if(edgeBottomRight > 0) {
+				if((edgeFilter & RectangleEdgeFilter.TopLeft) == RectangleEdgeFilter.TopLeft) {
+					if((edgeFilter & RectangleEdgeFilter.TopRight) == RectangleEdgeFilter.TopRight) {
+						if((edgeFilter & RectangleEdgeFilter.BottomLeft) == RectangleEdgeFilter.BottomLeft)
+							edgeFilter = RectangleEdgeFilter.All;
+						else
+							edgeFilter = RectangleEdgeFilter.TopLeft | RectangleEdgeFilter.TopRight | RectangleEdgeFilter.BottomRight;
+					}
+					else {
+						if((edgeFilter & RectangleEdgeFilter.BottomLeft) == RectangleEdgeFilter.BottomLeft)
+							edgeFilter = RectangleEdgeFilter.TopLeft | RectangleEdgeFilter.BottomLeft | RectangleEdgeFilter.BottomRight;
+						else
+							edgeFilter = RectangleEdgeFilter.TopLeft | RectangleEdgeFilter.BottomRight;
+					}
+				}
+				else {
+					if((edgeFilter & RectangleEdgeFilter.TopRight) == RectangleEdgeFilter.TopRight) {
+						if((edgeFilter & RectangleEdgeFilter.BottomLeft) == RectangleEdgeFilter.BottomLeft)
+							edgeFilter = RectangleEdgeFilter.TopRight | RectangleEdgeFilter.BottomLeft | RectangleEdgeFilter.BottomRight;
+						else
+							edgeFilter = RectangleEdgeFilter.TopRight | RectangleEdgeFilter.BottomRight;
+					}
+					else {
+						if((edgeFilter & RectangleEdgeFilter.BottomLeft) == RectangleEdgeFilter.BottomLeft)
+							edgeFilter = RectangleEdgeFilter.BottomLeft | RectangleEdgeFilter.BottomRight;
+						else
+							edgeFilter = RectangleEdgeFilter.BottomRight;
+					}
+				}
+//				}
+			}
+			path = e.Graphics.GenerateRoundedRectangle(ClientRectangle, CornerSize/2, edgeFilter);
 //		DrawBorder(e.Graphics);
 //		path = new GraphicsPath();
 //		path.StartFigure();

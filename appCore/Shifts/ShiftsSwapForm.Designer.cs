@@ -28,6 +28,7 @@ namespace appCore.Shifts
 		private System.Windows.Forms.DateTimePicker dateTimePicker4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
+		private appCore.UI.AMTRoundCornersPanel amtRoundCornersPanel1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -64,6 +65,7 @@ namespace appCore.Shifts
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.amtRoundCornersPanel1 = new appCore.UI.AMTRoundCornersPanel();
 			this.SuspendLayout();
 			// 
 			// comboBox1
@@ -137,11 +139,10 @@ namespace appCore.Shifts
 			this.button1.TabIndex = 8;
 			this.button1.Text = "Send Request";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(394, 115);
+			this.button2.Location = new System.Drawing.Point(371, 115);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(100, 23);
 			this.button2.TabIndex = 9;
@@ -193,11 +194,26 @@ namespace appCore.Shifts
 			this.label4.Text = "Start Date";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// amtRoundCornersPanel1
+			// 
+			this.amtRoundCornersPanel1.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.amtRoundCornersPanel1.BorderColor = System.Drawing.Color.White;
+			this.amtRoundCornersPanel1.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
+			this.amtRoundCornersPanel1.BorderWidth = 10F;
+			this.amtRoundCornersPanel1.CornerSize = 25;
+			this.amtRoundCornersPanel1.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
+			this.amtRoundCornersPanel1.DoubleBufferActive = false;
+			this.amtRoundCornersPanel1.Location = new System.Drawing.Point(3, 144);
+			this.amtRoundCornersPanel1.Name = "amtRoundCornersPanel1";
+			this.amtRoundCornersPanel1.Size = new System.Drawing.Size(231, 271);
+			this.amtRoundCornersPanel1.TabIndex = 15;
+			// 
 			// ShiftsSwapForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(497, 141);
+			this.ClientSize = new System.Drawing.Size(476, 418);
+			this.Controls.Add(this.amtRoundCornersPanel1);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);

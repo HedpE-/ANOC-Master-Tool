@@ -21,6 +21,9 @@ namespace appCore.Shifts
 	{
 		ExchangeService service;
 		
+		ShiftsCalendar requesterCalendar;
+		ShiftsCalendar swappedCalendar;
+		
 		public ShiftsSwapForm() {
 			InitializeComponent();
 			
@@ -58,6 +61,28 @@ namespace appCore.Shifts
 		
 		void ComboBoxesSelectedIndexChanged(object sender, EventArgs e) {
 			ComboBox cb = sender as ComboBox;
+			if(cb.Name == "comboBox1") {
+				requesterCalendar = new ShiftsCalendar(cb.Text, DateTime.Now.Month, DateTime.Now.Year);
+				
+				requesterCalendar.BackColor = SystemColors.ControlDark;
+				requesterCalendar.BorderColor = Color.White;
+				requesterCalendar.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
+				requesterCalendar.BorderWidth = 10F;
+				requesterCalendar.CornerSize = 25;
+				requesterCalendar.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
+				requesterCalendar.DoubleBufferActive = false;
+				requesterCalendar.Location = new Point(3, 144);
+				requesterCalendar.Name = "amtRoundCornersPanel1";
+				requesterCalendar.Size = new Size(231, 271);
+				requesterCalendar.TabIndex = 15;
+			}
+			else {
+				swappedCalendar = new ShiftsCalendar(cb.Text, DateTime.Now.Month, DateTime.Now.Year);
+			}
+			
+			// 
+			// amtRoundCornersPanel1
+			// 
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
