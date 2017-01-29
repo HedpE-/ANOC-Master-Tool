@@ -7,7 +7,6 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Exchange.WebServices.Data;
@@ -40,6 +39,7 @@ namespace appCore.Shifts
 				}
 			}
 			
+			
 			dateTimePicker1.MinDate =
 				dateTimePicker2.MinDate =
 				dateTimePicker3.MinDate =
@@ -56,33 +56,49 @@ namespace appCore.Shifts
 			// Set the URL.
 			service.Url = new Uri("https://outlook-north.vodafone.com/ews/exchange.asmx");
 			
+			requesterCalendar = new ShiftsCalendar(comboBox1.Text, dateTimePicker1.Value, dateTimePicker2.Value);
+			Controls.Add(requesterCalendar);
 			
+			requesterCalendar.BackColor = SystemColors.Control;
+			requesterCalendar.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
+			requesterCalendar.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
+			requesterCalendar.DoubleBufferActive = false;
+			requesterCalendar.Location = new Point(3, 144);
+			requesterCalendar.Name = "requesterCalendar";
+			
+			swappedCalendar = new ShiftsCalendar(comboBox2.Text, dateTimePicker3.Value, dateTimePicker4.Value);
+			Controls.Add(swappedCalendar);
+			
+			swappedCalendar.BackColor = SystemColors.Control;
+			swappedCalendar.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
+			swappedCalendar.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
+			swappedCalendar.DoubleBufferActive = false;
+			swappedCalendar.Location = new Point(237, 144);
+			swappedCalendar.Name = "swappedCalendar";
 		}
 		
 		void ComboBoxesSelectedIndexChanged(object sender, EventArgs e) {
 			ComboBox cb = sender as ComboBox;
-			if(cb.Name == "comboBox1") {
-				requesterCalendar = new ShiftsCalendar(cb.Text, DateTime.Now.Month, DateTime.Now.Year);
-				
-				requesterCalendar.BackColor = SystemColors.ControlDark;
-				requesterCalendar.BorderColor = Color.White;
-				requesterCalendar.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
-				requesterCalendar.BorderWidth = 10F;
-				requesterCalendar.CornerSize = 25;
-				requesterCalendar.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
-				requesterCalendar.DoubleBufferActive = false;
-				requesterCalendar.Location = new Point(3, 144);
-				requesterCalendar.Name = "amtRoundCornersPanel1";
-				requesterCalendar.Size = new Size(231, 271);
-				requesterCalendar.TabIndex = 15;
+			if(!string.IsNullOrEmpty(cb.Text)) {
+				if(cb.Name == "comboBox1")
+					requesterCalendar.RedrawCalendar(cb.Text, dateTimePicker1.Value, dateTimePicker2.Value);
+				else
+					swappedCalendar.RedrawCalendar(cb.Text, dateTimePicker3.Value, dateTimePicker4.Value);
 			}
-			else {
-				swappedCalendar = new ShiftsCalendar(cb.Text, DateTime.Now.Month, DateTime.Now.Year);
+		}
+		
+		void DateTimePickersValueChanged(object sender, EventArgs e) {
+			DateTimePicker dtp = sender as DateTimePicker;
+			switch(dtp.Name) {
+				case "dateTimePicker1": case "dateTimePicker2":
+					if(requesterCalendar != null)
+						requesterCalendar.RedrawCalendar(comboBox1.Text, dateTimePicker1.Value, dateTimePicker2.Value);
+					break;
+				case "dateTimePicker3": case "dateTimePicker4":
+					if(swappedCalendar != null)
+						swappedCalendar.RedrawCalendar(comboBox2.Text, dateTimePicker3.Value, dateTimePicker4.Value);
+					break;
 			}
-			
-			// 
-			// amtRoundCornersPanel1
-			// 
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
@@ -139,7 +155,7 @@ namespace appCore.Shifts
 				"Data início: " + dateTimePicker3.Value.ToString(dateTimePicker3.CustomFormat) + Environment.NewLine +
 				"Data fim: " + dateTimePicker4.Value.ToString(dateTimePicker4.CustomFormat);
 			
-			if((dateTimePicker2.Value - dateTimePicker1.Value).TotalDays != (dateTimePicker4.Value - dateTimePicker3.Value).TotalDays) {
+			if(((int)(dateTimePicker2.Value - dateTimePicker1.Value).TotalDays) != ((int)(dateTimePicker4.Value - dateTimePicker3.Value).TotalDays)) {
 				
 				return;
 			}

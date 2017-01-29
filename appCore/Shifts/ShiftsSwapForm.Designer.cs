@@ -28,7 +28,6 @@ namespace appCore.Shifts
 		private System.Windows.Forms.DateTimePicker dateTimePicker4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
-		private appCore.UI.AMTRoundCornersPanel amtRoundCornersPanel1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -65,7 +64,6 @@ namespace appCore.Shifts
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.amtRoundCornersPanel1 = new appCore.UI.AMTRoundCornersPanel();
 			this.SuspendLayout();
 			// 
 			// comboBox1
@@ -73,7 +71,8 @@ namespace appCore.Shifts
 			this.comboBox1.FormattingEnabled = true;
 			this.comboBox1.Location = new System.Drawing.Point(67, 9);
 			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(278, 21);
+			this.comboBox1.Size = new System.Drawing.Size(393, 21);
+			this.comboBox1.Sorted = true;
 			this.comboBox1.TabIndex = 0;
 			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBoxesSelectedIndexChanged);
 			// 
@@ -82,7 +81,8 @@ namespace appCore.Shifts
 			this.comboBox2.FormattingEnabled = true;
 			this.comboBox2.Location = new System.Drawing.Point(67, 62);
 			this.comboBox2.Name = "comboBox2";
-			this.comboBox2.Size = new System.Drawing.Size(278, 21);
+			this.comboBox2.Size = new System.Drawing.Size(393, 21);
+			this.comboBox2.Sorted = true;
 			this.comboBox2.TabIndex = 1;
 			this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.ComboBoxesSelectedIndexChanged);
 			// 
@@ -94,15 +94,17 @@ namespace appCore.Shifts
 			this.dateTimePicker1.Name = "dateTimePicker1";
 			this.dateTimePicker1.Size = new System.Drawing.Size(105, 20);
 			this.dateTimePicker1.TabIndex = 2;
+			this.dateTimePicker1.ValueChanged += new System.EventHandler(this.DateTimePickersValueChanged);
 			// 
 			// dateTimePicker2
 			// 
 			this.dateTimePicker2.CustomFormat = "dd/MM/yyyy";
 			this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-			this.dateTimePicker2.Location = new System.Drawing.Point(240, 36);
+			this.dateTimePicker2.Location = new System.Drawing.Point(355, 36);
 			this.dateTimePicker2.Name = "dateTimePicker2";
 			this.dateTimePicker2.Size = new System.Drawing.Size(105, 20);
 			this.dateTimePicker2.TabIndex = 3;
+			this.dateTimePicker2.ValueChanged += new System.EventHandler(this.DateTimePickersValueChanged);
 			// 
 			// label1
 			// 
@@ -142,7 +144,7 @@ namespace appCore.Shifts
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(371, 115);
+			this.button2.Location = new System.Drawing.Point(360, 115);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(100, 23);
 			this.button2.TabIndex = 9;
@@ -157,19 +159,21 @@ namespace appCore.Shifts
 			this.dateTimePicker3.Name = "dateTimePicker3";
 			this.dateTimePicker3.Size = new System.Drawing.Size(105, 20);
 			this.dateTimePicker3.TabIndex = 10;
+			this.dateTimePicker3.ValueChanged += new System.EventHandler(this.DateTimePickersValueChanged);
 			// 
 			// dateTimePicker4
 			// 
 			this.dateTimePicker4.CustomFormat = "dd/MM/yyyy";
 			this.dateTimePicker4.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-			this.dateTimePicker4.Location = new System.Drawing.Point(240, 89);
+			this.dateTimePicker4.Location = new System.Drawing.Point(355, 90);
 			this.dateTimePicker4.Name = "dateTimePicker4";
 			this.dateTimePicker4.Size = new System.Drawing.Size(105, 20);
 			this.dateTimePicker4.TabIndex = 11;
+			this.dateTimePicker4.ValueChanged += new System.EventHandler(this.DateTimePickersValueChanged);
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(178, 35);
+			this.label5.Location = new System.Drawing.Point(293, 35);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(56, 21);
 			this.label5.TabIndex = 12;
@@ -178,7 +182,7 @@ namespace appCore.Shifts
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(178, 89);
+			this.label6.Location = new System.Drawing.Point(293, 90);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(56, 21);
 			this.label6.TabIndex = 13;
@@ -194,26 +198,11 @@ namespace appCore.Shifts
 			this.label4.Text = "Start Date";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// amtRoundCornersPanel1
-			// 
-			this.amtRoundCornersPanel1.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.amtRoundCornersPanel1.BorderColor = System.Drawing.Color.White;
-			this.amtRoundCornersPanel1.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
-			this.amtRoundCornersPanel1.BorderWidth = 10F;
-			this.amtRoundCornersPanel1.CornerSize = 25;
-			this.amtRoundCornersPanel1.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
-			this.amtRoundCornersPanel1.DoubleBufferActive = false;
-			this.amtRoundCornersPanel1.Location = new System.Drawing.Point(3, 144);
-			this.amtRoundCornersPanel1.Name = "amtRoundCornersPanel1";
-			this.amtRoundCornersPanel1.Size = new System.Drawing.Size(231, 271);
-			this.amtRoundCornersPanel1.TabIndex = 15;
-			// 
 			// ShiftsSwapForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(476, 418);
-			this.Controls.Add(this.amtRoundCornersPanel1);
+			this.ClientSize = new System.Drawing.Size(463, 436);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);
@@ -228,6 +217,7 @@ namespace appCore.Shifts
 			this.Controls.Add(this.dateTimePicker1);
 			this.Controls.Add(this.comboBox2);
 			this.Controls.Add(this.comboBox1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
 			this.Name = "ShiftsSwapForm";
 			this.Text = "Shifts Swap Request";
