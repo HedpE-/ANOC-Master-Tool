@@ -31,7 +31,12 @@ namespace appCore.Netcool
 		public Site.Vendors Vendor { get { return getVendor(vendor); } private set { } }
 		[FieldOrder(4)]
 		string lastOccurrence;
-		public DateTime LastOccurrence { get { return Convert.ToDateTime(lastOccurrence); } private set { } }
+		public DateTime LastOccurrence {
+			get {
+				return lastOccurrence.Contains("/") ? Convert.ToDateTime(lastOccurrence) : new DateTime(Convert.ToInt64(lastOccurrence));
+			}
+			private set { }
+		}
 		[FieldOrder(5)]
 		string alarmCount;
 		public int AlarmCount { get { return Convert.ToInt32(alarmCount); } private set { } }

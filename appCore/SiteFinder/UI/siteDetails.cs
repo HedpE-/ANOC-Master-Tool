@@ -261,6 +261,7 @@ namespace appCore.SiteFinder.UI
 				if(Settings.CurrentUser.UserName == "GONCARJ3")
 					lockUnlockCellsToolStripMenuItem.Enabled = true;
 				
+				currentSite.requestOIData("INCCRQPWR");
 				listboxFilter_Changed(checkBox1, null);
 			}
 			else {
@@ -280,6 +281,8 @@ namespace appCore.SiteFinder.UI
 				myMap.Zoom = 4;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
 			}
+			
+			MainMenu.siteFinder_Toggle(currentSite.Exists);
 			pictureBox1.UpdateCells(currentSite.Cells);
 		}
 		
@@ -503,7 +506,7 @@ namespace appCore.SiteFinder.UI
 			                           		form.Name = "BulkSiteSearch";
 			                           		form.Text = "Sites Bulk Search";
 			                           		form.StartPosition = FormStartPosition.Manual;
-			                           		System.Drawing.Point loc = PointToScreen(System.Drawing.Point.Empty);
+			                           		Point loc = PointToScreen(Point.Empty);
 			                           		loc.X = loc.X + ((this.Width - form.Width) / 2);
 			                           		loc.Y = loc.Y + ((this.Height - form.Height) / 2);
 			                           		form.Location = loc;
@@ -642,7 +645,7 @@ namespace appCore.SiteFinder.UI
 //			                           	}
 //			                           	catch (Exception) {
 //			                           	}
-//			                           	
+//
 //			                           	if(sitesList.Count > 1) {
 //			                           		if(!siteDetails_UIMode.Contains("outage"))
 //			                           			siteDetails_UIMode = "multi";

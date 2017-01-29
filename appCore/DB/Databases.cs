@@ -58,8 +58,8 @@ namespace appCore.DB
 		
 		public static ShiftsFile shiftsFile;
 		
-		public static DataTable siteDetailsTable = null;
-		public static DataTable cellDetailsTable = null;
+//		public static DataTable siteDetailsTable = null;
+//		public static DataTable cellDetailsTable = null;
 		
 		static System.Timers.Timer AutoUpdateTimer = new System.Timers.Timer(60 * 60 * 1000); //one hour in milliseconds
 		
