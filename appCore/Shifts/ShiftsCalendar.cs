@@ -27,26 +27,52 @@ namespace appCore.Shifts
 	{
 		System.Timers.Timer midnightTimer;
 		
-		List<Rectangle> rectCollection = new List<Rectangle>();
-		DateTime shiftsChosenDate = DateTime.Now;
 		Bitmap shiftsBodySnap;
 		Panel wholeShiftsPanel;
 		PopupHelper popup;
 		
-		public const int shiftsRectWidth = 30; //the width of the rectangle
-		public const int shiftsRectHeight = 20; //the height of the rectangle
+		List<Rectangle> rectCollection = new List<Rectangle>();
+		
+		DateTime shiftsChosenDate = DateTime.Now;
+		public int ShownMonth {
+			get { return shiftsChosenDate.Month; }
+			private set { }
+		}
+		public int ShownYear {
+			get { return shiftsChosenDate.Year; }
+			private set { }
+		}
+		
+		bool daysSelection;
+		DateTime shiftsEndSelectDate;
+		
+		public string PersonName {
+			get;
+			private set;
+		}
+		
+		public Size CalendarSize {
+			get { return shiftsBodySnap.Size; }
+			private set { }
+		}
+		
+		const int shiftsRectWidth = 30; //the width of the rectangle
+		const int shiftsRectHeight = 20; //the height of the rectangle
 		
 		public ShiftsCalendar()
 		{
 			DoubleBufferActive = true;
 			BorderColor = Color.Black;
 			BackColor = Color.Gray;
-			Size = new Size(220, 26);
 			BorderWidth = 1.25f;
 			BordersToDraw = AMTRoundCornersPanel.Borders.Left | AMTRoundCornersPanel.Borders.Bottom | AMTRoundCornersPanel.Borders.Right;
 //					this.BordersToDraw = this.Borders.None;
 			CornersToRound = AMTRoundCornersPanel.Corners.BottomLeft | AMTRoundCornersPanel.Corners.BottomRight;
 			MouseClick += shiftsPanel_MouseClick;
+			PersonName = CurrentUser.FullName[1] + " " + CurrentUser.FullName[0];
+			shiftsBodySnap = loadShifts(true);
+//			shiftsBodySnap.Save(UserFolder.FullName + @"\shiftsSnap.png");
+			Size = shiftsBodySnap.Size;
 			
 			PictureBox shiftsPanel_icon = new PictureBox();
 			((System.ComponentModel.ISupportInitialize)(shiftsPanel_icon)).BeginInit();
@@ -75,18 +101,37 @@ namespace appCore.Shifts
 			Name = "ShiftsCalendar";
 //			this.MouseMove += shiftsPanel_MouseMove;
 //			http://www.codeproject.com/Articles/38436/Extended-Graphics-Rounded-rectangles-Font-metrics
-			Initiate();
+//			Initiate(true);
+			Paint += shiftsPanelPaint;
 			deployMidnightTimer();
 		}
 		
-		public ShiftsCalendar(string name, int month, int year) {
-			
+		public ShiftsCalendar(string name, DateTime startSelectDate, DateTime endSelectDate) {
+			DoubleBufferActive = true;
+			shiftsChosenDate = startSelectDate;
+			shiftsEndSelectDate = endSelectDate;
+			daysSelection = shiftsEndSelectDate > shiftsChosenDate;
+			PersonName = name;
+//			Initiate(false);
+			shiftsBodySnap = loadShifts(false);
+			Size = shiftsBodySnap.Size;
+			Paint += shiftsPanelPaint;
+//			Invalidate();
 		}
 		
-		void Initiate() {
-			shiftsBodySnap = loadShifts(shiftsChosenDate);
-			Paint += shiftsPanelPaint;
-			LocationChanged += shiftsPanel_LocationChanged;
+//		void Initiate(bool showIcons) {
+		////			LocationChanged += shiftsPanel_LocationChanged;
+//		}
+		
+		public void RedrawCalendar(string name, DateTime startSelectDate, DateTime endSelectDate) {
+			shiftsChosenDate = startSelectDate;
+			shiftsEndSelectDate = endSelectDate;
+			daysSelection = shiftsEndSelectDate >= shiftsChosenDate;
+			PersonName = name;
+			shiftsBodySnap = loadShifts(false);
+			Size = shiftsBodySnap.Size;
+			Invalidate();
+//			Initiate(false);
 		}
 		
 		void deployMidnightTimer() {
@@ -102,7 +147,8 @@ namespace appCore.Shifts
 		{
 			if(DateTime.Now > shiftsChosenDate) {
 				shiftsChosenDate = DateTime.Now;
-				Initiate();
+				shiftsBodySnap = loadShifts(true);
+//				Initiate(true);
 				
 				DateTime midnight = new DateTime(DateTime.Now.AddDays(1).Year,DateTime.Now.AddDays(1).Month,DateTime.Now.AddDays(1).Day,0,0,1);
 				TimeSpan timeSpanToMidnight = midnight - DateTime.Now;
@@ -112,7 +158,7 @@ namespace appCore.Shifts
 		
 		void shiftsPanelPaint(object sender, PaintEventArgs e)
 		{
-			Invalidate(true);
+//			Invalidate(true);
 //			shiftsSnap.Save(UserFolderPath + @"\bmp.png");
 			Size = new Size(shiftsBodySnap.Width, shiftsBodySnap.Height);
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -140,7 +186,7 @@ namespace appCore.Shifts
 				return;
 			
 //			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
-			string shift = Databases.shiftsFile.GetShift(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], shiftsChosenDate);
+			string shift = Databases.shiftsFile.GetShift(PersonName, shiftsChosenDate);
 			if(string.IsNullOrEmpty(shift))
 				return;
 			
@@ -169,19 +215,23 @@ namespace appCore.Shifts
 //			t.Start();
 		}
 		
-		Bitmap loadShifts(DateTime date) {
+		Bitmap loadShifts(bool showIcons) {
 			rectCollection.Clear();
-			byte first_weekday = (byte)(new DateTime(date.Year,date.Month,1).DayOfWeek);
+			byte first_weekday = (byte)(new DateTime(shiftsChosenDate.Year,shiftsChosenDate.Month,1).DayOfWeek);
 			if(first_weekday == 0)
 				first_weekday = 6; // if month starts on Sunday, 6 because Sunday is actually weekday 0
 			else
 				first_weekday--;
-			int num_days = DateTime.DaysInMonth(date.Year, date.Month); // find how many days are in the selected month
+			int num_days = DateTime.DaysInMonth(shiftsChosenDate.Year, shiftsChosenDate.Month); // find how many days are in the selected month
 			int num_lines = (int)Math.Ceiling((double)(first_weekday + num_days) / (double)7);
-			int panelHeaderWidth = this.Controls["shiftsPanel_refresh"].Left - this.Controls["shiftsPanel_icon"].Right;
+//			int panelHeaderWidth = 0;
+//			if(showIcons)
+//			panelHeaderWidth = this.Controls["shiftsPanel_refresh"].Left - this.Controls["shiftsPanel_icon"].Right;
 			int panelBodyHeight = (int)((shiftsRectHeight * 2) + 3 + ((num_lines * 2) * shiftsRectHeight) + 10); // (height * 2) + 3 for title and weedays headers; + 10 for 5 padding on top&bottom
 //			DataRow[] foundRows = Databases.shiftsFile.monthTables[date.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'");
-			string[] foundRows = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], date.Month);
+			string[] foundRows = null;
+			if(!string.IsNullOrEmpty(PersonName))
+				foundRows = Databases.shiftsFile.GetAllShiftsInMonth(PersonName, shiftsChosenDate.Month);
 			
 //			shiftsHeaderSnap = new Bitmap(MainForm.shiftsPanel.Controls["shiftsPanel_refresh"].Right + MainForm.shiftsPanel.Controls["shiftsPanel_icon"].Right, shiftsRectHeight);
 			shiftsBodySnap = new Bitmap(224, panelBodyHeight);
@@ -196,13 +246,15 @@ namespace appCore.Shifts
 				drawStringFormat.Alignment = StringAlignment.Center;
 				drawStringFormat.LineAlignment = StringAlignment.Far;
 				using (Pen pen = new Pen(Color.Black, 1)) {
-					string title = Enum.GetName(typeof(Months),date.Month - 1) + " " + date.Year;
+					string title = Enum.GetName(typeof(Months),shiftsChosenDate.Month - 1) + " " + shiftsChosenDate.Year;
 					Rectangle rectangle = new Rectangle(new Point(7, 0), new Size(shiftsRectWidth * 7, shiftsRectHeight + 3));
 					g.DrawString(title, new Font("Tahoma",12, FontStyle.Bold), Brushes.Black, rectangle, drawStringFormat);
 					drawStringFormat.LineAlignment = StringAlignment.Center;
 					Font stringFont = new Font("Tahoma",8, FontStyle.Bold);
 					Brush normalRectFill = new SolidBrush(Color.FromArgb((int)(255 * 0.3), Color.Black));
 					Brush curDayFill = new SolidBrush(Color.FromArgb((int)(255 * 0.6), Color.Black));
+					Brush selectedDayFill = new SolidBrush(Color.FromArgb((int)(255 * 0.6), Color.DarkCyan));
+					Brush selectedCurDayFill = new SolidBrush(Color.FromArgb((int)(255 * 0.6), Color.Cyan));
 					
 					for (int index = 0; index < 7; index++)
 					{
@@ -236,23 +288,41 @@ namespace appCore.Shifts
 							// Draw 2nd box for shift text
 							text = string.Empty;
 							Rectangle rect2 = new Rectangle(new Point(7 + shiftsRectWidth * col, 25 + shiftsRectHeight * (line + 1)), new Size(shiftsRectWidth, shiftsRectHeight));
-							if(curDay == DateTime.Now.Day)
-								g.FillRectangle(curDayFill, rect2);
-							else
-								g.FillRectangle(normalRectFill, rect2);
+							if(curDay == DateTime.Now.Day && ShownMonth == DateTime.Now.Month && ShownYear == DateTime.Now.Year) {
+								if(daysSelection) {
+									if(curDay >= shiftsChosenDate.Day && curDay <= shiftsEndSelectDate.Day)
+										g.FillRectangle(selectedCurDayFill,rect2);
+									else
+										g.FillRectangle(curDayFill, rect2);
+								}
+								else
+									g.FillRectangle(curDayFill, rect2);
+							}
+							else {
+								if(daysSelection) {
+									if(curDay >= shiftsChosenDate.Day && curDay <= shiftsEndSelectDate.Day)
+										g.FillRectangle(selectedDayFill,rect2);
+									else
+										g.FillRectangle(normalRectFill, rect2);
+								}
+								else
+									g.FillRectangle(normalRectFill, rect2);
+							}
 							Brush drawBrush = Brushes.LightGray;
 							if(curDay > 0 && curDay <= num_days) {
-								text = foundRows[curDay - 1];
-								switch(text) {
-									case "M":
-										drawBrush = Brushes.ForestGreen;
-										break;
-									case "A":
-										drawBrush = Brushes.OrangeRed;
-										break;
-									case "N":
-										drawBrush = Brushes.Red;
-										break;
+								if(foundRows != null) {
+									text = foundRows[curDay - 1];
+									switch(text) {
+										case "M":
+											drawBrush = Brushes.ForestGreen;
+											break;
+										case "A":
+											drawBrush = Brushes.OrangeRed;
+											break;
+										case "N":
+											drawBrush = Brushes.Red;
+											break;
+									}
 								}
 							}
 							
@@ -264,7 +334,7 @@ namespace appCore.Shifts
 						}
 					}
 				}
-//				shiftsSnap.Save(MainForm.UserFolderPath + @"\shiftsSnap.png");
+//				shiftsBodySnap.Save(UserFolder.FullName + @"\shiftsSnap.png");
 			}
 			return shiftsBodySnap;
 		}
