@@ -117,6 +117,7 @@
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
+    <Compile Include="Shifts\ShiftsCalendar2.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />
