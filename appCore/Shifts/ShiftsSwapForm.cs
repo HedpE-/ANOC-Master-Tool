@@ -26,7 +26,7 @@ namespace appCore.Shifts
 		public ShiftsSwapForm() {
 			InitializeComponent();
 			
-			if(Settings.CurrentUser.Role == "Shift Leaders") {
+			if(Settings.CurrentUser.Role == "Shift Leader") {
 				foreach(string str in DB.Databases.shiftsFile.ShiftLeaders) {
 					comboBox1.Items.Add(str);
 					comboBox2.Items.Add(str);
