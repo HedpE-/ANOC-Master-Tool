@@ -23,6 +23,10 @@ namespace appCore.SiteFinder.UI
 		public bool Cancel;
 		string DataType { get; set; }
 		public List<DataGridViewRow> selectedCases;
+		public Control OwnerControl {
+			get;
+			private set;
+		}
 		
 		int checkedCount {
 			get {
@@ -37,8 +41,9 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID)
-		{
+		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
 			Datatable = inputDataTable;
 			InitializeComponent();
 			dataGridView1.Dock = DockStyle.Fill;
@@ -61,18 +66,19 @@ namespace appCore.SiteFinder.UI
 					DataType = "BookIns";
 					break;
 			}
-			populateListView();
+			populateGridView();
 			Text = "Site " + siteID + " " + DataType;
 		}
 		
-		public OiSiteTablesForm(DataTable currentCases, string siteID)
-		{
+		public OiSiteTablesForm(DataTable currentCases, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
 			Datatable = currentCases;
 			InitializeComponent();
 			ControlBox = false;
 			checkBox1.Visible = button1.Visible = button2.Visible = true;
 			DataType = "Cases";
-			populateListView();
+			populateGridView();
 			Text = "Select related cases - Site " + siteID;
 			if(dataGridView1.Right < 900)
 				Width = dataGridView1.Right;
@@ -80,7 +86,7 @@ namespace appCore.SiteFinder.UI
 //			MaximumSize = new Size(maxWidth, int.MaxValue);
 		}
 		
-		void populateListView() {
+		void populateGridView() {
 			dataGridView1.SuspendLayout();
 			
 			dataGridView1.DataSource = Datatable;

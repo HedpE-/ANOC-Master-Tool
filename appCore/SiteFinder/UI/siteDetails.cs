@@ -806,19 +806,7 @@ namespace appCore.SiteFinder.UI
 						break;
 				}
 				
-				var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
-				Form openForm = null;
-				
-				foreach (Form frm in fc)
-				{
-					if(frm.Name.Contains(dataToShow)) {
-						openForm = frm;
-						break;
-					}
-				}
-				if(openForm != null)
-					openForm.Close();
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id);
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
 				OiTable.Show();
 			}
 		}
@@ -836,7 +824,7 @@ namespace appCore.SiteFinder.UI
 			Action actionNonThreaded = new Action(delegate {
 			                                      	if(Settings.CurrentUser.UserName == "GONCARJ3") {
 			                                      		if(currentSite.Exists) {
-			                                      			LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
+			                                      			LockUnlockCellsForm2 lucf = new LockUnlockCellsForm2(currentSite);
 			                                      			lucf.ShowDialog();
 			                                      		}
 			                                      	}

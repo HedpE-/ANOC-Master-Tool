@@ -238,6 +238,7 @@ namespace appCore.Templates.UI
 						break;
 				}
 			}
+			
 		}
 		
 		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
@@ -969,7 +970,7 @@ namespace appCore.Templates.UI
 			ToolStripMenuItem tsim = sender as ToolStripMenuItem;
 //			if(e.Button == MouseButtons.Left) {
 			if(currentSite.Exists) {
-				System.Data.DataTable dt = new System.Data.DataTable();
+				DataTable dt = new DataTable();
 				string dataToShow = string.Empty;
 				switch (tsim.Name) {
 					case "INCsButton":
@@ -1050,19 +1051,7 @@ namespace appCore.Templates.UI
 						break;
 				}
 				
-				var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
-				Form openForm = null;
-				
-				foreach (Form frm in fc)
-				{
-					if(frm.Name.Contains(dataToShow)) {
-						openForm = frm;
-						break;
-					}
-				}
-				if(openForm != null)
-					openForm.Close();
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id);
+				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
 				OiTable.Show();
 			}
 		}

@@ -7,8 +7,13 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using appCore.SiteFinder;
+using appCore.SiteFinder.UI;
+using appCore.Templates.UI;
 
 namespace appCore.UI
 {
@@ -80,19 +85,19 @@ namespace appCore.UI
 //		}
 
 		public void siteFinder_Toggle(bool toggle, bool siteFound = true) {
-			appCore.SiteFinder.Site currentSite = null;
+			Site currentSite = null;
 			switch(Parent.Name) {
 				case "Troubleshoot Template GUI":
-					currentSite = ((Templates.UI.TroubleshootControls)Parent).currentSite;
+					currentSite = ((TroubleshootControls)Parent).currentSite;
 					break;
 				case "Failed CRQ Template GUI":
-					currentSite = ((Templates.UI.FailedCRQControls)Parent).currentSite;
+					currentSite = ((FailedCRQControls)Parent).currentSite;
 					break;
 				case "Update Template GUI":
-					currentSite = ((Templates.UI.UpdateControls)Parent).currentSite;
+					currentSite = ((UpdateControls)Parent).currentSite;
 					break;
 				case "siteDetails":
-					currentSite = ((SiteFinder.UI.siteDetails)Parent).currentSite;
+					currentSite = ((siteDetails)Parent).currentSite;
 					break;
 			}
 			foreach (ToolStripMenuItem tsmi in Items) {
@@ -209,6 +214,17 @@ namespace appCore.UI
 					}
 				}
 			}
+			
+			var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
+			List<OiSiteTablesForm> openForms = new List<OiSiteTablesForm>();
+			
+			foreach(OiSiteTablesForm frm in fc) {
+				if(frm.OwnerControl == this.Parent)
+					openForms.Add(frm);
+			}
+			
+			for(int c = 0;c < openForms.Count;c++)
+				openForms[c].Close();
 		}
 		
 		void InitializeComponent()
