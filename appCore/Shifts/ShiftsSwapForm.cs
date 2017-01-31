@@ -102,13 +102,13 @@ namespace appCore.Shifts
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
-			NameResolutionCollection allContacts = service.ResolveName(comboBox1.Text, ResolveNameSearchLocation.DirectoryOnly, true);
+			NameResolutionCollection foundContacts = service.ResolveName(comboBox1.Text, ResolveNameSearchLocation.DirectoryOnly, true);
 			NameResolution requesterContact = null;
-			if(allContacts.Count > 0) {
-				if(allContacts.Count == 1)
-					requesterContact = allContacts[0];
+			if(foundContacts.Count > 0) {
+				if(foundContacts.Count == 1)
+					requesterContact = foundContacts[0];
 				else {
-					foreach(NameResolution nr in allContacts) {
+					foreach(NameResolution nr in foundContacts) {
 						if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
 							requesterContact = nr;
 							break;
@@ -116,13 +116,13 @@ namespace appCore.Shifts
 					}
 				}
 			}
-			allContacts = service.ResolveName(comboBox2.Text, ResolveNameSearchLocation.DirectoryOnly, true);
+			foundContacts = service.ResolveName(comboBox2.Text, ResolveNameSearchLocation.DirectoryOnly, true);
 			NameResolution swapContact = null;
-			if(allContacts.Count > 0) {
-				if(allContacts.Count == 1)
-					swapContact = allContacts[0];
+			if(foundContacts.Count > 0) {
+				if(foundContacts.Count == 1)
+					swapContact = foundContacts[0];
 				else {
-					foreach(NameResolution nr in allContacts) {
+					foreach(NameResolution nr in foundContacts) {
 						if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
 							swapContact = nr;
 							break;
@@ -130,13 +130,13 @@ namespace appCore.Shifts
 					}
 				}
 			}
-			allContacts = service.ResolveName("Rui Gonçalves", ResolveNameSearchLocation.DirectoryOnly, true);
+			foundContacts = service.ResolveName("Rui Gonçalves", ResolveNameSearchLocation.DirectoryOnly, true);
 			NameResolution approverContact = null;
-			if(allContacts.Count > 0) {
-				if(allContacts.Count == 1)
-					approverContact = allContacts[0];
+			if(foundContacts.Count > 0) {
+				if(foundContacts.Count == 1)
+					approverContact = foundContacts[0];
 				else {
-					foreach(NameResolution nr in allContacts) {
+					foreach(NameResolution nr in foundContacts) {
 						if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
 							approverContact = nr;
 							break;
