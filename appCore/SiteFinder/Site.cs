@@ -443,7 +443,7 @@ namespace appCore.SiteFinder
 		}
 		
 		string getOiCellsLockedState(bool getLockedDetails) {
-			string response = Web.OIConnection.requestPhpOutput("index", Id, string.Empty);
+			string response = OIConnection.requestPhpOutput("index", Id, string.Empty);
 			if(string.IsNullOrWhiteSpace(PowerCompany))
 				try { PowerCompany = getPowerCompany(response); } catch {}
 			
