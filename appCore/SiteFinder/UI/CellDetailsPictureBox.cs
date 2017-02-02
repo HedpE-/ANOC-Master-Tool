@@ -13,10 +13,10 @@ using System.Windows.Forms;
 
 namespace appCore.SiteFinder.UI
 {
-    /// <summary>
-    /// Description of CellDetailsPictureBox.
-    /// </summary>
-    public class CellDetailsPictureBox : PictureBox
+	/// <summary>
+	/// Description of CellDetailsPictureBox.
+	/// </summary>
+	public class CellDetailsPictureBox : PictureBox
 	{
 		Label label_VF_2GCells = new Label();
 		Label label_VF_3GCells = new Label();
@@ -37,31 +37,39 @@ namespace appCore.SiteFinder.UI
 		
 		public void UpdateCells(List<Cell> cells) {
 			Cells = cells;
-			if(Cells.Count > 0) {
-				// Fill Cell Count table
-				
-				label_TotalCells.Text = Cells.Count.ToString();
-				
+			if(Cells != null) {
+				if(Cells.Count > 0) {
+					// Fill Cell Count table
+					
+					label_TotalCells.Text = Cells.Count.ToString();
+					
 //				cellsList.RowFilter = "BEARER = '2G'";
-				label_Total_2GCells.Text = Cells.Filter(Cell.Filters.All_2G).Count.ToString();
+					label_Total_2GCells.Text = Cells.Filter(Cell.Filters.All_2G).Count.ToString();
 //				cellsList.RowFilter = "BEARER = '2G' AND (CELL_NAME NOT LIKE 'T*' AND CELL_NAME NOT LIKE '*W' AND CELL_NAME NOT LIKE '*X' AND CELL_NAME NOT LIKE '*Y')";
-				label_VF_2GCells.Text = Cells.Filter(Cell.Filters.VF_2G).Count.ToString();
+					label_VF_2GCells.Text = Cells.Filter(Cell.Filters.VF_2G).Count.ToString();
 //				cellsList.RowFilter = "BEARER = '2G' AND (CELL_NAME LIKE 'T*' OR CELL_NAME LIKE '*W' OR CELL_NAME LIKE '*X' OR CELL_NAME LIKE '*Y')";
-				label_TF_2GCells.Text = Cells.Filter(Cell.Filters.TF_2G).Count.ToString();
-				
+					label_TF_2GCells.Text = Cells.Filter(Cell.Filters.TF_2G).Count.ToString();
+					
 //				cells.RowFilter = "BEARER = '3G'";
-				label_Total_3GCells.Text = Cells.Filter(Cell.Filters.All_3G).Count.ToString();
+					label_Total_3GCells.Text = Cells.Filter(Cell.Filters.All_3G).Count.ToString();
 //				cellsList.RowFilter = "BEARER = '3G' AND CELL_NAME NOT LIKE 'T*'";
-				label_VF_3GCells.Text = Cells.Filter(Cell.Filters.VF_3G).Count.ToString();
+					label_VF_3GCells.Text = Cells.Filter(Cell.Filters.VF_3G).Count.ToString();
 //				cellsList.RowFilter = "BEARER = '3G' AND CELL_NAME LIKE 'T*'";
-				label_TF_3GCells.Text = Cells.Filter(Cell.Filters.TF_3G).Count.ToString();
-				
+					label_TF_3GCells.Text = Cells.Filter(Cell.Filters.TF_3G).Count.ToString();
+					
 //				cells.RowFilter = "BEARER = '4G'";
-				label_Total_4GCells.Text = Cells.Filter(Cell.Filters.All_4G).Count.ToString();
+					label_Total_4GCells.Text = Cells.Filter(Cell.Filters.All_4G).Count.ToString();
 //				cellsList.RowFilter = "BEARER = '4G' AND CELL_NAME NOT LIKE 'T*'";
-				label_VF_4GCells.Text = Cells.Filter(Cell.Filters.VF_4G).Count.ToString();
+					label_VF_4GCells.Text = Cells.Filter(Cell.Filters.VF_4G).Count.ToString();
 //				cellsList.RowFilter = "BEARER = '4G' AND CELL_NAME LIKE 'T*'";
-				label_TF_4GCells.Text = Cells.Filter(Cell.Filters.TF_4G).Count.ToString();
+					label_TF_4GCells.Text = Cells.Filter(Cell.Filters.TF_4G).Count.ToString();
+				}
+				else {
+					foreach(Control ctr in Controls) {
+						if(ctr.Name.StartsWith("label_"))
+							ctr.Text = "0";
+					}
+				}
 			}
 			else {
 				foreach(Control ctr in Controls) {

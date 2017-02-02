@@ -261,7 +261,6 @@ namespace appCore.SiteFinder.UI
 				if(Settings.CurrentUser.UserName == "GONCARJ3")
 					lockUnlockCellsToolStripMenuItem.Enabled = true;
 				
-				currentSite.requestOIData("INCCRQPWR");
 				listboxFilter_Changed(checkBox1, null);
 			}
 			else {
@@ -572,10 +571,11 @@ namespace appCore.SiteFinder.UI
 				                                   	}
 				                                   	
 				                                   	currentSite = Finder.getSite(tb.Text);
-				                                   	currentSite.UpdateLockedCells(false);
 				                                   	
-				                                   	if(currentSite.Exists)
+				                                   	if(currentSite.Exists) {
 				                                   		currentSite.requestOIData("INCCRQPWR");
+				                                   		currentSite.UpdateLockedCells(false);
+				                                   	}
 				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {

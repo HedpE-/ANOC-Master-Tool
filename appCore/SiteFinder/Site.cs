@@ -301,7 +301,9 @@ namespace appCore.SiteFinder
 				if(dataToRequest.Contains("PWR")) {
 					if(string.IsNullOrWhiteSpace(PowerCompany))
 						try { PowerCompany = getPowerCompany(); } catch {}
+					
 				}
+				
 //				}
 //				else {
 //					if(CurrentUser.userName == "Caramelos" && dataToRequest != "PWR") {
@@ -420,7 +422,9 @@ namespace appCore.SiteFinder
 		string getPowerCompany(string response = "") {
 			if(string.IsNullOrEmpty(response))
 				response = OIConnection.requestPhpOutput("index", Id, string.Empty);
-			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+			if(!string.IsNullOrEmpty(response)) {
+				if(response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+				}
 				HtmlDocument doc = new HtmlDocument();
 				doc.Load(new StringReader(response));
 				
@@ -432,18 +436,24 @@ namespace appCore.SiteFinder
 						break;
 				}
 				string[] strTofind = { "<br>" };
+				
+				if(LockedCellsDetails == null)
+					UpdateLockedCells(
+				
 				return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 			}
+			
 			return string.Empty;
 		}
 		
 		string getOiLockedCellsDetails() {
-			string response = Web.OIConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
+			string response = OIConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
 			return response.Contains("Site " + Id + "</b><table>") ? response : string.Empty;
 		}
 		
-		string getOiCellsLockedState(bool getLockedDetails) {
-			string response = OIConnection.requestPhpOutput("index", Id, string.Empty);
+		string getOiCellsLockedState(bool getLockedDetails, string response = "") {
+			if(string.IsNullOrEmpty(response))
+				response = OIConnection.requestPhpOutput("index", Id, string.Empty);
 			if(string.IsNullOrWhiteSpace(PowerCompany))
 				try { PowerCompany = getPowerCompany(response); } catch {}
 			
