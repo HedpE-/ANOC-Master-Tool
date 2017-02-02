@@ -16,7 +16,6 @@ namespace appCore.SiteFinder.UI
 		private System.ComponentModel.IContainer components = null;
 		private System.Windows.Forms.RadioButton radioButton2;
 		private System.Windows.Forms.RadioButton radioButton1;
-		private GlacialComponents.Controls.GlacialList glacialList1;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.CheckBox checkBox3;
@@ -27,6 +26,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.RadioButton radioButton3;
+		private System.Windows.Forms.DataGridView dataGridView1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -49,9 +49,9 @@ namespace appCore.SiteFinder.UI
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.glacialList1 = new GlacialComponents.Controls.GlacialList();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -62,6 +62,8 @@ namespace appCore.SiteFinder.UI
 			this.label3 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
+			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// radioButton2
@@ -90,53 +92,11 @@ namespace appCore.SiteFinder.UI
 			this.radioButton1.UseVisualStyleBackColor = true;
 			this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButtonsCheckedChanged);
 			// 
-			// glacialList1
-			// 
-			this.glacialList1.AllowColumnResize = true;
-			this.glacialList1.AllowMultiselect = false;
-			this.glacialList1.AlternateBackground = System.Drawing.Color.LightGray;
-			this.glacialList1.AlternatingColors = true;
-			this.glacialList1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.glacialList1.AutoHeight = true;
-			this.glacialList1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.glacialList1.BackgroundStretchToFit = true;
-			this.glacialList1.ControlStyle = GlacialComponents.Controls.GLControlStyles.Normal;
-			this.glacialList1.FullRowSelect = true;
-			this.glacialList1.GridColor = System.Drawing.Color.Black;
-			this.glacialList1.GridLines = GlacialComponents.Controls.GLGridLines.gridBoth;
-			this.glacialList1.GridLineStyle = GlacialComponents.Controls.GLGridLineStyles.gridSolid;
-			this.glacialList1.GridTypes = GlacialComponents.Controls.GLGridTypes.gridOnExists;
-			this.glacialList1.HeaderHeight = 22;
-			this.glacialList1.HeaderVisible = true;
-			this.glacialList1.HeaderWordWrap = false;
-			this.glacialList1.HotColumnTracking = false;
-			this.glacialList1.HotItemTracking = false;
-			this.glacialList1.HotTrackingColor = System.Drawing.Color.LightGray;
-			this.glacialList1.HoverEvents = false;
-			this.glacialList1.HoverTime = 1;
-			this.glacialList1.ImageList = null;
-			this.glacialList1.ItemHeight = 18;
-			this.glacialList1.ItemWordWrap = true;
-			this.glacialList1.Location = new System.Drawing.Point(6, 32);
-			this.glacialList1.Name = "glacialList1";
-			this.glacialList1.Selectable = true;
-			this.glacialList1.SelectedTextColor = System.Drawing.Color.White;
-			this.glacialList1.SelectionColor = System.Drawing.Color.DarkBlue;
-			this.glacialList1.ShowBorder = true;
-			this.glacialList1.ShowFocusRect = false;
-			this.glacialList1.Size = new System.Drawing.Size(803, 364);
-			this.glacialList1.SortType = GlacialComponents.Controls.SortTypes.InsertionSort;
-			this.glacialList1.SuperFlatHeaderColor = System.Drawing.Color.White;
-			this.glacialList1.TabIndex = 36;
-			this.glacialList1.ItemChangedEvent += new GlacialComponents.Controls.ChangedEventHandler(this.GlacialList1ItemChangedEvent);
-			// 
 			// checkBox1
 			// 
 			this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.checkBox1.Enabled = false;
-			this.checkBox1.Location = new System.Drawing.Point(815, 53);
+			this.checkBox1.Location = new System.Drawing.Point(807, 53);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(67, 24);
 			this.checkBox1.TabIndex = 37;
@@ -148,7 +108,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.checkBox2.Enabled = false;
-			this.checkBox2.Location = new System.Drawing.Point(815, 83);
+			this.checkBox2.Location = new System.Drawing.Point(807, 83);
 			this.checkBox2.Name = "checkBox2";
 			this.checkBox2.Size = new System.Drawing.Size(67, 24);
 			this.checkBox2.TabIndex = 38;
@@ -160,7 +120,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.checkBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.checkBox3.Enabled = false;
-			this.checkBox3.Location = new System.Drawing.Point(815, 113);
+			this.checkBox3.Location = new System.Drawing.Point(807, 113);
 			this.checkBox3.Name = "checkBox3";
 			this.checkBox3.Size = new System.Drawing.Size(67, 24);
 			this.checkBox3.TabIndex = 39;
@@ -171,7 +131,7 @@ namespace appCore.SiteFinder.UI
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.Location = new System.Drawing.Point(815, 32);
+			this.label1.Location = new System.Drawing.Point(807, 32);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(67, 18);
 			this.label1.TabIndex = 40;
@@ -182,9 +142,9 @@ namespace appCore.SiteFinder.UI
 			this.amtRichTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.amtRichTextBox1.Enabled = false;
-			this.amtRichTextBox1.Location = new System.Drawing.Point(888, 113);
+			this.amtRichTextBox1.Location = new System.Drawing.Point(880, 113);
 			this.amtRichTextBox1.Name = "amtRichTextBox1";
-			this.amtRichTextBox1.Size = new System.Drawing.Size(254, 283);
+			this.amtRichTextBox1.Size = new System.Drawing.Size(262, 296);
 			this.amtRichTextBox1.TabIndex = 41;
 			this.amtRichTextBox1.Text = "";
 			this.amtRichTextBox1.EnabledChanged += new System.EventHandler(this.AmtRichTextBox1EnabledChanged);
@@ -195,9 +155,9 @@ namespace appCore.SiteFinder.UI
 			this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBox1.Enabled = false;
 			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(888, 53);
+			this.comboBox1.Location = new System.Drawing.Point(880, 53);
 			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(254, 21);
+			this.comboBox1.Size = new System.Drawing.Size(262, 21);
 			this.comboBox1.TabIndex = 42;
 			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1TextUpdate);
 			this.comboBox1.TextUpdate += new System.EventHandler(this.ComboBox1TextUpdate);
@@ -206,7 +166,7 @@ namespace appCore.SiteFinder.UI
 			// label2
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.Location = new System.Drawing.Point(888, 32);
+			this.label2.Location = new System.Drawing.Point(880, 32);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(77, 18);
 			this.label2.TabIndex = 43;
@@ -215,7 +175,7 @@ namespace appCore.SiteFinder.UI
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.Location = new System.Drawing.Point(888, 88);
+			this.label3.Location = new System.Drawing.Point(880, 88);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(77, 18);
 			this.label3.TabIndex = 44;
@@ -225,7 +185,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(815, 143);
+			this.button1.Location = new System.Drawing.Point(807, 143);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(67, 51);
 			this.button1.TabIndex = 45;
@@ -246,11 +206,46 @@ namespace appCore.SiteFinder.UI
 			this.radioButton3.UseVisualStyleBackColor = true;
 			this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButtonsCheckedChanged);
 			// 
+			// dataGridView1
+			// 
+			this.dataGridView1.AllowUserToAddRows = false;
+			this.dataGridView1.AllowUserToDeleteRows = false;
+			this.dataGridView1.AllowUserToResizeColumns = false;
+			this.dataGridView1.AllowUserToResizeRows = false;
+			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+			this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+			this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+			this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+			this.dataGridView1.Location = new System.Drawing.Point(6, 32);
+			this.dataGridView1.Name = "dataGridView1";
+			this.dataGridView1.ReadOnly = true;
+			this.dataGridView1.RowHeadersVisible = false;
+			this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+			this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+			this.dataGridView1.Size = new System.Drawing.Size(795, 377);
+			this.dataGridView1.TabIndex = 47;
+			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1CellContentClick);
+			this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+			this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1CellValueChanged);
+			// 
 			// LockUnlockCellsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1148, 403);
+			this.ClientSize = new System.Drawing.Size(1148, 415);
+			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.radioButton3);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.label3);
@@ -261,13 +256,13 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.checkBox3);
 			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.checkBox1);
-			this.Controls.Add(this.glacialList1);
 			this.Controls.Add(this.radioButton1);
 			this.Controls.Add(this.radioButton2);
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
 			this.MinimumSize = new System.Drawing.Size(1164, 442);
 			this.Name = "LockUnlockCellsForm";
 			this.Text = "LockUnlockCellsForm";
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
 
 		}

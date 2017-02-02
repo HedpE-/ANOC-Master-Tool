@@ -125,10 +125,6 @@
     <Compile Include="SiteFinder\UI\LockUnlockCellsForm.Designer.cs">
       <DependentUpon>LockUnlockCellsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SiteFinder\UI\LockUnlockCellsForm2.cs" />
-    <Compile Include="SiteFinder\UI\LockUnlockCellsForm2.Designer.cs">
-      <DependentUpon>LockUnlockCellsForm2.cs</DependentUpon>
-    </Compile>
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs" />
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
@@ -1438,9 +1434,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\LockUnlockCellsForm.resx">
       <DependentUpon>LockUnlockCellsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SiteFinder\UI\LockUnlockCellsForm2.resx">
-      <DependentUpon>LockUnlockCellsForm2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SiteFinder\UI\OiSiteTablesForm.resx">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
