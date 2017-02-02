@@ -42,7 +42,7 @@ namespace appCore.SiteFinder.UI
 				int c = 0;
 				foreach(DataGridViewRow row in dataGridView1.Rows) {
 					if(row.Cells["Tech"].Value != null) {
-						if(row.Cells["Tech"].Value.ToString() == "2G" && row.Cells[0].Style.ForeColor != SystemColors.GrayText)
+						if(row.Cells["Tech"].Value.ToString() == "2G" && !row.Frozen)
 							c++;
 					}
 				}
@@ -68,7 +68,7 @@ namespace appCore.SiteFinder.UI
 				int c = 0;
 				foreach(DataGridViewRow row in dataGridView1.Rows) {
 					if(row.Cells["Tech"].Value != null) {
-						if(row.Cells["Tech"].Value.ToString() == "3G" && row.Cells[0].Style.ForeColor != SystemColors.GrayText)
+						if(row.Cells["Tech"].Value.ToString() == "3G" && !row.Frozen)
 							c++;
 					}
 				}
@@ -94,7 +94,7 @@ namespace appCore.SiteFinder.UI
 				int c = 0;
 				foreach(DataGridViewRow row in dataGridView1.Rows) {
 					if(row.Cells["Tech"].Value != null) {
-						if(row.Cells["Tech"].Value.ToString() == "4G" && row.Cells[0].Style.ForeColor != SystemColors.GrayText)
+						if(row.Cells["Tech"].Value.ToString() == "4G" && !row.Frozen)
 							c++;
 					}
 				}
@@ -178,6 +178,12 @@ namespace appCore.SiteFinder.UI
 						break;
 				}
 				
+				checkBox1.Checked =
+					checkBox2.Checked =
+					checkBox3.Checked = false;
+				amtRichTextBox1.Text =
+					comboBox1.Text = string.Empty;
+				
 				foreach(Control ctrl in Controls) {
 					switch(ctrl.GetType().ToString()) {
 						case "System.Windows.Forms.CheckBox":
@@ -185,19 +191,25 @@ namespace appCore.SiteFinder.UI
 						case "System.Windows.Forms.ComboBox":
 						case "System.Windows.Forms.Button":
 						case "appCore.UI.AMTRichTextBox":
-							ctrl.Visible = uiMode.Contains("ock Cells");
+							if(ctrl.Name != "label4")
+								ctrl.Visible = uiMode.Contains("ock Cells");
 							break;
 					}
 				}
+				checkBookIn();
 			}
 		}
 		
 		public LockUnlockCellsForm(Site site) {
-			currentSite = site;
-			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
-			currentSite.UpdateLockedCells(true);
-			currentSite.requestOIData("INCCRQ");
 			InitializeComponent();
+			
+			currentSite = site;
+			
+			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
+			
+			currentSite.UpdateLockedCells(true);
+//			currentSite.requestOIData("INCCRQ");
+			
 			radioButton1.Select();
 		}
 		
@@ -218,6 +230,45 @@ namespace appCore.SiteFinder.UI
 				
 				ResumeLayout();
 			}
+		}
+		
+		void checkBookIn() {
+			if(UiMode == "Lock Cells") {
+				if(currentSite.BookIns == null)
+					currentSite.requestOIData("Bookins");
+				
+				var foundBookIns = currentSite.BookIns.Rows.Cast<DataRow>().Where(s => string.IsNullOrEmpty(s[11].ToString()));
+				if(foundBookIns.Count() > 0) {
+					DataRow bookInRow = null;
+					foreach(DataRow bookIn in foundBookIns) {
+						DateTime arrivedTime = Convert.ToDateTime(bookIn[7].ToString());
+						if(arrivedTime.Year == DateTime.Now.Year && arrivedTime.Month == DateTime.Now.Month && arrivedTime.Day == DateTime.Now.Day) {
+							bookInRow = bookIn;
+							break;
+						}
+					}
+					if(bookInRow != null) {
+						label4.Visible = true;
+						label4.Text = "Valid Book In found: " + bookInRow[3] + " - " + bookInRow[4] + " - " + bookInRow[5] + " - " + bookInRow[7];
+						label4.ForeColor = Color.DarkGreen;
+						label4.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+					}
+					else {
+						label4.Visible = true;
+						label4.Text = "CAUTION!! No valid Book In found";
+						label4.ForeColor = Color.Red;
+						label4.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+					}
+				}
+				else {
+					label4.Visible = true;
+					label4.Text = "CAUTION!! No valid Book In found";
+					label4.ForeColor = Color.Red;
+					label4.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+				}
+			}
+			else
+				label4.Visible = false;
 		}
 		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
@@ -258,14 +309,19 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
-			var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
-			List<string> cellsList = new List<string>();
-			foreach(DataGridViewRow row in filtered)
-				cellsList.Add(row.Cells[1].Value.ToString());
-			if(button1.Text.StartsWith("Lock"))
-				sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
-			else
-				sendUnlockCellsRequest(cellsList, amtRichTextBox1.Text);
+			DialogResult ans = DialogResult.Yes;
+			if(label4.Visible && label4.Text.StartsWith("CAUTION"))
+				ans = appCore.UI.FlexibleMessageBox.Show("No valid book in found for this site.\n\nContinue anyway?","No book in", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+			if(ans == DialogResult.Yes) {
+				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
+				List<string> cellsList = new List<string>();
+				foreach(DataGridViewRow row in filtered)
+					cellsList.Add(row.Cells["Cell Name"].Value.ToString());
+				if(UiMode.StartsWith("Lock"))
+					sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
+				else
+					sendUnlockCellsRequest(cellsList, amtRichTextBox1.Text);
+			}
 		}
 		
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
@@ -430,9 +486,11 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void DataGridView1CellContentClick(object sender, DataGridViewCellEventArgs e) {
-			if(e.ColumnIndex == 0 && dataGridView1.Rows[e.RowIndex].Cells[0].Style.ForeColor != SystemColors.GrayText) {
-				DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
-				cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
+			if(e.ColumnIndex == 0) {
+				if(!dataGridView1.Rows[e.RowIndex].Frozen) {
+					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
+					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
+				}
 			}
 //			else {
 //				if(e.Item.ForeColor == SystemColors.GrayText) {
@@ -485,6 +543,7 @@ namespace appCore.SiteFinder.UI
 				e.CellStyle.ForeColor = SystemColors.GrayText;
 				if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 					e.CellStyle.BackColor = SystemColors.InactiveBorder;
+				dataGridView1.Rows[e.RowIndex].Frozen = true;
 			}
 			else {
 				switch(UiMode) {
@@ -493,11 +552,13 @@ namespace appCore.SiteFinder.UI
 							e.CellStyle.ForeColor = SystemColors.GrayText;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = SystemColors.InactiveBorder;
+							dataGridView1.Rows[e.RowIndex].Frozen = true;
 						}
 						else {
 							e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
+							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
 						break;
 					case "Unlock Cells":
@@ -505,11 +566,13 @@ namespace appCore.SiteFinder.UI
 							e.CellStyle.ForeColor = SystemColors.GrayText;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = SystemColors.InactiveBorder;
+							dataGridView1.Rows[e.RowIndex].Frozen = true;
 						}
 						else {
 							e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
+							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
 						break;
 					case "History":

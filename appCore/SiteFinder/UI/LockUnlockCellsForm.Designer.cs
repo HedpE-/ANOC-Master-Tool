@@ -27,6 +27,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.RadioButton radioButton3;
 		private System.Windows.Forms.DataGridView dataGridView1;
+		private System.Windows.Forms.Label label4;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -63,6 +64,7 @@ namespace appCore.SiteFinder.UI
 			this.button1 = new System.Windows.Forms.Button();
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.label4 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -240,11 +242,24 @@ namespace appCore.SiteFinder.UI
 			this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
 			this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1CellValueChanged);
 			// 
+			// label4
+			// 
+			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.ForeColor = System.Drawing.Color.Red;
+			this.label4.Location = new System.Drawing.Point(252, 3);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(549, 23);
+			this.label4.TabIndex = 48;
+			this.label4.Text = "CAUTION!! No valid Book In";
+			this.label4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			this.label4.Visible = false;
+			// 
 			// LockUnlockCellsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1148, 415);
+			this.Controls.Add(this.label4);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.radioButton3);
 			this.Controls.Add(this.button1);
