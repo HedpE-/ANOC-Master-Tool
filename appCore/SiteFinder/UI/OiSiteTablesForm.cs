@@ -96,6 +96,11 @@ namespace appCore.SiteFinder.UI
 				dataGridView1.Columns["Resolution"].Width = 300;
 				dataGridView1.Columns["Resolution"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 			} catch {}
+			try {
+				dataGridView1.Columns["Programme"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+				dataGridView1.Columns["Programme"].Width = 300;
+				dataGridView1.Columns["Programme"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+			} catch {}
 			
 			if(DataType == "Cases") {
 				DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();
