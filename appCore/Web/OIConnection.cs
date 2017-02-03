@@ -62,14 +62,14 @@ namespace appCore.Web
 			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
 			
 			IWebProxy proxy;
-//			try {
-//				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-//					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
-//					WebRequest.GetSystemWebProxy();
-//			}
-//			catch (Exception) {
+			try {
+				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
+					WebRequest.GetSystemWebProxy();
+			}
+			catch (Exception) {
 				proxy = WebRequest.GetSystemWebProxy();
-//			}
+			}
 			
 			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;	
 			client.Proxy = proxy;
@@ -114,14 +114,14 @@ namespace appCore.Web
 			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
 			
 			IWebProxy proxy;
-//			try {
-//				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-//					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
-//					WebRequest.GetSystemWebProxy();
-//			}
-//			catch (Exception) {
+			try {
+				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
+					WebRequest.GetSystemWebProxy();
+			}
+			catch (Exception) {
 				proxy = WebRequest.GetSystemWebProxy();
-//			}
+			}
 			
 			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;	
 			client.Proxy = proxy;
