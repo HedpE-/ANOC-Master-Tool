@@ -12,6 +12,7 @@ using System.Linq;
 using System.Drawing;
 using System.Data;
 using System.IO;
+using System.Threading;
 using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
@@ -228,13 +229,28 @@ namespace appCore.SiteFinder
 		[FieldHidden]
 		public DataTable ActiveAlarms;
 		[FieldHidden]
+		DateTime ActiveAlarmsTimestamp;
+		[FieldHidden]
 		public DataTable INCs;
+		[FieldHidden]
+		DateTime INCsTimestamp;
 		[FieldHidden]
 		public DataTable CRQs;
 		[FieldHidden]
+		DateTime CRQsTimestamp;
+		[FieldHidden]
 		public DataTable BookIns;
 		[FieldHidden]
+		DateTime BookInsTimestamp;
+		[FieldHidden]
 		public DataTable LockedCellsDetails;
+		[FieldHidden]
+		string indexPhp;
+		[FieldHidden]
+		DateTime indexPhpTimestamp;
+		[FieldHidden]
+		int indexPhpMaxLifetimeMin = 5;
+		
 		[FieldHidden]
 		GMarkerGoogle mapMarker;
 		public GMarkerGoogle MapMarker {
@@ -283,109 +299,97 @@ namespace appCore.SiteFinder
 		/// <summary>
 		/// Populate with data pulled from OI
 		/// </summary>
-		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "PWR"</param>
-		public void requestOIData(string dataToRequest) {
+		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "PWR", "LKULK"</param>
+		/// <param name="forceUpdateIndexPhp"></param>
+		public void requestOIData(string dataToRequest, bool forceUpdateIndexPhp = false) {
 			if(Exists) {
-				if(dataToRequest.Contains("INC"))
-					INCs = FetchINCs();
-				
-				if(dataToRequest.Contains("CRQ"))
-					CRQs = FetchCRQs();
-				
-				if(dataToRequest.Contains("Alarms"))
-					ActiveAlarms = FetchActiveAlarms();
-				
-				if(dataToRequest.Contains("Bookins"))
-					BookIns = FetchBookIns();
-				
-				if(dataToRequest.Contains("PWR")) {
-					if(string.IsNullOrWhiteSpace(PowerCompany))
-						try { PowerCompany = getPowerCompany(); } catch {}
-					
+				List<Thread> threads = new List<Thread>();
+				int finishedThreadsCount = 0;
+				if(dataToRequest.Contains("INC")) {
+					Thread thread = new Thread(() => {
+					                           	INCs = FetchINCs();
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
 				}
 				
-//				}
-//				else {
-//					if(CurrentUser.userName == "Caramelos" && dataToRequest != "PWR") {
-//						DriveInfo penRoot = null;
-//						foreach (var drive in DriveInfo.GetDrives()) {
-//							if(drive.IsReady) {
-//								if(drive.VolumeLabel == "PEN") {
-//									Int64 totalGb = ((drive.TotalSize / 1024) / 1024) / 1024;
-//									if(totalGb > 55 && totalGb < 65) {
-//										penRoot = drive;
-//										break;
-//									}
-//								}
-//							}
-//						}
-//						if(penRoot != null) {
-//							if(dataToRequest.Contains("INC") || dataToRequest.Contains("AllSite")) {
-//								FileSystemInfo table_inc = null;
-//								try {
-//									table_inc = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_inc.txt")[0];
-//								}
-//								catch (Exception) {	}
-//								if(table_inc != null) {
-//									INCs = FetchINCs(table_inc);
-//									DataView dv = INCs.DefaultView;
-//									dv.Sort = "Incident Ref desc";
-//									INCs = dv.ToTable();
-//								}
-//							}
-//
-//							if(dataToRequest.Contains("CRQ") || dataToRequest.Contains("AllSite")) {
-//								FileSystemInfo table_crq = null;
-//								try {
-//									table_crq = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_crq.txt")[0];
-//								}
-//								catch (Exception) { }
-//								if(table_crq != null) {
-//									CRQs = FetchCRQs(table_crq);
-//									DataView dv = CRQs.DefaultView;
-//									dv.Sort = "Scheduled Start desc";
-//									CRQs = dv.ToTable();
-//								}
-//							}
-//
-//							if(dataToRequest.Contains("Alarms")) {
-//								FileSystemInfo table_alarms = null;
-//								try {
-//									table_alarms = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_alarms.txt")[0];
-//								}
-//								catch (Exception) { }
-//								if(table_alarms != null) {
-//									ActiveAlarms = FetchActiveAlarms(table_alarms);
-//									DataView dv = ActiveAlarms.DefaultView;
-//									dv.Sort = "Date/Time desc";
-//									ActiveAlarms = dv.ToTable();
-//								}
-//							}
-//
-//							if(dataToRequest.Contains("Bookins")) {
-//								FileSystemInfo table_visits = null;
-//								try {
-//									table_visits = penRoot.RootDirectory.GetDirectories("ANOC")[0].GetFiles("table_visits.txt")[0];
-//								}
-//								catch (Exception) { }
-//								if(table_visits != null) {
-//									this.BookIns = FetchBookIns(table_visits);
-				////									BookIns = FetchBookIns(table_visits);
-//									DataView dv = this.BookIns.DefaultView;
-				////									DataView dv = BookIns.DefaultView;
-//									dv.Sort = "Visit desc";
-//									DataTable BookIns = dv.ToTable();
-//								}
-//							}
-//						}
-//					}
-//				}
+				if(dataToRequest.Contains("CRQ")) {
+					Thread thread = new Thread(() => {
+					                           	CRQs = FetchCRQs();
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
+				}
+				
+				if(dataToRequest.Contains("Alarms")) {
+					Thread thread = new Thread(() => {
+					                           	ActiveAlarms = FetchActiveAlarms();
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
+				}
+				
+				if(dataToRequest.Contains("Bookins")) {
+					Thread thread = new Thread(() => {
+					                           	BookIns = FetchBookIns();
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
+				}
+				
+				if(dataToRequest.Contains("PWR")) {
+					Thread thread = new Thread(() => {
+					                           	if(string.IsNullOrEmpty(indexPhp) || forceUpdateIndexPhp) {
+					                           		indexPhp = getOiSiteIndexPage();
+					                           		indexPhpTimestamp = DateTime.Now;
+					                           	}
+					                           	else {
+					                           		if((DateTime.Now - indexPhpTimestamp).Minutes > indexPhpMaxLifetimeMin) {
+					                           			indexPhp = getOiSiteIndexPage();
+					                           			indexPhpTimestamp = DateTime.Now;
+					                           		}
+					                           	}
+					                           	if(string.IsNullOrWhiteSpace(PowerCompany))
+					                           		try { PowerCompany = getPowerCompany(); } catch {}
+					                           	
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
+				}
+				
+				if(dataToRequest.Contains("LKULK")) {
+					Thread thread = new Thread(() => {
+					                           	if(string.IsNullOrEmpty(indexPhp) || (forceUpdateIndexPhp && !dataToRequest.Contains("PWR"))) {
+					                           		indexPhp = getOiSiteIndexPage();
+					                           		indexPhpTimestamp = DateTime.Now;
+					                           	}
+					                           	else {
+					                           		if((DateTime.Now - indexPhpTimestamp).Minutes > indexPhpMaxLifetimeMin) {
+					                           			indexPhp = getOiSiteIndexPage();
+					                           			indexPhpTimestamp = DateTime.Now;
+					                           		}
+					                           	}
+					                           	
+					                           	if(LockedCellsDetails == null)
+					                           		getOiCellsLockedState(true);
+					                           	
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
+				}
+				
+				foreach(Thread thread in threads) {
+					thread.SetApartmentState(ApartmentState.STA);
+					thread.Start();
+				}
+				
+				while(finishedThreadsCount < threads.Count) { }
 			}
 		}
 		
 		DataTable FetchINCs(FileSystemInfo table_inc = null) {
 			DataTable dt = new DataTable();
-			string response = string.Empty;
+			string response;
 			response = OIConnection.requestPhpOutput("inc", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
@@ -394,7 +398,7 @@ namespace appCore.SiteFinder
 		
 		DataTable FetchCRQs(FileSystemInfo table_crq = null) {
 			DataTable dt = new DataTable();
-			string response = string.Empty;
+			string response;
 			response = OIConnection.requestPhpOutput("crq", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
@@ -403,7 +407,7 @@ namespace appCore.SiteFinder
 		
 		DataTable FetchActiveAlarms(FileSystemInfo table_alarms = null) {
 			DataTable dt = new DataTable();
-			string response = string.Empty;
+			string response;
 			response = OIConnection.requestPhpOutput("alarms", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
@@ -412,92 +416,78 @@ namespace appCore.SiteFinder
 		
 		DataTable FetchBookIns(FileSystemInfo table_visits = null) {
 			DataTable dt = new DataTable();
-			string response = string.Empty;
+			string response;
 			response = OIConnection.requestPhpOutput("sitevisit", Id, 90);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits"))
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
 			return dt;
 		}
 		
-		string getPowerCompany(string response = "") {
-			if(string.IsNullOrEmpty(response))
-				response = OIConnection.requestPhpOutput("index", Id, string.Empty);
-			if(!string.IsNullOrEmpty(response)) {
-				if(response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+		string getOiSiteIndexPage() {
+			string response = OIConnection.requestPhpOutput("index", Id, string.Empty);
+			return response;
+		}
+		
+		string getPowerCompany() {
+			if(!string.IsNullOrEmpty(indexPhp)) {
+				if(indexPhp.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+					HtmlDocument doc = new HtmlDocument();
+					doc.Load(new StringReader(indexPhp));
+					
+					int powerCompanyColumn = 0;
+					HtmlNode accessTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_access']").Descendants("table").First();
+					IEnumerable<HtmlNode> ATNdescendants = accessTableNode.Descendants("th");
+					for(powerCompanyColumn = 0;powerCompanyColumn < ATNdescendants.Count();powerCompanyColumn++) {
+						if(ATNdescendants.ElementAt(powerCompanyColumn).Name == "th" && ATNdescendants.ElementAt(powerCompanyColumn).InnerText.Contains("Power Company"))
+							break;
+					}
+					string[] strTofind = { "<br>" };
+					
+					return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 				}
-				HtmlDocument doc = new HtmlDocument();
-				doc.Load(new StringReader(response));
-				
-				int powerCompanyColumn = 0;
-				HtmlNode accessTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_access']").Descendants("table").First();
-				IEnumerable<HtmlNode> ATNdescendants = accessTableNode.Descendants("th");
-				for(powerCompanyColumn = 0;powerCompanyColumn < ATNdescendants.Count();powerCompanyColumn++) {
-					if(ATNdescendants.ElementAt(powerCompanyColumn).Name == "th" && ATNdescendants.ElementAt(powerCompanyColumn).InnerText.Contains("Power Company"))
-						break;
-				}
-				string[] strTofind = { "<br>" };
-				
-				if(LockedCellsDetails == null)
-					UpdateLockedCells(
-				
-				return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 			}
 			
 			return string.Empty;
 		}
 		
-		string getOiLockedCellsDetails() {
+		string getOiLockedCellsPage() {
 			string response = OIConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
 			return response.Contains("Site " + Id + "</b><table>") ? response : string.Empty;
 		}
 		
-		string getOiCellsLockedState(bool getLockedDetails, string response = "") {
-			if(string.IsNullOrEmpty(response))
-				response = OIConnection.requestPhpOutput("index", Id, string.Empty);
-			if(string.IsNullOrWhiteSpace(PowerCompany))
-				try { PowerCompany = getPowerCompany(response); } catch {}
-			
-			if(!string.IsNullOrEmpty(response) && response.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
-				HtmlDocument doc = new HtmlDocument();
-				doc.Load(new StringReader(response));
+		void getOiCellsLockedState(bool getLockedCellsPage) {
+			if(Exists && Cells.Count > 0) {
+//				if(string.IsNullOrEmpty(indexPhp))
+//					indexPhp = OIConnection.requestPhpOutput("index", Id, string.Empty);
 				
-				HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
-				
-				foreach (Cell cell in Cells) {
-					HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id.Contains(cell.Name));
-					if(checkBoxNode != null) {
-						if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))
-							cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
-						else
-							cell.Locked = false;
+				if(!string.IsNullOrEmpty(indexPhp) && indexPhp.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
+					HtmlDocument doc = new HtmlDocument();
+					doc.Load(new StringReader(indexPhp));
+					
+					HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
+					
+					foreach (Cell cell in Cells) {
+						HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id.Contains(cell.Name));
+						if(checkBoxNode != null) {
+							if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))
+								cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
+							else
+								cell.Locked = false;
+						}
 					}
+					if(getLockedCellsPage) {
+						string resp = getOiLockedCellsPage();
+						HtmlDocument doc2 = new HtmlDocument();
+						doc2.Load(new StringReader(resp));
+						
+						HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
+						
+						LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+					}
+					// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
+					// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
 				}
-				if(getLockedDetails) {
-//					if(Cells.Filter(Cell.Filters.Locked).Any()) {
-					string resp = getOiLockedCellsDetails();
-					HtmlDocument doc2 = new HtmlDocument();
-					doc2.Load(new StringReader(resp));
-					
-					HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
-					
-					LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
-//					}
-				}
-				// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
-				// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
-				
-				return response;
 			}
-			return string.Empty;
-		}
-		
-		public void UpdateLockedCells(bool getLockedDetails) {
-			if(Exists && Cells.Count > 0)
-				getOiCellsLockedState(getLockedDetails);
-		}
-		
-		public void LockUnlockCells() {
-//			string response = Web.OIConnection.Connection.requestPhpOutput("enterlock", Id, cellsList, ManRef, comments, false);
 		}
 		
 		Site.Vendors resolveVendor(string strVendor) {

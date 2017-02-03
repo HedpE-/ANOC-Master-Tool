@@ -8,7 +8,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Data;
 using appCore.DB;
 using FileHelpers;
 
@@ -80,8 +79,9 @@ namespace appCore.SiteFinder
 				engine.AfterReadRecord +=  (eng, e) => {
 					if(!Sites.Contains(e.Record.Id))
 						e.SkipThisRecord = true;
-					else
+					else {
 						e.Record.populateCells();
+					}
 				};
 				sites = engine.ReadFileAsList(Databases.all_sites.FullName);
 			}

@@ -101,6 +101,9 @@ namespace appCore.SiteFinder.UI
 				dataGridView1.Columns["Programme"].Width = 300;
 				dataGridView1.Columns["Programme"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 			} catch {}
+			try {
+				dataGridView1.Sort(dataGridView1.Columns["Arrived"], System.ComponentModel.ListSortDirection.Descending);;
+			} catch {}
 			
 			if(DataType == "Cases") {
 				DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();

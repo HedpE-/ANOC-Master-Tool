@@ -573,8 +573,8 @@ namespace appCore.SiteFinder.UI
 				                                   	currentSite = Finder.getSite(tb.Text);
 				                                   	
 				                                   	if(currentSite.Exists) {
-				                                   		currentSite.requestOIData("INCCRQPWR");
-				                                   		currentSite.UpdateLockedCells(false);
+				                                   		currentSite.requestOIData("INCCRQPWRLKULK");
+//				                                   		currentSite.UpdateLockedCells(false);
 				                                   	}
 				                                   });
 				

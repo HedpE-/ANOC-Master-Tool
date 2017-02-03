@@ -207,7 +207,7 @@ namespace appCore.SiteFinder.UI
 			
 			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
 			
-			currentSite.UpdateLockedCells(true);
+			currentSite.requestOIData("LKULK");
 //			currentSite.requestOIData("INCCRQ");
 			
 			radioButton1.Select();
@@ -223,6 +223,8 @@ namespace appCore.SiteFinder.UI
 				dataGridView1.Columns.Clear();
 				
 				InitializeDataTable(rb.Text);
+				
+				uiMode = rb.Text;
 				
 				dataGridView1.DataSource = Table;
 				
@@ -327,13 +329,13 @@ namespace appCore.SiteFinder.UI
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
 			bool manRef = !comboBox1.Items.Contains(reference);
 			OIConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
-			currentSite.UpdateLockedCells(true);
+			currentSite.requestOIData("LKULK", true);
 			RadioButtonsCheckedChanged(radioButton1, null);
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
 			OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
-			currentSite.UpdateLockedCells(true);
+			currentSite.requestOIData("LKULK", true);
 			RadioButtonsCheckedChanged(radioButton2, null);
 		}
 		
@@ -399,7 +401,7 @@ namespace appCore.SiteFinder.UI
 						row["Locked"] = cell.Locked ? "YES" : "No";
 						
 						if(currentSite.LockedCellsDetails == null)
-							currentSite.UpdateLockedCells(true);
+							currentSite.requestOIData("LKULK", true);
 						
 						List<DataRow> filtered = new List<DataRow>();
 						foreach(DataRow dr in currentSite.LockedCellsDetails.Rows) {
@@ -437,7 +439,7 @@ namespace appCore.SiteFinder.UI
 					Table.Columns.AddRange(new [] { UnlockedTime, UnlockedBy, UnlockComments });
 					
 					if(currentSite.LockedCellsDetails == null)
-						currentSite.UpdateLockedCells(true);
+						currentSite.requestOIData("LKULK", true);
 					foreach (DataRow dr in currentSite.LockedCellsDetails.Rows) {
 						DataRow row = Table.NewRow();
 						Cell cell = currentSite.Cells.Find(s => s.Name == dr[0].ToString());
@@ -536,9 +538,7 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-		{
-			
+		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
 			if(!dataGridView1.Rows[e.RowIndex].Cells["NOC"].Value.ToString().Contains("ANOC")) {
 				e.CellStyle.ForeColor = SystemColors.GrayText;
 				if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
@@ -575,11 +575,10 @@ namespace appCore.SiteFinder.UI
 							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
 						break;
-					case "History":
-						e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
-						if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
-							e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-						break;
+//					case "History":
+//						e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
+//						e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
+//						break;
 				}
 			}
 			if(dataGridView1.Columns[e.ColumnIndex].Name == "Locked")
