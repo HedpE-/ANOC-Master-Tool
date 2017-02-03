@@ -248,6 +248,14 @@ namespace appCore.Templates.UI
 				TextBox tb = (TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
+				
+				if(currentSite != null) {
+					if(tb.Text == currentSite.Id) {
+						if(currentSite.Exists)
+							currentSite.requestOIData("INCCRQPWR");
+						return;
+					}
+				}
 				Action actionThreaded = new Action(delegate {
 				                                   	currentSite = Finder.getSite(tb.Text);
 				                                   	if(currentSite.Exists)
@@ -290,8 +298,7 @@ namespace appCore.Templates.UI
 				                                      		COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
 				                                      		COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
 				                                      		COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
-				                                      		if(SiteOwnerComboBox.Text == "TF")
-				                                      			SiteOwnerComboBox.Text = "VF";
+				                                      		SiteOwnerComboBox.Text = "VF";
 				                                      		MainMenu.INCsButton.Enabled = false;
 				                                      	}
 				                                      	siteFinder_Toggle(true, currentSite.Exists);
@@ -303,6 +310,7 @@ namespace appCore.Templates.UI
 				LoadingPanel load = new LoadingPanel();
 				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
+			
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
