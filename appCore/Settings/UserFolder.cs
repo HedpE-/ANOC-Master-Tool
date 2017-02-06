@@ -431,8 +431,14 @@ namespace appCore.Settings
 					if(newestFile != null) {
 						if(currentShiftsFile != null) {
 							if(newestFile.LastWriteTime > currentShiftsFile.LastWriteTime) {
-								if(DateTime.Now.Month != 12 && !newestFile.Name.Contains((DateTime.Now.Year + 1).ToString()))
-									currentShiftsFile.Delete();
+								if(DateTime.Now.Month != 12 && !newestFile.Name.Contains((DateTime.Now.Year + 1).ToString())) {
+									try {
+										currentShiftsFile.Delete();
+									}
+									catch(Exception e) {
+										
+									}
+								}
 								newestFile.CopyTo(FullName + "\\" + newestFile.Name, true);
 							}
 						}

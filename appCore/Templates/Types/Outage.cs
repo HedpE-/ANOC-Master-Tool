@@ -139,6 +139,7 @@ namespace appCore.Templates.Types
 //				st2.Start();
 				
 				foreach(Cell cell in LTEcells) {
+					var t = LTEcells.FindIndex(s => s == cell);
 					try {
 						Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
 						OutageAlarms.Add(new Alarm(cell, true, temp));
