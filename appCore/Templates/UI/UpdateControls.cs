@@ -115,6 +115,10 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
+					
+					generateTemplateToolStripMenuItem.Enabled =
+					SiteDetailsToolStripMenuItem.Enabled =
+						clearToolStripMenuItem.Enabled = false;
 				}
 			}
 		}

@@ -7,14 +7,12 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using appCore.Settings;
 using appCore.Shifts;
-using appCore.Toolbox;
 using OfficeOpenXml;
 
 namespace appCore.DB
@@ -29,19 +27,15 @@ namespace appCore.DB
 		
 		ArrayList monthRanges;
 
-		public string FullName
-		{
-			get
-			{
+		public string FullName {
+			get {
 				return shiftsFile.FullName;
 			}
 			protected set { }
 		}
 
-		public bool Exists
-		{
-			get
-			{
+		public bool Exists {
+			get {
 				if(shiftsFile != null)
 					return shiftsFile.Exists;
 				return false;
@@ -50,17 +44,26 @@ namespace appCore.DB
 			protected set { }
 		}
 
-//		public Tools.Months LastMonthAvailable
-//		{
-//			get
-//			{
-//				return (Tools.Months)(monthTables.Count - 1);
-//			}
-//			protected set { }
-//		}
+		public Months LastMonthAvailable {
+			get {
+				int lastMonth = DateTime.Now.Month - 1;
+				if(shiftsFile != null) {
+					var nextMonthHeaderRange = package.Workbook.Worksheets[1].Cells[monthRanges[DateTime.Now.Month].ToString()];
+					var nextMonthShifts = package.Workbook.Worksheets[1].Cells[4, nextMonthHeaderRange.Start.Column, 65, nextMonthHeaderRange.End.Column];
+					foreach(var cell in nextMonthShifts) {
+						if(cell.Value.ToString() == "M" || cell.Value.ToString() == "A" || cell.Value.ToString() == "N") {
+							lastMonth++;
+							break;
+						}
+					}
+				}
+				
+				return (Months)lastMonth;
+			}
+			protected set { }
+		}
 
-		public int Year
-		{
+		public int Year {
 			get;
 			private set;
 		}
@@ -75,8 +78,7 @@ namespace appCore.DB
 			private set;
 		}
 		
-		public ShiftsFile(int year)
-		{
+		public ShiftsFile(int year) {
 			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
 			
 			try {
@@ -133,7 +135,7 @@ namespace appCore.DB
 				UserFolder.ClearTempFolder();
 		}
 		
-		public String GetShift(String name, DateTime date) {
+		public string GetShift(string name, DateTime date) {
 			int personRow = FindPersonRow(name);
 			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace('1','3')]) {
 				if(cell.Value != null) {
@@ -146,7 +148,7 @@ namespace appCore.DB
 			return string.Empty;
 		}
 		
-		public String[] GetAllShiftsInMonth(String name, int month) {
+		public string[] GetAllShiftsInMonth(string name, int month) {
 			List<string> list = new List<string>();
 			int personRow = FindPersonRow(name);
 			var personRange = package.Workbook.Worksheets[1].Cells[monthRanges[month - 1].ToString().Replace("1",personRow.ToString())];
@@ -214,7 +216,7 @@ namespace appCore.DB
 			return foundRows;
 		}
 		
-		int FindPersonRow(String name) {
+		int FindPersonRow(string name) {
 			foreach(var cell in package.Workbook.Worksheets[1].Cells["c:c"]) {
 				if(cell.Value != null) {
 					string[] nameArr = name.ToUpper().Split(' ');
@@ -232,15 +234,15 @@ namespace appCore.DB
 				return "Shift Leader";
 			
 			return "Agent";
-		}			
+		}
 		
-		public String GetClosureCode(String name) {
+		public string GetClosureCode(string name) {
 			int personRow = FindPersonRow(name);
 			try { return package.Workbook.Worksheets[1].Cells[personRow, 3].Offset(0, -2).Text; }
 			catch { return string.Empty; }
 		}
 		
-		public String[] GetAllClosureCodes() {
+		public string[] GetAllClosureCodes() {
 			List<string> list = new List<string>();
 			foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
 				if(cell.Value != null) {
@@ -251,7 +253,7 @@ namespace appCore.DB
 			return list.ToArray();
 		}
 		
-		String FindDayColumn(DateTime date) {
+		string FindDayColumn(DateTime date) {
 			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace("1","3")]) {
 				if(cell.Value != null) {
 					if(cell.Text == date.Day.ToString()) {
@@ -261,19 +263,5 @@ namespace appCore.DB
 			}
 			return string.Empty;
 		}
-		
-//		List<DataTable> importShiftsTable(int month)
-//		{
-//			FileStream stream = null;
-//			try {
-//				stream = shiftsFile.Open(FileMode.Open, FileAccess.Read);
-//			}
-//			catch (Exception) {
-//				UserFolder.CreateTempFolder();
-//				FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder.FullName + "\\" + shiftsFile.Name, true);
-//				stream = tempShiftsFile.Open(FileMode.Open, FileAccess.Read);
-//			}
-//			return null;
-//		}
 	}
 }

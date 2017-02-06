@@ -56,8 +56,8 @@ namespace appCore.DB
 		}
 		
 		public static void Initialize() {
-			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") && GlobalProperties.autoUpdateDbFiles)
-				UpdateSourceDBFiles();
+//			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") && GlobalProperties.autoUpdateDbFiles)
+//				UpdateSourceDBFiles();
 			
 			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
 			_all_cells = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
@@ -118,48 +118,44 @@ namespace appCore.DB
 			}
 			
 			while(finishedThreadsCount < threads.Count) { }
-		}
-		
-		public static void PopulateDatabases() {
-			bool loadingAllSitesFinished = false;
-			bool loadingAllCellsFinished = false;
-			bool loadingShiftsFileFinished = false;
-			Thread all_sitesThread = new Thread(() => {
-			                                    	all_sites = new FileInfo(all_sites.FullName);
-			                                    	loadingAllSitesFinished = true;
-			                                    });
-			all_sitesThread.IsBackground = true;
-			all_sitesThread.Start();
-			Thread all_cellsThread = new Thread(() => {
-			                                    	all_cells = new FileInfo(all_cells.FullName);
-			                                    	loadingAllCellsFinished = true;
-			                                    });
-			all_cellsThread.IsBackground = true;
-			all_cellsThread.Start();
-			Thread shiftsFileThread = new Thread(() => {
-			                                     	shiftsFile = new ShiftsFile(DateTime.Now.Year);
-			                                     	loadingShiftsFileFinished = true;
-			                                     });
-			shiftsFileThread.IsBackground = true;
-			shiftsFileThread.Start();
 			
-			while(!loadingAllSitesFinished || !loadingAllCellsFinished || !loadingShiftsFileFinished) {}
-			
-//			LoadDBFiles(null, null);
 			AutoUpdateTimer.Elapsed += LoadDBFiles;
 			ResetAutoUpdateTimer();
 		}
 		
 		public static void LoadDBFiles(object source, ElapsedEventArgs e) {
 			if(e == null) {}
-			bool finishedTask = false;
-			var thread = new Thread(() => {
-			                        	UserFolder.UpdateLocalDBFilesCopy();
-			                        	finishedTask = true;
-			                        });
-			thread.IsBackground = true;
-			thread.Start();
-			while(!finishedTask) {}
+			UserFolder.UpdateLocalDBFilesCopy();
+		}
+		
+		public static void PopulateDatabases() {
+			List<Thread> threads = new List<Thread>();
+			int finishedThreadsCount = 0;
+			
+			threads.Add(new Thread(() => {
+			                       	all_sites = new FileInfo(all_sites.FullName);
+			                       	
+			                       	finishedThreadsCount++;
+			                       }));
+			
+			threads.Add(new Thread(() => {
+			                       	all_cells = new FileInfo(all_cells.FullName);
+			                       	
+			                       	finishedThreadsCount++;
+			                       }));
+			
+			threads.Add(new Thread(() => {
+			                       	shiftsFile = new ShiftsFile(DateTime.Now.Year);
+			                       	
+			                       	finishedThreadsCount++;
+			                       }));
+			
+			foreach(Thread thread in threads) {
+				thread.SetApartmentState(ApartmentState.STA);
+				thread.Start();
+			}
+			
+			while(finishedThreadsCount < threads.Count) { }
 		}
 	}
 }

@@ -293,8 +293,7 @@ namespace appCore.Web
 		/// <param name="Reference">Reference used for lockdown</param>
 		/// <param name="comments">Lock comments</param>
 		/// <param name="ManRef">Manual reference</param>
-		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string Reference, string comments, bool ManRef)
-		{
+		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string Reference, string comments, bool ManRef) {
 			InitiateOiConnection();
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
@@ -329,8 +328,7 @@ namespace appCore.Web
 		/// <param name="site">Site number</param>
 		/// <param name="cellsList">List containing Cells to unlock</param>
 		/// <param name="comments">Unlock comments</param>
-		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string comments)
-		{
+		public static string requestPhpOutput(string phpFile, string site, List<string> cellsList, string comments) {
 			InitiateOiConnection();
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");

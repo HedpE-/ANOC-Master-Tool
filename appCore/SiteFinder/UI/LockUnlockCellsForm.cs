@@ -126,7 +126,11 @@ namespace appCore.SiteFinder.UI
 						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => !s.Locked).Count() > 0;
 						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => !s.Locked).Count() > 0;
 						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => !s.Locked).Count() > 0;
+						checkBox1.Checked =
+							checkBox2.Checked =
+							checkBox3.Checked = false;
 						
+						comboBox1.Items.Clear();
 						foreach(string type in new []{"CRQ","INC"}) {
 							DataTable cases;
 							cases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
@@ -153,7 +157,7 @@ namespace appCore.SiteFinder.UI
 								}
 							}
 						}
-						dataGridView1.Width = 795;
+						dataGridView1.Width = checkBox1.Left - 12;
 						dataGridView1.Columns["Locked"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 						break;
 					case "Unlock Cells":
@@ -161,7 +165,7 @@ namespace appCore.SiteFinder.UI
 						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => s.Locked).Count() > 0;
 						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => s.Locked).Count() > 0;
 						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => s.Locked).Count() > 0;
-						dataGridView1.Width = 795;
+						dataGridView1.Width = checkBox1.Left - 12;
 						dataGridView1.Columns["Lock Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 						dataGridView1.Columns["Lock Comments"].Width = 300;
 						dataGridView1.Columns["Lock Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
@@ -214,24 +218,28 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
-			RadioButton rb = sender as RadioButton;
-			
-			if(rb.Checked) {
-				SuspendLayout();
-				
-				dataGridView1.DataSource = null;
-				dataGridView1.Columns.Clear();
-				
-				InitializeDataTable(rb.Text);
-				
-				uiMode = rb.Text;
-				
-				dataGridView1.DataSource = Table;
-				
-				UiMode = rb.Text;
-				
-				ResumeLayout();
-			}
+			Action actionNonThreaded = new Action(delegate {
+			                                      	RadioButton rb = sender as RadioButton;
+			                                      	
+			                                      	if(rb.Checked) {
+			                                      		SuspendLayout();
+			                                      		
+			                                      		dataGridView1.DataSource = null;
+			                                      		dataGridView1.Columns.Clear();
+			                                      		
+			                                      		InitializeDataTable(rb.Text);
+			                                      		
+			                                      		uiMode = rb.Text;
+			                                      		
+			                                      		dataGridView1.DataSource = Table;
+			                                      		
+			                                      		UiMode = rb.Text;
+			                                      		
+			                                      		ResumeLayout();
+			                                      	}
+			                                      });
+			appCore.UI.LoadingPanel loading = new appCore.UI.LoadingPanel();
+			loading.Show(null, actionNonThreaded, true, this);
 		}
 		
 		void checkBookIn() {
@@ -575,10 +583,11 @@ namespace appCore.SiteFinder.UI
 							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
 						break;
-//					case "History":
-//						e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
-//						e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-//						break;
+					case "History":
+						e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
+						e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
+						dataGridView1.Rows[e.RowIndex].Frozen = false;
+						break;
 				}
 			}
 			if(dataGridView1.Columns[e.ColumnIndex].Name == "Locked")

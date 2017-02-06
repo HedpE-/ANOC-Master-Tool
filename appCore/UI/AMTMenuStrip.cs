@@ -200,19 +200,6 @@ namespace appCore.UI
 						RefreshButton.Enabled = false;
 					}
 				}
-				else {
-					for(int i = 0;i < tsmi.DropDownItems.Count;i++) {
-						if(tsmi.DropDownItems[i] is ToolStripMenuItem) {
-							if(tsmi.DropDownItems[i].Text == "Site Details") {
-								if(!toggle || !siteFound)
-									tsmi.DropDownItems[i].Enabled = false;
-								else
-									tsmi.DropDownItems[i].Enabled = true;
-							}
-							tsmi.DropDownItems[i].Enabled = toggle;
-						}
-					}
-				}
 			}
 			
 			var fc = Application.OpenForms.OfType<OiSiteTablesForm>();

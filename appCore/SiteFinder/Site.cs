@@ -65,7 +65,7 @@ namespace appCore.SiteFinder
 			private set { }
 		}
 		[FieldOrder(12)]
-		public string HostedBy;
+		public string Host;
 		[FieldOrder(13)]
 		public string Priority;
 		[FieldOrder(14)]
@@ -129,10 +129,16 @@ namespace appCore.SiteFinder
 		public string Special;
 		[FieldOrder(24)]
 		string SPECIAL_START;
-		public DateTime SpecialEvent_StartDate { get { return Convert.ToDateTime(SPECIAL_START); } private set { SPECIAL_START = value.ToString(); } }
+		public DateTime SpecialEvent_StartDate {
+			get { return Convert.ToDateTime(SPECIAL_START); }
+			private set { SPECIAL_START = value.ToString(); }
+		}
 		[FieldOrder(25)]
 		string SPECIAL_END;
-		public DateTime SpecialEvent_EndDate { get { return Convert.ToDateTime(SPECIAL_END); } private set { SPECIAL_END = value.ToString(); } }
+		public DateTime SpecialEvent_EndDate {
+			get { return Convert.ToDateTime(SPECIAL_END); }
+			private set { SPECIAL_END = value.ToString(); }
+		}
 		[FieldOrder(26)]
 		public string VIP;
 		[FieldOrder(27)]
@@ -156,15 +162,48 @@ namespace appCore.SiteFinder
 		[FieldOrder(34)]
 		public string DC_STATUS;
 		[FieldOrder(35)]
-		public string DC_Timestamp;
+		string dc_Timestamp;
+		public DateTime DC_Timestamp {
+			get { return Convert.ToDateTime(dc_Timestamp); }
+			private set { dc_Timestamp = value.ToString(); }
+		}
 		[FieldOrder(36)]
 		public string Cooling_Status;
 		[FieldOrder(37)]
-		public string Cooling_Timestamp;
+		public string cooling_Timestamp;
+		public DateTime Cooling_Timestamp {
+			get { return Convert.ToDateTime(cooling_Timestamp); }
+			private set { cooling_Timestamp = value.ToString(); }
+		}
 		[FieldOrder(38)]
-		public string Key_Information;
+		string keyInformation;
+		public string KeyInformation {
+			get {
+				keyInformation = keyInformation.Trim();
+				while(keyInformation.Contains("&#")) {
+					string character = keyInformation.Substring(keyInformation.IndexOf("&#"), 6);
+					keyInformation = keyInformation.Replace(character, ((char)Convert.ToInt16(character.Substring(2, 3))).ToString());
+				}
+				keyInformation = keyInformation.Replace(';', ',').Replace("   ", Environment.NewLine + Environment.NewLine).Replace("  ", Environment.NewLine);
+				
+				return keyInformation;
+			}
+			private set {
+				keyInformation = value;
+			}
+		}
 		[FieldOrder(39)]
-		public string EF_HealthAndSafety;
+		string EF_HealthAndSafety;
+		public string HealthAndSafety {
+			get {
+				EF_HealthAndSafety = EF_HealthAndSafety.Trim().Replace("&quot;", '"'.ToString());
+				
+				return EF_HealthAndSafety;
+			}
+			private set {
+				EF_HealthAndSafety = value;
+			}
+		}
 		[FieldOrder(40)]
 		public string Switch2G;
 		[FieldOrder(41)]
@@ -197,20 +236,35 @@ namespace appCore.SiteFinder
 		public string IP_4G_E;
 		[FieldOrder(55)]
 		string VENDOR_2G;
-		public Site.Vendors Vendor2G { get { return resolveVendor(VENDOR_2G); } private set { VENDOR_2G = value.ToString(); } }
+		public Site.Vendors Vendor2G {
+			get { return resolveVendor(VENDOR_2G); }
+			private set { VENDOR_2G = value.ToString(); }
+		}
 		[FieldOrder(56)]
 		string VENDOR_3G;
-		public Site.Vendors Vendor3G { get { return resolveVendor(VENDOR_3G); } private set { VENDOR_3G = value.ToString(); } }
+		public Site.Vendors Vendor3G {
+			get { return resolveVendor(VENDOR_3G); }
+			private set { VENDOR_3G = value.ToString(); }
+		}
 		[FieldOrder(57)]
 		string VENDOR_4G;
-		public Site.Vendors Vendor4G { get { return resolveVendor(VENDOR_4G); } private set { VENDOR_4G = value.ToString(); } }
+		public Site.Vendors Vendor4G {
+			get { return resolveVendor(VENDOR_4G); }
+			private set { VENDOR_4G = value.ToString(); }
+		}
 		[FieldOrder(58)]
 		string DATE;
-		public DateTime DeploymentDate { get { return Convert.ToDateTime(DATE); } private set { DATE = value.ToString(); } }
+		public DateTime DeploymentDate {
+			get { return Convert.ToDateTime(DATE); }
+			private set { DATE = value.ToString(); }
+		}
 		[FieldOrder(59)]
 		public string MTX_Related;
 		
-		public bool Exists { get { return !string.IsNullOrEmpty(JVCO_Id); } private set { } }
+		public bool Exists {
+			get { return !string.IsNullOrEmpty(JVCO_Id); }
+			private set { }
+		}
 		[FieldHidden]
 		string POWER_COMPANY;
 		[FieldHidden]
@@ -244,6 +298,8 @@ namespace appCore.SiteFinder
 		DateTime BookInsTimestamp;
 		[FieldHidden]
 		public DataTable LockedCellsDetails;
+		[FieldHidden]
+		DateTime LockedCellsDetailsTimestamp;
 		[FieldHidden]
 		string indexPhp;
 		[FieldHidden]
@@ -341,12 +397,10 @@ namespace appCore.SiteFinder
 					Thread thread = new Thread(() => {
 					                           	if(string.IsNullOrEmpty(indexPhp) || forceUpdateIndexPhp) {
 					                           		indexPhp = getOiSiteIndexPage();
-					                           		indexPhpTimestamp = DateTime.Now;
 					                           	}
 					                           	else {
 					                           		if((DateTime.Now - indexPhpTimestamp).Minutes > indexPhpMaxLifetimeMin) {
 					                           			indexPhp = getOiSiteIndexPage();
-					                           			indexPhpTimestamp = DateTime.Now;
 					                           		}
 					                           	}
 					                           	if(string.IsNullOrWhiteSpace(PowerCompany))
@@ -359,15 +413,11 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("LKULK")) {
 					Thread thread = new Thread(() => {
-					                           	if(string.IsNullOrEmpty(indexPhp) || (forceUpdateIndexPhp && !dataToRequest.Contains("PWR"))) {
+					                           	if(string.IsNullOrEmpty(indexPhp) || (forceUpdateIndexPhp && !dataToRequest.Contains("PWR")))
 					                           		indexPhp = getOiSiteIndexPage();
-					                           		indexPhpTimestamp = DateTime.Now;
-					                           	}
 					                           	else {
-					                           		if((DateTime.Now - indexPhpTimestamp).Minutes > indexPhpMaxLifetimeMin) {
+					                           		if((DateTime.Now - indexPhpTimestamp).Minutes > indexPhpMaxLifetimeMin)
 					                           			indexPhp = getOiSiteIndexPage();
-					                           			indexPhpTimestamp = DateTime.Now;
-					                           		}
 					                           	}
 					                           	
 					                           	if(LockedCellsDetails == null)
@@ -391,8 +441,10 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response;
 			response = OIConnection.requestPhpOutput("inc", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents")) {
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
+				INCsTimestamp = DateTime.Now;
+			}
 			return dt;
 		}
 		
@@ -400,8 +452,10 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response;
 			response = OIConnection.requestPhpOutput("crq", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days")) {
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
+				CRQsTimestamp = DateTime.Now;
+			}
 			return dt;
 		}
 		
@@ -409,8 +463,10 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response;
 			response = OIConnection.requestPhpOutput("alarms", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported")) {
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
+				ActiveAlarmsTimestamp = DateTime.Now;
+			}
 			return dt;
 		}
 		
@@ -418,13 +474,16 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response;
 			response = OIConnection.requestPhpOutput("sitevisit", Id, 90);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits"))
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
+				BookInsTimestamp = DateTime.Now;
+			}
 			return dt;
 		}
 		
 		string getOiSiteIndexPage() {
 			string response = OIConnection.requestPhpOutput("index", Id, string.Empty);
+			indexPhpTimestamp = DateTime.Now;
 			return response;
 		}
 		
@@ -452,7 +511,7 @@ namespace appCore.SiteFinder
 		
 		string getOiLockedCellsPage() {
 			string response = OIConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
-			return response.Contains("Site " + Id + "</b><table>") ? response : string.Empty;
+			return response.Contains("Site " + Id + "</b><table>") ? response : "No Cells Locked";
 		}
 		
 		void getOiCellsLockedState(bool getLockedCellsPage) {
@@ -476,13 +535,18 @@ namespace appCore.SiteFinder
 						}
 					}
 					if(getLockedCellsPage) {
-						string resp = getOiLockedCellsPage();
-						HtmlDocument doc2 = new HtmlDocument();
-						doc2.Load(new StringReader(resp));
-						
-						HtmlNode table = doc2.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
-						
-						LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+						string response = getOiLockedCellsPage();
+						if(response != "No Cells Locked") {
+							doc = new HtmlDocument();
+							doc.Load(new StringReader(response));
+							
+							HtmlNode table = doc.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
+							
+							LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+						}
+						else
+							LockedCellsDetails = new DataTable();
+						LockedCellsDetailsTimestamp = DateTime.Now;
 					}
 					// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
 					// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>

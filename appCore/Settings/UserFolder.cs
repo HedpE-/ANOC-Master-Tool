@@ -7,8 +7,9 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using appCore.UI;
 using appCore.DB;
@@ -26,11 +27,11 @@ namespace appCore.Settings
 			get { return _userFolder; }
 			set {
 				_userFolder = value;
-				usernameFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\" + CurrentUser.UserName);
+				UsernameFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\" + CurrentUser.UserName);
 			}
 		}
 		static DirectoryInfo _usernameFolder;
-		static DirectoryInfo usernameFolder {
+		static DirectoryInfo UsernameFolder {
 			get {
 				return _usernameFolder;
 			}
@@ -103,7 +104,7 @@ namespace appCore.Settings
 		public static void Initialize() {
 			if(SettingsFile.Exists)
 				userFolder = SettingsFile.UserFolderPath;
-			if(FullName == GlobalProperties.ShareRootDir.FullName || !userFolder.Exists || !usernameFolder.Exists) {
+			if(FullName == GlobalProperties.ShareRootDir.FullName || !userFolder.Exists || !UsernameFolder.Exists) {
 				DialogResult result;
 				userFolder = null;
 				FlexibleMessageBox.Show("Defined user folder not found, please choose default user folder.","ANOC Master Tool",MessageBoxButtons.OK,MessageBoxIcon.Information);
@@ -132,8 +133,8 @@ namespace appCore.Settings
 					}
 				} while (userFolder == null);
 				
-				if(!usernameFolder.Exists)
-					usernameFolder.Create();
+				if(!UsernameFolder.Exists)
+					UsernameFolder.Create();
 				
 				if(!LogsFolder.Exists)
 					LogsFolder.Create();
@@ -228,9 +229,9 @@ namespace appCore.Settings
 				
 				if(!LogsFolder.Exists)
 					LogsFolder.Create();
-				if(!usernameFolder.Exists) {
-					usernameFolder.Create();
-					usernameFolder = new DirectoryInfo(usernameFolder.FullName);
+				if(!UsernameFolder.Exists) {
+					UsernameFolder.Create();
+					UsernameFolder = new DirectoryInfo(UsernameFolder.FullName);
 				}
 				SettingsFile.UserFolderPath = userFolder;
 				
@@ -248,9 +249,28 @@ namespace appCore.Settings
 		public static bool UpdateLocalDBFilesCopy(bool ForceCloseAppOnError = false) {
 		retry:
 			try {
-				// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
-				UpdateDBFiles();
-				UpdateShiftsFile();
+				List<Thread> threads = new List<Thread>();
+				int finishedThreadsCount = 0;
+				
+				threads.Add(new Thread(() => {
+				                       	// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
+				                       	UpdateDBFiles();
+				                       	
+				                       	finishedThreadsCount++;
+				                       }));
+				
+				threads.Add(new Thread(() => {
+				                       	UpdateShiftsFile();
+				                       	
+				                       	finishedThreadsCount++;
+				                       }));
+				
+				foreach(Thread thread in threads) {
+					thread.SetApartmentState(ApartmentState.STA);
+					thread.Start();
+				}
+				
+				while(finishedThreadsCount < threads.Count) { }
 			}
 			catch (Exception e) {
 				int errorCode = (int)(e.HResult & 0x0000FFFF);
@@ -269,29 +289,50 @@ namespace appCore.Settings
 			
 			return true;
 		}
-
+		
+		/// <summary>
+		/// Checks and updates the CSV files from the share
+		/// </summary>
 		static void UpdateDBFiles() {
 			if(GlobalProperties.shareAccess) {
 				FileInfo source_allsites = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv");
 				FileInfo source_allcells = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv");
 				
-				if(source_allsites.Exists) {
-					if(Databases.all_sites != null) {
-						if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime)
-							source_allsites.CopyTo(Databases.all_sites.FullName, true);
-					}
-					else
-						source_allsites.CopyTo(FullName + @"\all_sites.csv", true);
+				List<Thread> threads = new List<Thread>();
+				int finishedThreadsCount = 0;
+				
+				threads.Add(new Thread(() => {
+				                       	if(source_allsites.Exists) {
+				                       		if(Databases.all_sites != null) {
+				                       			if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime)
+				                       				source_allsites.CopyTo(Databases.all_sites.FullName, true);
+				                       		}
+				                       		else
+				                       			source_allsites.CopyTo(FullName + @"\all_sites.csv", true);
+				                       	}
+				                       	
+				                       	finishedThreadsCount++;
+				                       }));
+				
+				threads.Add(new Thread(() => {
+				                       	if(source_allcells.Exists) {
+				                       		if(Databases.all_cells != null) {
+				                       			if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime)
+				                       				source_allcells.CopyTo(Databases.all_cells.FullName, true);
+				                       		}
+				                       		else
+				                       			source_allcells.CopyTo(FullName + @"\all_cells.csv", true);
+				                       	}
+				                       	
+				                       	finishedThreadsCount++;
+				                       }));
+				
+				foreach(Thread thread in threads) {
+					thread.SetApartmentState(ApartmentState.STA);
+					thread.Start();
 				}
 				
-				if(source_allcells.Exists) {
-					if(Databases.all_cells != null) {
-						if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime)
-							source_allcells.CopyTo(Databases.all_cells.FullName, true);
-					}
-					else
-						source_allcells.CopyTo(FullName + @"\all_cells.csv", true);
-				}
+				while(finishedThreadsCount < threads.Count) { }
 			}
 			else {
 				if(!Databases.all_sites.Exists || !Databases.all_cells.Exists)

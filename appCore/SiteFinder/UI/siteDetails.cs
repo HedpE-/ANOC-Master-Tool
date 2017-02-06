@@ -42,6 +42,9 @@ namespace appCore.SiteFinder.UI
 				MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
 				InitializeToolStripMenuItems();
 				MainMenu.siteFinder_Toggle(false, false);
+				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add("-");
+				MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
 				switch(mode[0]) {
 					case "single":
 						label11.Visible = false;
@@ -50,15 +53,10 @@ namespace appCore.SiteFinder.UI
 						checkBox2.Location = new Point(258, 230);
 						checkBox3.Location = new Point(296, 230);
 						listView1.Location = new Point(5, 247);
-						listView1.Size = new Size(556, 398);
+						listView1.Size = new Size(556, 488);
 						label12.Location = new Point(5, 227);
 						textBox1.ReadOnly = value.Contains("readonly");
 						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
-						if(!value.Contains("readonly")) {
-							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-							MainMenu.MainMenu.DropDownItems.Add("-");
-							MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
-						}
 						break;
 					case "multi":
 						label11.Visible = true;
@@ -100,7 +98,7 @@ namespace appCore.SiteFinder.UI
 		string[] sites; // for outages site list
 		byte listView2_EventCount = 1;
 		
-		AMTMenuStrip MainMenu = new AMTMenuStrip(560);
+		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
@@ -219,8 +217,8 @@ namespace appCore.SiteFinder.UI
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
-			map.Location = new System.Drawing.Point(567, 6);
-			map.Size = new Size(380, 639);
+			map.Location = new Point(listView1.Right + 5, amtTextBox3.Bottom + 5);
+			map.Size = new Size(button1.Right - map.Left, listView1.Bottom - map.Top);
 			map.MapProvider = GoogleHybridMapProvider.Instance;
 			
 			map.Manager.Mode = AccessMode.ServerOnly; //get tiles from server only
@@ -251,15 +249,20 @@ namespace appCore.SiteFinder.UI
 				textBox2.Text = currentSite.PowerCompany;
 				textBox3.Text = currentSite.JVCO_Id;
 				textBox4.Text = currentSite.Address.Replace(';',',');
-				TextBox4TextChanged(textBox4,null);
 				textBox5.Text = currentSite.Area;
 				textBox6.Text = currentSite.Region;
-				textBox8.Text = currentSite.HostedBy;
+				textBox8.Text = currentSite.Host;
 				textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
 				textBox9.Text = currentSite.Priority;
 				textBox10.Text = currentSite.SharedOperator;
-				if(Settings.CurrentUser.UserName == "GONCARJ3")
-					lockUnlockCellsToolStripMenuItem.Enabled = true;
+				amtTextBox2.Text = currentSite.Site_Type;
+				amtTextBox3.Text = currentSite.Site_Subtype;
+				amtTextBox7.Text = currentSite.Site_Access;
+				checkBox4.Checked = currentSite.Paknet_Fitted;
+				checkBox5.Checked = currentSite.Vodapage_Fitted;
+				richTextBox1.Text = currentSite.KeyInformation;
+//				if(Settings.CurrentUser.UserName == "GONCARJ3")
+				lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
 				
 				listboxFilter_Changed(checkBox1, null);
 			}
@@ -396,18 +399,43 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void TextBox4TextChanged(object sender, EventArgs e)
+		void TextBoxesTextChanged_LargeTextButtons(object sender, EventArgs e)
 		{
-			button45.Enabled = textBox4.Text != string.Empty;
+			TextBoxBase tb = (TextBoxBase)sender;
+			Button btn = null;
+			switch(tb.Name) {
+				case "textBox4":
+					btn = (Button)button45;
+					break;
+				case "richTextBox1":
+					btn = (Button)button1;
+					break;
+			}
+			
+			btn.Enabled = !string.IsNullOrEmpty(tb.Text);
 		}
 
-		void Button45Click(object sender, EventArgs e)
+		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox4.Text,label4.Text,true);
-			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
-			                           	enlarge.ShowDialog();
-			                           });
+			Button bt = sender as Button;
+			Action action = null;
+			
+			switch(bt.Name) {
+				case "button45":
+					action = new Action(delegate {
+					                    	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox4.Text,label4.Text,true);
+					                    	enlarge.StartPosition = FormStartPosition.CenterParent;
+					                    	enlarge.ShowDialog();
+					                    });
+					break;
+				case "button1":
+					action = new Action(delegate {
+					                    	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox1.Text,label16.Text,true);
+					                    	enlarge.StartPosition = FormStartPosition.CenterParent;
+					                    	enlarge.ShowDialog();
+					                    });
+					break;
+			}
 			Toolbox.Tools.darkenBackgroundForm(action,false,this);
 		}
 		
@@ -446,9 +474,14 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
+		void PaknetVodapageCheckBoxesMouseUp(object sender, MouseEventArgs e) {
+			CheckBox cb = sender as CheckBox;
+			cb.Checked = !cb.Checked;
+		}
+		
 		void bulkSiteSearchMenuItemClick(object sender, EventArgs e)
 		{
-			RichTextBox sitesList_tb = new RichTextBox();
+			AMTRichTextBox sitesList_tb = new AMTRichTextBox();
 			Form form = new Form();
 			Action action = new Action(delegate {
 			                           	using (form) {
@@ -518,20 +551,13 @@ namespace appCore.SiteFinder.UI
 				return;
 			
 			string[] input = sitesList_tb.Text.Split('\n');
-//			if(outageSites != null)
-//				outageSites.Clear();
-//			foreach(string site in input) {
-//				currentSite = Finder.getSite(site);
-//				if(currentSite.Exists)
-//					outageSites.Add(currentSite);
-//			}
+			
 			siteFinder(input);
 		}
 		
 		void searchResultsPopulate() {
-//			outageSites = foundSites;
 			foreach (Site site in foundSites) {
-				listView2.Items.Add(new ListViewItem(new[]{ site.Id,site.JVCO_Id,site.Priority,site.HostedBy,site.PostCode }));
+				listView2.Items.Add(new ListViewItem(new[]{ site.Id,site.JVCO_Id,site.Priority,site.Host,site.PostCode }));
 				
 				foreach (ColumnHeader col in listView2.Columns)
 					col.Width = -2;
@@ -634,40 +660,6 @@ namespace appCore.SiteFinder.UI
 			Toolbox.Tools.darkenBackgroundForm(action,true,this);
 		}
 		
-//		void siteFinder(List<Site> sitesList)
-//		{
-//			Action action = new Action(delegate {
-//			                           	try {
-//			                           		myMap.Overlays.Remove(markersOverlay);
-//			                           		myMap.Overlays.Remove(selectedSiteOverlay);
-//			                           		markersOverlay.Clear();
-//			                           		selectedSiteOverlay.Clear();
-//			                           	}
-//			                           	catch (Exception) {
-//			                           	}
-//
-//			                           	if(sitesList.Count > 1) {
-//			                           		if(!siteDetails_UIMode.Contains("outage"))
-//			                           			siteDetails_UIMode = "multi";
-//			                           		searchResultsPopulate(sitesList);
-//			                           		listView2.Items[0].Focused = true;
-//			                           		listView2.Items[0].Selected = true;
-//			                           		myMap.Overlays.Add(markersOverlay);
-//			                           		myMap.ZoomAndCenterMarkers(markersOverlay.Id);
-//			                           	}
-//			                           	else {
-//			                           		if(sitesList.Count == 1) {
-//			                           			siteDetails_UIMode = "single";
-//			                           			selectedSiteDetailsPopulate(sitesList[0]);
-//			                           			selectedSiteOverlay.Markers.Add(sitesList[0].MapMarker);
-//			                           			myMap.Overlays.Add(selectedSiteOverlay);
-//			                           			myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
-//			                           		}
-//			                           	}
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
-//		}
-		
 		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
 			if(listView2_EventCount == 0)
@@ -675,32 +667,6 @@ namespace appCore.SiteFinder.UI
 			else {
 				if(listView2.SelectedItems.Count > 0) {
 					Site site = foundSites[listView2.SelectedItems[0].Index];
-					
-//					if(!Toolbox.Tools.IsAllDigits(site))
-//						site = "00000";
-//
-//					DataView dv = new DataView(foundSites);
-//					dv.RowFilter = "SITE = '" + site + "'"; // query example = "id = 10"
-//					DataRowView dr = null;
-//					if(dv.Count == 1)
-//						dr = dv[0];
-//
-//					dv = new DataView(foundCells);
-//					dv.RowFilter = "SITE = '" + site + "'";
-//					DataTable dt = null;
-//					if (dv.Count > 0)
-//					{
-//						dt = dv.ToTable();
-//						//clone the source table
-//						DataTable filtered = dt.Clone();
-//
-//						//fill the clone with the filtered rows
-//						foreach (DataRowView drv in dt.DefaultView)
-//						{
-//							filtered.Rows.Add(drv.Row.ItemArray);
-//						}
-//						dt = filtered;
-//					}
 					
 					selectedSiteDetailsPopulate(site);
 					if(listView2_EventCount == 1) {

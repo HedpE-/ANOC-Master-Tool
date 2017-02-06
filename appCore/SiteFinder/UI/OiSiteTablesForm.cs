@@ -51,6 +51,7 @@ namespace appCore.SiteFinder.UI
 				case "INCs":
 					Name = "INCsOiDataTableForm";
 					DataType = "INCs";
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 					break;
 				case "CRQs":
 					Name = "CRQsOiDataTableForm";
@@ -64,6 +65,7 @@ namespace appCore.SiteFinder.UI
 				case "BookIns":
 					Name = "BookInsOiDataTableForm";
 					DataType = "BookIns";
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 					break;
 			}
 			populateGridView();
@@ -175,22 +177,36 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-		{
+		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
 			if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
-				switch(e.Value.ToString()) {
-					case "Scheduled": case "Implementation In Progress":
-						if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled Start"].Value) <= DateTime.Now &&
-						   Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled End"].Value) > DateTime.Now)
+				switch(DataType) {
+					case "INCs":
+						if(e.Value.ToString() != "Closed" && e.Value.ToString() != "Resolved")
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
-						else
-							e.CellStyle.BackColor = System.Drawing.Color.Yellow;
+						else {
+							if(e.Value.ToString() == "Resolved")
+								e.CellStyle.BackColor = System.Drawing.Color.Yellow;
+						}
 						break;
-					default:
-						if(e.Value.ToString() != "Closed")
-							e.CellStyle.BackColor = System.Drawing.Color.Red;
+					case "CRQs":
+						if(e.Value.ToString() == "Scheduled" || e.Value.ToString() == "Implementation In Progress") {
+							if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled Start"].Value) <= DateTime.Now &&
+							   Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled End"].Value) > DateTime.Now)
+								e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+							else
+								e.CellStyle.BackColor = System.Drawing.Color.Yellow;
+						}
+						else {
+							if(e.Value.ToString() != "Closed")
+								e.CellStyle.BackColor = System.Drawing.Color.Red;
+						}
 						break;
 				}
+			}
+			if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived") {
+				if(Convert.ToDateTime(e.Value) <= DateTime.Now &&
+				   string.IsNullOrEmpty(dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value.ToString()))
+					e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 			}
 		}
 	}

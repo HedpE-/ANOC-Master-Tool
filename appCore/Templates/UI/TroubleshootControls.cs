@@ -169,6 +169,12 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
+					
+					generateTemplateToolStripMenuItem.Enabled =
+					generateTaskToolStripMenuItem.Enabled =
+					sendBCPToolStripMenuItem.Enabled =
+					SiteDetailsToolStripMenuItem.Enabled =
+						clearToolStripMenuItem.Enabled = false;
 				}
 			}
 		}
@@ -267,7 +273,7 @@ namespace appCore.Templates.UI
 				                                      		AddressTextBox.Text = currentSite.Address;
 				                                      		RegionTextBox.Text = currentSite.Region;
 				                                      		PowerCompanyTextBox.Text = currentSite.PowerCompany;
-				                                      		if(currentSite.HostedBy.Contains("TF") || currentSite.HostedBy.Contains("O2")) {
+				                                      		if(currentSite.Host.Contains("TF") || currentSite.Host.Contains("O2")) {
 				                                      			SiteOwnerComboBox.Text = "TF";
 				                                      			TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
 				                                      		}
