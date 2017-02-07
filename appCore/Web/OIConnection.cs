@@ -209,7 +209,7 @@ namespace appCore.Web
 		/// <summary>
 		/// Requests data from OI PHP files
 		/// </summary>
-		/// <param name="phpFile">"inc", "crq", "alarms"</param>
+		/// <param name="phpFile">"inc", "crq", "alarms", "ca"</param>
 		/// <param name="site">Site number</param>
 		public static string requestPhpOutput(string phpFile, string site)
 		{

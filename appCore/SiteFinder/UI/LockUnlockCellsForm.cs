@@ -321,7 +321,7 @@ namespace appCore.SiteFinder.UI
 		void Button1Click(object sender, EventArgs e) {
 			DialogResult ans = DialogResult.Yes;
 			if(label4.Visible && label4.Text.StartsWith("CAUTION"))
-				ans = appCore.UI.FlexibleMessageBox.Show("No valid book in found for this site.\n\nContinue anyway?","No book in", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				ans = appCore.UI.FlexibleMessageBox.Show("No valid book in found for this site.\n\nIt's OK to lock cells without a book in, as long as it's been authorized by the Shift Leader and you include the FE contact details on the comments.\n\nContinue anyway?","No book in", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 			if(ans == DialogResult.Yes) {
 				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
 				List<string> cellsList = new List<string>();
@@ -331,6 +331,7 @@ namespace appCore.SiteFinder.UI
 					sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
 				else
 					sendUnlockCellsRequest(cellsList, amtRichTextBox1.Text);
+				
 			}
 		}
 		

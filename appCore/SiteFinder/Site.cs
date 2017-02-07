@@ -297,6 +297,10 @@ namespace appCore.SiteFinder
 		[FieldHidden]
 		DateTime BookInsTimestamp;
 		[FieldHidden]
+		public DataTable Availability;
+		[FieldHidden]
+		DateTime AvailabilityTimestamp;
+		[FieldHidden]
 		public DataTable LockedCellsDetails;
 		[FieldHidden]
 		DateTime LockedCellsDetailsTimestamp;
@@ -355,7 +359,7 @@ namespace appCore.SiteFinder
 		/// <summary>
 		/// Populate with data pulled from OI
 		/// </summary>
-		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "PWR", "LKULK"</param>
+		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "LKULK"</param>
 		/// <param name="forceUpdateIndexPhp"></param>
 		public void requestOIData(string dataToRequest, bool forceUpdateIndexPhp = false) {
 			if(Exists) {
@@ -388,6 +392,14 @@ namespace appCore.SiteFinder
 				if(dataToRequest.Contains("Bookins")) {
 					Thread thread = new Thread(() => {
 					                           	BookIns = FetchBookIns();
+					                           	finishedThreadsCount++;
+					                           });
+					threads.Add(thread);
+				}
+				
+				if(dataToRequest.Contains("Availability")) {
+					Thread thread = new Thread(() => {
+					                           	BookIns = FetchAvailability();
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -477,6 +489,17 @@ namespace appCore.SiteFinder
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
 				BookInsTimestamp = DateTime.Now;
+			}
+			return dt;
+		}
+		
+		DataTable FetchAvailability(FileSystemInfo table_ca = null) {
+			DataTable dt = new DataTable();
+			string response;
+			response = OIConnection.requestPhpOutput("ca", Id);
+			if(!string.IsNullOrEmpty(response)) {
+				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
+				AvailabilityTimestamp = DateTime.Now;
 			}
 			return dt;
 		}

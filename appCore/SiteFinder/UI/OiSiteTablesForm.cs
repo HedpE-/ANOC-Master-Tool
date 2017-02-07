@@ -67,6 +67,11 @@ namespace appCore.SiteFinder.UI
 					DataType = "BookIns";
 					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 					break;
+				case "Availability":
+					Name = "AvailabilityDataTableForm";
+					DataType = "Availability Chart";
+//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+					break;
 			}
 			populateGridView();
 			Text = "Site " + siteID + " " + DataType;

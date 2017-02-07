@@ -18,7 +18,7 @@ using HtmlAgilityPack;
 namespace appCore.Toolbox
 {
 	public static class Tools
-	{		
+	{
 		public static string[] DirSearch(string sDir)
 		{
 			List<string> result = new List<string>();
@@ -310,8 +310,12 @@ namespace appCore.Toolbox
 			foreach (HtmlNode th in descendantNodes) {
 				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site" || th.InnerText == "Time")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
-				else
-					dt.Columns.Add(th.InnerText);
+				else {
+					if(!dt.Columns.Contains(th.InnerText))
+						dt.Columns.Add(th.InnerText);
+					else
+						dt.Columns.Add(th.InnerText + "2");
+				}
 			}
 			
 			// Build DataTable
@@ -385,7 +389,7 @@ namespace appCore.Toolbox
 			return csv;
 		}
 	}
-//	
+//
 //	[DelimitedRecord(","), IgnoreFirst(1)]
 //	public class INC {
 //		public string Site;
@@ -411,10 +415,10 @@ namespace appCore.Toolbox
 //			}
 //			private set {}
 //		}
-//		
+//
 //		public INC() {}
 //	}
-//	
+//
 //	[DelimitedRecord(","), IgnoreFirst(1), IgnoreEmptyLines]
 //	public class BookIns {
 //		public string Site;
@@ -425,41 +429,41 @@ namespace appCore.Toolbox
 //		public string Reference;
 //		public string VisitType;
 //		public string Arrived;
-////		public DateTime Arrived {
-////			get {
-////				return Convert.ToDateTime(arrived);
-////			}
-////			private set {}
-////		}
+	////		public DateTime Arrived {
+	////			get {
+	////				return Convert.ToDateTime(arrived);
+	////			}
+	////			private set {}
+	////		}
 //		public string PlannedFinish;
-////		public DateTime PlannedFinish {
-////			get {
-////				return Convert.ToDateTime(plannedFinish);
-////			}
-////			private set {}
-////		}
+	////		public DateTime PlannedFinish {
+	////			get {
+	////				return Convert.ToDateTime(plannedFinish);
+	////			}
+	////			private set {}
+	////		}
 //		public string TimeTaken;
-////		public DateTime TimeTaken {
-////			get {
-////				return Convert.ToDateTime(timeTaken);
-////			}
-////			private set {}
-////		}
+	////		public DateTime TimeTaken {
+	////			get {
+	////				return Convert.ToDateTime(timeTaken);
+	////			}
+	////			private set {}
+	////		}
 //		public string TimeRemaining;
-////		public DateTime TimeRemaining {
-////			get {
-////				return Convert.ToDateTime(timeRemaining);
-////			}
-////			private set {}
-////		}
+	////		public DateTime TimeRemaining {
+	////			get {
+	////				return Convert.ToDateTime(timeRemaining);
+	////			}
+	////			private set {}
+	////		}
 //		public string DepartedSite;
-////		public DateTime DepartedSite {
-////			get {
-////				return Convert.ToDateTime(departedSite);
-////			}
-////			private set {}
-////		}
-//		
+	////		public DateTime DepartedSite {
+	////			get {
+	////				return Convert.ToDateTime(departedSite);
+	////			}
+	////			private set {}
+	////		}
+//
 //		public BookIns() {}
 //	}
 }

@@ -37,7 +37,7 @@ namespace appCore.SiteFinder.UI
 			set {
 				string[] mode = value.Split('/');
 				Controls.Add(MainMenu);
-				MainMenu.InitializeTroubleshootMenu();
+				MainMenu.InitializeTroubleshootMenu(true);
 				MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
 				MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
 				InitializeToolStripMenuItems();
@@ -770,6 +770,25 @@ namespace appCore.SiteFinder.UI
 						dataToShow = "ActiveAlarms";
 						dt = currentSite.ActiveAlarms;
 						break;
+					case "AvailabilityButton":
+						if(currentSite.Availability == null) {
+							currentSite.requestOIData("Availability");
+							if(currentSite.Availability != null) {
+								if(currentSite.Availability.Rows.Count > 0) {
+									MainMenu.AvailabilityButton.Enabled = true;
+									MainMenu.AvailabilityButton.ForeColor = Color.DarkGreen;
+									MainMenu.AvailabilityButton.Text = "Availability chart";
+								}
+								else {
+									MainMenu.AvailabilityButton.Enabled = false;
+									MainMenu.AvailabilityButton.Text = "No availability chart to display";
+								}
+							}
+							return;
+						}
+						dataToShow = "Availability";
+						dt = currentSite.Availability;
+						break;
 				}
 				
 				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
@@ -778,7 +797,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void refreshOiData(object sender, EventArgs e) {
-			currentSite.requestOIData("INCCRQBookinsAlarms");
+			currentSite.requestOIData("INCCRQBookinsAlarmsAvailability");
 			MainMenu.siteFinder_Toggle(true);
 		}
 		

@@ -154,7 +154,6 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox2
 			// 
-			this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBox2.Location = new System.Drawing.Point(86, 107);
 			this.textBox2.MaxLength = 5;
 			this.textBox2.Name = "textBox2";

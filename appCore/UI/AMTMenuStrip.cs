@@ -28,8 +28,11 @@ namespace appCore.UI
 		public ToolStripMenuItem CRQsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem BookInsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem ActiveAlarmsButton = new ToolStripMenuItem();
+		public ToolStripMenuItem AvailabilityButton = new ToolStripMenuItem();
 		
 		ToolStripMenuItem RefreshButton = new ToolStripMenuItem();
+		
+		bool AvailabilityButtonEnabled;
 		
 		public EventHandler OiButtonsOnClickDelegate {
 			get { return null; }
@@ -38,6 +41,8 @@ namespace appCore.UI
 				CRQsButton.Click += value;
 				BookInsButton.Click += value;
 				ActiveAlarmsButton.Click += value;
+				if(AvailabilityButtonEnabled)
+					AvailabilityButton.Click += value;
 			}
 		}
 		
@@ -54,11 +59,14 @@ namespace appCore.UI
 			InitializeComponent();
 		}
 		
-		public void InitializeTroubleshootMenu() {
+		public void InitializeTroubleshootMenu(bool enableAvailabilityButton = false) {
+			AvailabilityButtonEnabled = enableAvailabilityButton;
 			Items.Add(INCsButton);
 			Items.Add(CRQsButton);
 			Items.Add(BookInsButton);
 			Items.Add(ActiveAlarmsButton);
+			if(AvailabilityButtonEnabled)
+				Items.Add(AvailabilityButton);
 			Items.Add(RefreshButton);
 		}
 		
@@ -177,6 +185,24 @@ namespace appCore.UI
 										tsmi.Text = "Click to load alarms";
 									}
 									break;
+								case "AvailabilityButton":
+									if(currentSite.Availability != null) {
+										if(currentSite.Availability.Rows.Count > 0) {
+											tsmi.Enabled = true;
+											tsmi.ForeColor = Color.DarkGreen;
+											tsmi.Text = "Availability chart";
+										}
+										else {
+											tsmi.Enabled = false;
+											tsmi.Text = "No availability chart to display";
+										}
+									}
+									else {
+										tsmi.Enabled = true;
+										tsmi.ForeColor = Color.DarkRed;
+										tsmi.Text = "Click to load availability";
+									}
+									break;
 								case "RefreshButton":
 									tsmi.Enabled = true;
 									tsmi.Text = '\u21bb'.ToString();
@@ -198,6 +224,8 @@ namespace appCore.UI
 						BookInsButton.Enabled = false;
 						BookInsButton.Text = string.Empty;
 						RefreshButton.Enabled = false;
+						AvailabilityButton.Text = string.Empty;
+						AvailabilityButton.Enabled = false;
 					}
 				}
 			}
@@ -245,10 +273,20 @@ namespace appCore.UI
 			RefreshButton.AutoSize = false;
 			RefreshButton.Size = new Size((int)(Width * 0.05), Height);
 			// 
+			// AvailabilityButton
+			// 
+			AvailabilityButton.AutoSize = false;
+			AvailabilityButton.Size = new Size((int)(Width * 0.18), Height);
+			AvailabilityButton.Name = "AvailabilityButton";
+			AvailabilityButton.Text = "Availability Chart";
+			AvailabilityButton.TextAlign = ContentAlignment.MiddleCenter;
+//			ActiveAlarmsButton.Font = new Font("Segoe UI", 9F);
+//			ActiveAlarmsButton.MouseDown += showRightClickContext;
+			// 
 			// ActiveAlarmsButton
 			// 
 			ActiveAlarmsButton.AutoSize = false;
-			ActiveAlarmsButton.Size = new Size((int)(Width * 0.225), Height);
+			ActiveAlarmsButton.Size = new Size((int)(Width * 0.18), Height);
 			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
 			ActiveAlarmsButton.Text = "Alarms";
 			ActiveAlarmsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -258,7 +296,7 @@ namespace appCore.UI
 			// BookInsButton
 			// 
 			BookInsButton.AutoSize = false;
-			BookInsButton.Size = new Size((int)(Width * 0.225), Height);
+			BookInsButton.Size = new Size((int)(Width * 0.18), Height);
 			BookInsButton.Name = "BookInsButton";
 			BookInsButton.Text = "BookIns";
 			BookInsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -268,7 +306,7 @@ namespace appCore.UI
 			// CRQsButton
 			// 
 			CRQsButton.AutoSize = false;
-			CRQsButton.Size = new Size((int)(Width * 0.225), Height);
+			CRQsButton.Size = new Size((int)(Width * 0.18), Height);
 			CRQsButton.Name = "CRQsButton";
 			CRQsButton.Text = "CRQs";
 			CRQsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -278,7 +316,7 @@ namespace appCore.UI
 			// INCsButton
 			// 
 			INCsButton.AutoSize = false;
-			INCsButton.Size = new Size((int)(Width * 0.225), Height);
+			INCsButton.Size = new Size((int)(Width * 0.18), Height);
 			INCsButton.Name = "INCsButton";
 			INCsButton.Text = "INCs";
 			INCsButton.TextAlign = ContentAlignment.MiddleCenter;
