@@ -33,14 +33,14 @@ namespace appCore.Netcool
 		string lastOccurrence;
 		public DateTime LastOccurrence {
 			get {
-				try { Convert.ToDateTime(lastOccurrence); }
-				catch {
-					try { new DateTime(Convert.ToInt64(lastOccurrence)); }
-					catch { return new DateTime(2500,1,1); }
+				try {
+					return Convert.ToDateTime(lastOccurrence);
 				}
-//				return lastOccurrence.Contains("/") || lastOccurrence.Contains("-") ?
-//					Convert.ToDateTime(lastOccurrence) :
-//					new DateTime(Convert.ToInt64(lastOccurrence));
+				catch {
+					if(lastOccurrence.IsAllDigits())
+						return new DateTime(Convert.ToInt64(lastOccurrence));
+				}
+				return new DateTime(2500,1,1);
 			}
 			private set { }
 		}
