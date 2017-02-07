@@ -432,14 +432,22 @@ namespace appCore.Settings
 						if(currentShiftsFile != null) {
 							if(newestFile.LastWriteTime > currentShiftsFile.LastWriteTime) {
 								if(DateTime.Now.Month != 12 && !newestFile.Name.Contains((DateTime.Now.Year + 1).ToString())) {
+								Retry:
 									try {
 										currentShiftsFile.Delete();
+										newestFile.CopyTo(FullName + "\\" + newestFile.Name, true);
 									}
 									catch(Exception e) {
+										int errorCode = (int)(e.HResult & 0x0000FFFF);
+										DialogResult ans = DialogResult.None;
+										if(errorCode == 32)
+											ans = ErrorHandling.showShiftsFileInUseDuringFileOperation;
+										if(ans == DialogResult.Retry)
+											goto Retry;
 										
+										Databases.shiftsFile = new ShiftsFile(DateTime.Now.Year);
 									}
 								}
-								newestFile.CopyTo(FullName + "\\" + newestFile.Name, true);
 							}
 						}
 						else

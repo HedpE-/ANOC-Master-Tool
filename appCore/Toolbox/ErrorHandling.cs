@@ -36,6 +36,12 @@ namespace appCore
 			}
 		}
 		
+		public static DialogResult showShiftsFileInUseDuringFileOperation {
+			get {
+				return FlexibleMessageBox.Show("Shifts file is currently in use, please close it and retry.","Error",MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+			}
+		}
+		
 		public static void showIncompatibleDriveWarningOnUserFolderSelection(DriveInfo drive) {
 			FlexibleMessageBox.Show("The chosen path for the UserFolder is located on drive " + drive.Name.Substring(0,2) + " which is a " + drive.DriveType + " drive.\n\nPlease choose a path on the hard drive or Removable drive.","Invalid path",MessageBoxButtons.OK,MessageBoxIcon.Error);
 		}
