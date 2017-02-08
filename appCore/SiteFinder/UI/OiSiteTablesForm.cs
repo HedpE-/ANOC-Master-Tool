@@ -70,7 +70,7 @@ namespace appCore.SiteFinder.UI
 				case "Availability":
 					Name = "AvailabilityDataTableForm";
 					DataType = "Availability Chart";
-//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 					break;
 			}
 			populateGridView();
@@ -121,6 +121,20 @@ namespace appCore.SiteFinder.UI
 				chkColumn.Width = 19;
 				dataGridView1.Columns.Insert(0, chkColumn);
 				dataGridView1.CellContentClick += DataGridView1CellContentClick;
+			}
+			else {
+				if(DataType == "Availability Chart") {
+					dataGridView1.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+					foreach(DataGridViewColumn dgvc in dataGridView1.Columns) {
+						if(dgvc.Name.Contains(" ")) {
+							dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+							dgvc.Width = 40;
+						}
+						else
+							dgvc.Frozen = true;
+					}
+//					dataGridView1.FirstDisplayedScrollingColumnIndex = dataGridView1.Columns.Count - 1;
+				}
 			}
 			
 			dataGridView1.ResumeLayout();
@@ -183,17 +197,19 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
-			if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
-				switch(DataType) {
-					case "INCs":
+			switch(DataType) {
+				case "INCs":
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
 						if(e.Value.ToString() != "Closed" && e.Value.ToString() != "Resolved")
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 						else {
 							if(e.Value.ToString() == "Resolved")
 								e.CellStyle.BackColor = System.Drawing.Color.Yellow;
 						}
-						break;
-					case "CRQs":
+					}
+					break;
+				case "CRQs":
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
 						if(e.Value.ToString() == "Scheduled" || e.Value.ToString() == "Implementation In Progress") {
 							if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled Start"].Value) <= DateTime.Now &&
 							   Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled End"].Value) > DateTime.Now)
@@ -205,13 +221,29 @@ namespace appCore.SiteFinder.UI
 							if(e.Value.ToString() != "Closed")
 								e.CellStyle.BackColor = System.Drawing.Color.Red;
 						}
-						break;
-				}
-			}
-			if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived") {
-				if(Convert.ToDateTime(e.Value) <= DateTime.Now &&
-				   string.IsNullOrEmpty(dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value.ToString()))
-					e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+					}
+					break;
+				case "BookIns":
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived") {
+						if(Convert.ToDateTime(e.Value) <= DateTime.Now &&
+						   string.IsNullOrEmpty(dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value.ToString()))
+							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+					}
+					break;
+				case "Availability Chart":
+					if(dataGridView1.Columns[e.ColumnIndex].Name.Contains(" ")) {
+						string cellValue = e.Value.ToString();
+						if(!string.IsNullOrEmpty(cellValue)) {
+							int cellIntValue = Convert.ToInt16(cellValue);
+							if(cellIntValue < 11)
+								e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+							else
+								e.CellStyle.BackColor = cellIntValue < 2500 ?
+									System.Drawing.Color.Yellow :
+									System.Drawing.Color.Red;
+						}
+					}
+					break;
 			}
 		}
 	}
