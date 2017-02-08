@@ -399,7 +399,7 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Availability")) {
 					Thread thread = new Thread(() => {
-					                           	BookIns = FetchAvailability();
+					                           	Availability = FetchAvailability();
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
