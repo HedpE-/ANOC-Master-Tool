@@ -311,10 +311,11 @@ namespace appCore.Toolbox
 				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site" || th.InnerText == "Time")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else {
-					if(!dt.Columns.Contains(th.InnerText))
+					if(!dt.Columns.Contains(th.InnerText)) {
 						dt.Columns.Add(th.InnerText);
-					else
-						dt.Columns.Add(th.InnerText + "2");
+//						if(dt.TableName == "table_ca" && dt.Columns.Count > 4)
+//							dt.Columns[th.InnerText].SetOrdinal(3);
+					}
 				}
 			}
 			
@@ -329,21 +330,34 @@ namespace appCore.Toolbox
 						if(node.Name != "td") // && node.Name != "th")
 							continue;
 						
-						tableRow.Add(node.InnerText);
+						if(node.InnerText == "&nbsp;")
+							tableRow.Add(string.Empty);
+						else
+							tableRow.Add(node.InnerText);
 					}
 				}
 				
 				if(tableRow.Count > 0) {
 					DataRow dataRow = dt.NewRow();
 					for(int c = 0;c < tableRow.Count;c++) {
-						if(dt.Columns[c].DataType == typeof(DateTime)) {
-							if(!string.IsNullOrWhiteSpace(tableRow[c]))
-								dataRow[c] = Convert.ToDateTime(tableRow[c]);
+						if(c < dataRow.ItemArray.Count()) {
+							if(dt.Columns[c].DataType == typeof(DateTime)) {
+								if(!string.IsNullOrWhiteSpace(tableRow[c]))
+									dataRow[c] = Convert.ToDateTime(tableRow[c]);
+							}
+							else {
+								dataRow[c] = tableRow[c];
+							}
 						}
-						else
-							dataRow[c] = tableRow[c];
 					}
 					dt.Rows.Add(dataRow);
+				}
+			}
+			
+			if(dt.TableName == "table_ca") {
+				for(int c = 3;c < dt.Columns.Count;c++) {
+					string colName = dt.Columns[3].ColumnName;
+					dt.Columns[colName].SetOrdinal((dt.Columns.Count - 1) - (c - 3));
 				}
 			}
 			
