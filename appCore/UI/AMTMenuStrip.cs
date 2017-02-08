@@ -65,8 +65,10 @@ namespace appCore.UI
 			Items.Add(CRQsButton);
 			Items.Add(BookInsButton);
 			Items.Add(ActiveAlarmsButton);
-			if(AvailabilityButtonEnabled)
+			if(AvailabilityButtonEnabled) {
 				Items.Add(AvailabilityButton);
+				DynamicButtonsSizes();
+			}
 			Items.Add(RefreshButton);
 		}
 		
@@ -276,7 +278,6 @@ namespace appCore.UI
 			// AvailabilityButton
 			// 
 			AvailabilityButton.AutoSize = false;
-			AvailabilityButton.Size = new Size((int)(Width * 0.18), Height);
 			AvailabilityButton.Name = "AvailabilityButton";
 			AvailabilityButton.Text = "Availability Chart";
 			AvailabilityButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -286,7 +287,6 @@ namespace appCore.UI
 			// ActiveAlarmsButton
 			// 
 			ActiveAlarmsButton.AutoSize = false;
-			ActiveAlarmsButton.Size = new Size((int)(Width * 0.18), Height);
 			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
 			ActiveAlarmsButton.Text = "Alarms";
 			ActiveAlarmsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -296,7 +296,6 @@ namespace appCore.UI
 			// BookInsButton
 			// 
 			BookInsButton.AutoSize = false;
-			BookInsButton.Size = new Size((int)(Width * 0.18), Height);
 			BookInsButton.Name = "BookInsButton";
 			BookInsButton.Text = "BookIns";
 			BookInsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -306,7 +305,6 @@ namespace appCore.UI
 			// CRQsButton
 			// 
 			CRQsButton.AutoSize = false;
-			CRQsButton.Size = new Size((int)(Width * 0.18), Height);
 			CRQsButton.Name = "CRQsButton";
 			CRQsButton.Text = "CRQs";
 			CRQsButton.TextAlign = ContentAlignment.MiddleCenter;
@@ -316,12 +314,24 @@ namespace appCore.UI
 			// INCsButton
 			// 
 			INCsButton.AutoSize = false;
-			INCsButton.Size = new Size((int)(Width * 0.18), Height);
 			INCsButton.Name = "INCsButton";
 			INCsButton.Text = "INCs";
 			INCsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			INCsButton.Font = new Font("Segoe UI", 9F);
 //			INCsButton.MouseDown += showRightClickContext;
+			
+			DynamicButtonsSizes();
+		}
+		
+		void DynamicButtonsSizes() {
+			double widthPercentage = AvailabilityButtonEnabled ? 0.18 : 0.225;
+			
+			if(AvailabilityButtonEnabled)
+				AvailabilityButton.Size = new Size((int)(Width * widthPercentage), Height);
+			ActiveAlarmsButton.Size = new Size((int)(Width * widthPercentage), Height);
+			BookInsButton.Size = new Size((int)(Width * widthPercentage), Height);
+			CRQsButton.Size = new Size((int)(Width * widthPercentage), Height);
+			INCsButton.Size = new Size((int)(Width * widthPercentage), Height);
 		}
 	}
 }
