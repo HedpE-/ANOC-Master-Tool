@@ -1301,23 +1301,6 @@
     <Compile Include="UI\AMTTextBox.cs" />
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
     <Compile Include="UI\FlexibleMessageBox.cs" />
-    <Compile Include="UI\GlacialList13\BorderStrip.cs" />
-    <Compile Include="UI\GlacialList13\ColumnCollection.cs" />
-    <Compile Include="UI\GlacialList13\GlacialList.cs" />
-    <Compile Include="UI\GlacialList13\GLComboBox.cs" />
-    <Compile Include="UI\GlacialList13\GLDateTimePicker.cs" />
-    <Compile Include="UI\GlacialList13\GLEmbeddedControl.cs" />
-    <Compile Include="UI\GlacialList13\GLMergeSort.cs" />
-    <Compile Include="UI\GlacialList13\GLQuickSort.cs" />
-    <Compile Include="UI\GlacialList13\GLTextBox.cs" />
-    <Compile Include="UI\GlacialList13\HelperFunctions.cs" />
-    <Compile Include="UI\GlacialList13\ItemCollection.cs" />
-    <Compile Include="UI\GlacialList13\ManagedHScrollBar.cs">
-      <DependentUpon>GLEmbeddedControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\GlacialList13\ManagedVScrollBar.cs" />
-    <Compile Include="UI\GlacialList13\ThemeRoutines.cs" />
-    <Compile Include="UI\GlacialList13\Win32.cs" />
     <Compile Include="UI\GraphicsExtension.cs" />
     <Compile Include="UI\AMTLargeTextForm.cs">
       <SubType>Form</SubType>
@@ -1402,7 +1385,6 @@
     <Compile Include="Web\UI\BrowserView.Designer.cs">
       <DependentUpon>BrowserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Web\UriItem.cs" />
     <Compile Include="GMap.NET\Interfaces\IPosition.cs" />
     <Compile Include="GMap.NET\Interfaces\IPositionTime.cs" />
     <Compile Include="GMap.NET\Interfaces\ITime.cs" />
@@ -1446,27 +1428,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Templates\UI\TasksForm.resx">
       <DependentUpon>TasksForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\BorderStrip.resx">
-      <DependentUpon>BorderStrip.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\GlacialList.resx">
-      <DependentUpon>GlacialList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\GLComboBox.resx">
-      <DependentUpon>GLComboBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\GLDateTimePicker.resx">
-      <DependentUpon>GLDateTimePicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\GLTextBox.resx">
-      <DependentUpon>GLTextBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\ManagedHScrollBar.resx">
-      <DependentUpon>ManagedHScrollBar.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\GlacialList13\ManagedVScrollBar.resx">
-      <DependentUpon>ManagedVScrollBar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Loading.resx">
       <DependentUpon>Loading.cs</DependentUpon>
@@ -1582,7 +1543,6 @@
     <Folder Include="OssScripts\UI" />
     <Folder Include="Remedy\UI" />
     <Folder Include="Toolbox\Transitions" />
-    <Folder Include="UI\GlacialList13" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ObjectListView\ObjectListView\ObjectListView2008.csproj">
