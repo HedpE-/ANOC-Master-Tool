@@ -311,23 +311,19 @@ namespace appCore.Toolbox
 				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site" || th.InnerText == "Time")
 					dt.Columns.Add(th.InnerText, typeof(DateTime));
 				else {
-					if(!dt.Columns.Contains(th.InnerText)) {
+					if(!dt.Columns.Contains(th.InnerText))
 						dt.Columns.Add(th.InnerText);
-//						if(dt.TableName == "table_ca" && dt.Columns.Count > 4)
-//							dt.Columns[th.InnerText].SetOrdinal(3);
-					}
 				}
 			}
 			
 			// Build DataTable
 			descendantNodes = table.Descendants("tr");
 			foreach (HtmlNode tr in descendantNodes) {
-//				csv += Environment.NewLine;
 				List<string> tableRow = new List<string>();
 				if(tr.Name != "#text") {
 					var childNodes = tr.ChildNodes;
 					foreach(var node in childNodes) {
-						if(node.Name != "td") // && node.Name != "th")
+						if(node.Name != "td")
 							continue;
 						
 						if(node.InnerText == "&nbsp;")
@@ -403,81 +399,4 @@ namespace appCore.Toolbox
 			return csv;
 		}
 	}
-//
-//	[DelimitedRecord(","), IgnoreFirst(1)]
-//	public class INC {
-//		public string Site;
-//		public string IncidentRef;
-//		public string Summary;
-//		public string Priority;
-//		public string Status;
-//		public string AssigneeGroup;
-//		string submitDate;
-//		public DateTime SubmitDate {
-//			get {
-//				return Convert.ToDateTime(submitDate);
-//			}
-//			private set {}
-//		}
-//		public string ResolutionCategory2;
-//		public string ResolutionCategory3;
-//		public string Resolution;
-//		string resolvedDate;
-//		public DateTime ResolvedDate {
-//			get {
-//				return Convert.ToDateTime(resolvedDate);
-//			}
-//			private set {}
-//		}
-//
-//		public INC() {}
-//	}
-//
-//	[DelimitedRecord(","), IgnoreFirst(1), IgnoreEmptyLines]
-//	public class BookIns {
-//		public string Site;
-//		public string Visit;
-//		public string Company;
-//		public string Engineer;
-//		public string Mobile;
-//		public string Reference;
-//		public string VisitType;
-//		public string Arrived;
-	////		public DateTime Arrived {
-	////			get {
-	////				return Convert.ToDateTime(arrived);
-	////			}
-	////			private set {}
-	////		}
-//		public string PlannedFinish;
-	////		public DateTime PlannedFinish {
-	////			get {
-	////				return Convert.ToDateTime(plannedFinish);
-	////			}
-	////			private set {}
-	////		}
-//		public string TimeTaken;
-	////		public DateTime TimeTaken {
-	////			get {
-	////				return Convert.ToDateTime(timeTaken);
-	////			}
-	////			private set {}
-	////		}
-//		public string TimeRemaining;
-	////		public DateTime TimeRemaining {
-	////			get {
-	////				return Convert.ToDateTime(timeRemaining);
-	////			}
-	////			private set {}
-	////		}
-//		public string DepartedSite;
-	////		public DateTime DepartedSite {
-	////			get {
-	////				return Convert.ToDateTime(departedSite);
-	////			}
-	////			private set {}
-	////		}
-//
-//		public BookIns() {}
-//	}
 }

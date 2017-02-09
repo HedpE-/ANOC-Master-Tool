@@ -605,11 +605,4 @@ namespace appCore.SiteFinder
 			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 		}
 	}
-	
-	// TODO: SiteExtension class
-	public static class SiteExtension {
-		public static DataRow[] NotClosed(this DataTable toFilter) {
-			return toFilter.TableName == "table_inc" ? toFilter.Select("Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'") : null;
-		}
-	}
 }

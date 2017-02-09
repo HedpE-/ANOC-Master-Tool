@@ -102,7 +102,7 @@ namespace appCore.Web
 				else
 					LoggedOn = false;
 				
-				DialogResult res = appCore.UI.FlexibleMessageBox.Show("Login failed with current OI credentials, do you want to change?\n\nIncorrect OI credentials prevents the use of this Tool's full features.","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
+				DialogResult res = FlexibleMessageBox.Show("Login failed with current OI credentials, do you want to change?\n\nIncorrect OI credentials prevents the use of this Tool's full features.","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
 				if(res == DialogResult.Yes) {
 					RequestOiCredentials();
 					goto Retry;
