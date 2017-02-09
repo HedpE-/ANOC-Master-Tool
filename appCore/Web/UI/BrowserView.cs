@@ -694,6 +694,17 @@ namespace appCore.Web.UI
 		}
 		#endregion
 	}
+	
+	public class UriItem {
+		public string Name { get; set; }
+		public Uri URI { get; set; }
+		
+		public UriItem(string name, Uri uri)
+		{
+			Name = name;
+			URI = uri;
+		}
+	}
 }
 
 
