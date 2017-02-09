@@ -73,7 +73,8 @@ namespace appCore.DB
 			int finishedThreadsCount = 0;
 			
 			threads.Add(new Thread(() => {
-			                       	string response = OIConnection.requestPhpOutput("allsites");
+//			                       	string response = OIConnection.requestPhpOutput("allsites");
+			                       	string response = OIConnection.requestApiOutput("sites");
 			                       	if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
 			                       		if(GlobalProperties.shareAccess || onUserFolder) {
 			                       			if(source_allsites.Exists) {
@@ -93,7 +94,8 @@ namespace appCore.DB
 			                       }));
 			
 			threads.Add(new Thread(() => {
-			                       	string response = OIConnection.requestPhpOutput("allcells");
+//			                       	string response = OIConnection.requestPhpOutput("allcells");
+			                       	string response = OIConnection.requestApiOutput("cells");
 			                       	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
 			                       		if(GlobalProperties.shareAccess || onUserFolder) {
 			                       			if(source_allcells.Exists) {

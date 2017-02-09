@@ -432,7 +432,7 @@ namespace appCore.SiteFinder
 					                           			indexPhp = getOiSiteIndexPage();
 					                           	}
 					                           	
-					                           	if(LockedCellsDetails == null)
+					                           	if(LockedCellsDetails == null || forceUpdateIndexPhp)
 					                           		getOiCellsLockedState(true);
 					                           	
 					                           	finishedThreadsCount++;
@@ -525,6 +525,7 @@ namespace appCore.SiteFinder
 					}
 					string[] strTofind = { "<br>" };
 					
+					string t = accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 					return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
 				}
 			}

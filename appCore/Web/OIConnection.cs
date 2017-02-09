@@ -183,6 +183,26 @@ namespace appCore.Web
 		}
 		
 		/// <summary>
+		/// Requests data from OI API function
+		/// </summary>
+		/// <param name="dataToRequest">"sites", "cells"</param>
+		public static string requestApiOutput(string dataToRequest)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
+				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/export-{0}", dataToRequest), Method.GET);
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
 		/// Requests data from OI PHP files
 		/// </summary>
 		/// <param name="phpFile">"allsites", "allcells"</param>
@@ -195,10 +215,6 @@ namespace appCore.Web
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-//				foreach (var header in requiredHeaders) {
-//					if(header.Name == "Pragma" || header.Name == "Cache-Control" || header.Name == "Vary" || header.Name == "Expires" || header.Name == "Date")
-//						request.AddHeader(header.Name, header.Value.ToString());
-//				}
 				IRestResponse response = client.Execute(request);
 				
 				return response.Content;

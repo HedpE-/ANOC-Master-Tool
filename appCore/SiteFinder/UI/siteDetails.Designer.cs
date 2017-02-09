@@ -424,12 +424,12 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label16
 			// 
-			this.label16.Location = new System.Drawing.Point(749, 30);
+			this.label16.Location = new System.Drawing.Point(749, 28);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(61, 97);
+			this.label16.Size = new System.Drawing.Size(293, 20);
 			this.label16.TabIndex = 137;
 			this.label16.Text = "Key Information";
-			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// amtTextBox2
 			// 
@@ -488,10 +488,10 @@ namespace appCore.SiteFinder.UI
 			// richTextBox1
 			// 
 			this.richTextBox1.DetectUrls = false;
-			this.richTextBox1.Location = new System.Drawing.Point(816, 30);
+			this.richTextBox1.Location = new System.Drawing.Point(749, 57);
 			this.richTextBox1.Name = "richTextBox1";
 			this.richTextBox1.ReadOnly = true;
-			this.richTextBox1.Size = new System.Drawing.Size(226, 97);
+			this.richTextBox1.Size = new System.Drawing.Size(319, 70);
 			this.richTextBox1.TabIndex = 144;
 			this.richTextBox1.Text = "";
 			this.richTextBox1.TextChanged += new System.EventHandler(this.TextBoxesTextChanged_LargeTextButtons);
@@ -499,7 +499,7 @@ namespace appCore.SiteFinder.UI
 			// button1
 			// 
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(1045, 30);
+			this.button1.Location = new System.Drawing.Point(1044, 32);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(24, 20);
 			this.button1.TabIndex = 145;
