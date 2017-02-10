@@ -76,7 +76,7 @@ namespace appCore.Templates.UI
 		
 		public static siteDetails SiteDetailsUI;
 		
-		public Site currentSite { get; private set; }
+		public Site currentSite;
 		TroubleShoot currentTemplate;
 		TroubleShoot prevTemp;
 		
