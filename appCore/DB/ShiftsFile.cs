@@ -78,7 +78,7 @@ namespace appCore.DB
 			private set;
 		}
 		
-		int LastRow { get; private set; }
+		int LastRow { get; set; }
 		
 		public ShiftsFile(int year) {
 			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
