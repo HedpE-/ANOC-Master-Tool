@@ -45,6 +45,8 @@ namespace appCore.SiteFinder.UI
 				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 				MainMenu.MainMenu.DropDownItems.Add("-");
 				MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
+				MainMenu.MainMenu.DropDownItems.Add("-");
+				MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
 				switch(mode[0]) {
 					case "single":
 						label11.Visible = false;
@@ -56,7 +58,8 @@ namespace appCore.SiteFinder.UI
 						listView1.Size = new Size(556, 488);
 						label12.Location = new Point(5, 227);
 						textBox1.ReadOnly = value.Contains("readonly");
-						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
+						bulkSiteSearchMenuItem.Enabled =
+							lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 						break;
 					case "multi":
 						label11.Visible = true;
@@ -68,7 +71,8 @@ namespace appCore.SiteFinder.UI
 						listView1.Location = new Point(5, 372);
 						listView1.Size = new Size(556, 274);
 						label12.Location = new Point(5, 352);
-						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
+						bulkSiteSearchMenuItem.Enabled =
+							lockedCellsPageToolStripMenuItem.Enabled = value.Contains("readonly");
 						textBox1.ReadOnly = !value.Contains("readonly");
 						break;
 					case "outage":
@@ -82,7 +86,8 @@ namespace appCore.SiteFinder.UI
 						checkBox3.Location = new Point(296, 355);
 						label11.Visible = true;
 						label12.Location = new Point(5, 352);
-						bulkSiteSearchMenuItem.Enabled = false;
+						bulkSiteSearchMenuItem.Enabled =
+							lockedCellsPageToolStripMenuItem.Enabled = false;
 						textBox1.ReadOnly = true;
 						break;
 				}
@@ -99,30 +104,38 @@ namespace appCore.SiteFinder.UI
 		byte listView2_EventCount = 1;
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
-		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem lockUnlockCellsToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem sendBCPToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		
 		public siteDetails(Site site)
 		{
 			InitializeComponent();
-			currentSite = site;
 			myMap = drawGMap("myMap",false);
 			Controls.Add(myMap);
 			Shown += populateSingleForm;
 		}
 		
-		public siteDetails(bool outage, string[] sitesList)
+		public siteDetails(bool outage, Templates.UI.OutageControls outagePanel)
 		{
 			InitializeComponent();
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
 			if(outage) {
 				siteDetails_UIMode = "outage";
-				sites = sitesList;
+				
+				sites = (outagePanel.currentOutage.VfBulkCI + outagePanel.currentOutage.TefBulkCI).Split(';');
+				for(int c = 0;c < sites.Length;c++) {
+					if(sites[c].StartsWith("0")) {
+						while(sites[c].StartsWith("0"))
+							sites[c] = sites[c].Substring(1);
+					}
+					else
+						break;
+				}
+				sites = sites.Distinct().ToArray(); // Remover duplicados
+				sites = sites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
 			}
 			else
 				siteDetails_UIMode = "single";
@@ -807,17 +820,22 @@ namespace appCore.SiteFinder.UI
 		
 		void LockUnlockCells(object sender, EventArgs e) {
 			Action actionNonThreaded = new Action(delegate {
-			                                      	if(Settings.CurrentUser.UserName == "GONCARJ3" || Settings.CurrentUser.UserName == "SANTOSS2") {
-			                                      		if(currentSite.Exists) {
-			                                      			LockUnlockCellsForm lucf = new LockUnlockCellsForm(currentSite);
-			                                      			lucf.ShowDialog();
-			                                      		}
+			                                      	if(currentSite.Exists) {
+			                                      		LockUnlockCellsForm lucf = new LockUnlockCellsForm(this);
+			                                      		lucf.ShowDialog();
+			                                      		selectedSiteDetailsPopulate(currentSite);
 			                                      	}
 			                                      });
 			
 			LoadingPanel load = new LoadingPanel();
 			load.Show(null, actionNonThreaded, false, this);
-			selectedSiteDetailsPopulate(currentSite);
+		}
+		
+		void LockedCellsPage(object sender, EventArgs e) {
+			if(Settings.CurrentUser.UserName == "GONCARJ3" || Settings.CurrentUser.UserName == "SANTOSS2") {
+				LockUnlockCellsForm lucf = new LockUnlockCellsForm();
+				lucf.Show();
+			}
 		}
 		
 		void InitializeToolStripMenuItems() {
@@ -835,29 +853,17 @@ namespace appCore.SiteFinder.UI
 //			viewSiteInOiToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			viewSiteInOiToolStripMenuItem.Click += ViewSiteInOiButtonClick;
 			// 
-			// clearToolStripMenuItem
-			// 
-			clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			clearToolStripMenuItem.Text = "Clear";
-//			clearToolStripMenuItem.Click += ClearCurrentSite;
-			// 
 			// generateTaskToolStripMenuItem
 			// 
 			lockUnlockCellsToolStripMenuItem.Name = "lockUnlockCellsToolStripMenuItem";
 			lockUnlockCellsToolStripMenuItem.Text = "Lock/Unlock Cells...";
 			lockUnlockCellsToolStripMenuItem.Click += LockUnlockCells;
 			// 
-			// copyToNewTemplateToolStripMenuItem
+			// lockedCellsPageToolStripMenuItem
 			// 
-			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
-			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
-//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
-			// 
-			// sendBCPToolStripMenuItem
-			// 
-			sendBCPToolStripMenuItem.Name = "sendBCPToolStripMenuItem";
-			sendBCPToolStripMenuItem.Text = "Send BCP Form";
-//			sendBCPToolStripMenuItem.Click += SendBCPForm;
+			lockedCellsPageToolStripMenuItem.Name = "lockedCellsPageToolStripMenuItem";
+			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
+			lockedCellsPageToolStripMenuItem.Click += LockedCellsPage;
 		}
 	}
 }

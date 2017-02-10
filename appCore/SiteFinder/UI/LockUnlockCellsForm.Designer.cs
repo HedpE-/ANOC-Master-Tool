@@ -278,6 +278,7 @@ namespace appCore.SiteFinder.UI
 			this.MinimumSize = new System.Drawing.Size(1164, 442);
 			this.Name = "LockUnlockCellsForm";
 			this.Text = "LockUnlockCellsForm";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LockUnlockCellsFormFormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
 

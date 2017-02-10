@@ -204,15 +204,36 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		public LockUnlockCellsForm(Site site) {
+		Form OwnerForm;
+		
+		public LockUnlockCellsForm() {
 			InitializeComponent();
 			
-			currentSite = site;
+			ListBox lb = new ListBox();
+			lb.Location = dataGridView1.Location;
+			lb.Size = new Size(130, dataGridView1.Height);
+			lb.Anchor = dataGridView1.Anchor;
+			Controls.Add(lb);
+			dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
+			dataGridView1.Width -= lb.Width + 5;
+			
+			radioButton1.Visible =
+				radioButton2.Visible =
+				radioButton3.Visible = false;
+			
+//			radioButton2.Select();
+		}
+		
+		public LockUnlockCellsForm(Form parent) {
+			InitializeComponent();
+			
+			OwnerForm = parent;
+			if(OwnerForm is siteDetails)
+				currentSite = ((siteDetails)OwnerForm).currentSite;
 			
 			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
 			
 			currentSite.requestOIData("LKULK");
-//			currentSite.requestOIData("INCCRQ");
 			
 			radioButton1.Select();
 		}
@@ -593,6 +614,11 @@ namespace appCore.SiteFinder.UI
 			}
 			if(dataGridView1.Columns[e.ColumnIndex].Name == "Locked")
 				e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
+		}
+		
+		void LockUnlockCellsFormFormClosing(object sender, FormClosingEventArgs e) {
+			if(OwnerForm is siteDetails)
+				((siteDetails)OwnerForm).currentSite = currentSite;
 		}
 	}
 }
