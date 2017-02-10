@@ -95,9 +95,11 @@ namespace appCore.Shifts
 					g.DrawString(filteredList[c - 1].Shift, stringFont, Brushes.Gray, rectangle, drawStringFormat);
 					previousRectBottomCoord = rectangle.Bottom;
 					drawStringFormat.Alignment = StringAlignment.Near;
+//					if(Settings.CurrentUser.UserName == "GONCARJ3")
+//						wholeShiftSnap.Save(Settings.UserFolder.FullName + @"\wholeShiftSnap.png");
 				}
-//				if(CurrentUser.userName == "GONCARJ3")
-//					wholeShiftSnap.Save(UserFolder.FullName + @"\wholeShiftSnap.png");
+//				if(Settings.CurrentUser.UserName == "GONCARJ3")
+//					wholeShiftSnap.Save(Settings.UserFolder.FullName + @"\wholeShiftSnap.png");
 			}
 			PictureBox shiftsPictureBox = new PictureBox();
 			shiftsPictureBox.Parent = this;
