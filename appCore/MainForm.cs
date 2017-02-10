@@ -256,6 +256,8 @@ namespace appCore
 		}
 
 		void TicketCountLabelMouseClick(object sender, MouseEventArgs e) {
+			if(shiftsCalendar.Location.Y == 0)
+				shiftsCalendar.toggleShiftsPanel();
 			switch(e.Button) {
 				case MouseButtons.Left:
 					if(logFiles.LogFile.Exists) {
@@ -472,6 +474,8 @@ namespace appCore
 			//FIXME:			wholeShiftsPanelDispose();
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 				contextMenuStrip1.Show(PointToScreen(e.Location));
+			if(shiftsCalendar.Location.Y == 0)
+				shiftsCalendar.toggleShiftsPanel();
 		}
 
 		void ToolStripMenuItem2Click(object sender, EventArgs e)
@@ -660,6 +664,10 @@ namespace appCore
 		
 		void PictureBoxesClick(object sender, EventArgs e) {
 			PictureBox pic = (PictureBox)sender;
+			if(pic.Name != "pictureBox6") {
+				if(shiftsCalendar.Location.Y == 0)
+					shiftsCalendar.toggleShiftsPanel();
+			}
 			switch(pic.Name) {
 				case "pictureBox1":
 //					wholeShiftsPanelDispose();
@@ -736,6 +744,11 @@ namespace appCore
 				case "pictureBox6":
 					break;
 			}
+		}
+		
+		void TabControl1MouseDown(object sender, MouseEventArgs e) {
+			if(shiftsCalendar.Location.Y == 0)
+				shiftsCalendar.toggleShiftsPanel();
 		}
 	}
 }

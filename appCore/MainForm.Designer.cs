@@ -156,6 +156,7 @@ namespace appCore
 			this.tabControl1.Size = new System.Drawing.Size(533, 682);
 			this.tabControl1.TabIndex = 0;
 			this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1SelectedIndexChanged);
+			this.tabControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TabControl1MouseDown);
 			// 
 			// tabPage1
 			// 
