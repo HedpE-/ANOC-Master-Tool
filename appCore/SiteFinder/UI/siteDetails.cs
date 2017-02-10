@@ -117,15 +117,15 @@ namespace appCore.SiteFinder.UI
 			Shown += populateSingleForm;
 		}
 		
-		public siteDetails(bool outage, Templates.UI.OutageControls outagePanel)
+		public siteDetails(bool isOutage, Templates.Types.Outage outage)
 		{
 			InitializeComponent();
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
-			if(outage) {
+			if(isOutage) {
 				siteDetails_UIMode = "outage";
 				
-				sites = (outagePanel.currentOutage.VfBulkCI + outagePanel.currentOutage.TefBulkCI).Split(';');
+				sites = (outage.VfBulkCI + outage.TefBulkCI).Split(';');
 				for(int c = 0;c < sites.Length;c++) {
 					if(sites[c].StartsWith("0")) {
 						while(sites[c].StartsWith("0"))

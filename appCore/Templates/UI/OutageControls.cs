@@ -33,7 +33,7 @@ namespace appCore.Templates.UI
 		AMTRichTextBox BulkCITextBox = new AMTRichTextBox(); // BulkCITextBox
 		AMTRichTextBox Alarms_ReportTextBox = new AMTRichTextBox(); // Alarms_ReportTextBox
 
-		Outage currentOutage;
+		public Outage currentOutage;
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip();
 		ToolStripMenuItem generateReportToolStripMenuItem = new ToolStripMenuItem();
@@ -173,20 +173,8 @@ namespace appCore.Templates.UI
 		}
 		
 		void OutageFollowUp(object sender, EventArgs e) {
-			string[] outageSites = (currentOutage.VfBulkCI + currentOutage.TefBulkCI).Split(';');
-			for(int c = 0;c < outageSites.Length;c++) {
-				if(outageSites[c].StartsWith("0")) {
-					while(outageSites[c].StartsWith("0"))
-						outageSites[c] = outageSites[c].Substring(1);
-				}
-				else
-					break;
-			}
-			outageSites = outageSites.Distinct().ToArray(); // Remover duplicados
-			outageSites = outageSites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
-			
 			Thread thread = new Thread(() => {
-			                           	siteDetails sd = new siteDetails(true, outageSites);
+			                           	siteDetails sd = new siteDetails(true, currentOutage);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
