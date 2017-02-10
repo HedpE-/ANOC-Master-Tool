@@ -78,6 +78,8 @@ namespace appCore.DB
 			private set;
 		}
 		
+		int LastRow { get; private set; }
+		
 		public ShiftsFile(int year) {
 			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
 			
@@ -121,6 +123,7 @@ namespace appCore.DB
 								if(Agents == null)
 									Agents = new List<string>();
 								Agents.Add(cell.Offset(0, 2).Text);
+								LastRow = cell.Start.Row;
 							}
 						}
 					}
@@ -167,7 +170,7 @@ namespace appCore.DB
 				return null;
 			
 			string dayColumn = FindDayColumn(date);
-			var columnRange = package.Workbook.Worksheets[1].Cells[dayColumn.ToLower() + ":" + dayColumn.ToLower()];
+			var columnRange = package.Workbook.Worksheets[1].Cells[dayColumn + "4:" + dayColumn + LastRow];
 			List<SingleShift> foundRows = new List<SingleShift>();
 			switch (shift) {
 				case "M": case "MT": case "QM":
