@@ -13,6 +13,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using FileHelpers;
 
 namespace appCore.SiteFinder.UI
 {
@@ -212,7 +213,7 @@ namespace appCore.SiteFinder.UI
 			ListBox lb = new ListBox();
 			lb.Location = dataGridView1.Location;
 			lb.Size = new Size(130, dataGridView1.Height);
-			lb.Anchor = dataGridView1.Anchor;
+			lb.Anchor = ((AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left));
 			Controls.Add(lb);
 			dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
 			dataGridView1.Width -= lb.Width + 5;
@@ -220,6 +221,49 @@ namespace appCore.SiteFinder.UI
 			radioButton1.Visible =
 				radioButton2.Visible =
 				radioButton3.Visible = false;
+			
+			string response = OIConnection.requestPhpOutput("cellslocked",string.Empty,null,string.Empty);
+			List<string> sitesList = new List<string>();
+			
+			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+			doc.Load(new System.IO.StringReader(response.Substring(response.IndexOf("<body>"))));
+			string csv = string.Empty;
+			
+//			var tables = doc.DocumentNode.SelectNodes("//form").Where(s => s.XPath.StartsWith("/body[1]/div[1]/form"));
+			var titles = doc.DocumentNode.SelectSingleNode("//body[1]//div[1]").ChildNodes.Where(s => s.Name == "b").ToList();
+			var tables = doc.DocumentNode.SelectSingleNode("//body[1]//div[1]").ChildNodes.Where(s => s.InnerHtml.Contains("Locked Time")).ToList();
+			
+			for(int c = 0;c < titles.Count;c++) {
+				sitesList.Add(titles[c].GetAttributeValue("name", string.Empty).RemoveLetters());
+				csv += titles[c].GetAttributeValue("name", string.Empty).RemoveLetters() + ",";
+				
+//				var descendantNodes = node.Descendants("th");
+//				foreach (var th in descendantNodes) {
+//					csv += th.InnerText;
+//					if(th != descendantNodes.Last())
+//						csv += ',';
+//				}
+				
+				// Build DataTable
+//				var tableNodes = node.Descendants("table");
+				foreach(var tr in tables[c].ChildNodes) {
+					if(tr.Name != "#text") {
+						var childNodes = tr.ChildNodes;
+						foreach(var childNode in childNodes) {
+							if(childNode.Name != "td") // && node.Name != "th")
+								continue;
+							
+							csv += childNode.InnerText.Replace(',',';').Replace("\n","<<lb>>");
+							if(childNode != childNodes.Last())
+								csv += ',';
+						}
+						if(tr != tables[c].ChildNodes.Last())
+							csv += Environment.NewLine;
+					}
+				}
+				if(c != titles.Count - 1)
+					csv += Environment.NewLine;
+			}
 			
 //			radioButton2.Select();
 		}
@@ -619,6 +663,50 @@ namespace appCore.SiteFinder.UI
 		void LockUnlockCellsFormFormClosing(object sender, FormClosingEventArgs e) {
 			if(OwnerForm is siteDetails)
 				((siteDetails)OwnerForm).currentSite = currentSite;
+		}
+	}
+	
+	[DelimitedRecord(",")]
+	public class CellsLockedItem {
+		[FieldOrder(1)]
+		public string Site;
+		[FieldOrder(2)]
+		public string Cell;
+		[FieldOrder(3)]
+		string lockedTime;
+		public DateTime LockedTime {
+			get {
+				return Convert.ToDateTime(lockedTime);
+			}
+			private set { }
+		}
+		[FieldOrder(4)]
+		public string Reference;
+		[FieldOrder(5)]
+		public string ReferenceStatus;
+		[FieldOrder(6)]
+		string crqStart;
+		public DateTime CrqStart {
+			get {
+				return Convert.ToDateTime(crqStart);
+			}
+			private set { }
+		}
+		[FieldOrder(7)]
+		string crqEnd;
+		public DateTime CrqEnd {
+			get {
+				return Convert.ToDateTime(crqEnd);
+			}
+			private set { }
+		}
+		[FieldOrder(8)]
+		public string LockedBy;
+		[FieldOrder(9)]
+		public string Comments;
+		
+		public CellsLockedItem() {
+			
 		}
 	}
 }
