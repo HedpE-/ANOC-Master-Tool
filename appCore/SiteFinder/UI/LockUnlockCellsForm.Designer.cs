@@ -240,7 +240,6 @@ namespace appCore.SiteFinder.UI
 			this.dataGridView1.Size = new System.Drawing.Size(795, 377);
 			this.dataGridView1.TabIndex = 47;
 			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1CellContentClick);
-			this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
 			this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1CellValueChanged);
 			// 
 			// label4

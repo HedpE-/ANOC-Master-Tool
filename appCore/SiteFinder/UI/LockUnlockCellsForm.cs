@@ -206,6 +206,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		Form OwnerForm;
+		string LockedCellsCSV;
 		
 		public LockUnlockCellsForm() {
 			InitializeComponent();
@@ -214,6 +215,7 @@ namespace appCore.SiteFinder.UI
 			lb.Location = dataGridView1.Location;
 			lb.Size = new Size(130, dataGridView1.Height);
 			lb.Anchor = ((AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left));
+			lb.SelectedIndexChanged += SitesListBoxSelectedIndexChanged;
 			Controls.Add(lb);
 			dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
 			dataGridView1.Width -= lb.Width + 5;
@@ -223,53 +225,48 @@ namespace appCore.SiteFinder.UI
 				radioButton3.Visible = false;
 			
 			string response = OIConnection.requestPhpOutput("cellslocked",string.Empty,null,string.Empty);
+			
 			List<string> sitesList = new List<string>();
 			
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new System.IO.StringReader(response.Substring(response.IndexOf("<body>"))));
-			string csv = string.Empty;
+			LockedCellsCSV = string.Empty;
 			
-//			var tables = doc.DocumentNode.SelectNodes("//form").Where(s => s.XPath.StartsWith("/body[1]/div[1]/form"));
 			var titles = doc.DocumentNode.SelectSingleNode("//body[1]//div[1]").ChildNodes.Where(s => s.Name == "b").ToList();
 			var tables = doc.DocumentNode.SelectSingleNode("//body[1]//div[1]").ChildNodes.Where(s => s.InnerHtml.Contains("Locked Time")).ToList();
 			
 			for(int c = 0;c < titles.Count;c++) {
-				sitesList.Add(titles[c].GetAttributeValue("name", string.Empty).RemoveLetters());
-				csv += titles[c].GetAttributeValue("name", string.Empty).RemoveLetters() + ",";
+				string siteCsv = string.Empty;
+				sitesList.Add(titles[c].InnerText.Substring("Site ".Length));
 				
-//				var descendantNodes = node.Descendants("th");
-//				foreach (var th in descendantNodes) {
-//					csv += th.InnerText;
-//					if(th != descendantNodes.Last())
-//						csv += ',';
-//				}
-				
-				// Build DataTable
-//				var tableNodes = node.Descendants("table");
+				// Build CSV
 				foreach(var tr in tables[c].ChildNodes) {
-					if(tr.Name != "#text") {
-						var childNodes = tr.ChildNodes;
+					if(tr.Name != "#text" && tr.Name != "th") {
+						siteCsv += titles[c].InnerText.Substring("Site ".Length) + ",";
+						var childNodes = tr.ChildNodes.Where(s => s.Name == "td" && !s.InnerHtml.Contains("checkbox"));
 						foreach(var childNode in childNodes) {
-							if(childNode.Name != "td") // && node.Name != "th")
-								continue;
 							
-							csv += childNode.InnerText.Replace(',',';').Replace("\n","<<lb>>");
+							siteCsv += childNode.InnerText.Replace(',',';').Replace("\r\n","<<lb>>");
 							if(childNode != childNodes.Last())
-								csv += ',';
+								siteCsv += ',';
 						}
 						if(tr != tables[c].ChildNodes.Last())
-							csv += Environment.NewLine;
+							siteCsv += Environment.NewLine;
 					}
 				}
+				LockedCellsCSV += siteCsv;
 				if(c != titles.Count - 1)
-					csv += Environment.NewLine;
+					LockedCellsCSV += Environment.NewLine;
 			}
 			
+			sitesList.Sort(new NumericListComparer<string>());
+			lb.Items.AddRange(sitesList.ToArray());
 //			radioButton2.Select();
 		}
 		
 		public LockUnlockCellsForm(Form parent) {
 			InitializeComponent();
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 			
 			OwnerForm = parent;
 			if(OwnerForm is siteDetails)
@@ -280,6 +277,27 @@ namespace appCore.SiteFinder.UI
 			currentSite.requestOIData("LKULK");
 			
 			radioButton1.Select();
+		}
+		
+		void SitesListBoxSelectedIndexChanged(object sender, EventArgs e) {
+			ListBox lb = sender as ListBox;
+			
+			dataGridView1.DataSource = null;
+			
+			DataTable lockedCells = null;
+			try {
+				var engine = new FileHelperEngine<CellsLockedItem>();
+				engine.AfterReadRecord +=  (eng, a) => {
+					if(a.Record.Site != lb.SelectedItem.ToString())
+						a.SkipThisRecord = true;
+				};
+				lockedCells = engine.ReadStringAsDT(LockedCellsCSV);
+			}
+			catch(FileHelpersException ex) {
+				string f = ex.Message;
+			}
+			
+			dataGridView1.DataSource = lockedCells;
 		}
 		
 		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
@@ -703,7 +721,13 @@ namespace appCore.SiteFinder.UI
 		[FieldOrder(8)]
 		public string LockedBy;
 		[FieldOrder(9)]
-		public string Comments;
+		string comments;
+		public string Comments {
+			get {
+				return comments.Replace("<<lb>>", Environment.NewLine);
+			}
+			private set { }
+		}
 		
 		public CellsLockedItem() {
 			
