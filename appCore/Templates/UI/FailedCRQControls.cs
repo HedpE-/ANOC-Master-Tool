@@ -62,7 +62,7 @@ namespace appCore.Templates.UI
 		Label PriorityLabel = new Label();
 		Label RegionLabel = new Label();
 		
-		AMTMenuStrip MainMenu = new AMTMenuStrip();
+		public AMTMenuStrip MainMenu = new AMTMenuStrip();
 		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
@@ -70,7 +70,7 @@ namespace appCore.Templates.UI
 		
 		public static siteDetails SiteDetailsUI;
 		
-		public Site currentSite { get; private set; }
+		public Site currentSite { get; set; }
 		FailedCRQ currentTemplate;
 		FailedCRQ prevTemp = new FailedCRQ();
 		
@@ -248,7 +248,7 @@ namespace appCore.Templates.UI
 				
 				// No changes since the last template warning
 				
-				// TODO: FailedCRQControls prevTemp check
+				// UNDONE: FailedCRQControls prevTemp check
 				
 //				if(currentTemplate.fullLog != prevTemp.fullLog) {
 //					if (INCTextBox.Text == prevTemp.INC) {
@@ -319,8 +319,6 @@ namespace appCore.Templates.UI
 		}
 		
 		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
-			// TODO: SiteFinder(s) Performance measurement
-
 			if (Convert.ToInt32(e.KeyChar) == 13)
 			{
 				TextBox tb = (TextBox)sender;
@@ -415,7 +413,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails(currentSite);
+			SiteDetailsUI = new siteDetails(this);
 			SiteDetailsUI.Show();
 		}
 
