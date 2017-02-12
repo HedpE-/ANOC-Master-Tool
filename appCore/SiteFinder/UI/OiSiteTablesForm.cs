@@ -238,10 +238,12 @@ namespace appCore.SiteFinder.UI
 							if(cellIntValue < 11)
 								e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 							else
-								e.CellStyle.BackColor = cellIntValue < 2500 ?
+								e.CellStyle.BackColor = cellIntValue < 3000 ?
 									System.Drawing.Color.Yellow :
 									System.Drawing.Color.Red;
 						}
+						else
+							e.CellStyle.BackColor = System.Drawing.Color.DimGray;
 					}
 					break;
 			}
