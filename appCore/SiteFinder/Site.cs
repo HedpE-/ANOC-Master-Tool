@@ -25,7 +25,7 @@ using FileHelpers;
 namespace appCore.SiteFinder
 {
 	/// <summary>
-	/// Description of Site2.
+	/// Description of Site.
 	/// </summary>
 	[DelimitedRecord(","), IgnoreFirst(1)]
 	public partial class Site
@@ -252,13 +252,13 @@ namespace appCore.SiteFinder
 			get { return resolveVendor(VENDOR_4G); }
 			private set { VENDOR_4G = value.ToString(); }
 		}
-		[FieldOrder(58)]
+		[FieldOrder(58), FieldOptional]
 		string DATE;
 		public DateTime DeploymentDate {
 			get { return Convert.ToDateTime(DATE); }
 			private set { DATE = value.ToString(); }
 		}
-		[FieldOrder(59)]
+		[FieldOrder(59), FieldOptional]
 		public string MTX_Related;
 		
 		public bool Exists {

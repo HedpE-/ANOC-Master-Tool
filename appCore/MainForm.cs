@@ -119,7 +119,7 @@ namespace appCore
 			TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
 			TicketCountLabel.MouseClick += TicketCountLabelMouseClick;
 			
-			// UNDONE: Developer specific action
+			// HACK: Developer specific action
 			if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "Caramelos" || CurrentUser.UserName == "SANTOSS2") {
 				Button butt2 = new Button();
 				butt2.Name = "butt2";
