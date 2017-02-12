@@ -24,7 +24,7 @@ namespace appCore.UI
 			}
 			private set { }
 		}
-//		Stack<string> undoList = new Stack<string>();
+		Stack<string> undoList = new Stack<string>();
 //		Stack<string> redoList = new Stack<string>();
 				
 		string[] stripTopBottomWhiteLinesOnArray() {
