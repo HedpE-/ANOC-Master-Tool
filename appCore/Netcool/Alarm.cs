@@ -69,7 +69,6 @@ namespace appCore.Netcool
 									element = Node;
 								break;
 							case SiteFinder.Site.Vendors.NSN:
-								// FIXME: NSN Cell Name resolver
 								char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
 								string elementID = null;
 								if(nodeNSNcellID[2] == '4')
