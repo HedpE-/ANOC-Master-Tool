@@ -181,6 +181,25 @@ namespace appCore.SiteFinder.UI
 						dataGridView1.Columns["Unlock Comments"].Width = 300;
 						dataGridView1.Columns["Unlock Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 						break;
+					case "Cells Locked":
+						InitializeComponent();
+						
+						ListBox lb = new ListBox();
+						lb.Name = "ListBox";
+						lb.Location = dataGridView1.Location;
+						lb.Size = new Size(70, dataGridView1.Height);
+						lb.Anchor = ((AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left));
+						lb.DrawMode = DrawMode.OwnerDrawFixed;
+						lb.DrawItem += ListBoxDrawItem;
+						lb.SelectedIndexChanged += ListBoxSelectedIndexChanged;
+						Controls.Add(lb);
+						dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
+						dataGridView1.Width -= lb.Width + 5;
+						
+						radioButton1.Visible =
+							radioButton2.Visible =
+							radioButton3.Visible = false;
+						break;
 				}
 				
 				checkBox1.Checked =
@@ -209,20 +228,7 @@ namespace appCore.SiteFinder.UI
 		string LockedCellsCSV;
 		
 		public LockUnlockCellsForm() {
-			InitializeComponent();
-			
-			ListBox lb = new ListBox();
-			lb.Location = dataGridView1.Location;
-			lb.Size = new Size(130, dataGridView1.Height);
-			lb.Anchor = ((AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left));
-			lb.SelectedIndexChanged += SitesListBoxSelectedIndexChanged;
-			Controls.Add(lb);
-			dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
-			dataGridView1.Width -= lb.Width + 5;
-			
-			radioButton1.Visible =
-				radioButton2.Visible =
-				radioButton3.Visible = false;
+			UiMode = "Cells Locked";
 			
 			string response = OIConnection.requestPhpOutput("cellslocked",string.Empty,null,string.Empty);
 			
@@ -259,9 +265,21 @@ namespace appCore.SiteFinder.UI
 					LockedCellsCSV += Environment.NewLine;
 			}
 			
-			sitesList.Sort(new NumericListComparer<string>());
-			lb.Items.AddRange(sitesList.ToArray());
-//			radioButton2.Select();
+			List<string> expiredSitesList = new List<string>();
+			List<string> notExpiredSitesList = new List<string>();
+			
+			for(int c = 0;c < sitesList.Count;c++) {
+				if(GetSiteLockedCells(sitesList[c]).LifeTime == "Expired")
+					expiredSitesList.Add(sitesList[c]);
+				else
+					notExpiredSitesList.Add(sitesList[c]);
+			}
+			expiredSitesList.Sort(new NumericListComparer<string>());
+			notExpiredSitesList.Sort(new NumericListComparer<string>());
+			
+			ListBox lb = Controls["ListBox"] as ListBox;
+			lb.Items.AddRange(expiredSitesList.ToArray());
+			lb.Items.AddRange(notExpiredSitesList.ToArray());
 		}
 		
 		public LockUnlockCellsForm(Form parent) {
@@ -279,25 +297,80 @@ namespace appCore.SiteFinder.UI
 			radioButton1.Select();
 		}
 		
-		void SitesListBoxSelectedIndexChanged(object sender, EventArgs e) {
+		void ListBoxDrawItem(object sender, DrawItemEventArgs e) {
+			ListBox lb = sender as ListBox;
+			e.DrawBackground();
+			using(Graphics g = e.Graphics) {
+				if((e.State & DrawItemState.Focus) != DrawItemState.Focus) {
+					if(GetSiteLockedCells(lb.Items[e.Index].ToString()).LifeTime == "Expired")
+						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
+				}
+				else
+					g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
+				
+				if(e.Index != -1)
+					g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), lb.GetItemRectangle(e.Index).Location);
+			}
+
+			e.DrawFocusRectangle();
+		}
+		
+		void ListBoxSelectedIndexChanged(object sender, EventArgs e) {
 			ListBox lb = sender as ListBox;
 			
 			dataGridView1.DataSource = null;
+			dataGridView1.Columns.Clear();
 			
-			DataTable lockedCells = null;
+			dataGridView1.DataSource = GetSiteLockedCellsDT(lb.SelectedItem.ToString());
+			
+			dataGridView1.Columns["Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			dataGridView1.Columns["Comments"].Width = 300;
+			dataGridView1.Columns["Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+			addCheckBoxColumn();
+		}
+		
+		DataTable GetSiteLockedCellsDT(string site) {
+			DataTable dt = null;
 			try {
 				var engine = new FileHelperEngine<CellsLockedItem>();
 				engine.AfterReadRecord +=  (eng, a) => {
-					if(a.Record.Site != lb.SelectedItem.ToString())
+					if(a.Record.Site != site)
 						a.SkipThisRecord = true;
+					else
+						a.Record.Comments = a.Record.Comments.Replace("<<lb>>",Environment.NewLine);
 				};
-				lockedCells = engine.ReadStringAsDT(LockedCellsCSV);
+				dt = engine.ReadStringAsDT(LockedCellsCSV);
 			}
 			catch(FileHelpersException ex) {
 				string f = ex.Message;
 			}
 			
-			dataGridView1.DataSource = lockedCells;
+			if(dt != null) {
+				dt.Columns["lockedTime"].ColumnName = "Locked Time";
+				dt.Columns["ReferenceStatus"].ColumnName = "Status";
+				dt.Columns["crqStart"].ColumnName = "CRQ Start Time";
+				dt.Columns["crqEnd"].ColumnName = "CRQ End Time";
+				dt.Columns["LockedBy"].ColumnName = "Locked By";
+			}
+			
+			return dt;
+		}
+		
+		CellsLockedSite GetSiteLockedCells(string site) {
+			List<CellsLockedItem> cellsLockedList = new List<CellsLockedItem>();
+			try {
+				var engine = new FileHelperEngine<CellsLockedItem>();
+				engine.AfterReadRecord +=  (eng, a) => {
+					if(a.Record.Site != site)
+						a.SkipThisRecord = true;
+				};
+				cellsLockedList = engine.ReadStringAsList(LockedCellsCSV);
+			}
+			catch(FileHelpersException ex) {
+				string f = ex.Message;
+			}
+			
+			return new CellsLockedSite(cellsLockedList);
 		}
 		
 		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
@@ -581,9 +654,15 @@ namespace appCore.SiteFinder.UI
 		
 		void DataGridView1CellContentClick(object sender, DataGridViewCellEventArgs e) {
 			if(e.ColumnIndex == 0) {
-				if(!dataGridView1.Rows[e.RowIndex].Frozen) {
+				if(UiMode == "Cells Locked") {
 					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
 					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
+				}
+				else {
+					if(!dataGridView1.Rows[e.RowIndex].Frozen) {
+						DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
+						cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
+					}
 				}
 			}
 //			else {
@@ -721,16 +800,41 @@ namespace appCore.SiteFinder.UI
 		[FieldOrder(8)]
 		public string LockedBy;
 		[FieldOrder(9)]
-		string comments;
-		public string Comments {
-			get {
-				return comments.Replace("<<lb>>", Environment.NewLine);
-			}
-			private set { }
-		}
+		public string Comments;
 		
 		public CellsLockedItem() {
 			
+		}
+	}
+	
+	public class CellsLockedSite {
+		public string Site;
+		public List<CellsLockedItem> CellsLockedItems;
+		string lifeTime;
+		public string LifeTime {
+			get {
+				if(string.IsNullOrEmpty(lifeTime)) {
+					if(CellsLockedItems[0].Reference.StartsWith("INC")) {
+						if(CellsLockedItems[0].ReferenceStatus == "Resolved" || CellsLockedItems[0].ReferenceStatus == "Closed")
+							lifeTime = "Expired";
+						else
+							lifeTime = "NotExpired";
+					}
+					else {
+						if(CellsLockedItems[0].Reference.StartsWith("CRQ") && CellsLockedItems[0].Reference.Length == 15)
+							lifeTime = CellsLockedItems[0].CrqEnd <= DateTime.Now ? "Expired" : "NotExpired";
+						else
+							lifeTime = "NotExpired";
+					}
+				}
+				return lifeTime;
+			}
+			private set { lifeTime = value; }
+		}
+		
+		public CellsLockedSite(List<CellsLockedItem> cellsLockedItems) {
+			CellsLockedItems = cellsLockedItems;
+			Site = CellsLockedItems[0].Site;
 		}
 	}
 }

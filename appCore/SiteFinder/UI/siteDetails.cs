@@ -18,6 +18,7 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using appCore.UI;
+using appCore.Templates.UI;
 
 namespace appCore.SiteFinder.UI
 {
@@ -109,8 +110,31 @@ namespace appCore.SiteFinder.UI
 		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		
-		public siteDetails(Site site)
+		Control parentControl;
+		
+//		public siteDetails(Site site)
+//		{
+//			currentSite = site;
+//			InitializeComponent();
+//			myMap = drawGMap("myMap",false);
+//			Controls.Add(myMap);
+//			Shown += populateSingleForm;
+//		}
+		
+		public siteDetails(Control parent)
 		{
+			parentControl = parent;
+			switch(parent.GetType().ToString()) {
+				case "appCore.Templates.UI.TroubleshootControls":
+					currentSite = ((TroubleshootControls)parentControl).currentSite;
+					break;
+				case "appCore.Templates.UI.FailedCRQControls":
+					currentSite = ((FailedCRQControls)parentControl).currentSite;
+					break;
+				case "appCore.Templates.UI.UpdateControls":
+					currentSite = ((UpdateControls)parentControl).currentSite;
+					break;
+			}
 			InitializeComponent();
 			myMap = drawGMap("myMap",false);
 			Controls.Add(myMap);
@@ -864,6 +888,29 @@ namespace appCore.SiteFinder.UI
 			lockedCellsPageToolStripMenuItem.Name = "lockedCellsPageToolStripMenuItem";
 			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
 			lockedCellsPageToolStripMenuItem.Click += LockedCellsPage;
+		}
+		
+		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(parentControl != null) {
+				switch(parentControl.GetType().ToString()) {
+					case "appCore.Templates.UI.TroubleshootControls":
+						TroubleshootControls parent = parentControl as TroubleshootControls;
+						parent.currentSite = currentSite;
+						parent.MainMenu.siteFinder_Toggle(true);
+						break;
+					case "appCore.Templates.UI.FailedCRQControls":
+						FailedCRQControls par = parentControl as FailedCRQControls;
+						par.currentSite = currentSite;
+						par.MainMenu.siteFinder_Toggle(true);
+						break;
+					case "appCore.Templates.UI.UpdateControls":
+						UpdateControls parnt = parentControl as UpdateControls;
+						parnt.currentSite = currentSite;
+						parnt.MainMenu.siteFinder_Toggle(true);
+						break;
+				}
+			}
 		}
 	}
 }

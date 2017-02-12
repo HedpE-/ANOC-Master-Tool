@@ -40,7 +40,7 @@ namespace appCore.Templates.UI
 		public AMTRichTextBox NextActionsTextBox = new AMTRichTextBox();
 		public AMTRichTextBox UpdateTextBox = new AMTRichTextBox();
 		
-		AMTMenuStrip MainMenu = new AMTMenuStrip();
+		public AMTMenuStrip MainMenu = new AMTMenuStrip();
 		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
@@ -48,7 +48,7 @@ namespace appCore.Templates.UI
 		
 		public static siteDetails SiteDetailsUI;
 		
-		public Site currentSite { get; private set; }
+		public Site currentSite { get; set; }
 		Update currentTemplate;
 		Update prevTemp = new Update();
 		
@@ -117,7 +117,7 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 					
 					generateTemplateToolStripMenuItem.Enabled =
-					SiteDetailsToolStripMenuItem.Enabled =
+						SiteDetailsToolStripMenuItem.Enabled =
 						clearToolStripMenuItem.Enabled = false;
 				}
 			}
@@ -189,40 +189,45 @@ namespace appCore.Templates.UI
 		}
 		
 		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
-			// TODO: SiteFinder(s) Performance measurement
-
 			if (Convert.ToInt32(e.KeyChar) == 13)
 			{
-//				Stopwatch sw = new Stopwatch();
-//
-//				sw.Start();
 				TextBox tb =(TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
-				currentSite = Finder.getSite(tb.Text);
-				if(currentSite.Exists) {
-					currentSite.requestOIData("INCCRQPWR");
-					PriorityTextBox.Text = currentSite.Priority;
-					PowerCompanyTextBox.Text = currentSite.PowerCompany;
-					RegionTextBox.Text = currentSite.Region;
-				}
-				else {
-					PriorityTextBox.Text = string.Empty;
-					PowerCompanyTextBox.Text = "No site found";
-					RegionTextBox.Text = string.Empty;
-				}
-//				sw.Stop();
-//				FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				siteFinder_Toggle(true, currentSite.Exists);
+				Action actionThreaded = new Action(delegate {
+				                                   	currentSite = Finder.getSite(tb.Text);
+				                                   	if(currentSite.Exists)
+				                                   		currentSite.requestOIData("INCCRQPWR");
+				                                   });
+				
+				Action actionNonThreaded = new Action(delegate {
+				                                      	if(currentSite.Exists) {
+				                                      		PriorityTextBox.Text = currentSite.Priority;
+				                                      		PowerCompanyTextBox.Text = currentSite.PowerCompany;
+				                                      		RegionTextBox.Text = currentSite.Region;
+				                                      		SiteDetailsToolStripMenuItem.Enabled = true;
+				                                      	}
+				                                      	else {
+				                                      		PriorityTextBox.Text = string.Empty;
+				                                      		PowerCompanyTextBox.Text = "No site found";
+				                                      		RegionTextBox.Text = string.Empty;
+				                                      		SiteDetailsToolStripMenuItem.Enabled = false;
+				                                      	}
+				                                      	generateTemplateToolStripMenuItem.Enabled = true;
+				                                      	siteFinder_Toggle(true, currentSite.Exists);
+				                                      });
+				LoadingPanel load = new LoadingPanel();
+				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
 			currentSite = null;
-//			if(GlobalProperties.siteFinder_mainswitch)
 			siteFinder_Toggle(false, false);
 			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
+			SiteDetailsToolStripMenuItem.Enabled =
+				generateTemplateToolStripMenuItem.Enabled = false;
 		}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
@@ -389,7 +394,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails(currentSite);
+			SiteDetailsUI = new siteDetails(this);
 			SiteDetailsUI.Show();
 		}
 		

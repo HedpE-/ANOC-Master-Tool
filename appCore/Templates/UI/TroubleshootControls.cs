@@ -66,7 +66,7 @@ namespace appCore.Templates.UI
 		Label PowerCompanyLabel = new Label();
 		Label RegionLabel = new Label();
 		
-		AMTMenuStrip MainMenu = new AMTMenuStrip();
+		public AMTMenuStrip MainMenu = new AMTMenuStrip();
 		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
@@ -248,8 +248,6 @@ namespace appCore.Templates.UI
 		}
 		
 		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
-			// TODO: SiteFinder(s) Performance measurement
-
 			if (Convert.ToInt32(e.KeyChar) == 13) {
 				TextBox tb = (TextBox)sender;
 				while(tb.Text.StartsWith("0"))
@@ -506,7 +504,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails(currentSite);
+			SiteDetailsUI = new siteDetails(this);
 			SiteDetailsUI.Show();
 		}
 
