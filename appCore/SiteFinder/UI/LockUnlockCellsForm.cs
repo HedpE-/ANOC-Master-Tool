@@ -41,12 +41,15 @@ namespace appCore.SiteFinder.UI
 		int gsmCellsCount {
 			get {
 				int c = 0;
-				foreach(DataGridViewRow row in dataGridView1.Rows) {
-					if(row.Cells["Tech"].Value != null) {
-						if(row.Cells["Tech"].Value.ToString() == "2G" && !row.Frozen)
-							c++;
+				try {
+					foreach(DataGridViewRow row in dataGridView1.Rows) {
+						if(row.Cells["Tech"].Value != null) {
+							if(row.Cells["Tech"].Value.ToString() == "2G" && !row.Frozen)
+								c++;
+						}
 					}
 				}
+				catch {}
 				return c;
 			}
 		}
@@ -54,12 +57,15 @@ namespace appCore.SiteFinder.UI
 		int gsmCheckedCount {
 			get {
 				int c = 0;
-				foreach(DataGridViewRow row in dataGridView1.Rows) {
-					if(row.Cells[0].Value != null) {
-						if(Convert.ToBoolean(row.Cells[0].Value) && row.Cells["Tech"].Value.ToString() == "2G")
-							c++;
+				try {
+					foreach(DataGridViewRow row in dataGridView1.Rows) {
+						if(row.Cells[0].Value != null) {
+							if(Convert.ToBoolean(row.Cells[0].Value) && row.Cells["Tech"].Value.ToString() == "2G")
+								c++;
+						}
 					}
 				}
+				catch {}
 				return c;
 			}
 		}
@@ -67,12 +73,15 @@ namespace appCore.SiteFinder.UI
 		int umtsCellsCount {
 			get {
 				int c = 0;
-				foreach(DataGridViewRow row in dataGridView1.Rows) {
-					if(row.Cells["Tech"].Value != null) {
-						if(row.Cells["Tech"].Value.ToString() == "3G" && !row.Frozen)
-							c++;
+				try {
+					foreach(DataGridViewRow row in dataGridView1.Rows) {
+						if(row.Cells["Tech"].Value != null) {
+							if(row.Cells["Tech"].Value.ToString() == "3G" && !row.Frozen)
+								c++;
+						}
 					}
 				}
+				catch {}
 				return c;
 			}
 		}
@@ -80,12 +89,15 @@ namespace appCore.SiteFinder.UI
 		int umtsCheckedCount {
 			get {
 				int c = 0;
-				foreach(DataGridViewRow row in dataGridView1.Rows) {
-					if(row.Cells[0].Value != null) {
-						if(Convert.ToBoolean(row.Cells[0].Value) && row.Cells["Tech"].Value.ToString() == "3G")
-							c++;
+				try {
+					foreach(DataGridViewRow row in dataGridView1.Rows) {
+						if(row.Cells[0].Value != null) {
+							if(Convert.ToBoolean(row.Cells[0].Value) && row.Cells["Tech"].Value.ToString() == "3G")
+								c++;
+						}
 					}
 				}
+				catch {}
 				return c;
 			}
 		}
@@ -93,12 +105,15 @@ namespace appCore.SiteFinder.UI
 		int lteCellsCount {
 			get {
 				int c = 0;
-				foreach(DataGridViewRow row in dataGridView1.Rows) {
-					if(row.Cells["Tech"].Value != null) {
-						if(row.Cells["Tech"].Value.ToString() == "4G" && !row.Frozen)
-							c++;
+				try {
+					foreach(DataGridViewRow row in dataGridView1.Rows) {
+						if(row.Cells["Tech"].Value != null) {
+							if(row.Cells["Tech"].Value.ToString() == "4G" && !row.Frozen)
+								c++;
+						}
 					}
 				}
+				catch {}
 				return c;
 			}
 		}
@@ -106,12 +121,15 @@ namespace appCore.SiteFinder.UI
 		int lteCheckedCount {
 			get {
 				int c = 0;
-				foreach(DataGridViewRow row in dataGridView1.Rows) {
-					if(row.Cells[0].Value != null) {
-						if(Convert.ToBoolean(row.Cells[0].Value) && row.Cells["Tech"].Value.ToString() == "4G")
-							c++;
+				try {
+					foreach(DataGridViewRow row in dataGridView1.Rows) {
+						if(row.Cells[0].Value != null) {
+							if(Convert.ToBoolean(row.Cells[0].Value) && row.Cells["Tech"].Value.ToString() == "4G")
+								c++;
+						}
 					}
 				}
+				catch {}
 				return c;
 			}
 		}
@@ -182,12 +200,12 @@ namespace appCore.SiteFinder.UI
 						dataGridView1.Columns["Unlock Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 						break;
 					case "Cells Locked":
-						InitializeComponent();
-						
+						this.Text = "Locked Cells";
 						ListBox lb = new ListBox();
 						lb.Name = "ListBox";
 						lb.Location = dataGridView1.Location;
-						lb.Size = new Size(70, dataGridView1.Height);
+						lb.Size = new Size(70, 381);
+						lb.SelectionMode = SelectionMode.One;
 						lb.Anchor = ((AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left));
 						lb.DrawMode = DrawMode.OwnerDrawFixed;
 						lb.DrawItem += ListBoxDrawItem;
@@ -195,32 +213,54 @@ namespace appCore.SiteFinder.UI
 						Controls.Add(lb);
 						dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
 						dataGridView1.Width -= lb.Width + 5;
+						dataGridView1.RowsAdded += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
+						dataGridView1.RowsRemoved += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
 						
-						radioButton1.Visible =
+						comboBox1.Visible =
+							checkBox2.Visible =
+							checkBox3.Visible =
+							radioButton1.Visible =
 							radioButton2.Visible =
 							radioButton3.Visible = false;
+						
+						checkBox1.Text = "Select All";
+						checkBox1.Height = checkBox1.Height * 2;
+						checkBox1.Top = dataGridView1.Top;
+						button1.Top = checkBox1.Bottom + 5;
+						
+						amtRichTextBox1.Height = dataGridView1.Height;
+						label3.Top = lb.Top - label3.Height - 3;
+						amtRichTextBox1.Top = dataGridView1.Top;
+						label1.Location = new Point(lb.Left, label3.Top);
+						label1.Text = "Sites";
+						label2.Location = new Point(dataGridView1.Left, label1.Top);
+						label2.Text = "Locked Cells";
+						
 						break;
 				}
 				
-				checkBox1.Checked =
-					checkBox2.Checked =
-					checkBox3.Checked = false;
-				amtRichTextBox1.Text =
-					comboBox1.Text = string.Empty;
-				
-				foreach(Control ctrl in Controls) {
-					switch(ctrl.GetType().ToString()) {
-						case "System.Windows.Forms.CheckBox":
-						case "System.Windows.Forms.Label":
-						case "System.Windows.Forms.ComboBox":
-						case "System.Windows.Forms.Button":
-						case "appCore.UI.AMTRichTextBox":
-							if(ctrl.Name != "label4")
-								ctrl.Visible = uiMode.Contains("ock Cells");
-							break;
+				if(uiMode != "Cells Locked") {
+					this.Text = "Lock/Unlock Cells - Site " + currentSite.Id;
+					checkBox1.Checked =
+						checkBox2.Checked =
+						checkBox3.Checked = false;
+					amtRichTextBox1.Text =
+						comboBox1.Text = string.Empty;
+					
+					foreach(Control ctrl in Controls) {
+						switch(ctrl.GetType().ToString()) {
+							case "System.Windows.Forms.CheckBox":
+							case "System.Windows.Forms.Label":
+							case "System.Windows.Forms.ComboBox":
+							case "System.Windows.Forms.Button":
+							case "appCore.UI.AMTRichTextBox":
+								if(ctrl.Name != "label4")
+									ctrl.Visible = uiMode.Contains("ock Cells");
+								break;
+						}
 					}
+					checkBookIn();
 				}
-				checkBookIn();
 			}
 		}
 		
@@ -228,8 +268,29 @@ namespace appCore.SiteFinder.UI
 		string LockedCellsCSV;
 		
 		public LockUnlockCellsForm() {
+			InitializeComponent();
+			
 			UiMode = "Cells Locked";
 			
+			populateCellsLocked();
+		}
+		
+		public LockUnlockCellsForm(Form parent) {
+			InitializeComponent();
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+			
+			OwnerForm = parent;
+			if(OwnerForm is siteDetails)
+				currentSite = ((siteDetails)OwnerForm).currentSite;
+			
+			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
+			
+			currentSite.requestOIData("LKULK");
+			
+			radioButton1.Select();
+		}
+		
+		void populateCellsLocked() {
 			string response = OIConnection.requestPhpOutput("cellslocked",string.Empty,null,string.Empty);
 			
 			List<string> sitesList = new List<string>();
@@ -278,30 +339,19 @@ namespace appCore.SiteFinder.UI
 			notExpiredSitesList.Sort(new NumericListComparer<string>());
 			
 			ListBox lb = Controls["ListBox"] as ListBox;
+			lb.Items.Clear();
 			lb.Items.AddRange(expiredSitesList.ToArray());
 			lb.Items.AddRange(notExpiredSitesList.ToArray());
-		}
-		
-		public LockUnlockCellsForm(Form parent) {
-			InitializeComponent();
-			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 			
-			OwnerForm = parent;
-			if(OwnerForm is siteDetails)
-				currentSite = ((siteDetails)OwnerForm).currentSite;
-			
-			Text = "Site " + currentSite.Id + " Lock/Unlock cells";
-			
-			currentSite.requestOIData("LKULK");
-			
-			radioButton1.Select();
+			if(lb.Items.Count > 0)
+				lb.SetSelected(0, true);
 		}
 		
 		void ListBoxDrawItem(object sender, DrawItemEventArgs e) {
 			ListBox lb = sender as ListBox;
 			e.DrawBackground();
 			using(Graphics g = e.Graphics) {
-				if((e.State & DrawItemState.Focus) != DrawItemState.Focus) {
+				if(((e.State & DrawItemState.Focus) != DrawItemState.Focus) && ((e.State & DrawItemState.Selected) != DrawItemState.Selected)) {
 					if(GetSiteLockedCells(lb.Items[e.Index].ToString()).LifeTime == "Expired")
 						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
 				}
@@ -327,6 +377,7 @@ namespace appCore.SiteFinder.UI
 			dataGridView1.Columns["Comments"].Width = 300;
 			dataGridView1.Columns["Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 			addCheckBoxColumn();
+			checkBox1.Checked = false;
 		}
 		
 		DataTable GetSiteLockedCellsDT(string site) {
@@ -438,23 +489,41 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
-			CheckBox cb = sender as CheckBox;
-			var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => s.Cells["Tech"].Value.ToString() == cb.Text);
-			
-			foreach(DataGridViewRow dgvr in filtered) {
-				if(dgvr.Cells[0].Style.ForeColor != SystemColors.GrayText) {
+			if(UiMode != "Cells Locked") {
+				CheckBox cb = sender as CheckBox;
+				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => s.Cells["Tech"].Value.ToString() == cb.Text);
+				
+				foreach(DataGridViewRow dgvr in filtered) {
+					if(dgvr.Cells[0].Style.ForeColor != SystemColors.GrayText) {
+						DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
+						dataGridView1.CellValueChanged -= DataGridView1CellValueChanged;
+						
+						if(filtered.Last() == dgvr) {
+							dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
+							cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+						}
+						else {
+							cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+							dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
+						}
+					}
+				}
+			}
+			else {
+				foreach(DataGridViewRow dgvr in dataGridView1.Rows) {
 					DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
 					dataGridView1.CellValueChanged -= DataGridView1CellValueChanged;
 					
-					if(filtered.Last() == dgvr) {
+					if(dataGridView1.Rows.Cast<DataGridViewRow>().Last() == dgvr) {
 						dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
-						cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+						cell.Value = checkBox1.Checked ? cell.TrueValue : cell.FalseValue;
 					}
 					else {
-						cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+						cell.Value = checkBox1.Checked ? cell.TrueValue : cell.FalseValue;
 						dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
 					}
 				}
+				
 			}
 		}
 		
@@ -481,8 +550,12 @@ namespace appCore.SiteFinder.UI
 			if(ans == DialogResult.Yes) {
 				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
 				List<string> cellsList = new List<string>();
-				foreach(DataGridViewRow row in filtered)
-					cellsList.Add(row.Cells["Cell Name"].Value.ToString());
+				foreach(DataGridViewRow row in filtered) {
+					if(UiMode != "Cells Locked")
+						cellsList.Add(row.Cells["Cell Name"].Value.ToString());
+					else
+						cellsList.Add(row.Cells["Cell"].Value.ToString());
+				}
 				if(UiMode.StartsWith("Lock"))
 					sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
 				else
@@ -499,9 +572,13 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
-			OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
-			currentSite.requestOIData("LKULK", true);
-			RadioButtonsCheckedChanged(radioButton2, null);
+			OIConnection.requestPhpOutput("cellslocked", ((ListBox)Controls["ListBox"]).SelectedItem.ToString(), cellsList, comments);
+			if(UiMode != "Cells Locked") {
+				currentSite.requestOIData("LKULK", true);
+				RadioButtonsCheckedChanged(radioButton2, null);
+			}
+			else
+				populateCellsLocked();
 		}
 		
 		void InitializeDataTable(string radioButtonText) {
@@ -654,16 +731,16 @@ namespace appCore.SiteFinder.UI
 		
 		void DataGridView1CellContentClick(object sender, DataGridViewCellEventArgs e) {
 			if(e.ColumnIndex == 0) {
-				if(UiMode == "Cells Locked") {
+//				if(UiMode == "Cells Locked") {
+//					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
+//					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
+//				}
+//				else {
+				if(!dataGridView1.Rows[e.RowIndex].Frozen) {
 					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
 					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
 				}
-				else {
-					if(!dataGridView1.Rows[e.RowIndex].Frozen) {
-						DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
-						cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
-					}
-				}
+//				}
 			}
 //			else {
 //				if(e.Item.ForeColor == SystemColors.GrayText) {
@@ -676,30 +753,38 @@ namespace appCore.SiteFinder.UI
 		void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e)
 		{
 			if(e.ColumnIndex == 0) {
-				if(radioButton1.Checked)
-					comboBox1.Enabled = checkedCount > 0; // && radioButton1.Checked;
-				if(radioButton2.Checked)
-					amtRichTextBox1.Enabled = checkedCount > 0;
-				
 				CheckBox cb = null;
 				int checkCount = 0;
 				int maxCount = 0;
-				switch(dataGridView1.Rows[e.RowIndex].Cells["Tech"].Value.ToString()) {
-					case "2G":
-						cb = checkBox1;
-						checkCount = gsmCheckedCount;
-						maxCount = gsmCellsCount;
-						break;
-					case "3G":
-						cb = checkBox2;
-						checkCount = umtsCheckedCount;
-						maxCount = umtsCellsCount;
-						break;
-					case "4G":
-						cb = checkBox3;
-						checkCount = lteCheckedCount;
-						maxCount = lteCellsCount;
-						break;
+				if(UiMode != "Cells Locked") {
+					if(radioButton1.Checked)
+						comboBox1.Enabled = checkedCount > 0; // && radioButton1.Checked;
+					if(radioButton2.Checked)
+						amtRichTextBox1.Enabled = checkedCount > 0;
+					
+					switch(dataGridView1.Rows[e.RowIndex].Cells["Tech"].Value.ToString()) {
+						case "2G":
+							cb = checkBox1;
+							checkCount = gsmCheckedCount;
+							maxCount = gsmCellsCount;
+							break;
+						case "3G":
+							cb = checkBox2;
+							checkCount = umtsCheckedCount;
+							maxCount = umtsCellsCount;
+							break;
+						case "4G":
+							cb = checkBox3;
+							checkCount = lteCheckedCount;
+							maxCount = lteCellsCount;
+							break;
+					}
+				}
+				else {
+					cb = checkBox1;
+					amtRichTextBox1.Enabled = checkedCount > 0;
+					checkCount = checkedCount;
+					maxCount = dataGridView1.RowCount;
 				}
 				if(cb != null) {
 					cb.CheckedChanged -= CheckBoxesCheckedChanged;
