@@ -572,13 +572,15 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
-			OIConnection.requestPhpOutput("cellslocked", ((ListBox)Controls["ListBox"]).SelectedItem.ToString(), cellsList, comments);
 			if(UiMode != "Cells Locked") {
+				OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
 				currentSite.requestOIData("LKULK", true);
 				RadioButtonsCheckedChanged(radioButton2, null);
 			}
-			else
+			else {
+				OIConnection.requestPhpOutput("cellslocked", ((ListBox)Controls["ListBox"]).SelectedItem.ToString(), cellsList, comments);
 				populateCellsLocked();
+			}
 		}
 		
 		void InitializeDataTable(string radioButtonText) {
