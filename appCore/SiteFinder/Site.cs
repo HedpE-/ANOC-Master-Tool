@@ -466,6 +466,18 @@ namespace appCore.SiteFinder
 			response = OIConnection.requestPhpOutput("crq", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days")) {
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
+				foreach(DataRow row in dt.Rows) {
+					if(row["Scheduled Start"] == DBNull.Value) {
+						if(row["Scheduled End"] == DBNull.Value)
+							row["Scheduled Start"] = new DateTime(2500, 1, 1, 0, 0, 0);
+						else {
+							DateTime schEnd = Convert.ToDateTime(row["Scheduled End"]);
+							row["Scheduled Start"] = new DateTime(schEnd.Year, schEnd.Month, schEnd.Day, 0, 0, 0);
+						}
+					}
+					if(row["Scheduled End"] == DBNull.Value)
+						row["Scheduled End"] = row["Scheduled Start"];
+				}
 				CRQsTimestamp = DateTime.Now;
 			}
 			return dt;
