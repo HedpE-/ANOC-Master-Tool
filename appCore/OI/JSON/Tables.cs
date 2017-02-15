@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 
 namespace appCore.OI.JSON
 {
+	public abstract class Tables { }
+	
 	public class RootObject
 	{
 		public List<object> data { get; set; }
@@ -19,7 +21,16 @@ namespace appCore.OI.JSON
 		public string message { get; set; }
 	}
 	
-	public class Incident
+	public class Availability : Tables
+	{
+		public List<AvailabilityColumns> data { get; set; }
+		public List<string> title { get; set; }
+		public string tablename { get; set; }
+		public string memory { get; set; }
+		public string message { get; set; }
+	}
+	
+	public class Incident : Tables
 	{
 		[JsonProperty("CI_NAME")]
 		public string Site { get; set; }
@@ -45,7 +56,7 @@ namespace appCore.OI.JSON
 		public string Resolved_Date { get; set; }
 	}
 	
-	public class Change
+	public class Change : Tables
 	{
 		[JsonProperty("CI_NAME")]
 		public string CI_NAME { get; set; }
@@ -69,7 +80,7 @@ namespace appCore.OI.JSON
 		public object Type_Of_Work { get; set; }
 	}
 	
-	public class BookIn
+	public class BookIn : Tables
 	{
 		[JsonProperty("SITECODE")]
 		public string Site { get; set; }
@@ -97,7 +108,7 @@ namespace appCore.OI.JSON
 		public string Departed_Site { get; set; }
 	}
 	
-	public class Alarm
+	public class Alarm : Tables
 	{
 		[JsonProperty("CI_NAME")]
 		public string Site { get; set; }
@@ -111,7 +122,7 @@ namespace appCore.OI.JSON
 		public string Date_Time { get; set; }
 	}
 	
-	public class Availability
+	public class AvailabilityColumns
 	{
 		public string COL1 { get; set; }
 		public string COL2 { get; set; }
@@ -311,7 +322,7 @@ namespace appCore.OI.JSON
 		public string BEARER { get; set; }
 	}
 	
-	public class OiCell
+	public class OiCell : Tables
 	{
 		public string SITE { get; set; }
 		public string BEARER { get; set; }
@@ -329,7 +340,7 @@ namespace appCore.OI.JSON
 		public string LOCKED { get; set; }
 	}
 	
-	public class AccessInformation
+	public class AccessInformation : Tables
 	{
 		public string CI_NAME { get; set; }
 		public string KEY_INFORMATION { get; set; }

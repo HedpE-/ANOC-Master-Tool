@@ -19,11 +19,11 @@ using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
 using appCore.Toolbox;
 using appCore.OI;
+using appCore.OI.JSON;
 using HtmlAgilityPack;
 using FileHelpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using appCore.OI.JSON;
 
 namespace appCore.SiteFinder
 {
@@ -307,23 +307,23 @@ namespace appCore.SiteFinder
 		DateTime AvailabilityChartTimestamp;
 		
 		[FieldHidden]
-		public List<Alarm> Alarms = new List<Alarm>();
+		public List<Alarm> Alarms;
 		[FieldHidden]
 		DateTime AlarmsTimestamp;
 		[FieldHidden]
-		public List<Incident> Incidents = new List<Incident>();
+		public List<Incident> Incidents;
 		[FieldHidden]
 		DateTime IncidentsTimestamp;
 		[FieldHidden]
-		public List<Change> Changes = new List<Change>();
+		public List<Change> Changes;
 		[FieldHidden]
 		DateTime ChangesTimestamp;
 		[FieldHidden]
-		public List<BookIn> Visits = new List<BookIn>();
+		public List<BookIn> Visits;
 		[FieldHidden]
 		DateTime VisitsTimestamp;
 		[FieldHidden]
-		public List<Availability> Availability = new List<Availability>();
+		public Availability Availability;
 		[FieldHidden]
 		DateTime AvailabilityTimestamp;
 		
@@ -552,14 +552,11 @@ namespace appCore.SiteFinder
 			return dt;
 		}
 		
-		List<Availability> FetchAvailability() {
-			List<Availability> list = new List<Availability>();
+		Availability FetchAvailability() {
 			string response = OiConnection.requestApiOutput("availability", Id);
-			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data)
-				list.Add(jObj.ToObject<Availability>());
+			Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
 			AvailabilityTimestamp = DateTime.Now;
-			return list;
+			return jSon;
 		}
 		
 		DataTable FetchAvailability(FileSystemInfo table_ca) {

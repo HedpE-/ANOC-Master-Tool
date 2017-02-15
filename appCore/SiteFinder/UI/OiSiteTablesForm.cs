@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using appCore.OI.JSON;
 
 namespace appCore.SiteFinder.UI
 {
@@ -19,6 +20,8 @@ namespace appCore.SiteFinder.UI
 	public partial class OiSiteTablesForm : Form
 	{
 		DataTable Datatable;
+		List<Tables> OiTable;
+		Availability AvailabilityTable;
 		int maxWidth;
 		public bool Cancel;
 		string DataType { get; set; }
@@ -39,6 +42,50 @@ namespace appCore.SiteFinder.UI
 				}
 				return c;
 			}
+		}
+		
+		public OiSiteTablesForm(List<Tables> inputTable, string dataToShow, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
+			OiTable = inputTable;
+			InitializeComponent();
+			dataGridView1.Dock = DockStyle.Fill;
+			switch(dataToShow) {
+				case "INCs":
+					Name = "INCsOiTableForm";
+					DataType = "INCs";
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+					break;
+				case "CRQs":
+					Name = "CRQsOiDataTableForm";
+					DataType = "CRQs";
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+					break;
+				case "ActiveAlarms":
+					Name = "ActiveAlarmsOiDataTableForm";
+					DataType = "ActiveAlarms";
+					break;
+				case "BookIns":
+					Name = "BookInsOiDataTableForm";
+					DataType = "BookIns";
+					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+					break;
+			}
+			populateGridView();
+			Text = "Site " + siteID + " " + DataType;
+		}
+		
+		public OiSiteTablesForm(Availability availabilityTable, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
+			AvailabilityTable = availabilityTable;
+			InitializeComponent();
+			dataGridView1.Dock = DockStyle.Fill;
+			Name = "AvailabilityDataTableForm";
+			DataType = "Availability Chart";
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+			populateGridView();
+			Text = "Site " + siteID + " " + DataType;
 		}
 		
 		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID, Control owner = null) {

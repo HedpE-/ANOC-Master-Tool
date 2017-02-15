@@ -116,11 +116,11 @@ namespace appCore.UI
 						if(currentSite.Exists) {
 							switch(tsmi.Name) {
 								case "INCsButton":
-									if((currentSite.INCs != null)) {
-										if(currentSite.INCs.Rows.Count > 0) {
+									if(currentSite.Incidents != null) {
+										if(currentSite.Incidents.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
+											tsmi.Text = "INCs (" + currentSite.Incidents.Count + ")";
 										}
 										else {
 											tsmi.Enabled = false;
@@ -132,13 +132,30 @@ namespace appCore.UI
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load INCs";
 									}
+									
+//									if((currentSite.INCs != null)) {
+//										if(currentSite.INCs.Rows.Count > 0) {
+//											tsmi.Enabled = true;
+//											tsmi.ForeColor = Color.DarkGreen;
+//											tsmi.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
+//										}
+//										else {
+//											tsmi.Enabled = false;
+//											tsmi.Text = "No INC history";
+//										}
+//									}
+//									else {
+//										tsmi.Enabled = true;
+//										tsmi.ForeColor = Color.DarkRed;
+//										tsmi.Text = "Click to load INCs";
+//									}
 									break;
 								case "CRQsButton":
-									if(currentSite.CRQs != null) {
-										if(currentSite.CRQs.Rows.Count > 0) {
+									if(currentSite.Changes != null) {
+										if(currentSite.Changes.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
+											tsmi.Text = "CRQs (" + currentSite.Changes.Count + ")";
 										}
 										else {
 											tsmi.Enabled = false;
@@ -150,13 +167,29 @@ namespace appCore.UI
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load CRQs";
 									}
+//									if(currentSite.CRQs != null) {
+//										if(currentSite.CRQs.Rows.Count > 0) {
+//											tsmi.Enabled = true;
+//											tsmi.ForeColor = Color.DarkGreen;
+//											tsmi.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
+//										}
+//										else {
+//											tsmi.Enabled = false;
+//											tsmi.Text = "No CRQ history";
+//										}
+//									}
+//									else {
+//										tsmi.Enabled = true;
+//										tsmi.ForeColor = Color.DarkRed;
+//										tsmi.Text = "Click to load CRQs";
+//									}
 									break;
 								case "BookInsButton":
-									if(currentSite.BookIns != null) {
-										if(currentSite.BookIns.Rows.Count > 0) {
+									if(currentSite.Visits != null) {
+										if(currentSite.Visits.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
+											tsmi.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
 										}
 										else {
 											tsmi.Enabled = false;
@@ -168,13 +201,29 @@ namespace appCore.UI
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load Book Ins";
 									}
+//									if(currentSite.BookIns != null) {
+//										if(currentSite.BookIns.Rows.Count > 0) {
+//											tsmi.Enabled = true;
+//											tsmi.ForeColor = Color.DarkGreen;
+//											tsmi.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
+//										}
+//										else {
+//											tsmi.Enabled = false;
+//											tsmi.Text = "No Book In history";
+//										}
+//									}
+//									else {
+//										tsmi.Enabled = true;
+//										tsmi.ForeColor = Color.DarkRed;
+//										tsmi.Text = "Click to load Book Ins";
+//									}
 									break;
 								case "ActiveAlarmsButton":
-									if(currentSite.ActiveAlarms != null) {
-										if(currentSite.ActiveAlarms.Rows.Count > 0) {
+									if(currentSite.Alarms != null) {
+										if(currentSite.Alarms.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
+											tsmi.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
 										}
 										else {
 											tsmi.Enabled = false;
@@ -186,10 +235,26 @@ namespace appCore.UI
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load alarms";
 									}
+//									if(currentSite.ActiveAlarms != null) {
+//										if(currentSite.ActiveAlarms.Rows.Count > 0) {
+//											tsmi.Enabled = true;
+//											tsmi.ForeColor = Color.DarkGreen;
+//											tsmi.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
+//										}
+//										else {
+//											tsmi.Enabled = false;
+//											tsmi.Text = "No alarms to display";
+//										}
+//									}
+//									else {
+//										tsmi.Enabled = true;
+//										tsmi.ForeColor = Color.DarkRed;
+//										tsmi.Text = "Click to load alarms";
+//									}
 									break;
 								case "AvailabilityButton":
-									if(currentSite.AvailabilityChart != null) {
-										if(currentSite.AvailabilityChart.Rows.Count > 0) {
+									if(currentSite.Availability != null) {
+										if(currentSite.Availability.data.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
 											tsmi.Text = "Availability chart";
@@ -204,6 +269,22 @@ namespace appCore.UI
 										tsmi.ForeColor = Color.DarkRed;
 										tsmi.Text = "Click to load availability";
 									}
+//									if(currentSite.AvailabilityChart != null) {
+//										if(currentSite.AvailabilityChart.Rows.Count > 0) {
+//											tsmi.Enabled = true;
+//											tsmi.ForeColor = Color.DarkGreen;
+//											tsmi.Text = "Availability chart";
+//										}
+//										else {
+//											tsmi.Enabled = false;
+//											tsmi.Text = "No availability chart to display";
+//										}
+//									}
+//									else {
+//										tsmi.Enabled = true;
+//										tsmi.ForeColor = Color.DarkRed;
+//										tsmi.Text = "Click to load availability";
+//									}
 									break;
 								case "RefreshButton":
 									tsmi.Enabled = true;

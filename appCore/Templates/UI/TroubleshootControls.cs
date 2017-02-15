@@ -982,6 +982,7 @@ namespace appCore.Templates.UI
 //			if(e.Button == MouseButtons.Left) {
 			if(currentSite.Exists) {
 				DataTable dt = new DataTable();
+				List<OI.JSON.Tables> table;
 				string dataToShow = string.Empty;
 				switch (tsim.Name) {
 					case "INCsButton":
@@ -1042,6 +1043,19 @@ namespace appCore.Templates.UI
 						dt = currentSite.BookIns;
 						break;
 					case "ActiveAlarmsButton":
+//						if(currentSite.Alarms == null) {
+//							currentSite.requestOIData("Alarms");
+//							if(currentSite.Alarms.Count == 0) {
+//								MainMenu.ActiveAlarmsButton.Enabled = true;
+//								MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+//								MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+//							}
+//							else {
+//								MainMenu.ActiveAlarmsButton.Enabled = false;
+//								MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+//							}
+//						}
+//						table = currentSite.Alarms;
 						if(currentSite.ActiveAlarms == null) {
 							currentSite.requestOIData("Alarms");
 							if(currentSite.ActiveAlarms != null) {
@@ -1061,6 +1075,9 @@ namespace appCore.Templates.UI
 						dt = currentSite.ActiveAlarms;
 						break;
 				}
+				
+//				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
+//				OiTable.Show();
 				
 				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
 				OiTable.Show();
