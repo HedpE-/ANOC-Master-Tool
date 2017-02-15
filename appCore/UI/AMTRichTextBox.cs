@@ -24,9 +24,9 @@ namespace appCore.UI
 			}
 			private set { }
 		}
-		Stack<string> undoList = new Stack<string>();
+//		Stack<string> undoList = new Stack<string>();
 //		Stack<string> redoList = new Stack<string>();
-				
+		
 		string[] stripTopBottomWhiteLinesOnArray() {
 			List<string> linesList = Lines.ToList();
 			
@@ -39,10 +39,6 @@ namespace appCore.UI
 		}
 		
 		// TODO: Translate API
-//		prtected override void OnTextChanged(EventArgs e)
-//		{
-//			undoList.Push(Text);
-//		}
 
 		void RichTextBox_CtrlVAZYFix(KeyEventArgs e)
 		{
@@ -99,18 +95,18 @@ namespace appCore.UI
 						Focus();
 						break;
 						// TODO: Implement UNDO on AMTRichTextBox
-//						case Keys.Z:
+//					case Keys.Z:
 //							if(undoList.Count > 0) {
-//								redoList.Push(Text);
-//								Text = undoList.Pop();
+//						redoList.Push(Text);
+//						Text = undoList.Pop();
 //							}
-//							break;
-//						case Keys.Y:
+//						break;
+//					case Keys.Y:
 //							if(redoList.Count > 0) {
-//								undoList.Push(Text);
-//								Text = redoList.Pop();
+//						undoList.Push(Text);
+//						Text = redoList.Pop();
 //							}
-//							break;
+//						break;
 				}
 				// restore layout
 				ResumeLayout();
@@ -138,9 +134,13 @@ namespace appCore.UI
 			RichTextBox_CtrlVAZYFix(e);
 		}
 		
+//		protected override void OnTextChanged(EventArgs e) {
+//			undoList.Push(Text);
+//		}
+		
 		protected override void OnMouseDown(MouseEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
-			{   
+			{
 				ContextMenu contextMenu = new ContextMenu();
 				MenuItem menuItem = new MenuItem("Cut");
 				menuItem.Click += delegate { Cut(); };
