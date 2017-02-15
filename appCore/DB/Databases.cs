@@ -12,7 +12,7 @@ using System.Threading;
 using System.IO;
 using System.Timers;
 using appCore.Settings;
-using appCore.Web;
+using appCore.OI;
 
 namespace appCore.DB
 {
@@ -33,6 +33,7 @@ namespace appCore.DB
 					_all_sites = value;
 			}
 		}
+		static readonly string currentAllSitesHeaders = "SITE,JVCO_ID,GSM900,GSM1800,UMTS900,UMTS2100,LTE800,LTE2600,LTE2100,EASTING,NORTHING,HOST,PRIORITY,ADDRESS,TELLABSATRISK,AREA,NSN_STATUS,NOC2G,NOC3G,NOC4G,VF_REGION,CLUSTER_NAME,SPECIAL_ID,SPECIAL,SPECIAL_START,SPECIAL_END,VIP,SITE_SHARE_OPERATOR,SITE_SHARE_SITE_NO,SITE_ACCESS,SITE_TYPE,SITE_SUBTYPE,PAKNET_FITTED,VODAPAGE_FITTED,DC_STATUS,DC_TIMESTAMP,COOLING_STATUS,COOLING_TIMESTAMP,KEY_INFORMATION,EF_HEALTHANDSAFETY,SWITCH2G,SWITCH3G,SWITCH4G,DRSWITCH2G,DRSWITCH3G,DRSWITCH4G,MTX2G,MTX3G,MTX4G,IP_2G_I,IP_2G_E,IP_3G_I,IP_3G_E,IP_4G_I,IP_4G_E,VENDOR_2G,VENDOR_3G,VENDOR_4G,MTX_RELATED";
 		
 		static FileInfo _all_cells;
 		public static FileInfo all_cells {
@@ -45,6 +46,7 @@ namespace appCore.DB
 					_all_cells = value;
 			}
 		}
+		static readonly string currentAllCellsHeaders = "SITE,JVCO_ID,CELL_ID,LAC_TAC,BSC_RNC_ID,VENDOR,ENODEB_ID,TF_SITENO,CELL_NAME,BEARER,COOS,SO_EXCLUSION,WHITE_LIST,NTQ,NOC,WBTS_BCF,LOCKED,IP_2G_I,IP_2G_E,IP_3G_I,IP_3G_E,IP_4G_I,IP_4G_E,VENDOR_2G,VENDOR_3G,VENDOR_4G";
 		
 		public static ShiftsFile shiftsFile;
 		
@@ -73,9 +75,11 @@ namespace appCore.DB
 			int finishedThreadsCount = 0;
 			
 			threads.Add(new Thread(() => {
-			                       	string response = OIConnection.requestPhpOutput("allsites");
-//			                       	string response = OIConnection.requestApiOutput("sites");
+//			                       	string response = OiConnection.requestPhpOutput("allsites");
+			                       	string response = OiConnection.requestApiOutput("sites");
 			                       	if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
+			                       		if(response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
+			                       			MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
 			                       		if(GlobalProperties.shareAccess || onUserFolder) {
 			                       			if(source_allsites.Exists) {
 			                       				if(response != File.ReadAllText(source_allsites.FullName)) {
@@ -94,9 +98,11 @@ namespace appCore.DB
 			                       }));
 			
 			threads.Add(new Thread(() => {
-			                       	string response = OIConnection.requestPhpOutput("allcells");
-//			                       	string response = OIConnection.requestApiOutput("cells");
+//			                       	string response = OiConnection.requestPhpOutput("allcells");
+			                       	string response = OiConnection.requestApiOutput("cells");
 			                       	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
+			                       		if(response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
+			                       			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
 			                       		if(GlobalProperties.shareAccess || onUserFolder) {
 			                       			if(source_allcells.Exists) {
 			                       				if(response != File.ReadAllText(source_allcells.FullName)) {
