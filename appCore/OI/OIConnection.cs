@@ -12,13 +12,14 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using RestSharp;
 using appCore.UI;
+using appCore.Web.UI;
 
-namespace appCore.Web
+namespace appCore.OI
 {
 	/// <summary>
-	/// Description of OIConnection.
+	/// Description of OiConnection.
 	/// </summary>
-	public static class OIConnection
+	public static class OiConnection
 	{
 		static RestClient client;
 //		static List<Parameter> requiredHeaders = new List<Parameter>();
@@ -62,14 +63,14 @@ namespace appCore.Web
 			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
 			
 			IWebProxy proxy;
-			try {
-				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
-					WebRequest.GetSystemWebProxy();
-			}
-			catch (Exception) {
-				proxy = WebRequest.GetSystemWebProxy();
-			}
+//			try {
+//				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+//					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
+//					WebRequest.GetSystemWebProxy();
+//			}
+//			catch (Exception) {
+			proxy = WebRequest.GetSystemWebProxy();
+//			}
 			
 			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 			client.Proxy = proxy;
@@ -114,14 +115,14 @@ namespace appCore.Web
 			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
 			
 			IWebProxy proxy;
-			try {
-				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
-					WebRequest.GetSystemWebProxy();
-			}
-			catch (Exception) {
-				proxy = WebRequest.GetSystemWebProxy();
-			}
+//			try {
+//				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+//					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
+//					WebRequest.GetSystemWebProxy();
+//			}
+//			catch (Exception) {
+			proxy = WebRequest.GetSystemWebProxy();
+//			}
 			
 			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 			client.Proxy = proxy;
@@ -136,7 +137,7 @@ namespace appCore.Web
 		}
 		
 		static void RequestOiCredentials() {
-			UI.AuthForm auth = new UI.AuthForm("OI");
+			AuthForm auth = new AuthForm("OI");
 			auth.StartPosition = FormStartPosition.CenterParent;
 			auth.ShowDialog();
 			
@@ -183,7 +184,7 @@ namespace appCore.Web
 		}
 		
 		/// <summary>
-		/// Requests data from OI API function
+		/// Requests the export CSV files from OI APIs
 		/// </summary>
 		/// <param name="dataToRequest">"sites", "cells"</param>
 		public static string requestApiOutput(string dataToRequest)
@@ -195,6 +196,34 @@ namespace appCore.Web
 				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/export-{0}", dataToRequest), Method.GET);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI APIs
+		/// </summary>
+		/// <param name="API">"cells", "incidents", "changes", "visits", "alarms", "availability", "access"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="bearer">Bearer</param>
+		public static string requestApiOutput(string API, string site, int bearer = 4)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
+				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
+				request.AddParameter("siteNumbers", site);
+				request.AddParameter("range", string.Empty);
+				request.AddParameter("bearer", bearer);
+//				request.AddHeader("Accept", "application/json, text/javascript, */*; q=0.01;");
+//				request.AddHeader("Content-Type", "application/x-www-form-urlencoded;");
+//				request.AddHeader("Referer", "http://operationalintelligence.vf-uk.corp.vodafone.com/site/");
+//				request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0");
+//				request.AddHeader("X-Requested-With", "XMLHttpRequest");
 				IRestResponse response = client.Execute(request);
 				
 				return response.Content;

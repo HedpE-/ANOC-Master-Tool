@@ -73,6 +73,10 @@
     </Reference>
     <Reference Include="Microsoft.mshtml" />
     <Reference Include="Microsoft.Office.Interop.Excel" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assemblies\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Outlook">
       <HintPath>Assemblies\Outlook.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -117,6 +121,14 @@
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OI\JSON\Tables.cs" />
+    <Compile Include="OI\OIConnection.cs" />
     <Compile Include="Shifts\ShiftsCalendar2.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="SiteFinder\Cell.cs" />
@@ -1375,7 +1387,6 @@
     <Compile Include="Web\HtmlAgilityPack\Trace.cs" />
     <Compile Include="Web\HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="Web\HtmlAgilityPack\Utilities.cs" />
-    <Compile Include="Web\OIConnection.cs" />
     <Compile Include="Web\UI\AuthForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1391,12 +1402,6 @@
     <Compile Include="GMap.NET\Interfaces\IPosition.cs" />
     <Compile Include="GMap.NET\Interfaces\IPositionTime.cs" />
     <Compile Include="GMap.NET\Interfaces\ITime.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GMap.NET\Types\LLPoint.cs" />
     <Compile Include="GMap.NET\Types\Point.cs" />
@@ -1471,6 +1476,7 @@
     <EmbeddedResource Include="Assemblies\GMap.NET.Core.dll" />
     <EmbeddedResource Include="Assemblies\GMap.NET.WindowsForms.dll" />
     <EmbeddedResource Include="Assemblies\FileHelpers.dll" />
+    <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
@@ -1479,6 +1485,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GMap.NET" />
+    <Folder Include="OI" />
+    <Folder Include="OI\JSON" />
     <Folder Include="Toolbox\EPPlus" />
     <Folder Include="Toolbox\EPPlus\ConditionalFormatting" />
     <Folder Include="Toolbox\EPPlus\ConditionalFormatting\Contracts" />
@@ -1546,14 +1554,6 @@
     <Folder Include="OssScripts\UI" />
     <Folder Include="Remedy\UI" />
     <Folder Include="Toolbox\Transitions" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ObjectListView\ObjectListView\ObjectListView2008.csproj">
-      <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
-      <Name>ObjectListView2008</Name>
-      <Private>False</Private>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />
