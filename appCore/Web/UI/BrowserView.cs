@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using appCore.OI;
 using appCore.UI;
 using System;
 using System.Linq;
@@ -58,9 +59,9 @@ namespace appCore.Web.UI
 			
 			tabControl1.SelectTab(1);
 			webBrowser1.Navigate(CitrixHome);
-			OIConnection.InitiateOiConnection();
-			webBrowser2.ResumeSession(homeAddress(webBrowser2), OIConnection.OICookieContainer);
-			webBrowser3.ResumeSession(homeAddress(webBrowser3), OIConnection.OICookieContainer);
+			OiConnection.InitiateOiConnection();
+			webBrowser2.ResumeSession(homeAddress(webBrowser2), OiConnection.OICookieContainer);
+			webBrowser3.ResumeSession(homeAddress(webBrowser3), OiConnection.OICookieContainer);
 			
 			comboBox1.SelectedIndex = 0;
 			comboBox1.SelectedIndexChanged += ComboBox1SelectedIndexChanged;
@@ -271,12 +272,12 @@ namespace appCore.Web.UI
 					webBrowser1.Navigate(CitrixHome);
 					break;
 				case 1:
-					OIConnection.InitiateOiConnection();
-					webBrowser2.ResumeSession(homeAddress(webBrowser2), OIConnection.OICookieContainer);
+					OiConnection.InitiateOiConnection();
+					webBrowser2.ResumeSession(homeAddress(webBrowser2), OiConnection.OICookieContainer);
 					break;
 				case 2:
-					OIConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
-					CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OIConnection.OldOICookieContainer : OIConnection.OICookieContainer;
+					OiConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
+					CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OiConnection.OldOICookieContainer : OiConnection.OICookieContainer;
 					webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, cookies);
 					break;
 			}
@@ -393,8 +394,8 @@ namespace appCore.Web.UI
 		
 		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
 		{
-			OIConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
-			CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OIConnection.OldOICookieContainer : OIConnection.OICookieContainer;
+			OiConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
+			CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OiConnection.OldOICookieContainer : OiConnection.OICookieContainer;
 			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, cookies);
 			tabPage3.Text = comboBox1.Text;
 			this.Text = "AMT Browser - " + comboBox1.Text;

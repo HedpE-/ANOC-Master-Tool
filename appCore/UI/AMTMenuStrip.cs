@@ -188,8 +188,8 @@ namespace appCore.UI
 									}
 									break;
 								case "AvailabilityButton":
-									if(currentSite.Availability != null) {
-										if(currentSite.Availability.Rows.Count > 0) {
+									if(currentSite.AvailabilityChart != null) {
+										if(currentSite.AvailabilityChart.Rows.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
 											tsmi.Text = "Availability chart";

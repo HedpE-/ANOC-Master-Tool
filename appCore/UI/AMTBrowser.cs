@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+using appCore.OI;
 using appCore.Web;
 using System;
 using System.Windows.Forms;
@@ -26,10 +27,10 @@ namespace appCore.UI
 		}
 		
 		void OnNavigate(object sender, WebBrowserNavigatingEventArgs e) {	
-			if(!OIConnection.LoggedOn)
-				OIConnection.InitiateOiConnection();
+			if(!OiConnection.LoggedOn)
+				OiConnection.InitiateOiConnection();
 			e.Cancel = true;
-			ResumeSession(e.Url, OIConnection.OICookieContainer);
+			ResumeSession(e.Url, OiConnection.OICookieContainer);
 		}
 		
 		public void ResumeSession(string url, CookieContainer container) {

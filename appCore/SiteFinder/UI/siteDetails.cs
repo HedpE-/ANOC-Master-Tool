@@ -808,10 +808,10 @@ namespace appCore.SiteFinder.UI
 						dt = currentSite.ActiveAlarms;
 						break;
 					case "AvailabilityButton":
-						if(currentSite.Availability == null) {
+						if(currentSite.AvailabilityChart == null) {
 							currentSite.requestOIData("Availability");
-							if(currentSite.Availability != null) {
-								if(currentSite.Availability.Rows.Count > 0) {
+							if(currentSite.AvailabilityChart != null) {
+								if(currentSite.AvailabilityChart.Rows.Count > 0) {
 									MainMenu.AvailabilityButton.Enabled = true;
 									MainMenu.AvailabilityButton.ForeColor = Color.DarkGreen;
 									MainMenu.AvailabilityButton.Text = "Availability chart";
@@ -824,7 +824,7 @@ namespace appCore.SiteFinder.UI
 							return;
 						}
 						dataToShow = "Availability";
-						dt = currentSite.Availability;
+						dt = currentSite.AvailabilityChart;
 						break;
 				}
 				

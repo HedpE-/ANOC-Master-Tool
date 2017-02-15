@@ -171,9 +171,9 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 					
 					generateTemplateToolStripMenuItem.Enabled =
-					generateTaskToolStripMenuItem.Enabled =
-					sendBCPToolStripMenuItem.Enabled =
-					SiteDetailsToolStripMenuItem.Enabled =
+						generateTaskToolStripMenuItem.Enabled =
+						sendBCPToolStripMenuItem.Enabled =
+						SiteDetailsToolStripMenuItem.Enabled =
 						clearToolStripMenuItem.Enabled = false;
 				}
 			}
@@ -314,7 +314,6 @@ namespace appCore.Templates.UI
 				LoadingPanel load = new LoadingPanel();
 				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
-			
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
