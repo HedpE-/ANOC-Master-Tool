@@ -6,7 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using appCore.Web;
+using appCore.OI;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -145,6 +145,7 @@ namespace appCore.SiteFinder.UI
 						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => !s.Locked).Count() > 0;
 						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => !s.Locked).Count() > 0;
 						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => !s.Locked).Count() > 0;
+						
 						checkBox1.Checked =
 							checkBox2.Checked =
 							checkBox3.Checked = false;
@@ -291,7 +292,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void populateCellsLocked() {
-			string response = OIConnection.requestPhpOutput("cellslocked",string.Empty,null,string.Empty);
+			string response = OiConnection.requestPhpOutput("cellslocked",string.Empty,null,string.Empty);
 			
 			List<string> sitesList = new List<string>();
 			
@@ -490,21 +491,23 @@ namespace appCore.SiteFinder.UI
 		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
 			if(UiMode != "Cells Locked") {
-				CheckBox cb = sender as CheckBox;
-				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => s.Cells["Tech"].Value.ToString() == cb.Text);
-				
-				foreach(DataGridViewRow dgvr in filtered) {
-					if(dgvr.Cells[0].Style.ForeColor != SystemColors.GrayText) {
-						DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
-						dataGridView1.CellValueChanged -= DataGridView1CellValueChanged;
-						
-						if(filtered.Last() == dgvr) {
-							dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
-							cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
-						}
-						else {
-							cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
-							dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
+				if(UiMode != "History") {
+					CheckBox cb = sender as CheckBox;
+					var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => s.Cells["Tech"].Value.ToString() == cb.Text);
+					
+					foreach(DataGridViewRow dgvr in filtered) {
+						if(dgvr.Cells[0].Style.ForeColor != SystemColors.GrayText) {
+							DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
+							dataGridView1.CellValueChanged -= DataGridView1CellValueChanged;
+							
+							if(filtered.Last() == dgvr) {
+								dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
+								cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+							}
+							else {
+								cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+								dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
+							}
 						}
 					}
 				}
@@ -560,25 +563,24 @@ namespace appCore.SiteFinder.UI
 					sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
 				else
 					sendUnlockCellsRequest(cellsList, amtRichTextBox1.Text);
-				
 			}
 		}
 		
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
 			bool manRef = !comboBox1.Items.Contains(reference);
-			OIConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
+			OiConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
 			currentSite.requestOIData("LKULK", true);
 			RadioButtonsCheckedChanged(radioButton1, null);
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
 			if(UiMode != "Cells Locked") {
-				OIConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
+				OiConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
 				currentSite.requestOIData("LKULK", true);
 				RadioButtonsCheckedChanged(radioButton2, null);
 			}
 			else {
-				OIConnection.requestPhpOutput("cellslocked", ((ListBox)Controls["ListBox"]).SelectedItem.ToString(), cellsList, comments);
+				OiConnection.requestPhpOutput("cellslocked", ((ListBox)Controls["ListBox"]).SelectedItem.ToString(), cellsList, comments);
 				populateCellsLocked();
 			}
 		}
