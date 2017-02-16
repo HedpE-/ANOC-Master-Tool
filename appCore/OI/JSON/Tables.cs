@@ -8,12 +8,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
 namespace appCore.OI.JSON
 {
-	public abstract class Tables { }
-	
 	public class RootObject
 	{
 		public List<object> data { get; set; }
@@ -21,16 +20,16 @@ namespace appCore.OI.JSON
 		public string message { get; set; }
 	}
 	
-	public class Availability : Tables
+	public class Availability
 	{
-		public List<AvailabilityColumns> data { get; set; }
-		public List<string> title { get; set; }
+		public ObservableCollection<AvailabilityColumns> data { get; set; }
+		public ObservableCollection<string> title { get; set; }
 		public string tablename { get; set; }
 		public string memory { get; set; }
 		public string message { get; set; }
 	}
 	
-	public class Incident : Tables
+	public class Incident
 	{
 		[JsonProperty("CI_NAME")]
 		public string Site { get; set; }
@@ -56,10 +55,10 @@ namespace appCore.OI.JSON
 		public string Resolved_Date { get; set; }
 	}
 	
-	public class Change : Tables
+	public class Change
 	{
 		[JsonProperty("CI_NAME")]
-		public string CI_NAME { get; set; }
+		public string Site { get; set; }
 		[JsonProperty("CRQ")]
 		public string Change_Ref { get; set; }
 		[JsonProperty("SUMMARY")]
@@ -80,7 +79,7 @@ namespace appCore.OI.JSON
 		public object Type_Of_Work { get; set; }
 	}
 	
-	public class BookIn : Tables
+	public class BookIn
 	{
 		[JsonProperty("SITECODE")]
 		public string Site { get; set; }
@@ -108,7 +107,7 @@ namespace appCore.OI.JSON
 		public string Departed_Site { get; set; }
 	}
 	
-	public class Alarm : Tables
+	public class Alarm
 	{
 		[JsonProperty("CI_NAME")]
 		public string Site { get; set; }
@@ -322,7 +321,7 @@ namespace appCore.OI.JSON
 		public string BEARER { get; set; }
 	}
 	
-	public class OiCell : Tables
+	public class OiCell
 	{
 		public string SITE { get; set; }
 		public string BEARER { get; set; }
@@ -340,7 +339,7 @@ namespace appCore.OI.JSON
 		public string LOCKED { get; set; }
 	}
 	
-	public class AccessInformation : Tables
+	public class AccessInformation
 	{
 		public string CI_NAME { get; set; }
 		public string KEY_INFORMATION { get; set; }

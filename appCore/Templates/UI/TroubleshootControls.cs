@@ -17,6 +17,7 @@ using appCore.SiteFinder;
 using appCore.Templates.Types;
 using appCore.UI;
 using appCore.SiteFinder.UI;
+using appCore.OI.JSON;
 
 namespace appCore.Templates.UI
 {
@@ -770,9 +771,9 @@ namespace appCore.Templates.UI
 			string relatedCases = string.Empty;
 			if(currentSite.Exists) {
 				CheckOngoingCRQs();
-				List<DataRow> OngoingCases = getCurrentCases();
-				if(OngoingCases.Count > 0) {
-					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases.CopyToDataTable(), currentSite.Id);
+				DataTable OngoingCases = getCurrentCases();
+				if(OngoingCases.Rows.Count > 0) {
+					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases, currentSite.Id);
 					relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
 					relatedCasesForm.ShowDialog();
 					if(relatedCasesForm.Cancel)
@@ -879,19 +880,19 @@ namespace appCore.Templates.UI
 		}
 		
 		void CheckOngoingCRQs() {
-			if(currentSite.CRQs != null) {
-				List<DataRow> OngoingCRQs = new List<DataRow>();
-				foreach(DataRow row in currentSite.CRQs.Rows) {
-					if((row["Status"].ToString() == "Scheduled" || row["Status"].ToString() == "Implementation In Progress")) {
-						if((Convert.ToDateTime(row["Scheduled Start"]) <= DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) > DateTime.Now))
-							OngoingCRQs.Add(row);
+			if(currentSite.Changes != null) {
+				List<Change> OngoingCRQs = new List<Change>();
+				foreach(Change crq in currentSite.Changes) {
+					if((crq.Status == "Scheduled" || crq.Status == "Implementation In Progress")) {
+						if((Convert.ToDateTime(crq.Scheduled_Start) <= DateTime.Now && Convert.ToDateTime(crq.Scheduled_End) > DateTime.Now))
+							OngoingCRQs.Add(crq);
 					}
 				}
 				if(OngoingCRQs.Count > 0) {
 					string OngoingCRQsStr = string.Empty;
-					foreach (DataRow row in OngoingCRQs) {
-						OngoingCRQsStr += row["Change Ref"] + " - " + row["Summary"] + " - " + row["Project"] + " - " + row["Status"] + " - " + row["Scheduled Start"] + " - " + row["Scheduled End"];
-						if(row != OngoingCRQs.Last())
+					foreach (Change crq in OngoingCRQs) {
+						OngoingCRQsStr += crq.Change_Ref + " - " + crq.Summary + " - " + crq.Project + " - " + crq.Status + " - " + crq.Scheduled_Start + " - " + crq.Scheduled_End;
+						if(crq != OngoingCRQs.Last())
 							OngoingCRQsStr += Environment.NewLine;
 					}
 					DialogResult ans = MessageBox.Show("Site has Ongoing CRQ(s):" + Environment.NewLine + Environment.NewLine + OngoingCRQsStr + Environment.NewLine + Environment.NewLine + "Generate template anyway?","Ongoing CRQs",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
@@ -906,47 +907,47 @@ namespace appCore.Templates.UI
 		//// </summary>
 		//// <param name="type">"INC", "CRQ"</param>
 		//// <returns></returns>
-		List<DataRow> getCurrentCases() {
-			List<DataRow> currentCases = new List<DataRow>();
-			foreach(string type in new [] { "INC", "CRQ" }) {
-				DataTable tempDt = type == "INC" ? currentSite.INCs : currentSite.CRQs;
-				List<DataRow> filteredCases = null;
-				if(tempDt != null) {
-					if(tempDt.Rows.Count > 0) {
-						string query = type == "INC" ? "[Incident Ref] NOT LIKE '" + INCTextBox.Text + "'" : string.Empty; // + "' AND Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-						// "Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
-						filteredCases = tempDt.Select(query).ToList();
-						if(type == "CRQ" && filteredCases.Count > 0) {
-							for(int c = 0;c < filteredCases.Count;c++) {
-								DataRow row = filteredCases[c];
-								if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-									if (Convert.ToDateTime(row["Scheduled Start"]) > DateTime.Now) { // && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
-										filteredCases.RemoveAt(c);
-										c--;
-									}
-								}
-							}
+		DataTable getCurrentCases() {
+			List<Incident> filteredINCs = null;
+			List<Change> filteredCRQs = null;
+			if(currentSite.Incidents.Count > 0)
+				filteredINCs = currentSite.Incidents.FindAll(s => s.Incident_Ref != INCTextBox.Text);
+			if(currentSite.Changes.Count > 0) {
+				filteredCRQs = currentSite.Changes;
+				for(int c = 0;c < filteredCRQs.Count;c++) {
+					Change crq = filteredCRQs[c];
+					if(!string.IsNullOrEmpty(crq.Scheduled_Start) && !string.IsNullOrEmpty(crq.Scheduled_End)) {
+						if (Convert.ToDateTime(crq.Scheduled_Start) > DateTime.Now) { // && Convert.ToDateTime(row["Scheduled End"]) < DateTime.Now) {// && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
+							filteredCRQs.RemoveAt(c);
+							c--;
 						}
-						tempDt = new DataTable();
-						tempDt.Columns.Add("Type");
-						tempDt.Columns.Add("Reference");
-						tempDt.Columns.Add("Summary");
-						tempDt.Columns.Add("Status");
-						tempDt.Columns.Add("Start Date", typeof(DateTime));
-						tempDt.Columns.Add("End Date", typeof(DateTime));
-						foreach (DataRow dr in filteredCases) {
-							if(type == "INC")
-								tempDt.Rows.Add(type, dr["Incident Ref"], dr["Summary"], dr["Status"], dr["Submit Date"], dr["Resolved Date"]);
-							else
-								tempDt.Rows.Add(type, dr["Change Ref"], dr["Summary"], dr["Status"], dr["Scheduled Start"], dr["Scheduled End"]);
-						}
-						DataView dv = tempDt.DefaultView;
-						dv.Sort = "Start Date desc";
-						tempDt = dv.ToTable();
-						currentCases.AddRange(tempDt.AsEnumerable());
 					}
 				}
 			}
+			
+			DataTable currentCases = new DataTable();
+			using(DataTable tempDT = new DataTable()) {
+				tempDT.Columns.Add("Type");
+				tempDT.Columns.Add("Reference");
+				tempDT.Columns.Add("Summary");
+				tempDT.Columns.Add("Status");
+				tempDT.Columns.Add("Start Date", typeof(DateTime));
+				tempDT.Columns.Add("End Date", typeof(DateTime));
+				
+				foreach (Incident inc in filteredINCs)
+					tempDT.Rows.Add("INC", inc.Incident_Ref, inc.Summary, inc.Status, inc.Submit_Date, inc.Resolved_Date);
+				DataView dv = tempDT.DefaultView;
+				dv.Sort = "Start Date desc";
+				currentCases = dv.ToTable();
+				
+				tempDT.Rows.Clear();
+				foreach(Change crq in filteredCRQs)
+					tempDT.Rows.Add("CRQ", crq.Change_Ref, crq.Summary, crq.Status, crq.Scheduled_Start, crq.Scheduled_End);
+				dv = tempDT.DefaultView;
+				dv.Sort = "Start Date desc";
+				currentCases.Rows.Add(dv.ToTable().Rows);
+			}
+			
 			return currentCases;
 		}
 		
@@ -982,104 +983,89 @@ namespace appCore.Templates.UI
 //			if(e.Button == MouseButtons.Left) {
 			if(currentSite.Exists) {
 				DataTable dt = new DataTable();
-				List<OI.JSON.Tables> table;
 				string dataToShow = string.Empty;
 				switch (tsim.Name) {
 					case "INCsButton":
-						if(currentSite.INCs == null) {
+						if(currentSite.Incidents == null) {
 							currentSite.requestOIData("INC");
-							if(currentSite.INCs != null) {
-								if(currentSite.INCs.Rows.Count > 0) {
-									MainMenu.INCsButton.Enabled = true;
-									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
-									MainMenu.INCsButton.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
-								}
-								else {
-									MainMenu.INCsButton.Enabled = false;
-									MainMenu.INCsButton.Text = "No INC history";
-								}
+							if(currentSite.Incidents.Count > 0) {
+								MainMenu.INCsButton.Enabled = true;
+								MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+								MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
+							}
+							else {
+								MainMenu.INCsButton.Enabled = false;
+								MainMenu.INCsButton.Text = "No INC history";
 							}
 							return;
 						}
 						dataToShow = "INCs";
-						dt = currentSite.INCs;
 						break;
 					case "CRQsButton":
-						if(currentSite.CRQs == null) {
+						if(currentSite.Changes == null) {
 							currentSite.requestOIData("CRQ");
-							if(currentSite.CRQs != null) {
-								if(currentSite.CRQs.Rows.Count > 0) {
-									MainMenu.CRQsButton.Enabled = true;
-									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
-									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
-								}
-								else {
-									MainMenu.CRQsButton.Enabled = false;
-									MainMenu.CRQsButton.Text = "No CRQ history";
-								}
+							if(currentSite.Changes.Count > 0) {
+								MainMenu.CRQsButton.Enabled = true;
+								MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+								MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
+							}
+							else {
+								MainMenu.CRQsButton.Enabled = false;
+								MainMenu.CRQsButton.Text = "No CRQ history";
 							}
 							return;
 						}
 						dataToShow = "CRQs";
-						dt = currentSite.CRQs;
 						break;
 					case "BookInsButton":
-						if(currentSite.BookIns == null) {
+						if(currentSite.Visits == null) {
 							currentSite.requestOIData("Bookins");
-							if(currentSite.BookIns != null) {
-								if(currentSite.BookIns.Rows.Count > 0) {
-									MainMenu.BookInsButton.Enabled = true;
-									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
-									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
-								}
-								else {
-									MainMenu.BookInsButton.Enabled = false;
-									MainMenu.BookInsButton.Text = "No Book In history";
-								}
+							if(currentSite.Visits.Count > 0) {
+								MainMenu.BookInsButton.Enabled = true;
+								MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+								MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
+							}
+							else {
+								MainMenu.BookInsButton.Enabled = false;
+								MainMenu.BookInsButton.Text = "No Book In history";
 							}
 							return;
 						}
 						dataToShow = "BookIns";
-						dt = currentSite.BookIns;
 						break;
 					case "ActiveAlarmsButton":
-//						if(currentSite.Alarms == null) {
-//							currentSite.requestOIData("Alarms");
-//							if(currentSite.Alarms.Count == 0) {
-//								MainMenu.ActiveAlarmsButton.Enabled = true;
-//								MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
-//								MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
-//							}
-//							else {
-//								MainMenu.ActiveAlarmsButton.Enabled = false;
-//								MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
-//							}
-//						}
-//						table = currentSite.Alarms;
-						if(currentSite.ActiveAlarms == null) {
+						if(currentSite.Alarms == null) {
 							currentSite.requestOIData("Alarms");
-							if(currentSite.ActiveAlarms != null) {
-								if(currentSite.ActiveAlarms.Rows.Count > 0) {
-									MainMenu.ActiveAlarmsButton.Enabled = true;
-									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
-									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
-								}
-								else {
-									MainMenu.ActiveAlarmsButton.Enabled = false;
-									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
-								}
+							if(currentSite.Alarms.Count > 0) {
+								MainMenu.ActiveAlarmsButton.Enabled = true;
+								MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+								MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+							}
+							else {
+								MainMenu.ActiveAlarmsButton.Enabled = false;
+								MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
 							}
 							return;
 						}
 						dataToShow = "ActiveAlarms";
-						dt = currentSite.ActiveAlarms;
 						break;
 				}
 				
-//				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
-//				OiTable.Show();
-				
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
+				OiSiteTablesForm OiTable = null;
+				switch(dataToShow) {
+					case "INCs":
+						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
+						break;
+					case "CRQs":
+						OiTable = new OiSiteTablesForm(currentSite.Changes, currentSite.Id, this);
+						break;
+					case "BookIns":
+						OiTable = new OiSiteTablesForm(currentSite.Visits, currentSite.Id, this);
+						break;
+					case "ActiveAlarms":
+						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
+						break;
+				}
 				OiTable.Show();
 			}
 		}

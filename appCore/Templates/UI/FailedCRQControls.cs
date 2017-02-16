@@ -550,84 +550,86 @@ namespace appCore.Templates.UI
 				string dataToShow = string.Empty;
 				switch (tsim.Name) {
 					case "INCsButton":
-						if(currentSite.INCs == null) {
+						if(currentSite.Incidents == null) {
 							currentSite.requestOIData("INC");
-							if(currentSite.INCs != null) {
-								if(currentSite.INCs.Rows.Count > 0) {
-									MainMenu.INCsButton.Enabled = true;
-									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
-									MainMenu.INCsButton.Text = "INCs (" + currentSite.INCs.Rows.Count + ")";
-								}
-								else {
-									MainMenu.INCsButton.Enabled = false;
-									MainMenu.INCsButton.Text = "No INC history";
-								}
+							if(currentSite.Incidents.Count > 0) {
+								MainMenu.INCsButton.Enabled = true;
+								MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+								MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
+							}
+							else {
+								MainMenu.INCsButton.Enabled = false;
+								MainMenu.INCsButton.Text = "No INC history";
 							}
 							return;
 						}
 						dataToShow = "INCs";
-						dt = currentSite.INCs;
 						break;
 					case "CRQsButton":
-						if(currentSite.CRQs == null) {
+						if(currentSite.Changes == null) {
 							currentSite.requestOIData("CRQ");
-							if(currentSite.CRQs != null) {
-								if(currentSite.CRQs.Rows.Count > 0) {
-									MainMenu.CRQsButton.Enabled = true;
-									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
-									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.CRQs.Rows.Count + ")";
-								}
-								else {
-									MainMenu.CRQsButton.Enabled = false;
-									MainMenu.CRQsButton.Text = "No CRQ history";
-								}
+							if(currentSite.Changes.Count > 0) {
+								MainMenu.CRQsButton.Enabled = true;
+								MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+								MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
+							}
+							else {
+								MainMenu.CRQsButton.Enabled = false;
+								MainMenu.CRQsButton.Text = "No CRQ history";
 							}
 							return;
 						}
 						dataToShow = "CRQs";
-						dt = currentSite.CRQs;
 						break;
 					case "BookInsButton":
-						if(currentSite.BookIns == null) {
+						if(currentSite.Visits == null) {
 							currentSite.requestOIData("Bookins");
-							if(currentSite.BookIns != null) {
-								if(currentSite.BookIns.Rows.Count > 0) {
-									MainMenu.BookInsButton.Enabled = true;
-									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
-									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.BookIns.Rows.Count + ")";
-								}
-								else {
-									MainMenu.BookInsButton.Enabled = false;
-									MainMenu.BookInsButton.Text = "No Book In history";
-								}
+							if(currentSite.Visits.Count > 0) {
+								MainMenu.BookInsButton.Enabled = true;
+								MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+								MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
+							}
+							else {
+								MainMenu.BookInsButton.Enabled = false;
+								MainMenu.BookInsButton.Text = "No Book In history";
 							}
 							return;
 						}
 						dataToShow = "BookIns";
-						dt = currentSite.BookIns;
 						break;
 					case "ActiveAlarmsButton":
-						if(currentSite.ActiveAlarms == null) {
+						if(currentSite.Alarms == null) {
 							currentSite.requestOIData("Alarms");
-							if(currentSite.ActiveAlarms != null) {
-								if(currentSite.ActiveAlarms.Rows.Count > 0) {
-									MainMenu.ActiveAlarmsButton.Enabled = true;
-									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
-									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.ActiveAlarms.Rows.Count + ")";
-								}
-								else {
-									MainMenu.ActiveAlarmsButton.Enabled = false;
-									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
-								}
+							if(currentSite.Alarms.Count > 0) {
+								MainMenu.ActiveAlarmsButton.Enabled = true;
+								MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+								MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+							}
+							else {
+								MainMenu.ActiveAlarmsButton.Enabled = false;
+								MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
 							}
 							return;
 						}
 						dataToShow = "ActiveAlarms";
-						dt = currentSite.ActiveAlarms;
 						break;
 				}
 				
-				OiSiteTablesForm OiTable = new OiSiteTablesForm(dt, dataToShow, currentSite.Id, this);
+				OiSiteTablesForm OiTable = null;
+				switch(dataToShow) {
+					case "INCs":
+						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
+						break;
+					case "CRQs":
+						OiTable = new OiSiteTablesForm(currentSite.Changes, currentSite.Id, this);
+						break;
+					case "BookIns":
+						OiTable = new OiSiteTablesForm(currentSite.Visits, currentSite.Id, this);
+						break;
+					case "ActiveAlarms":
+						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
+						break;
+				}
 				OiTable.Show();
 			}
 		}

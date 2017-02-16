@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using appCore.OI;
+using appCore.OI.JSON;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -151,32 +152,30 @@ namespace appCore.SiteFinder.UI
 							checkBox3.Checked = false;
 						
 						comboBox1.Items.Clear();
-						foreach(string type in new []{"CRQ","INC"}) {
-							DataTable cases;
-							cases = type == "INC" ? currentSite.INCs : currentSite.CRQs;
-							if(cases.Rows.Count > 0) {
-								string query = type == "INC" ? "Status NOT LIKE 'Closed' AND Status NOT LIKE 'Resolved'" :
-									"Status = 'Scheduled' OR Status = 'Implementation in Progress'"; // "Status NOT LIKE 'Closed' AND 'Scheduled Start' >= #" + Convert.ToString(DateTime.Now.Date) +"#"; // .ToString("dd-MM-yyyy HH:mm:ss")
-								List<DataRow> filteredCases = cases.Select(query).ToList();
-								if(type == "CRQ" && filteredCases.Count > 0) {
-									for(int c = 0;c < filteredCases.Count;c++) {
-										DataRow row = filteredCases[c];
-										if(!(row["Scheduled Start"] is DBNull) && !(row["Scheduled End"] is DBNull)) {
-											if (!(Convert.ToDateTime(row["Scheduled Start"]) <=  DateTime.Now && Convert.ToDateTime(row["Scheduled End"]) >= DateTime.Now)) {
-												filteredCases.RemoveAt(c);
-												c--;
-											}
+						
+						if(currentSite.Incidents.Count > 0) {
+							List<Incident> filteredINCs = currentSite.Incidents.FindAll(s => s.Status != "Closed" && s.Status != "Resolved");
+							foreach(Incident inc in filteredINCs)
+								comboBox1.Items.Add(inc.Incident_Ref);
+						}
+						
+						if(currentSite.Changes.Count > 0) {
+							List<Change> filteredCRQs = currentSite.Changes.FindAll(s => s.Status == "Scheduled" || s.Status != "Implementation in Progress");
+							if(filteredCRQs.Count > 0) {
+								for(int c = 0;c < filteredCRQs.Count;c++) {
+									Change crq = filteredCRQs[c];
+									if(!string.IsNullOrEmpty(crq.Scheduled_Start) && !string.IsNullOrEmpty(crq.Scheduled_End)) {
+										if (!(Convert.ToDateTime(crq.Scheduled_Start) <=  DateTime.Now && Convert.ToDateTime(crq.Scheduled_End) >= DateTime.Now)) {
+											filteredCRQs.RemoveAt(c);
+											c--;
 										}
 									}
 								}
-								foreach(DataRow row in filteredCases) {
-									if(type == "INC")
-										comboBox1.Items.Add(row["Incident Ref"]);
-									else
-										comboBox1.Items.Add(row["Change Ref"]);
-								}
 							}
+							foreach(Change crq in filteredCRQs)
+								comboBox1.Items.Add(crq.Change_Ref);
 						}
+						
 						dataGridView1.Width = checkBox1.Left - 12;
 						dataGridView1.Columns["Locked"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 						break;
@@ -452,22 +451,22 @@ namespace appCore.SiteFinder.UI
 		
 		void checkBookIn() {
 			if(UiMode == "Lock Cells") {
-				if(currentSite.BookIns == null)
+				if(currentSite.Visits == null)
 					currentSite.requestOIData("Bookins");
 				
-				var foundBookIns = currentSite.BookIns.Rows.Cast<DataRow>().Where(s => string.IsNullOrEmpty(s[11].ToString()));
-				if(foundBookIns.Count() > 0) {
-					DataRow bookInRow = null;
-					foreach(DataRow bookIn in foundBookIns) {
-						DateTime arrivedTime = Convert.ToDateTime(bookIn[7].ToString());
+				var foundBookIns = currentSite.Visits.FindAll(s => string.IsNullOrEmpty(s.Departed_Site));
+				if(foundBookIns.Count > 0) {
+					BookIn bookIn = null;
+					foreach(BookIn bi in foundBookIns) {
+						DateTime arrivedTime = Convert.ToDateTime(bi.Arrived);
 						if(arrivedTime.Year == DateTime.Now.Year && arrivedTime.Month == DateTime.Now.Month && arrivedTime.Day == DateTime.Now.Day) {
-							bookInRow = bookIn;
+							bookIn = bi;
 							break;
 						}
 					}
-					if(bookInRow != null) {
+					if(bookIn != null) {
 						label4.Visible = true;
-						label4.Text = "Valid Book In found: " + bookInRow[3] + " - " + bookInRow[4] + " - " + bookInRow[5] + " - " + bookInRow[7];
+						label4.Text = "Valid Book In found: " + bookIn.Engineer + " - " + bookIn.Mobile + " - " + bookIn.Reference + " - " + bookIn.Arrived;
 						label4.ForeColor = Color.DarkGreen;
 						label4.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 					}

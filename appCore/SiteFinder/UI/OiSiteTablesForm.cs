@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Windows.Forms;
 using appCore.OI.JSON;
 
@@ -20,8 +21,10 @@ namespace appCore.SiteFinder.UI
 	public partial class OiSiteTablesForm : Form
 	{
 		DataTable Datatable;
-		List<Tables> OiTable;
-		Availability AvailabilityTable;
+		List<Incident> Incidents;
+		List<Change> Changes;
+		List<BookIn> Visits;
+		List<Alarm> Alarms;
 		int maxWidth;
 		public bool Cancel;
 		string DataType { get; set; }
@@ -44,85 +47,115 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		public OiSiteTablesForm(List<Tables> inputTable, string dataToShow, string siteID, Control owner = null) {
+		public OiSiteTablesForm(List<Incident> inputData, string siteID, Control owner = null) {
 			if(owner != null)
 				OwnerControl = owner;
-			OiTable = inputTable;
+			Incidents = inputData;
 			InitializeComponent();
 			dataGridView1.Dock = DockStyle.Fill;
-			switch(dataToShow) {
-				case "INCs":
-					Name = "INCsOiTableForm";
-					DataType = "INCs";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-				case "CRQs":
-					Name = "CRQsOiDataTableForm";
-					DataType = "CRQs";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-				case "ActiveAlarms":
-					Name = "ActiveAlarmsOiDataTableForm";
-					DataType = "ActiveAlarms";
-					break;
-				case "BookIns":
-					Name = "BookInsOiDataTableForm";
-					DataType = "BookIns";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-			}
+			
+			Name = "INCsOiTableForm";
+			DataType = "INCs";
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+			
 			populateGridView();
 			Text = "Site " + siteID + " " + DataType;
 		}
 		
-		public OiSiteTablesForm(Availability availabilityTable, string siteID, Control owner = null) {
+		public OiSiteTablesForm(List<Change> inputData, string siteID, Control owner = null) {
 			if(owner != null)
 				OwnerControl = owner;
-			AvailabilityTable = availabilityTable;
+			Changes = inputData;
 			InitializeComponent();
 			dataGridView1.Dock = DockStyle.Fill;
+			
+			Name = "CRQsOiDataTableForm";
+			DataType = "CRQs";
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+			
+			populateGridView();
+			Text = "Site " + siteID + " " + DataType;
+		}
+		
+		public OiSiteTablesForm(List<BookIn> inputData, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
+			Visits = inputData;
+			InitializeComponent();
+			dataGridView1.Dock = DockStyle.Fill;
+			
+			Name = "BookInsOiDataTableForm";
+			DataType = "BookIns";
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+			
+			populateGridView();
+			Text = "Site " + siteID + " " + DataType;
+		}
+		
+		public OiSiteTablesForm(List<Alarm> inputData, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
+			Alarms = inputData;
+			InitializeComponent();
+			dataGridView1.Dock = DockStyle.Fill;
+			
+			Name = "ActiveAlarmsOiDataTableForm";
+			DataType = "ActiveAlarms";
+			
+			populateGridView();
+			Text = "Site " + siteID + " " + DataType;
+		}
+		
+		public OiSiteTablesForm(Availability availabilityData, string siteID, Control owner = null) {
+			if(owner != null)
+				OwnerControl = owner;
+			Datatable = availabilityData.ToDataTable();
+			InitializeComponent();
+			dataGridView1.Dock = DockStyle.Fill;
+			
 			Name = "AvailabilityDataTableForm";
 			DataType = "Availability Chart";
 			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+			
 			populateGridView();
 			Text = "Site " + siteID + " " + DataType;
 		}
 		
-		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID, Control owner = null) {
-			if(owner != null)
-				OwnerControl = owner;
-			Datatable = inputDataTable;
-			InitializeComponent();
-			dataGridView1.Dock = DockStyle.Fill;
-			switch(dataToShow) {
-				case "INCs":
-					Name = "INCsOiDataTableForm";
-					DataType = "INCs";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-				case "CRQs":
-					Name = "CRQsOiDataTableForm";
-					DataType = "CRQs";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-				case "ActiveAlarms":
-					Name = "ActiveAlarmsOiDataTableForm";
-					DataType = "ActiveAlarms";
-					break;
-				case "BookIns":
-					Name = "BookInsOiDataTableForm";
-					DataType = "BookIns";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-				case "Availability":
-					Name = "AvailabilityDataTableForm";
-					DataType = "Availability Chart";
-					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-					break;
-			}
-			populateGridView();
-			Text = "Site " + siteID + " " + DataType;
-		}
+//		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID, Control owner = null) {
+//			if(owner != null)
+//				OwnerControl = owner;
+//			Datatable = inputDataTable;
+//			InitializeComponent();
+//			dataGridView1.Dock = DockStyle.Fill;
+//			switch(dataToShow) {
+//				case "INCs":
+//					Name = "INCsOiDataTableForm";
+//					DataType = "INCs";
+//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+//					break;
+//				case "CRQs":
+//					Name = "CRQsOiDataTableForm";
+//					DataType = "CRQs";
+//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+//					break;
+//				case "ActiveAlarms":
+//					Name = "ActiveAlarmsOiDataTableForm";
+//					DataType = "ActiveAlarms";
+//					break;
+//				case "BookIns":
+//					Name = "BookInsOiDataTableForm";
+//					DataType = "BookIns";
+//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+//					break;
+//				case "Availability":
+//					Name = "AvailabilityDataTableForm";
+//					DataType = "Availability Chart";
+//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
+//					break;
+//			}
+//			populateGridView();
+//			Text = "Site " + siteID + " " + DataType;
+//		}
 		
 		public OiSiteTablesForm(DataTable currentCases, string siteID, Control owner = null) {
 			if(owner != null)
@@ -143,18 +176,42 @@ namespace appCore.SiteFinder.UI
 		void populateGridView() {
 			dataGridView1.SuspendLayout();
 			
-			dataGridView1.DataSource = Datatable;
+			switch(DataType) {
+				case "INCs":
+					dataGridView1.DataSource = Incidents;
+					break;
+				case "CRQs":
+					dataGridView1.DataSource = Changes;
+					break;
+				case "ActiveAlarms":
+					dataGridView1.DataSource = Alarms;
+					break;
+				case "BookIns":
+					dataGridView1.DataSource = Visits;
+					break;
+				case "Availability":
+					dataGridView1.DataSource = Datatable;
+					break;
+			}
 			
-			try {
-				dataGridView1.Columns["Resolution"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-				dataGridView1.Columns["Resolution"].Width = 300;
-				dataGridView1.Columns["Resolution"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-			} catch {}
-			try {
-				dataGridView1.Columns["Programme"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-				dataGridView1.Columns["Programme"].Width = 300;
-				dataGridView1.Columns["Programme"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-			} catch {}
+			foreach(DataGridViewColumn col in dataGridView1.Columns) {
+				switch(col.Name) {
+					case "Resolution":
+						dataGridView1.Columns["Resolution"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						dataGridView1.Columns["Resolution"].Width = 300;
+						dataGridView1.Columns["Resolution"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+						break;
+					case "Programme":
+						dataGridView1.Columns["Programme"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						dataGridView1.Columns["Programme"].Width = 300;
+						dataGridView1.Columns["Programme"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+						break;
+					default:
+						col.Name = col.HeaderText = col.Name.Replace('_', ' ');
+						break;
+				}
+			}
+			
 			try {
 				dataGridView1.Sort(dataGridView1.Columns["Arrived"], System.ComponentModel.ListSortDirection.Descending);;
 			} catch {}
@@ -295,5 +352,29 @@ namespace appCore.SiteFinder.UI
 					break;
 			}
 		}
+	}
+}
+
+public static class DtTools {
+	public static DataTable ToDataTable(this Availability items)
+	{
+		DataTable dataTable = new DataTable("Availability");
+
+		//Get all the properties
+		PropertyInfo[] Props = items.title.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+		foreach (PropertyInfo prop in Props) {
+			//Setting column names as Property names
+			dataTable.Columns.Add(prop.Name.Replace('_', ' '));
+		}
+//		foreach (T item in items) {
+//			var values = new object[Props.Length];
+//			for (int i = 0; i < Props.Length; i++) {
+//				//inserting property values to datatable rows
+//				values[i] = Props[i].GetValue(item, null);
+//			}
+//			dataTable.Rows.Add(values);
+//		}
+		//put a breakpoint here and check datatable
+		return dataTable;
 	}
 }

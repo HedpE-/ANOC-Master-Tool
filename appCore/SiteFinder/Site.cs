@@ -286,27 +286,6 @@ namespace appCore.SiteFinder
 		}
 		
 		[FieldHidden]
-		public DataTable ActiveAlarms;
-		[FieldHidden]
-		DateTime ActiveAlarmsTimestamp;
-		[FieldHidden]
-		public DataTable INCs;
-		[FieldHidden]
-		DateTime INCsTimestamp;
-		[FieldHidden]
-		public DataTable CRQs;
-		[FieldHidden]
-		DateTime CRQsTimestamp;
-		[FieldHidden]
-		public DataTable BookIns;
-		[FieldHidden]
-		DateTime BookInsTimestamp;
-		[FieldHidden]
-		public DataTable AvailabilityChart;
-		[FieldHidden]
-		DateTime AvailabilityChartTimestamp;
-		
-		[FieldHidden]
 		public List<Alarm> Alarms;
 		[FieldHidden]
 		DateTime AlarmsTimestamp;
@@ -388,7 +367,7 @@ namespace appCore.SiteFinder
 				int finishedThreadsCount = 0;
 				if(dataToRequest.Contains("INC")) {
 					Thread thread = new Thread(() => {
-					                           	INCs = FetchINCs(null);
+//					                           	INCs = FetchINCs(null);
 					                           	Incidents = FetchINCs();
 					                           	finishedThreadsCount++;
 					                           });
@@ -397,7 +376,7 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("CRQ")) {
 					Thread thread = new Thread(() => {
-					                           	CRQs = FetchCRQs(null);
+//					                           	CRQs = FetchCRQs(null);
 					                           	Changes = FetchCRQs();
 					                           	finishedThreadsCount++;
 					                           });
@@ -406,7 +385,7 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Alarms")) {
 					Thread thread = new Thread(() => {
-					                           	ActiveAlarms = FetchActiveAlarms(null);
+//					                           	ActiveAlarms = FetchActiveAlarms(null);
 					                           	Alarms = FetchActiveAlarms();
 					                           	finishedThreadsCount++;
 					                           });
@@ -415,7 +394,7 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Bookins")) {
 					Thread thread = new Thread(() => {
-					                           	BookIns = FetchBookIns(null);
+//					                           	BookIns = FetchBookIns(null);
 					                           	Visits = FetchBookIns();
 					                           	finishedThreadsCount++;
 					                           });
@@ -424,7 +403,7 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Availability")) {
 					Thread thread = new Thread(() => {
-					                           	AvailabilityChart = FetchAvailability(null);
+//					                           	AvailabilityChart = FetchAvailability(null);
 					                           	Availability = FetchAvailability();
 					                           	finishedThreadsCount++;
 					                           });
@@ -470,47 +449,55 @@ namespace appCore.SiteFinder
 			return list;
 		}
 		
-		DataTable FetchINCs(FileSystemInfo table_inc) {
-			DataTable dt = new DataTable();
-			string response = OiConnection.requestPhpOutput("inc", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents")) {
-				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
-				INCsTimestamp = DateTime.Now;
-			}
-			return dt;
-		}
+//		DataTable FetchINCs(FileSystemInfo table_inc) {
+//			DataTable dt = new DataTable();
+//			string response = OiConnection.requestPhpOutput("inc", Id);
+//			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents")) {
+//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
+//				INCsTimestamp = DateTime.Now;
+//			}
+//			return dt;
+//		}
 		
 		List<Change> FetchCRQs() {
 			List<Change> list = new List<Change>();
 			string response = OiConnection.requestApiOutput("changes", Id);
 			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data)
-				list.Add(jObj.ToObject<Change>());
+			foreach(JObject jObj in jSon.data) {
+				Change item = jObj.ToObject<Change>();
+				// remove HTML tags from Status
+				while(item.Status.Contains(">")) {
+					int startIndex = item.Status.IndexOf("<");
+					int endIndex = item.Status.IndexOf(">");
+					item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+				}
+				list.Add(item);
+			}
 			ChangesTimestamp = DateTime.Now;
 			return list;
 		}
 		
-		DataTable FetchCRQs(FileSystemInfo table_crq) {
-			DataTable dt = new DataTable();
-			string response = OiConnection.requestPhpOutput("crq", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days")) {
-				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
-				foreach(DataRow row in dt.Rows) {
-					if(row["Scheduled Start"] == DBNull.Value) {
-						if(row["Scheduled End"] == DBNull.Value)
-							row["Scheduled Start"] = new DateTime(2500, 1, 1, 0, 0, 0);
-						else {
-							DateTime schEnd = Convert.ToDateTime(row["Scheduled End"]);
-							row["Scheduled Start"] = new DateTime(schEnd.Year, schEnd.Month, schEnd.Day, 0, 0, 0);
-						}
-					}
-					if(row["Scheduled End"] == DBNull.Value)
-						row["Scheduled End"] = row["Scheduled Start"];
-				}
-				CRQsTimestamp = DateTime.Now;
-			}
-			return dt;
-		}
+//		DataTable FetchCRQs(FileSystemInfo table_crq) {
+//			DataTable dt = new DataTable();
+//			string response = OiConnection.requestPhpOutput("crq", Id);
+//			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days")) {
+//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
+//				foreach(DataRow row in dt.Rows) {
+//					if(row["Scheduled Start"] == DBNull.Value) {
+//						if(row["Scheduled End"] == DBNull.Value)
+//							row["Scheduled Start"] = new DateTime(2500, 1, 1, 0, 0, 0);
+//						else {
+//							DateTime schEnd = Convert.ToDateTime(row["Scheduled End"]);
+//							row["Scheduled Start"] = new DateTime(schEnd.Year, schEnd.Month, schEnd.Day, 0, 0, 0);
+//						}
+//					}
+//					if(row["Scheduled End"] == DBNull.Value)
+//						row["Scheduled End"] = row["Scheduled Start"];
+//				}
+//				CRQsTimestamp = DateTime.Now;
+//			}
+//			return dt;
+//		}
 		
 		List<Alarm> FetchActiveAlarms() {
 			List<Alarm> list = new List<Alarm>();
@@ -522,15 +509,15 @@ namespace appCore.SiteFinder
 			return list;
 		}
 		
-		DataTable FetchActiveAlarms(FileSystemInfo table_alarms) {
-			DataTable dt = new DataTable();
-			string response = OiConnection.requestPhpOutput("alarms", Id);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported")) {
-				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
-				ActiveAlarmsTimestamp = DateTime.Now;
-			}
-			return dt;
-		}
+//		DataTable FetchActiveAlarms(FileSystemInfo table_alarms) {
+//			DataTable dt = new DataTable();
+//			string response = OiConnection.requestPhpOutput("alarms", Id);
+//			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported")) {
+//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
+//				ActiveAlarmsTimestamp = DateTime.Now;
+//			}
+//			return dt;
+//		}
 		
 		List<BookIn> FetchBookIns() {
 			List<BookIn> list = new List<BookIn>();
@@ -542,32 +529,37 @@ namespace appCore.SiteFinder
 			return list;
 		}
 		
-		DataTable FetchBookIns(FileSystemInfo table_visits) {
-			DataTable dt = new DataTable();
-			string response = OiConnection.requestPhpOutput("sitevisit", Id, 90);
-			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
-				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
-				BookInsTimestamp = DateTime.Now;
-			}
-			return dt;
-		}
+//		DataTable FetchBookIns(FileSystemInfo table_visits) {
+//			DataTable dt = new DataTable();
+//			string response = OiConnection.requestPhpOutput("sitevisit", Id, 90);
+//			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
+//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
+//				BookInsTimestamp = DateTime.Now;
+//			}
+//			return dt;
+//		}
 		
 		Availability FetchAvailability() {
 			string response = OiConnection.requestApiOutput("availability", Id);
 			Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
+			for(int c = 3;c < jSon.title.Count;c++) {
+				jSon.title.Move(3, (jSon.title.Count - 1) - c);
+//				for(int c2 = 3;c2 < jSon.data.Count;c2++)
+//					jSon.data[c].Move(3, (jSon.data.Count - 1) - (c - 3));
+			}
 			AvailabilityTimestamp = DateTime.Now;
 			return jSon;
 		}
 		
-		DataTable FetchAvailability(FileSystemInfo table_ca) {
-			DataTable dt = new DataTable();
-			string response = OiConnection.requestPhpOutput("ca", Id);
-			if(!string.IsNullOrEmpty(response)) {
-				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
-				AvailabilityChartTimestamp = DateTime.Now;
-			}
-			return dt;
-		}
+//		DataTable FetchAvailability(FileSystemInfo table_ca) {
+//			DataTable dt = new DataTable();
+//			string response = OiConnection.requestPhpOutput("ca", Id);
+//			if(!string.IsNullOrEmpty(response)) {
+//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
+//				AvailabilityChartTimestamp = DateTime.Now;
+//			}
+//			return dt;
+//		}
 		
 		string getPowerCompany() {
 			string response = OiConnection.requestApiOutput("access", Id);
