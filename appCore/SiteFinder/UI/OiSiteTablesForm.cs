@@ -106,56 +106,20 @@ namespace appCore.SiteFinder.UI
 			Text = "Site " + siteID + " " + DataType;
 		}
 		
-		public OiSiteTablesForm(Availability availabilityData, string siteID, Control owner = null) {
+		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID, Control owner = null) {
 			if(owner != null)
 				OwnerControl = owner;
-			Datatable = availabilityData.ToDataTable();
+			Datatable = inputDataTable;
 			InitializeComponent();
 			dataGridView1.Dock = DockStyle.Fill;
 			
 			Name = "AvailabilityDataTableForm";
-			DataType = "Availability Chart";
+			DataType = dataToShow;
 			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 			
 			populateGridView();
 			Text = "Site " + siteID + " " + DataType;
 		}
-		
-//		public OiSiteTablesForm(DataTable inputDataTable, string dataToShow, string siteID, Control owner = null) {
-//			if(owner != null)
-//				OwnerControl = owner;
-//			Datatable = inputDataTable;
-//			InitializeComponent();
-//			dataGridView1.Dock = DockStyle.Fill;
-//			switch(dataToShow) {
-//				case "INCs":
-//					Name = "INCsOiDataTableForm";
-//					DataType = "INCs";
-//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-//					break;
-//				case "CRQs":
-//					Name = "CRQsOiDataTableForm";
-//					DataType = "CRQs";
-//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-//					break;
-//				case "ActiveAlarms":
-//					Name = "ActiveAlarmsOiDataTableForm";
-//					DataType = "ActiveAlarms";
-//					break;
-//				case "BookIns":
-//					Name = "BookInsOiDataTableForm";
-//					DataType = "BookIns";
-//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-//					break;
-//				case "Availability":
-//					Name = "AvailabilityDataTableForm";
-//					DataType = "Availability Chart";
-//					dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-//					break;
-//			}
-//			populateGridView();
-//			Text = "Site " + siteID + " " + DataType;
-//		}
 		
 		public OiSiteTablesForm(DataTable currentCases, string siteID, Control owner = null) {
 			if(owner != null)
@@ -227,7 +191,7 @@ namespace appCore.SiteFinder.UI
 				dataGridView1.CellContentClick += DataGridView1CellContentClick;
 			}
 			else {
-				if(DataType == "Availability Chart") {
+				if(DataType == "Availability") {
 					dataGridView1.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
 					foreach(DataGridViewColumn dgvc in dataGridView1.Columns) {
 						if(dgvc.Name.Contains(" ")) {
@@ -334,7 +298,7 @@ namespace appCore.SiteFinder.UI
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 					}
 					break;
-				case "Availability Chart":
+				case "Availability":
 					if(dataGridView1.Columns[e.ColumnIndex].Name.Contains(" ")) {
 						string cellValue = e.Value.ToString();
 						if(!string.IsNullOrEmpty(cellValue)) {
@@ -352,29 +316,5 @@ namespace appCore.SiteFinder.UI
 					break;
 			}
 		}
-	}
-}
-
-public static class DtTools {
-	public static DataTable ToDataTable(this Availability items)
-	{
-		DataTable dataTable = new DataTable("Availability");
-
-		//Get all the properties
-		PropertyInfo[] Props = items.title.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-		foreach (PropertyInfo prop in Props) {
-			//Setting column names as Property names
-			dataTable.Columns.Add(prop.Name.Replace('_', ' '));
-		}
-//		foreach (T item in items) {
-//			var values = new object[Props.Length];
-//			for (int i = 0; i < Props.Length; i++) {
-//				//inserting property values to datatable rows
-//				values[i] = Props[i].GetValue(item, null);
-//			}
-//			dataTable.Rows.Add(values);
-//		}
-		//put a breakpoint here and check datatable
-		return dataTable;
 	}
 }

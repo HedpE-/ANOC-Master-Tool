@@ -8,7 +8,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
 namespace appCore.OI.JSON
@@ -22,8 +21,8 @@ namespace appCore.OI.JSON
 	
 	public class Availability
 	{
-		public ObservableCollection<AvailabilityColumns> data { get; set; }
-		public ObservableCollection<string> title { get; set; }
+		public List<AvailabilityRows> data { get; set; }
+		public List<string> title { get; set; }
 		public string tablename { get; set; }
 		public string memory { get; set; }
 		public string message { get; set; }
@@ -121,7 +120,7 @@ namespace appCore.OI.JSON
 		public string Date_Time { get; set; }
 	}
 	
-	public class AvailabilityColumns
+	public class AvailabilityRows
 	{
 		public string COL1 { get; set; }
 		public string COL2 { get; set; }

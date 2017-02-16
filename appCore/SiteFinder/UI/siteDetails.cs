@@ -798,7 +798,7 @@ namespace appCore.SiteFinder.UI
 					case "AvailabilityButton":
 						if(currentSite.Availability == null) {
 							currentSite.requestOIData("Availability");
-							if(currentSite.Availability.data.Count > 0) {
+							if(currentSite.Availability.Rows.Count > 0) {
 								MainMenu.AvailabilityButton.Enabled = true;
 								MainMenu.AvailabilityButton.ForeColor = Color.DarkGreen;
 								MainMenu.AvailabilityButton.Text = "Availability chart";
@@ -828,7 +828,7 @@ namespace appCore.SiteFinder.UI
 						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
 						break;
 					case "Availability":
-						OiTable = new OiSiteTablesForm(currentSite.Availability, currentSite.Id, this);
+						OiTable = new OiSiteTablesForm(currentSite.Availability, "Availability", currentSite.Id, this);
 						break;
 				}
 				OiTable.Show();

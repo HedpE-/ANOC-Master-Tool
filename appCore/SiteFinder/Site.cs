@@ -12,6 +12,7 @@ using System.Linq;
 using System.Drawing;
 using System.Data;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using GMap.NET;
 using GMap.NET.WindowsForms;
@@ -302,7 +303,7 @@ namespace appCore.SiteFinder
 		[FieldHidden]
 		DateTime VisitsTimestamp;
 		[FieldHidden]
-		public Availability Availability;
+		public DataTable Availability;
 		[FieldHidden]
 		DateTime AvailabilityTimestamp;
 		
@@ -404,7 +405,7 @@ namespace appCore.SiteFinder
 				if(dataToRequest.Contains("Availability")) {
 					Thread thread = new Thread(() => {
 //					                           	AvailabilityChart = FetchAvailability(null);
-					                           	Availability = FetchAvailability();
+					                           	Availability = FetchAvailability().ToDataTable();
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -542,11 +543,6 @@ namespace appCore.SiteFinder
 		Availability FetchAvailability() {
 			string response = OiConnection.requestApiOutput("availability", Id);
 			Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
-			for(int c = 3;c < jSon.title.Count;c++) {
-				jSon.title.Move(3, (jSon.title.Count - 1) - c);
-//				for(int c2 = 3;c2 < jSon.data.Count;c2++)
-//					jSon.data[c].Move(3, (jSon.data.Count - 1) - (c - 3));
-			}
 			AvailabilityTimestamp = DateTime.Now;
 			return jSon;
 		}
@@ -706,5 +702,36 @@ namespace appCore.SiteFinder
 			try { county = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
 			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 		}
+	}
+}
+
+public static class DtTools {
+	public static DataTable ToDataTable(this Availability jSon) {
+		DataTable dataTable = new DataTable("Availability");
+
+		for(int c = 0;c < 3; c++)
+			dataTable.Columns.Add(jSon.title[c]);
+		for(int c = jSon.title.Count - 4;c > 2;c--)
+			dataTable.Columns.Add(jSon.title[c]);
+		
+		foreach(AvailabilityRows cell in jSon.data) {
+			DataRow row = dataTable.NewRow();
+			int rowCol = 0;
+			row[rowCol++] = cell.CI_NAME;
+			row[rowCol++] = cell.CELL;
+			row[rowCol++] = cell.BEARER;
+			for(int c = 193; c > 0;c--) {
+				var prop = cell.GetType().GetProperty("COL" + c);
+				row[rowCol++] = prop.GetValue(cell);
+				// remove HTML tags from Status
+				while(row[rowCol - 1].ToString().Contains(">")) {
+					int startIndex = row[rowCol - 1].ToString().IndexOf("<");
+					int endIndex = row[rowCol - 1].ToString().IndexOf(">");
+					row[rowCol - 1] = row[rowCol - 1].ToString().Remove(startIndex, (endIndex - startIndex) + 1);
+				}
+			}
+			dataTable.Rows.Add(row);
+		}
+		return dataTable;
 	}
 }
