@@ -526,7 +526,7 @@ namespace appCore.SiteFinder.UI
 			                           		// titleLabel
 			                           		// 
 			                           		Label titleLabel = new Label();
-			                           		titleLabel.Location = new System.Drawing.Point(3, 5);
+			                           		titleLabel.Location = new Point(3, 5);
 			                           		titleLabel.Name = "label";
 			                           		titleLabel.AutoSize = true;
 			                           		titleLabel.Text = "Please provide list of sites to search";
@@ -534,7 +534,7 @@ namespace appCore.SiteFinder.UI
 			                           		// 
 			                           		// sitesList_tb
 			                           		//
-			                           		sitesList_tb.Location = new System.Drawing.Point(3, titleLabel.Top + titleLabel.Height - 2);
+			                           		sitesList_tb.Location = new Point(3, titleLabel.Top + titleLabel.Height - 2);
 			                           		sitesList_tb.Name = "sitesList_tb";
 			                           		sitesList_tb.Multiline = true;
 			                           		sitesList_tb.Size = new Size(175, 280);
@@ -543,7 +543,7 @@ namespace appCore.SiteFinder.UI
 			                           		// continueButton
 			                           		// 
 			                           		Button continueButton = new Button();
-			                           		continueButton.Location = new System.Drawing.Point(3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
+			                           		continueButton.Location = new Point(3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
 			                           		continueButton.Name = "continueButton";
 			                           		continueButton.Size = new Size(86, 23);
 			                           		continueButton.TabIndex = 6;
@@ -553,7 +553,7 @@ namespace appCore.SiteFinder.UI
 			                           		// cancelButton
 			                           		// 
 			                           		Button cancelButton = new Button();
-			                           		cancelButton.Location = new System.Drawing.Point((continueButton.Left + continueButton.Width) + 3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
+			                           		cancelButton.Location = new Point((continueButton.Left + continueButton.Width) + 3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
 			                           		cancelButton.Name = "cancelButton";
 			                           		cancelButton.Size = new Size(86, 23);
 			                           		cancelButton.TabIndex = 6;
