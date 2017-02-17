@@ -15,7 +15,7 @@ using FileHelpers;
 namespace appCore.SiteFinder
 {
 	/// <summary>
-	/// Description of Cell2.
+	/// Description of Cell.
 	/// </summary>
 	[DelimitedRecord(","), IgnoreFirst(1)]
 	public class Cell
@@ -51,7 +51,9 @@ namespace appCore.SiteFinder
 		string BEARER;
 		public string Bearer { get { return BEARER; } }
 		[FieldOrder(11)]
-		string COOS;
+		[FieldConverter(ConverterKind.Boolean, "Y", "")]
+		[FieldNullValue(typeof (bool), "false")]
+		public bool COOS;
 		[FieldOrder(12)]
 		string SO_EXCLUSION;
 		[FieldOrder(13)]
