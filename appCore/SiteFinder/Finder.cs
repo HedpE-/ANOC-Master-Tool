@@ -79,15 +79,14 @@ namespace appCore.SiteFinder
 				engine.AfterReadRecord +=  (eng, e) => {
 					if(!Sites.Contains(e.Record.Id))
 						e.SkipThisRecord = true;
-					else {
-						e.Record.populateCells();
-					}
 				};
 				sites = engine.ReadFileAsList(Databases.all_sites.FullName);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
 			}
+			
+			sites = getCells(Sites, sites);
 			
 			return sites;
 		}
@@ -139,6 +138,27 @@ namespace appCore.SiteFinder
 			sitesList.Add(site);
 			
 			return getCells(sitesList, bearers);
+		}
+		
+		static List<Site> getCells(ICollection<string> sites, List<Site> Sites) {
+			try {
+				var engine = new FileHelperEngine<Cell>();
+				engine.AfterReadRecord +=  (eng, e) => {
+					if(!sites.Contains(e.Record.ParentSite))
+						e.SkipThisRecord = true;
+					else {
+						Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
+						if(tempSite != null)
+							tempSite.Cells.Add(e.Record);
+					}
+				};
+				engine.ReadFileAsList(Databases.all_cells.FullName);
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
+			
+			return Sites;
 		}
 	}
 }
