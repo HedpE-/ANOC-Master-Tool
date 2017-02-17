@@ -337,7 +337,7 @@ namespace appCore.SiteFinder
 		List<Cell> cells;
 		public List<Cell> Cells {
 			get {
-			get { return cells; }
+				return cells;
 			}
 			private set {
 				cells = value;
@@ -406,6 +406,7 @@ namespace appCore.SiteFinder
 					Thread thread = new Thread(() => {
 //					                           	AvailabilityChart = FetchAvailability(null);
 					                           	Availability = FetchAvailability().ToDataTable();
+					                           	updateCOOS();
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -424,7 +425,7 @@ namespace appCore.SiteFinder
 				if(dataToRequest.Contains("LKULK")) {
 					Thread thread = new Thread(() => {
 					                           	if(LockedCellsDetails == null || forceUpdateLockedState)
-					                           		getOiCellsLockedState(true);
+					                           		getOiCellsState(true);
 					                           	
 					                           	finishedThreadsCount++;
 					                           });
@@ -592,7 +593,7 @@ namespace appCore.SiteFinder
 			return response.Contains("Site " + Id + "</b><table>") ? response : "No Cells Locked";
 		}
 		
-		void getOiCellsLockedState(bool getLockedCellsPage) {
+		void getOiCellsState(bool getLockedCellsPage) {
 			if(Exists && Cells.Count > 0) {
 				List<OiCell> list = new List<OiCell>();
 				
@@ -635,8 +636,10 @@ namespace appCore.SiteFinder
 				
 				foreach (Cell cell in Cells) {
 					OiCell oiCell = list.Find(s => s.CELL_NAME == cell.Name);
-					if(oiCell != null)
-						cell.Locked = oiCell.LOCKED != null;
+					if(oiCell != null) {
+						cell.Locked = !string.IsNullOrEmpty(oiCell.LOCKED);
+//						cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
+					}
 				}
 //				if(string.IsNullOrEmpty(indexPhp))
 //					indexPhp = OiConnection.requestPhpOutput("index", Id, string.Empty);
@@ -673,6 +676,21 @@ namespace appCore.SiteFinder
 //					// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
 //					// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
 //				}
+			}
+		}
+		
+		void updateCOOS() {
+			foreach(DataRow row in Availability.Rows) {
+				Cell cell = null;
+				try { cell = Cells.Find(s => s.Name == row["Cell"].ToString()); } catch { }
+				if(cell != null) {
+					int lastHour = string.IsNullOrEmpty(row[3].ToString()) ? 3600 : Convert.ToInt16(row[3].ToString());
+					int previousHour = string.IsNullOrEmpty(row[4].ToString()) ? 3600 : Convert.ToInt16(row[4].ToString());
+					if(lastHour >= 3599 || (lastHour > 0 && previousHour == 0))
+						cell.COOS = true;
+					else
+						cell.COOS = false;
+				}
 			}
 		}
 		
