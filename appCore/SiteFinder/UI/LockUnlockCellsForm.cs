@@ -548,7 +548,7 @@ namespace appCore.SiteFinder.UI
 		
 		void Button1Click(object sender, EventArgs e) {
 			DialogResult ans = DialogResult.Yes;
-			string name, contact = string.Empty;			
+			string name, contact = string.Empty;
 			if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
 				ans = DialogResult.Cancel;
 				Form approverForm = new Form();
