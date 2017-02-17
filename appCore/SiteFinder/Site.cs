@@ -337,7 +337,7 @@ namespace appCore.SiteFinder
 		List<Cell> cells;
 		public List<Cell> Cells {
 			get {
-				return cells;
+			get { return cells; }
 			}
 			private set {
 				cells = value;
