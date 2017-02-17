@@ -945,7 +945,9 @@ namespace appCore.Templates.UI
 					tempDT.Rows.Add("CRQ", crq.Change_Ref, crq.Summary, crq.Status, crq.Scheduled_Start, crq.Scheduled_End);
 				dv = tempDT.DefaultView;
 				dv.Sort = "Start Date desc";
-				currentCases.Rows.Add(dv.ToTable().Rows);
+				DataTable temp = dv.ToTable();
+				foreach(DataRow row in temp.Rows)
+					currentCases.Rows.Add(row.ItemArray);
 			}
 			
 			return currentCases;
