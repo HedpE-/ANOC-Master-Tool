@@ -334,15 +334,7 @@ namespace appCore.SiteFinder
 		}
 		
 		[FieldHidden]
-		List<Cell> cells;
-		public List<Cell> Cells {
-			get {
-				return cells;
-			}
-			private set {
-				cells = value;
-			}
-		}
+		public List<Cell> Cells = new List<Cell>();
 		[FieldHidden]
 		List<Cell> cellsInOutage;
 		public List<Cell> CellsInOutage {
@@ -710,7 +702,7 @@ namespace appCore.SiteFinder
 		}
 		
 		public void populateCells() {
-			cells = Finder.getCells(Id);
+			Cells = Finder.getCells(Id);
 		}
 		
 		void SplitAddress() {
