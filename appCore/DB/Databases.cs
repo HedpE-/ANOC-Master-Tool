@@ -101,7 +101,7 @@ namespace appCore.DB
 //			                       	string response = OiConnection.requestPhpOutput("allcells");
 			                       	string response = OiConnection.requestApiOutput("cells");
 			                       	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
-			                       		if(response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
+			                       		if(response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
 			                       			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
 			                       		if(GlobalProperties.shareAccess || onUserFolder) {
 			                       			if(source_allcells.Exists) {
