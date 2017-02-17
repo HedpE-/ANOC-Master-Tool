@@ -152,9 +152,31 @@ namespace appCore.SiteFinder.UI
 					break;
 				case "BookIns":
 					dataGridView1.DataSource = Visits;
+					try { dataGridView1.Sort(dataGridView1.Columns["Arrived"], System.ComponentModel.ListSortDirection.Descending); } catch { }
 					break;
 				case "Availability":
 					dataGridView1.DataSource = Datatable;
+					dataGridView1.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+					foreach(DataGridViewColumn dgvc in dataGridView1.Columns) {
+						if(dgvc.Name.Contains(" ")) {
+							dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+							dgvc.Width = 40;
+						}
+						else
+							dgvc.Frozen = true;
+					}
+//					dataGridView1.FirstDisplayedScrollingColumnIndex = dataGridView1.Columns.Count - 1;
+					break;
+				case "Cases":
+					dataGridView1.DataSource = Datatable;
+					DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();
+					chkColumn.HeaderText = "";
+					chkColumn.ThreeState = false;
+					chkColumn.FalseValue = false;
+					chkColumn.TrueValue = true;
+					chkColumn.Width = 19;
+					dataGridView1.Columns.Insert(0, chkColumn);
+					dataGridView1.CellContentClick += DataGridView1CellContentClick;
 					break;
 			}
 			
@@ -173,35 +195,6 @@ namespace appCore.SiteFinder.UI
 					default:
 						col.Name = col.HeaderText = col.Name.Replace('_', ' ');
 						break;
-				}
-			}
-			
-			try {
-				dataGridView1.Sort(dataGridView1.Columns["Arrived"], System.ComponentModel.ListSortDirection.Descending);;
-			} catch {}
-			
-			if(DataType == "Cases") {
-				DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();
-				chkColumn.HeaderText = "";
-				chkColumn.ThreeState = false;
-				chkColumn.FalseValue = false;
-				chkColumn.TrueValue = true;
-				chkColumn.Width = 19;
-				dataGridView1.Columns.Insert(0, chkColumn);
-				dataGridView1.CellContentClick += DataGridView1CellContentClick;
-			}
-			else {
-				if(DataType == "Availability") {
-					dataGridView1.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
-					foreach(DataGridViewColumn dgvc in dataGridView1.Columns) {
-						if(dgvc.Name.Contains(" ")) {
-							dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-							dgvc.Width = 40;
-						}
-						else
-							dgvc.Frozen = true;
-					}
-//					dataGridView1.FirstDisplayedScrollingColumnIndex = dataGridView1.Columns.Count - 1;
 				}
 			}
 			
