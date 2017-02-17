@@ -8,6 +8,7 @@
  */
 using appCore.OI;
 using appCore.OI.JSON;
+using appCore.UI;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -547,8 +548,69 @@ namespace appCore.SiteFinder.UI
 		
 		void Button1Click(object sender, EventArgs e) {
 			DialogResult ans = DialogResult.Yes;
-			if(label4.Visible && label4.Text.StartsWith("CAUTION"))
-				ans = appCore.UI.FlexibleMessageBox.Show("No valid book in found for this site.\n\nIt's OK to lock cells without a book in, as long as it's been authorized by the Shift Leader and you include the FE contact details on the comments.\n\nContinue anyway?","No book in", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+			string name, contact = string.Empty;			
+			if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
+				ans = DialogResult.Cancel;
+				Form approverForm = new Form();
+				approverForm.Size = new Size(233, 221);
+				approverForm.Text = "No book in";
+				approverForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+				approverForm.Icon = Resources.MB_0001_vodafone3;
+				
+				Label lb = new Label();
+				lb.Location = new Point(3, 3);
+				lb.Size = new Size(253, 91);
+				lb.Text = "No valid book in found for this site.\n\n" +
+					"It's OK to lock cells without a book in, as long\n" +
+					"as you provide the FE or lockdown approver\n" +
+					"contact details on the comments.\n\n" +
+					"Please fill in the required details.";
+				
+				Label nameLb = new Label();
+				nameLb.Text = "Name";
+				nameLb.Location = new Point(3, lb.Bottom + 10);
+				nameLb.Width = 50;
+				AMTTextBox nameTb = new AMTTextBox();
+				nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
+				nameTb.Width = 166;
+				Label contactLb = new Label();
+				contactLb.Text = "Contact";
+				contactLb.Location = new Point(3, nameLb.Bottom + 5);
+				contactLb.Width = 50;
+				AMTTextBox contactTb = new AMTTextBox();
+				contactTb.Location = new Point(contactLb.Right + 3, contactLb.Top);
+				contactTb.Width = 166;
+				Button okButton = new Button();
+				okButton.Text = "OK";
+				okButton.Location = new Point(3, contactLb.Bottom + 10);
+				Button cancelButton = new Button();
+				cancelButton.Text = "Cancel";
+				cancelButton.Location = new Point(approverForm.Width - cancelButton.Width - 10, contactLb.Bottom + 10);
+				okButton.Click += delegate {
+					if(!string.IsNullOrEmpty(nameTb.Text) && !string.IsNullOrEmpty(contactTb.Text)) {
+						name = nameTb.Text;
+						contact = contactTb.Text;
+						ans = DialogResult.OK;
+						approverForm.Close();
+					}
+					else
+						FlexibleMessageBox.Show("Please fill in the required information", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				};
+				cancelButton.Click += delegate {
+					ans = DialogResult.Cancel;
+					approverForm.Close();
+				};
+				approverForm.Controls.AddRange(new Control[] {
+				                               	lb,
+				                               	nameLb,
+				                               	nameTb,
+				                               	contactLb,
+				                               	contactTb,
+				                               	okButton,
+				                               	cancelButton
+				                               });
+				approverForm.ShowDialog();
+			}
 			if(ans == DialogResult.Yes) {
 				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
 				List<string> cellsList = new List<string>();
