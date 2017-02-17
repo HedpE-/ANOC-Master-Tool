@@ -25,6 +25,7 @@ namespace appCore.SiteFinder.UI
 	public partial class LockUnlockCellsForm : Form
 	{
 		Site currentSite;
+		List<Site> cellsLockedSites;
 		DataTable Table;
 		
 		int checkedCount {
@@ -344,8 +345,10 @@ namespace appCore.SiteFinder.UI
 			lb.Items.AddRange(expiredSitesList.ToArray());
 			lb.Items.AddRange(notExpiredSitesList.ToArray());
 			
-			if(lb.Items.Count > 0)
+			if(lb.Items.Count > 0) {
+				cellsLockedSites = Finder.getSites(lb.Items.Cast<string>().ToList());
 				lb.SetSelected(0, true);
+			}
 		}
 		
 		void ListBoxDrawItem(object sender, DrawItemEventArgs e) {
