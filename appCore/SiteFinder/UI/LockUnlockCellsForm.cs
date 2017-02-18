@@ -436,33 +436,38 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListBoxSelectedIndexChanged(object sender, EventArgs e) {
-			ListBox lb = sender as ListBox;
-			
-			dataGridView1.DataSource = null;
-			dataGridView1.Columns.Clear();
-			
-			dataGridView1.DataSource = GetSiteLockedCellsDT(lb.SelectedItem.ToString());
-			
-			dataGridView1.Columns["Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-			dataGridView1.Columns["Comments"].Width = 300;
-			dataGridView1.Columns["Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-			addCheckBoxColumn();
-			checkBox1.Checked = false;
-			
-			int selectedSiteIndex = cellsLockedSites.FindIndex(s => s.Id == lb.Text);
-			if(selectedSiteIndex > -1) {
-				Controls["offAirLabel"].Visible = false;
-				currentSite = cellsLockedSites[selectedSiteIndex];
-				if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
-					Thread thread = new Thread(() => currentSite.requestOIData("Availability"));
-					thread.SetApartmentState(ApartmentState.STA);
-					thread.Start();
-				}
-			}
-			else {
-				Controls["offAirLabel"].Visible = true;
-				currentSite = null;
-			}
+			Action actionNonThreaded = new Action(delegate {
+			                                      	ListBox lb = sender as ListBox;
+			                                      	
+			                                      	dataGridView1.DataSource = null;
+			                                      	dataGridView1.Columns.Clear();
+			                                      	
+			                                      	int selectedSiteIndex = cellsLockedSites.FindIndex(s => s.Id == lb.Text);
+			                                      	if(selectedSiteIndex > -1) {
+			                                      		Controls["offAirLabel"].Visible = false;
+			                                      		currentSite = cellsLockedSites[selectedSiteIndex];
+			                                      		if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
+			                                      			Thread thread = new Thread(() => currentSite.requestOIData("Availability"));
+			                                      			thread.SetApartmentState(ApartmentState.STA);
+			                                      			thread.Start();
+			                                      		}
+			                                      		while(currentSite.isUpdatingAvailability) { }
+			                                      	}
+			                                      	else {
+			                                      		Controls["offAirLabel"].Visible = true;
+			                                      		currentSite = null;
+			                                      	}
+			                                      	
+			                                      	dataGridView1.DataSource = GetSiteLockedCellsDT(lb.SelectedItem.ToString());
+			                                      	
+			                                      	dataGridView1.Columns["Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			                                      	dataGridView1.Columns["Comments"].Width = 300;
+			                                      	dataGridView1.Columns["Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+			                                      	addCheckBoxColumn();
+			                                      	checkBox1.Checked = false;
+			                                      });
+			LoadingPanel loading = new LoadingPanel();
+			loading.Show(null, actionNonThreaded, true, this);
 		}
 		
 		DataTable GetSiteLockedCellsDT(string site) {
