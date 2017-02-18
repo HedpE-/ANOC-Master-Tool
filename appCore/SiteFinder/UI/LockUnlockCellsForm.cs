@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using FileHelpers;
 
@@ -202,7 +203,7 @@ namespace appCore.SiteFinder.UI
 						dataGridView1.Columns["Unlock Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 						break;
 					case "Cells Locked":
-						this.Text = "Locked Cells";
+						Text = "Locked Cells";
 						ListBox lb = new ListBox();
 						lb.Name = "ListBox";
 						lb.Location = dataGridView1.Location;
@@ -212,7 +213,23 @@ namespace appCore.SiteFinder.UI
 						lb.DrawMode = DrawMode.OwnerDrawFixed;
 						lb.DrawItem += ListBoxDrawItem;
 						lb.SelectedIndexChanged += ListBoxSelectedIndexChanged;
-						Controls.Add(lb);
+						Label legendLabel = new Label();
+						legendLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						legendLabel.Text = "Cell Column color means still COOS or not";
+						legendLabel.Size = new Size(210, 18);
+						legendLabel.Location = new Point(dataGridView1.Right - legendLabel.Width, dataGridView1.Top - legendLabel.Height - 3);
+						Label offAirLabel = new Label();
+						offAirLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						offAirLabel.Size = new Size(90, 18);
+						offAirLabel.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold,GraphicsUnit.Point, ((byte)(0)));
+						offAirLabel.ForeColor = Color.Red;
+						offAirLabel.Name = "offAirLabel";
+						offAirLabel.Text = "Site Off Air";
+						offAirLabel.Location = new Point((dataGridView1.Width - offAirLabel.Width) / 2, legendLabel.Top - 2);
+						Controls.AddRange(new Control[] {
+						                  	lb,
+						                  	legendLabel,
+						                  	offAirLabel });
 						dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
 						dataGridView1.Width -= lb.Width + 5;
 						dataGridView1.RowsAdded += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
@@ -235,8 +252,12 @@ namespace appCore.SiteFinder.UI
 						amtRichTextBox1.Top = dataGridView1.Top;
 						label1.Location = new Point(lb.Left, label3.Top);
 						label1.Text = "Sites";
+						label1.Anchor = label2.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 						label2.Location = new Point(dataGridView1.Left, label1.Top);
 						label2.Text = "Locked Cells";
+						Resize += delegate {
+							offAirLabel.Left = (dataGridView1.Width - offAirLabel.Width) / 2;
+						};
 						
 						break;
 				}
@@ -271,6 +292,7 @@ namespace appCore.SiteFinder.UI
 		
 		public LockUnlockCellsForm() {
 			InitializeComponent();
+			dataGridView1.CellFormatting += dataGridView1_CellFormatting;
 			
 			UiMode = "Cells Locked";
 			
@@ -315,7 +337,7 @@ namespace appCore.SiteFinder.UI
 						var childNodes = tr.ChildNodes.Where(s => s.Name == "td" && !s.InnerHtml.Contains("checkbox"));
 						foreach(var childNode in childNodes) {
 							
-							siteCsv += childNode.InnerText.Replace(',',';').Replace("\r\n","<<lb>>");
+							siteCsv += childNode.InnerText.Replace(',',';').Replace("\n","<<lb>>").Replace("\r","");
 							if(childNode != childNodes.Last())
 								siteCsv += ',';
 						}
@@ -346,7 +368,34 @@ namespace appCore.SiteFinder.UI
 			lb.Items.AddRange(notExpiredSitesList.ToArray());
 			
 			if(lb.Items.Count > 0) {
-				cellsLockedSites = Finder.getSites(lb.Items.Cast<string>().ToList());
+				label1.Text = "Sites (" + lb.Items.Count + ")";
+				if(cellsLockedSites == null) {
+					cellsLockedSites = Finder.getSites(lb.Items.Cast<string>().ToList());
+					Thread thread = new Thread(() => {
+					                           	foreach(Site site in cellsLockedSites) {
+					                           		if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
+					                           			site.requestOIData("Availability");
+					                           	}
+					                           });
+					thread.SetApartmentState(ApartmentState.STA);
+					thread.Start();
+				}
+				else {
+					int siteToRemove = 0;
+					foreach(Site site in cellsLockedSites) {
+						if(!lb.Items.Contains(site.Id))
+							siteToRemove = cellsLockedSites.IndexOf(site);
+						else {
+							if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
+								Thread thread = new Thread(() => site.requestOIData("Availability"));
+								thread.SetApartmentState(ApartmentState.STA);
+								thread.Start();
+							}
+						}
+					}
+					cellsLockedSites.RemoveAt(siteToRemove);
+				}
+				
 				lb.SetSelected(0, true);
 			}
 		}
@@ -358,6 +407,8 @@ namespace appCore.SiteFinder.UI
 				if(((e.State & DrawItemState.Focus) != DrawItemState.Focus) && ((e.State & DrawItemState.Selected) != DrawItemState.Selected)) {
 					if(GetSiteLockedCells(lb.Items[e.Index].ToString()).LifeTime == "Expired")
 						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
+					if(cellsLockedSites.FindIndex(s => s.Id == lb.Items[e.Index].ToString()) == -1)
+						g.FillRectangle(new SolidBrush(Color.Gray), e.Bounds);
 				}
 				else
 					g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
@@ -382,6 +433,21 @@ namespace appCore.SiteFinder.UI
 			dataGridView1.Columns["Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 			addCheckBoxColumn();
 			checkBox1.Checked = false;
+			
+			int selectedSiteIndex = cellsLockedSites.FindIndex(s => s.Id == lb.Text);
+			if(selectedSiteIndex > -1) {
+				Controls["offAirLabel"].Visible = false;
+				currentSite = cellsLockedSites[selectedSiteIndex];
+				if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
+					Thread thread = new Thread(() => currentSite.requestOIData("Availability"));
+					thread.SetApartmentState(ApartmentState.STA);
+					thread.Start();
+				}
+			}
+			else {
+				Controls["offAirLabel"].Visible = true;
+				currentSite = null;
+			}
 		}
 		
 		DataTable GetSiteLockedCellsDT(string site) {
@@ -863,15 +929,15 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
-			if(!dataGridView1.Rows[e.RowIndex].Cells["NOC"].Value.ToString().Contains("ANOC")) {
-				e.CellStyle.ForeColor = SystemColors.GrayText;
-				if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
-					e.CellStyle.BackColor = SystemColors.InactiveBorder;
-				dataGridView1.Rows[e.RowIndex].Frozen = true;
-			}
-			else {
-				switch(UiMode) {
-					case "Lock Cells":
+			switch(UiMode) {
+				case "Lock Cells":
+					if(!dataGridView1.Rows[e.RowIndex].Cells["NOC"].Value.ToString().Contains("ANOC")) {
+						e.CellStyle.ForeColor = SystemColors.GrayText;
+						if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
+							e.CellStyle.BackColor = SystemColors.InactiveBorder;
+						dataGridView1.Rows[e.RowIndex].Frozen = true;
+					}
+					else {
 						if(dataGridView1.Rows[e.RowIndex].Cells["Locked"].Value.ToString() == "YES") {
 							e.CellStyle.ForeColor = SystemColors.GrayText;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
@@ -884,8 +950,16 @@ namespace appCore.SiteFinder.UI
 								e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
 							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
-						break;
-					case "Unlock Cells":
+					}
+					break;
+				case "Unlock Cells":
+					if(!dataGridView1.Rows[e.RowIndex].Cells["NOC"].Value.ToString().Contains("ANOC")) {
+						e.CellStyle.ForeColor = SystemColors.GrayText;
+						if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
+							e.CellStyle.BackColor = SystemColors.InactiveBorder;
+						dataGridView1.Rows[e.RowIndex].Frozen = true;
+					}
+					else {
 						if(dataGridView1.Rows[e.RowIndex].Cells["Locked"].Value.ToString() == "No") {
 							e.CellStyle.ForeColor = SystemColors.GrayText;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
@@ -898,13 +972,22 @@ namespace appCore.SiteFinder.UI
 								e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
 							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
-						break;
-					case "History":
-						e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
-						e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-						dataGridView1.Rows[e.RowIndex].Frozen = false;
-						break;
-				}
+					}
+					break;
+				case "History":
+					e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
+					e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
+					dataGridView1.Rows[e.RowIndex].Frozen = false;
+					break;
+				case "Cells Locked":
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Cell") {
+						if(currentSite != null) {
+							Cell cell = currentSite.Cells.Find(c => c.Name == dataGridView1.Rows[e.RowIndex].Cells["Cell"].Value.ToString());
+							if(cell != null)
+								e.CellStyle.BackColor = cell.COOS ? Color.OrangeRed :  Color.LightGreen;
+						}
+					}
+					break;
 			}
 			if(dataGridView1.Columns[e.ColumnIndex].Name == "Locked")
 				e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
@@ -955,9 +1038,7 @@ namespace appCore.SiteFinder.UI
 		[FieldOrder(9)]
 		public string Comments;
 		
-		public CellsLockedItem() {
-			
-		}
+		public CellsLockedItem() { }
 	}
 	
 	public class CellsLockedSite {
