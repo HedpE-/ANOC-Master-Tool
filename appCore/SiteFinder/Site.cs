@@ -291,21 +291,31 @@ namespace appCore.SiteFinder
 		[FieldHidden]
 		public DateTime AlarmsTimestamp;
 		[FieldHidden]
+		public bool isUpdatingAlarms;
+		[FieldHidden]
 		public List<Incident> Incidents;
 		[FieldHidden]
 		public DateTime IncidentsTimestamp;
+		[FieldHidden]
+		public bool isUpdatingIncidents;
 		[FieldHidden]
 		public List<Change> Changes;
 		[FieldHidden]
 		public DateTime ChangesTimestamp;
 		[FieldHidden]
+		public bool isUpdatingChanges;
+		[FieldHidden]
 		public List<BookIn> Visits;
 		[FieldHidden]
 		public DateTime VisitsTimestamp;
 		[FieldHidden]
+		public bool isUpdatingVisits;
+		[FieldHidden]
 		public DataTable Availability;
 		[FieldHidden]
 		public DateTime AvailabilityTimestamp;
+		[FieldHidden]
+		public bool isUpdatingAvailability;
 		
 		[FieldHidden]
 		public DataTable LockedCellsDetails;
@@ -360,8 +370,10 @@ namespace appCore.SiteFinder
 				int finishedThreadsCount = 0;
 				if(dataToRequest.Contains("INC")) {
 					Thread thread = new Thread(() => {
+					                           	isUpdatingIncidents = true;
 //					                           	INCs = FetchINCs(null);
 					                           	Incidents = FetchINCs();
+					                           	isUpdatingIncidents = false;
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -369,8 +381,10 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("CRQ")) {
 					Thread thread = new Thread(() => {
+					                           	isUpdatingChanges = true;
 //					                           	CRQs = FetchCRQs(null);
 					                           	Changes = FetchCRQs();
+					                           	isUpdatingChanges = false;
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -378,8 +392,10 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Alarms")) {
 					Thread thread = new Thread(() => {
+					                           	isUpdatingAlarms = true;
 //					                           	ActiveAlarms = FetchActiveAlarms(null);
 					                           	Alarms = FetchActiveAlarms();
+					                           	isUpdatingAlarms = false;
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -387,8 +403,10 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Bookins")) {
 					Thread thread = new Thread(() => {
+					                           	isUpdatingVisits = true;
 //					                           	BookIns = FetchBookIns(null);
 					                           	Visits = FetchBookIns();
+					                           	isUpdatingVisits = false;
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
@@ -396,9 +414,11 @@ namespace appCore.SiteFinder
 				
 				if(dataToRequest.Contains("Availability")) {
 					Thread thread = new Thread(() => {
+					                           	isUpdatingAvailability = true;
 //					                           	AvailabilityChart = FetchAvailability(null);
 					                           	Availability = FetchAvailability().ToDataTable();
 					                           	updateCOOS();
+					                           	isUpdatingAvailability = false;
 					                           	finishedThreadsCount++;
 					                           });
 					threads.Add(thread);
