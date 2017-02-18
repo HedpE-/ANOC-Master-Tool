@@ -48,7 +48,7 @@ namespace appCore.SiteFinder.UI
 				try {
 					foreach(DataGridViewRow row in dataGridView1.Rows) {
 						if(row.Cells["Tech"].Value != null) {
-							if(row.Cells["Tech"].Value.ToString() == "2G" && !row.Frozen)
+							if(row.Cells["Tech"].Value.ToString() == "2G" && !rowInactive(row))
 								c++;
 						}
 					}
@@ -80,7 +80,7 @@ namespace appCore.SiteFinder.UI
 				try {
 					foreach(DataGridViewRow row in dataGridView1.Rows) {
 						if(row.Cells["Tech"].Value != null) {
-							if(row.Cells["Tech"].Value.ToString() == "3G" && !row.Frozen)
+							if(row.Cells["Tech"].Value.ToString() == "3G" && !rowInactive(row))
 								c++;
 						}
 					}
@@ -112,7 +112,7 @@ namespace appCore.SiteFinder.UI
 				try {
 					foreach(DataGridViewRow row in dataGridView1.Rows) {
 						if(row.Cells["Tech"].Value != null) {
-							if(row.Cells["Tech"].Value.ToString() == "4G" && !row.Frozen)
+							if(row.Cells["Tech"].Value.ToString() == "4G" && !rowInactive(row))
 								c++;
 						}
 					}
@@ -187,6 +187,11 @@ namespace appCore.SiteFinder.UI
 						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => s.Locked).Count() > 0;
 						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => s.Locked).Count() > 0;
 						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => s.Locked).Count() > 0;
+						
+						checkBox1.Checked =
+							checkBox2.Checked =
+							checkBox3.Checked = false;
+						
 						dataGridView1.Width = checkBox1.Left - 12;
 						dataGridView1.Columns["Lock Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 						dataGridView1.Columns["Lock Comments"].Width = 300;
@@ -400,6 +405,16 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
+		bool rowInactive(DataGridViewRow row) {
+			switch(UiMode) {
+				case "Lock Cells":
+					return row.Cells["Locked"].Value.ToString() == "YES";
+				case "Unlock Cells":
+					return row.Cells["Locked"].Value.ToString() == "No";
+			}
+			return false;
+		}
+		
 		void ListBoxDrawItem(object sender, DrawItemEventArgs e) {
 			ListBox lb = sender as ListBox;
 			e.DrawBackground();
@@ -515,7 +530,7 @@ namespace appCore.SiteFinder.UI
 			                                      		ResumeLayout();
 			                                      	}
 			                                      });
-			appCore.UI.LoadingPanel loading = new appCore.UI.LoadingPanel();
+			LoadingPanel loading = new LoadingPanel();
 			loading.Show(null, actionNonThreaded, true, this);
 		}
 		
@@ -616,18 +631,22 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
-			DialogResult ans = DialogResult.Yes;
-			string name, contact = string.Empty;
+			DialogResult ans = DialogResult.OK;
+			string name = string.Empty;
+			string contact = string.Empty;
+			string rbText = string.Empty;
 			if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
 				ans = DialogResult.Cancel;
 				Form approverForm = new Form();
-				approverForm.Size = new Size(233, 221);
+				approverForm.Size = new Size(233, 260);
 				approverForm.Text = "No book in";
 				approverForm.FormBorderStyle = FormBorderStyle.FixedSingle;
 				approverForm.Icon = Resources.MB_0001_vodafone3;
+				approverForm.MaximizeBox =
+					approverForm.MinimizeBox = false;
 				
 				Label lb = new Label();
-				lb.Location = new Point(3, 3);
+				lb.Location = new Point(3, 9);
 				lb.Size = new Size(253, 91);
 				lb.Text = "No valid book in found for this site.\n\n" +
 					"It's OK to lock cells without a book in, as long\n" +
@@ -635,9 +654,18 @@ namespace appCore.SiteFinder.UI
 					"contact details on the comments.\n\n" +
 					"Please fill in the required details.";
 				
+				RadioButton rb1 = new RadioButton();
+				rb1.Text = "FE";
+				rb1.Width = 40;
+				rb1.Location = new Point(6, lb.Bottom + 8);
+				rb1.Checked = true;
+				RadioButton rb2 = new RadioButton();
+				rb2.Text = "Approver";
+				rb2.Location = new Point(rb1.Right + 5, rb1.Top);
+				
 				Label nameLb = new Label();
 				nameLb.Text = "Name";
-				nameLb.Location = new Point(3, lb.Bottom + 10);
+				nameLb.Location = new Point(3, rb1.Bottom + 10);
 				nameLb.Width = 50;
 				AMTTextBox nameTb = new AMTTextBox();
 				nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
@@ -659,6 +687,7 @@ namespace appCore.SiteFinder.UI
 					if(!string.IsNullOrEmpty(nameTb.Text) && !string.IsNullOrEmpty(contactTb.Text)) {
 						name = nameTb.Text;
 						contact = contactTb.Text;
+						rbText = rb1.Checked ? rb1.Text : rb2.Text;
 						ans = DialogResult.OK;
 						approverForm.Close();
 					}
@@ -671,6 +700,8 @@ namespace appCore.SiteFinder.UI
 				};
 				approverForm.Controls.AddRange(new Control[] {
 				                               	lb,
+				                               	rb1,
+				                               	rb2,
 				                               	nameLb,
 				                               	nameTb,
 				                               	contactLb,
@@ -678,9 +709,12 @@ namespace appCore.SiteFinder.UI
 				                               	okButton,
 				                               	cancelButton
 				                               });
-				approverForm.ShowDialog();
+				Action actionNonThreaded = new Action(delegate {
+				                                      	approverForm.ShowDialog();
+				                                      });
+				Toolbox.Tools.darkenBackgroundForm(actionNonThreaded, false, this);
 			}
-			if(ans == DialogResult.Yes) {
+			if(ans == DialogResult.OK) {
 				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
 				List<string> cellsList = new List<string>();
 				foreach(DataGridViewRow row in filtered) {
@@ -870,7 +904,7 @@ namespace appCore.SiteFinder.UI
 //					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
 //				}
 //				else {
-				if(!dataGridView1.Rows[e.RowIndex].Frozen) {
+				if(!rowInactive(dataGridView1.Rows[e.RowIndex])) {
 					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
 					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
 				}
@@ -935,20 +969,20 @@ namespace appCore.SiteFinder.UI
 						e.CellStyle.ForeColor = SystemColors.GrayText;
 						if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 							e.CellStyle.BackColor = SystemColors.InactiveBorder;
-						dataGridView1.Rows[e.RowIndex].Frozen = true;
+//						dataGridView1.Rows[e.RowIndex].Frozen = true;
 					}
 					else {
 						if(dataGridView1.Rows[e.RowIndex].Cells["Locked"].Value.ToString() == "YES") {
 							e.CellStyle.ForeColor = SystemColors.GrayText;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = SystemColors.InactiveBorder;
-							dataGridView1.Rows[e.RowIndex].Frozen = true;
+//							dataGridView1.Rows[e.RowIndex].Frozen = true;
 						}
 						else {
 							e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-							dataGridView1.Rows[e.RowIndex].Frozen = false;
+//							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
 					}
 					break;
@@ -957,27 +991,27 @@ namespace appCore.SiteFinder.UI
 						e.CellStyle.ForeColor = SystemColors.GrayText;
 						if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 							e.CellStyle.BackColor = SystemColors.InactiveBorder;
-						dataGridView1.Rows[e.RowIndex].Frozen = true;
+//						dataGridView1.Rows[e.RowIndex].Frozen = true;
 					}
 					else {
 						if(dataGridView1.Rows[e.RowIndex].Cells["Locked"].Value.ToString() == "No") {
 							e.CellStyle.ForeColor = SystemColors.GrayText;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = SystemColors.InactiveBorder;
-							dataGridView1.Rows[e.RowIndex].Frozen = true;
+//							dataGridView1.Rows[e.RowIndex].Frozen = true;
 						}
 						else {
 							e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
 							if(dataGridView1.Columns[e.ColumnIndex].Name != "Locked")
 								e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-							dataGridView1.Rows[e.RowIndex].Frozen = false;
+//							dataGridView1.Rows[e.RowIndex].Frozen = false;
 						}
 					}
 					break;
 				case "History":
 					e.CellStyle.ForeColor = dataGridView1.DefaultCellStyle.ForeColor;
 					e.CellStyle.BackColor = dataGridView1.DefaultCellStyle.BackColor;
-					dataGridView1.Rows[e.RowIndex].Frozen = false;
+//					dataGridView1.Rows[e.RowIndex].Frozen = false;
 					break;
 				case "Cells Locked":
 					if(dataGridView1.Columns[e.ColumnIndex].Name == "Cell") {
