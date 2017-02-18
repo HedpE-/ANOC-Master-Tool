@@ -289,23 +289,23 @@ namespace appCore.SiteFinder
 		[FieldHidden]
 		public List<Alarm> Alarms;
 		[FieldHidden]
-		DateTime AlarmsTimestamp;
+		public DateTime AlarmsTimestamp;
 		[FieldHidden]
 		public List<Incident> Incidents;
 		[FieldHidden]
-		DateTime IncidentsTimestamp;
+		public DateTime IncidentsTimestamp;
 		[FieldHidden]
 		public List<Change> Changes;
 		[FieldHidden]
-		DateTime ChangesTimestamp;
+		public DateTime ChangesTimestamp;
 		[FieldHidden]
 		public List<BookIn> Visits;
 		[FieldHidden]
-		DateTime VisitsTimestamp;
+		public DateTime VisitsTimestamp;
 		[FieldHidden]
 		public DataTable Availability;
 		[FieldHidden]
-		DateTime AvailabilityTimestamp;
+		public DateTime AvailabilityTimestamp;
 		
 		[FieldHidden]
 		public DataTable LockedCellsDetails;
