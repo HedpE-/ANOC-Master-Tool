@@ -74,11 +74,14 @@ namespace appCore.SiteFinder
 		public static List<Site> getSites(List<string> Sites)
 		{
 			List<Site> sites = new List<Site>();
+			List<string> foundSites = new List<string>();
 			try {
 				var engine = new FileHelperEngine<Site>();
 				engine.AfterReadRecord +=  (eng, e) => {
 					if(!Sites.Contains(e.Record.Id))
 						e.SkipThisRecord = true;
+					else
+						foundSites.Add(e.Record.Id);
 				};
 				sites = engine.ReadFileAsList(Databases.all_sites.FullName);
 			}
@@ -86,7 +89,8 @@ namespace appCore.SiteFinder
 				string f = e.Message;
 			}
 			
-			sites = getCells(Sites, sites);
+			if(foundSites.Count > 0)
+				sites = getCells(foundSites, sites);
 			
 			return sites;
 		}
