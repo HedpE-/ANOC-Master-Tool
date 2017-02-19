@@ -220,9 +220,42 @@ namespace appCore.SiteFinder.UI
 						lb.SelectedIndexChanged += ListBoxSelectedIndexChanged;
 						Label legendLabel = new Label();
 						legendLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-						legendLabel.Text = "Cell Column color means still COOS or not";
-						legendLabel.Size = new Size(210, 18);
-						legendLabel.Location = new Point(dataGridView1.Right - legendLabel.Width, dataGridView1.Top - legendLabel.Height - 3);
+						legendLabel.Text = "Cells color:";
+						legendLabel.Size = new Size(60, 18);
+						legendLabel.Location = new Point(dataGridView1.Right - 300, dataGridView1.Top - legendLabel.Height - 3);
+						PictureBox pb1 = new PictureBox();
+						pb1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						pb1.Size = new Size(20, 20);
+						pb1.BackColor = Color.Red;
+						pb1.BorderStyle = BorderStyle.FixedSingle;
+						pb1.Location = new Point(legendLabel.Right + 5, legendLabel.Top - 4);
+						Label pb1Label = new Label();
+						pb1Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						pb1Label.Text = "COOS";
+						pb1Label.Size = new Size(40, 18);
+						pb1Label.Location = new Point(pb1.Right + 3, legendLabel.Top);
+						PictureBox pb2 = new PictureBox();
+						pb2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						pb2.Size = new Size(20, 20);
+						pb2.BackColor = Color.LightGreen;
+						pb2.BorderStyle = BorderStyle.FixedSingle;
+						pb2.Location = new Point(pb1Label.Right + 5, pb1.Top);
+						Label pb2Label = new Label();
+						pb2Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						pb2Label.Text = "Non COOS";
+						pb2Label.Size = new Size(60, 18);
+						pb2Label.Location = new Point(pb2.Right + 3, legendLabel.Top);
+						PictureBox pb3 = new PictureBox();
+						pb3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						pb3.Size = new Size(20, 20);
+						pb3.BackColor = Color.White;
+						pb3.BorderStyle = BorderStyle.FixedSingle;
+						pb3.Location = new Point(pb2Label.Right + 5, pb1.Top);
+						Label pb3Label = new Label();
+						pb3Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+						pb3Label.Text = "Cell off air";
+						pb3Label.Size = new Size(60, 18);
+						pb3Label.Location = new Point(pb3.Right + 3, legendLabel.Top);
 						Label offAirLabel = new Label();
 						offAirLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 						offAirLabel.Size = new Size(90, 18);
@@ -234,6 +267,12 @@ namespace appCore.SiteFinder.UI
 						Controls.AddRange(new Control[] {
 						                  	lb,
 						                  	legendLabel,
+						                  	pb1,
+						                  	pb1Label,
+						                  	pb2,
+						                  	pb2Label,
+						                  	pb3,
+						                  	pb3Label,
 						                  	offAirLabel });
 						dataGridView1.Location = new Point(lb.Right + 5, dataGridView1.Top);
 						dataGridView1.Width -= lb.Width + 5;
@@ -301,7 +340,12 @@ namespace appCore.SiteFinder.UI
 			
 			UiMode = "Cells Locked";
 			
-			populateCellsLocked();
+			Action actionNonThreaded = new Action(delegate {
+			                                      	populateCellsLocked();
+			                                      });
+			
+			LoadingPanel load = new LoadingPanel();
+			load.Show(null, actionNonThreaded, true,this);
 		}
 		
 		public LockUnlockCellsForm(Form parent) {
@@ -431,7 +475,7 @@ namespace appCore.SiteFinder.UI
 				if(e.Index != -1)
 					g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), lb.GetItemRectangle(e.Index).Location);
 			}
-
+//			if((e.State & DrawItemState.Focus) != DrawItemState.Focus)
 			e.DrawFocusRectangle();
 		}
 		
@@ -451,7 +495,7 @@ namespace appCore.SiteFinder.UI
 			                                      			thread.SetApartmentState(ApartmentState.STA);
 			                                      			thread.Start();
 			                                      		}
-			                                      		while(currentSite.isUpdatingAvailability) { }
+			                                      		while((DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) || currentSite.isUpdatingAvailability) { }
 			                                      	}
 			                                      	else {
 			                                      		Controls["offAirLabel"].Visible = true;
@@ -467,7 +511,7 @@ namespace appCore.SiteFinder.UI
 			                                      	checkBox1.Checked = false;
 			                                      });
 			LoadingPanel loading = new LoadingPanel();
-			loading.Show(null, actionNonThreaded, true, this);
+			loading.Show(null, actionNonThreaded, true, dataGridView1);
 		}
 		
 		DataTable GetSiteLockedCellsDT(string site) {
@@ -535,8 +579,12 @@ namespace appCore.SiteFinder.UI
 			                                      		ResumeLayout();
 			                                      	}
 			                                      });
-			LoadingPanel loading = new LoadingPanel();
-			loading.Show(null, actionNonThreaded, true, this);
+			if(!Controls.OfType<LoadingPanel>().Any()) {
+				LoadingPanel loading = new LoadingPanel();
+				loading.Show(null, actionNonThreaded, true, this);
+			}
+			else
+				actionNonThreaded();
 		}
 		
 		void checkBookIn() {
