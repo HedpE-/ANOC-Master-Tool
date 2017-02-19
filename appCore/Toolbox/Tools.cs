@@ -175,20 +175,30 @@ namespace appCore.Toolbox
 				
 				// display your dialog somehow:
 				if(showLoading) {
+					const int spinnerSize = 32;
 					Point loc = p.PointToScreen(Point.Empty);
-					loc.X = loc.X + ((p.Width - 32) / 2);
-					loc.Y = loc.Y + ((p.Height - 32) / 2);
+					loc.X = loc.X + ((p.Width - spinnerSize) / 2);
+					loc.Y = loc.Y + ((p.Height - spinnerSize) / 2);
 //					PictureBox loadingBox = new PictureBox();
 //					loadingBox.Image = Resources.spinner1;
 //					loadingBox.Location = loc;
 //					p.Controls.Add(loadingBox);
-					Loading.ShowLoadingForm(loc, parentForm);
+//					Loading.ShowLoadingForm(loc, parentForm);
+					
+					ProgressSpinner loadingBox = new ProgressSpinner();
+					loadingBox.LoadGIFImage = Resources.spinner1;
+					loadingBox.BackColor = Color.Transparent;
+					loadingBox.Size = new Size(spinnerSize, spinnerSize);
+					loadingBox.Location = loc;
+					p.Controls.Add(loadingBox);
+					loadingBox.BringToFront();
+					loadingBox.Start();
 				}
 				
 				action();
 				
-				if(showLoading)
-					Loading.CloseLoadingForm();
+//				if(showLoading)
+//					loadingBox.Stop();
 			} // panel will be disposed and the form will "lighten" again...
 		}
 		

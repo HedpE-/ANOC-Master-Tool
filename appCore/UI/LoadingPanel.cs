@@ -54,8 +54,10 @@ namespace appCore.UI
 		public void Show(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
 			darkenBackgroundForm(showLoading, parentControl);
 			
-			if(actionThreaded != null)
-				backgroundWorker.DoWork += delegate { actionThreaded(); };
+			backgroundWorker.DoWork += delegate {
+				if(actionThreaded != null)
+					actionThreaded();
+			};
 			
 			backgroundWorker.RunWorkerCompleted += delegate {
 				if(actionNonThreaded != null)
@@ -68,36 +70,48 @@ namespace appCore.UI
 		}
 		
 		void darkenBackgroundForm(bool showLoading, Control parentControl) {
-			Form parentForm = getParentForm(parentControl);
-			parentForm.Controls.Add(this);
+//			Form parentForm = getParentForm(parentControl);
+			Form parentForm = parentControl.FindForm();
+			if(!(parentControl is Form))
+				parentControl.Parent.Controls.Add(this);
+			else
+				parentControl.Controls.Add(this);
 			// take a screenshot of the form and darken it
-			Bitmap bmp = new Bitmap(Parent.ClientRectangle.Width, Parent.ClientRectangle.Height);
+			Bitmap bmp = new Bitmap(parentControl.ClientRectangle.Width, parentControl.ClientRectangle.Height);
 			using (Graphics g = Graphics.FromImage(bmp))
 			{
 				g.CompositingMode = CompositingMode.SourceOver;
-				g.CopyFromScreen(Parent.PointToScreen(new Point(0, 0)), new Point(0, 0), Parent.ClientRectangle.Size);
+				g.CopyFromScreen(parentControl.PointToScreen(new Point(0, 0)), new Point(0, 0), parentControl.ClientRectangle.Size);
 				Color darken = Color.FromArgb((int)(255 * Opacity), Color.Black);
 				using (Brush brsh = new SolidBrush(darken))
-					g.FillRectangle(brsh, Parent.ClientRectangle);
+					g.FillRectangle(brsh, parentControl.ClientRectangle);
 			}
-
-			Location = new Point(0, 0);
-			Size = Parent.ClientRectangle.Size;
+			
+//			Location = new Point(parentControl.PointToScreen(Point.Empty).X - parentForm.PointToScreen(Point.Empty).X,
+//			                     parentControl.PointToScreen(Point.Empty).Y - parentForm.PointToScreen(Point.Empty).Y);
+			
+			if(!(parentControl is Form))
+				Location = parentControl.Location;
+			else
+				Location = Point.Empty;
+			
+			Size = parentControl.ClientRectangle.Size;
 			BackgroundImage = bmp;
 			
 			BringToFront();
 			if(showLoading) {
 				Point loc = PointToScreen(Point.Empty);
-				loc.X = (Parent.Width - spinnerSize) / 2;
-				loc.Y = (Parent.Height - spinnerSize) / 2;
-				PictureBox loadingBox = new PictureBox();
+				loc.X = (parentControl.Width - spinnerSize) / 2;
+				loc.Y = (parentControl.Height - spinnerSize) / 2;
+				ProgressSpinner loadingBox = new ProgressSpinner();
+				loadingBox.LoadGIFImage = Resources.spinner1;
 				loadingBox.BackColor = Color.Transparent;
-				loadingBox.Image = loadingBox.InitialImage = Resources.spinner1;
 				loadingBox.Size = new Size(spinnerSize, spinnerSize);
-				loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
+//				loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
 				loadingBox.Location = loc;
 				Controls.Add(loadingBox);
 				loadingBox.BringToFront();
+				loadingBox.Start();
 			}
 		}
 		
