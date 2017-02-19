@@ -29,6 +29,9 @@ namespace appCore.OI
 		static Uri OldOiPortalUri = new Uri("http://195.233.194.118/");
 		public static bool LoggedOn;
 		public static bool LoggedOnOldOiPortal;
+		static DateTime LoggedOnCheckTimeStamp;
+		static DateTime LoggedOnOldOiPortalCheckTimeStamp;
+		static TimeSpan LogonCheckLifeTime = new TimeSpan(0, 30, 0);
 		public static CookieContainer OICookieContainer {
 			get;
 			private set;
@@ -165,9 +168,8 @@ namespace appCore.OI
 			if(CheckAvailability(OldOiPortal) == HttpStatusCode.OK) { // Check server availability
 				// Check Login status
 				bool loginState = OldOiPortal ? LoggedOnOldOiPortal : LoggedOn;
-				if(!loginState) {
+				if(!loginState)
 					Logon(OldOiPortal);
-				}
 				else {
 					// If already logged in, confirm on server
 					client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
