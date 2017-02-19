@@ -127,8 +127,11 @@ namespace appCore.Settings.UI
 			Action action = new Action(delegate
 			                           {
 			                           	Databases.LoadDBFiles(null, null);
+			                           	System.Threading.Thread.Sleep(10000);
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action, true, this);
+//			Toolbox.Tools.darkenBackgroundForm(action, true, this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(action, null, true, this);
 		}
 
 		//        void SettingsForm_Load(object sender, EventArgs e)
