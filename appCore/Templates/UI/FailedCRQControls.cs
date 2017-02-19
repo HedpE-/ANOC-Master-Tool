@@ -158,7 +158,7 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 					
 					generateTemplateToolStripMenuItem.Enabled =
-					SiteDetailsToolStripMenuItem.Enabled =
+						SiteDetailsToolStripMenuItem.Enabled =
 						clearToolStripMenuItem.Enabled = false;
 				}
 			}
@@ -325,20 +325,28 @@ namespace appCore.Templates.UI
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
 				
-				currentSite = Finder.getSite(tb.Text);				
-				if(currentSite.Exists) {
-					currentSite.requestOIData("INCCRQ");
-					PriorityTextBox.Text = currentSite.Priority;
-					RegionTextBox.Text = currentSite.Region;
-					SiteDetailsToolStripMenuItem.Enabled = true;
-				}
-				else {
-					RegionTextBox.Text = "No site found";
-					PriorityTextBox.Text = string.Empty;
-					SiteDetailsToolStripMenuItem.Enabled = false;
-				}
+				Action actionThreaded = new Action(delegate {
+				                                   	currentSite = Finder.getSite(tb.Text);
+				                                   	if(currentSite.Exists)
+				                                   		currentSite.requestOIData("INCCRQ");
+				                                   });
 				
-				siteFinder_Toggle(true, currentSite.Exists);
+				Action actionNonThreaded = new Action(delegate {
+				                                      	if(currentSite.Exists) {
+				                                      		PriorityTextBox.Text = currentSite.Priority;
+				                                      		RegionTextBox.Text = currentSite.Region;
+				                                      		SiteDetailsToolStripMenuItem.Enabled = true;
+				                                      	}
+				                                      	else {
+				                                      		RegionTextBox.Text = "No site found";
+				                                      		PriorityTextBox.Text = string.Empty;
+				                                      		SiteDetailsToolStripMenuItem.Enabled = false;
+				                                      	}
+				                                      	
+				                                      	siteFinder_Toggle(true, currentSite.Exists);
+				                                      });
+				LoadingPanel load = new LoadingPanel();
+				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 
