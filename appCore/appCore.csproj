@@ -1333,6 +1333,10 @@
     <Compile Include="UI\NotesForm.Designer.cs">
       <DependentUpon>NotesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ProgressSpinner.cs" />
+    <Compile Include="UI\ProgressSpinner.Designer.cs">
+      <DependentUpon>ProgressSpinner.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -1442,6 +1446,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\NotesForm.resx">
       <DependentUpon>NotesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ProgressSpinner.resx">
+      <DependentUpon>ProgressSpinner.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
