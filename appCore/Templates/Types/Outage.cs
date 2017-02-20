@@ -363,7 +363,7 @@ namespace appCore.Templates.Types
 				if ( VfLteCells.Count > 0)
 					VfOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VfLteCells.Count + ") Event Time - " + VfLteTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfLteCells);
 				
-				for(int c = 0;c < VfSites.Count;c++) {
+				for(int c = 0;c < VfSites.Count;c++) { // FIXME: outage error
 					string[] strToFind = { " - " };
 					string tempSite = VfSites[c].Split(strToFind, StringSplitOptions.None)[0];
 					tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
