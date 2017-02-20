@@ -93,7 +93,7 @@ namespace appCore.Templates.Types
 				if(string.IsNullOrEmpty(sitesList) && (VfSites.Count > 0 || TefSites.Count > 0)) {
 					List<string> sites = VfSites;
 					sites.AddRange(TefSites);
-					sites.Distinct();
+					sites = sites.Distinct().ToList();
 					sites.Sort();
 					for(int c = 0;c < sites.Count;c++) {
 						string site = sites[c];
@@ -126,17 +126,12 @@ namespace appCore.Templates.Types
 		public Outage() { }
 		
 		public Outage(AlarmsParser alarms) {
-//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-//			st.Start();
 			OutageAlarms = alarms.AlarmsList;
 			
 			List<Cell> LTEcells = new List<Cell>();
 			
-//			TimeSpan t2;
 			if(alarms.lteSitesOnM.Count > 0) {
 				LTEcells = Finder.getCells(alarms.lteSitesOnM, "4G");
-//				System.Diagnostics.Stopwatch st2 = new System.Diagnostics.Stopwatch();
-//				st2.Start();
 				
 				foreach(Cell cell in LTEcells) {
 					var t = LTEcells.FindIndex(s => s == cell);
@@ -147,8 +142,6 @@ namespace appCore.Templates.Types
 						var m = e.Message;
 					}
 				}
-//				st2.Stop();
-//				t2 = st2.Elapsed;
 			}
 			string toparse = string.Empty;
 			try {
@@ -257,9 +250,6 @@ namespace appCore.Templates.Types
 				var m = e.Message;
 			}
 			
-//			st.Stop();
-//			var t = st.Elapsed;
-			
 			generateReports();
 			
 			LogType = "Outage";
@@ -268,7 +258,10 @@ namespace appCore.Templates.Types
 		
 		public Outage(List<string> Sites) {
 			List<Site> sites = Finder.getSites(Sites);
-			List<Cell> cells = Finder.getCells(Sites);
+			List<Cell> cells = new List<Cell>();
+			foreach(Site site in sites)
+				cells.AddRange(site.Cells);
+			
 			foreach (Cell cell in cells) {
 				Site tempSite = sites.Find(s => s.Id == cell.ParentSite);
 				string cellString;
@@ -298,8 +291,8 @@ namespace appCore.Templates.Types
 									VfLteCells.Add(cellString);
 								break;
 						}
-						if(!VfLocations.Contains(tempSite.Town))
-							VfLocations.Add(tempSite.Town);
+						if(!VfLocations.Contains(tempSite.Town.ToUpper()))
+							VfLocations.Add(tempSite.Town.ToUpper());
 						break;
 					case "TEF":
 						if(!TefSites.Contains(tempSiteString))
@@ -318,11 +311,12 @@ namespace appCore.Templates.Types
 									TefLteCells.Add(cellString);
 								break;
 						}
-						if(!TefLocations.Contains(tempSite.Town))
-							TefLocations.Add(tempSite.Town);
+						if(!TefLocations.Contains(tempSite.Town.ToUpper()))
+							TefLocations.Add(tempSite.Town.ToUpper());
 						break;
 				}
 			}
+						
 			showIncludeListForm();
 			
 			generateReports();
@@ -363,7 +357,7 @@ namespace appCore.Templates.Types
 				if ( VfLteCells.Count > 0)
 					VfOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VfLteCells.Count + ") Event Time - " + VfLteTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfLteCells);
 				
-				for(int c = 0;c < VfSites.Count;c++) { // FIXME: outage error
+				for(int c = 0;c < VfSites.Count;c++) {
 					string[] strToFind = { " - " };
 					string tempSite = VfSites[c].Split(strToFind, StringSplitOptions.None)[0];
 					tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
@@ -407,7 +401,6 @@ namespace appCore.Templates.Types
 		}
 		
 		string generateFullLog() {
-//			string Log = DateTime.Now.ToString("HH:mm:ss");
 			string Log = string.Empty;
 			if(!string.IsNullOrEmpty(VfOutage)) {
 				Log += "----------VF Report----------" + Environment.NewLine;
