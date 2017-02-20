@@ -47,6 +47,7 @@ namespace appCore.UI
 			//loadingForm.Owner = owner;
 			formXY = loc;
 			thread = new Thread(new ThreadStart(ShowLoadingForm));
+			thread.Name = "ShowLoadingForm";
 			thread.IsBackground = true;
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();

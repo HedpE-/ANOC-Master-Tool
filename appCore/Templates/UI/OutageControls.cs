@@ -179,7 +179,7 @@ namespace appCore.Templates.UI
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
 			                           });
-			
+			thread.Name = "OutageFollowUp";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}

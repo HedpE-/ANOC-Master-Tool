@@ -129,7 +129,6 @@
     </Compile>
     <Compile Include="OI\JSON\Tables.cs" />
     <Compile Include="OI\OIConnection.cs" />
-    <Compile Include="Shifts\ShiftsCalendar2.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />

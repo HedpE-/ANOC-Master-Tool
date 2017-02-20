@@ -426,6 +426,7 @@ namespace appCore.SiteFinder.UI
 					                           			site.requestOIData("Availability");
 					                           	}
 					                           });
+					thread.Name = "populateCellsLocked_cellsLockedSites == null";
 					thread.SetApartmentState(ApartmentState.STA);
 					thread.Start();
 				}
@@ -437,6 +438,7 @@ namespace appCore.SiteFinder.UI
 						else {
 							if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
 								Thread thread = new Thread(() => site.requestOIData("Availability"));
+								thread.Name = "populateCellsLocked_singleSite";
 								thread.SetApartmentState(ApartmentState.STA);
 								thread.Start();
 							}
@@ -492,6 +494,7 @@ namespace appCore.SiteFinder.UI
 			                                      		currentSite = cellsLockedSites[selectedSiteIndex];
 			                                      		if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
 			                                      			Thread thread = new Thread(() => currentSite.requestOIData("Availability"));
+			                                      			thread.Name = "ListBoxSelectedIndexChanged";
 			                                      			thread.SetApartmentState(ApartmentState.STA);
 			                                      			thread.Start();
 			                                      		}

@@ -93,45 +93,48 @@ namespace appCore.OssScripts.UI
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
 			{
-//				Action action = new Action(delegate {
+				AMTTextBox tb = (AMTTextBox)sender;
+				Action actionThreaded = new Action(delegate {
 //				                           	Stopwatch sw = new Stopwatch();
 //
 //				                           	sw.Start();
-				AMTTextBox tb = (AMTTextBox)sender;
-				while(tb.Text.StartsWith("0"))
-					tb.Text = tb.Text.Substring(1);
-				currentSite = Finder.getSite(tb.Text);
+				                                   	while(tb.Text.StartsWith("0"))
+				                                   		tb.Text = tb.Text.Substring(1);
+				                                   	currentSite = Finder.getSite(tb.Text);
+				                                   });
 				
-				if(currentSite.Exists) {
-					filteredCells = new List<Cell>();
-					foreach(Cell cell in currentSite.Cells) {
-						if(cell.Vendor == SiteFinder.Site.Vendors.Ericsson)
-							filteredCells.Add(cell);
-					}
-					if(filteredCells.Count == 0){
-						MainForm.trayIcon.showBalloon("Error",String.Format("Site {0} is not E///",tb.Text));
-						return;
-					}
-					PriorityTextBox.Text = currentSite.Priority;
-					RegionTextBox.Text = currentSite.Region;
-					
-					CellsSummaryPictureBox.UpdateCells(filteredCells);
-					GsmRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_2G).Count > 0;
-					UmtsRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_3G).Count > 0;
-					LteRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_4G).Count > 0;
-				}
-				else {
-					PriorityTextBox.Text = string.Empty;
-					RegionTextBox.Text = "No site found";
-				}
+				Action actionNonThreaded = new Action(delegate {
+				                                      	if(currentSite.Exists) {
+				                                      		filteredCells = new List<Cell>();
+				                                      		foreach(Cell cell in currentSite.Cells) {
+				                                      			if(cell.Vendor == SiteFinder.Site.Vendors.Ericsson)
+				                                      				filteredCells.Add(cell);
+				                                      		}
+				                                      		if(filteredCells.Count == 0){
+				                                      			MainForm.trayIcon.showBalloon("Error",String.Format("Site {0} is not E///",tb.Text));
+				                                      			return;
+				                                      		}
+				                                      		PriorityTextBox.Text = currentSite.Priority;
+				                                      		RegionTextBox.Text = currentSite.Region;
+				                                      		
+				                                      		CellsSummaryPictureBox.UpdateCells(filteredCells);
+				                                      		GsmRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_2G).Count > 0;
+				                                      		UmtsRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_3G).Count > 0;
+				                                      		LteRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_4G).Count > 0;
+				                                      	}
+				                                      	else {
+				                                      		PriorityTextBox.Text = string.Empty;
+				                                      		RegionTextBox.Text = "No site found";
+				                                      	}
 //				                           			break;
 //				                           	}
 //				                           	sw.Stop();
 //
 //				                           	FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				siteFinder_Toggle(true, currentSite.Exists);
-//				                           });
-//				Tools.darkenBackgroundForm(action,true,this);
+				                                      	siteFinder_Toggle(true, currentSite.Exists);
+				                                      });
+				LoadingPanel load = new LoadingPanel();
+				load.Show(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 

@@ -103,15 +103,22 @@ namespace appCore.UI
 				Point loc = PointToScreen(Point.Empty);
 				loc.X = (parentControl.Width - spinnerSize) / 2;
 				loc.Y = (parentControl.Height - spinnerSize) / 2;
-				ProgressSpinner loadingBox = new ProgressSpinner();
-				loadingBox.LoadGIFImage = Resources.spinner1;
+//				ProgressSpinner loadingBox = new ProgressSpinner();
+//				loadingBox.LoadGIFImage = Resources.spinner1;
+//				loadingBox.BackColor = Color.Transparent;
+//				loadingBox.Size = new Size(spinnerSize, spinnerSize);
+//				loadingBox.Location = loc;
+//				Controls.Add(loadingBox);
+//				loadingBox.BringToFront();
+//				loadingBox.Start();
+				PictureBox loadingBox = new PictureBox();
 				loadingBox.BackColor = Color.Transparent;
+				loadingBox.Image = loadingBox.InitialImage = Resources.spinner1;
 				loadingBox.Size = new Size(spinnerSize, spinnerSize);
-//				loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
+				loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
 				loadingBox.Location = loc;
 				Controls.Add(loadingBox);
 				loadingBox.BringToFront();
-				loadingBox.Start();
 			}
 		}
 		

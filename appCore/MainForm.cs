@@ -128,6 +128,8 @@ namespace appCore
 				butt2.AutoSize = true;
 				butt2.Click += delegate {
 					Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
+					t.Name = "UpdateSourceDBFiles_MainFormButton";
+					t.SetApartmentState(ApartmentState.STA);
 					t.Start();
 				};
 				tabPage1.Controls.Add(butt2);
@@ -591,7 +593,7 @@ namespace appCore
 			                           	brwsr.StartPosition = FormStartPosition.CenterParent;
 			                           	brwsr.ShowDialog();
 			                           });
-			
+			thread.Name = "AMTBrowser";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
@@ -632,7 +634,7 @@ namespace appCore
 			                           	LogView.StartPosition = FormStartPosition.CenterParent;
 			                           	LogView.ShowDialog();
 			                           });
-			
+			thread.Name = "LogBrowser";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
@@ -654,7 +656,7 @@ namespace appCore
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();
 			                           });
-			
+			thread.Name = "siteFinder";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}

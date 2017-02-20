@@ -251,23 +251,27 @@ namespace appCore.Settings
 			try {
 				List<Thread> threads = new List<Thread>();
 				int finishedThreadsCount = 0;
+				Thread thread;
+				thread = new Thread(() => {
+				                    	// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
+				                    	UpdateDBFiles();
+				                    	
+				                    	finishedThreadsCount++;
+				                    });
+				thread.Name = "UpdateLocalDBFilesCopy_UpdateDBFiles";
+				threads.Add(thread);
 				
-				threads.Add(new Thread(() => {
-				                       	// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
-				                       	UpdateDBFiles();
-				                       	
-				                       	finishedThreadsCount++;
-				                       }));
-				
-				threads.Add(new Thread(() => {
+				thread = new Thread(() => {
 				                       	UpdateShiftsFile();
 				                       	
 				                       	finishedThreadsCount++;
-				                       }));
+				                    });
+				thread.Name = "UpdateLocalDBFilesCopy_UpdateShiftsFile";
+				threads.Add(thread);
 				
-				foreach(Thread thread in threads) {
-					thread.SetApartmentState(ApartmentState.STA);
-					thread.Start();
+				foreach(Thread th in threads) {
+					th.SetApartmentState(ApartmentState.STA);
+					th.Start();
 				}
 				
 				while(finishedThreadsCount < threads.Count) { }
@@ -300,8 +304,8 @@ namespace appCore.Settings
 				
 				List<Thread> threads = new List<Thread>();
 				int finishedThreadsCount = 0;
-				
-				threads.Add(new Thread(() => {
+				Thread thread;
+				thread = new Thread(() => {
 				                       	if(source_allsites.Exists) {
 				                       		if(Databases.all_sites != null) {
 				                       			if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime)
@@ -312,9 +316,11 @@ namespace appCore.Settings
 				                       	}
 				                       	
 				                       	finishedThreadsCount++;
-				                       }));
+				                       });
+				thread.Name = "UserFolder_UpdateDBFiles_allsites";
+				threads.Add(thread);
 				
-				threads.Add(new Thread(() => {
+				thread = new Thread(() => {
 				                       	if(source_allcells.Exists) {
 				                       		if(Databases.all_cells != null) {
 				                       			if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime)
@@ -325,11 +331,13 @@ namespace appCore.Settings
 				                       	}
 				                       	
 				                       	finishedThreadsCount++;
-				                       }));
+				                       });
+				thread.Name = "UserFolder_UpdateDBFiles_allcells";
+				threads.Add(thread);
 				
-				foreach(Thread thread in threads) {
-					thread.SetApartmentState(ApartmentState.STA);
-					thread.Start();
+				foreach(Thread th in threads) {
+					th.SetApartmentState(ApartmentState.STA);
+					th.Start();
 				}
 				
 				while(finishedThreadsCount < threads.Count) { }

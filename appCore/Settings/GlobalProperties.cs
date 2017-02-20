@@ -98,6 +98,7 @@ namespace appCore.Settings
 			                                    			throw;
 			                                    	}
 			                                    });
+			networkAccessCheck.Name = "networkAccessCheck";
 			networkAccessCheck.Start();
 			if (!networkAccessCheck.Join(TimeSpan.FromSeconds(20))) {
 				try {
@@ -117,6 +118,7 @@ namespace appCore.Settings
 			                           	OfficePath = xlApp.Path;
 			                           	xlApp.Quit();
 			                           });
+			thread.Name = "resolveOfficePath";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}

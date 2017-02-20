@@ -731,152 +731,156 @@ namespace appCore.Templates.UI
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == Template.UIenum.Template) {
-				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-				if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
-				else {
-					FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				string errmsg = "";
-				if (string.IsNullOrEmpty(INCTextBox.Text)) {
-					errmsg = "         - INC/Ticket Number missing\n";
-				}
-				if (string.IsNullOrEmpty(SiteIdTextBox.Text)) {
-					errmsg += "         - Site ID missing\n";
-				}
-				if (SiteOwnerComboBox.SelectedIndex == 1 && string.IsNullOrEmpty(TefSiteTextBox.Text)) {
-					errmsg += "          - TF Site ID missing\n";
-				}
-				if (string.IsNullOrEmpty(AddressTextBox.Text)) {
-					errmsg += "         - Site Address missing\n";
-				}
-				if (string.IsNullOrEmpty(ActiveAlarmsTextBox.Text)) {
-					errmsg += "         - Active alarms missing\n";
-				}
-				if (string.IsNullOrEmpty(TroubleshootTextBox.Text)) {
-					errmsg += "         - Troubleshoot missing\n";
-				}
-				if (COOSCheckBox.Checked) {
-					if ((COOS2GNumericUpDown.Value == 0) && (COOS3GNumericUpDown.Value == 0) && (COOS4GNumericUpDown.Value == 0)) {
-						errmsg += "         - COOS count missing\n";
-					}
-				}
-				if (!string.IsNullOrEmpty(errmsg)) {
-					FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-			}
-			
-			string relatedCases = string.Empty;
-			if(currentSite.Exists) {
-				CheckOngoingCRQs();
-				DataTable OngoingCases = getCurrentCases();
-				if(OngoingCases.Rows.Count > 0) {
-					OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases, currentSite.Id);
-					relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
-					relatedCasesForm.ShowDialog();
-					if(relatedCasesForm.Cancel)
-						return;
-					if(relatedCasesForm.selectedCases.Count > 0) {
-						int c = 0;
-						foreach(DataGridViewRow row in relatedCasesForm.selectedCases) {
-							relatedCases += row.Cells[2].Value + " - " + row.Cells[3].Value + " - " + row.Cells[4].Value;
-							if(++c < relatedCasesForm.selectedCases.Count)
-								relatedCases += Environment.NewLine;
-						}
-					}
-				}
-			}
-			
+			Action actionNonThreaded = new Action(delegate {
+			                                      	if(UiMode == Template.UIenum.Template) {
+			                                      		string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
+			                                      		if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
+			                                      		else {
+			                                      			FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                                      			return;
+			                                      		}
+			                                      		string errmsg = "";
+			                                      		if (string.IsNullOrEmpty(INCTextBox.Text)) {
+			                                      			errmsg = "         - INC/Ticket Number missing\n";
+			                                      		}
+			                                      		if (string.IsNullOrEmpty(SiteIdTextBox.Text)) {
+			                                      			errmsg += "         - Site ID missing\n";
+			                                      		}
+			                                      		if (SiteOwnerComboBox.SelectedIndex == 1 && string.IsNullOrEmpty(TefSiteTextBox.Text)) {
+			                                      			errmsg += "          - TF Site ID missing\n";
+			                                      		}
+			                                      		if (string.IsNullOrEmpty(AddressTextBox.Text)) {
+			                                      			errmsg += "         - Site Address missing\n";
+			                                      		}
+			                                      		if (string.IsNullOrEmpty(ActiveAlarmsTextBox.Text)) {
+			                                      			errmsg += "         - Active alarms missing\n";
+			                                      		}
+			                                      		if (string.IsNullOrEmpty(TroubleshootTextBox.Text)) {
+			                                      			errmsg += "         - Troubleshoot missing\n";
+			                                      		}
+			                                      		if (COOSCheckBox.Checked) {
+			                                      			if ((COOS2GNumericUpDown.Value == 0) && (COOS3GNumericUpDown.Value == 0) && (COOS4GNumericUpDown.Value == 0)) {
+			                                      				errmsg += "         - COOS count missing\n";
+			                                      			}
+			                                      		}
+			                                      		if (!string.IsNullOrEmpty(errmsg)) {
+			                                      			FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                                      			return;
+			                                      		}
+			                                      	}
+			                                      	
+			                                      	string relatedCases = string.Empty;
+			                                      	if(currentSite.Exists) {
+			                                      		CheckOngoingCRQs();
+			                                      		DataTable OngoingCases = getCurrentCases();
+			                                      		if(OngoingCases.Rows.Count > 0) {
+			                                      			OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases, currentSite.Id);
+			                                      			relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
+			                                      			relatedCasesForm.ShowDialog();
+			                                      			if(relatedCasesForm.Cancel)
+			                                      				return;
+			                                      			if(relatedCasesForm.selectedCases.Count > 0) {
+			                                      				int c = 0;
+			                                      				foreach(DataGridViewRow row in relatedCasesForm.selectedCases) {
+			                                      					relatedCases += row.Cells[2].Value + " - " + row.Cells[3].Value + " - " + row.Cells[4].Value;
+			                                      					if(++c < relatedCasesForm.selectedCases.Count)
+			                                      						relatedCases += Environment.NewLine;
+			                                      				}
+			                                      			}
+			                                      		}
+			                                      	}
+			                                      	
 //			if(currentTemplate != null)
 //				currentTemplate = null;
-			currentTemplate = new TroubleShoot(Controls, relatedCases);
-			
-			if(UiMode == Template.UIenum.Template && prevTemp != null) {
-				// No changes since the last template warning
-				string errmsg = "";
-				if(currentTemplate.ToString() != prevTemp.ToString()) {
-					if (INCTextBox.Text == prevTemp.INC) {
-						errmsg = "         - INC\n";
-					}
-					if (SiteIdTextBox.Text == prevTemp.SiteId) {
-						errmsg += "         - Site ID\n";
-					}
-					if (SiteOwnerComboBox.Text == "TF" && TefSiteTextBox.Text == prevTemp.TefSiteId) {
-						errmsg += "         - TF Site ID\n";
-					}
-					if (AddressTextBox.Text == prevTemp.SiteAddress) {
-						errmsg += "         - Site Address\n";
-					}
-					if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == prevTemp.CCTReference) {
-						errmsg += "         - CCT reference\n";
-					}
-					if (OtherSitesImpactedCheckBox.Checked && prevTemp.OtherSitesImpacted){
-						errmsg += "         - Other sites impacted\n";
-					}
-					if (COOSCheckBox.Checked) {
-						if (COOS2GNumericUpDown.Value > 0 && COOS2GNumericUpDown.Value == prevTemp.COOS2G){
-							errmsg += "         - 2G COOS count\n";
-						}
-						if (COOS3GNumericUpDown.Value > 0 && COOS3GNumericUpDown.Value == prevTemp.COOS3G) {
-							errmsg += "         - 3G COOS count\n";
-						}
-						if (COOS4GNumericUpDown.Value > 0 && COOS4GNumericUpDown.Value == prevTemp.COOS4G) {
-							errmsg += "         - 4G COOS count\n";
-						}
-						if(FullSiteOutageCheckBox.Checked && prevTemp.FullSiteOutage)
-							errmsg += "         - Full Site Outage flag\n";
-					}
-					if (PerformanceIssueCheckBox.Checked && prevTemp.PerformanceIssue) {
-						errmsg += "         - Performance issue\n";
-					}
-					if (IntermittentIssueCheckBox.Checked && prevTemp.IntermittentIssue) {
-						errmsg += "         - Intermittent issue\n";
-					}
-					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
-						errmsg += "         - Related INC/CRQ\n";
-					}
-					if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms) {
-						errmsg += "         - Active Alarms\n";
-					}
-					if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory) {
-						errmsg += "         - Alarm History\n";
-					}
-					if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.Troubleshoot) {
-						errmsg += "         - Troubleshoot\n";
-					}
-					if (errmsg != "") {
-						DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-						if (ans == DialogResult.No)
-							return;
-					}
-				}
-			}
-			
-			try {
-				Clipboard.SetText(currentTemplate.ToString());
-			}
-			catch (Exception) {
-				try {
-					Clipboard.SetText(currentTemplate.ToString());
-				}
-				catch (Exception) {
-					FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-				}
-			}
-			
-			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
-			
-			if(UiMode == Template.UIenum.Template) {
-				if(!sendBCPToolStripMenuItem.Enabled)
-					sendBCPToolStripMenuItem.Enabled = true;
-				
-				// Store this template for future warning on no changes
-				prevTemp = currentTemplate;
-				
-				MainForm.logFiles.HandleLog(currentTemplate);
-			}
+			                                      	currentTemplate = new TroubleShoot(Controls, relatedCases);
+			                                      	
+			                                      	if(UiMode == Template.UIenum.Template && prevTemp != null) {
+			                                      		// No changes since the last template warning
+			                                      		string errmsg = "";
+			                                      		if(currentTemplate.ToString() != prevTemp.ToString()) {
+			                                      			if (INCTextBox.Text == prevTemp.INC) {
+			                                      				errmsg = "         - INC\n";
+			                                      			}
+			                                      			if (SiteIdTextBox.Text == prevTemp.SiteId) {
+			                                      				errmsg += "         - Site ID\n";
+			                                      			}
+			                                      			if (SiteOwnerComboBox.Text == "TF" && TefSiteTextBox.Text == prevTemp.TefSiteId) {
+			                                      				errmsg += "         - TF Site ID\n";
+			                                      			}
+			                                      			if (AddressTextBox.Text == prevTemp.SiteAddress) {
+			                                      				errmsg += "         - Site Address\n";
+			                                      			}
+			                                      			if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == prevTemp.CCTReference) {
+			                                      				errmsg += "         - CCT reference\n";
+			                                      			}
+			                                      			if (OtherSitesImpactedCheckBox.Checked && prevTemp.OtherSitesImpacted){
+			                                      				errmsg += "         - Other sites impacted\n";
+			                                      			}
+			                                      			if (COOSCheckBox.Checked) {
+			                                      				if (COOS2GNumericUpDown.Value > 0 && COOS2GNumericUpDown.Value == prevTemp.COOS2G){
+			                                      					errmsg += "         - 2G COOS count\n";
+			                                      				}
+			                                      				if (COOS3GNumericUpDown.Value > 0 && COOS3GNumericUpDown.Value == prevTemp.COOS3G) {
+			                                      					errmsg += "         - 3G COOS count\n";
+			                                      				}
+			                                      				if (COOS4GNumericUpDown.Value > 0 && COOS4GNumericUpDown.Value == prevTemp.COOS4G) {
+			                                      					errmsg += "         - 4G COOS count\n";
+			                                      				}
+			                                      				if(FullSiteOutageCheckBox.Checked && prevTemp.FullSiteOutage)
+			                                      					errmsg += "         - Full Site Outage flag\n";
+			                                      			}
+			                                      			if (PerformanceIssueCheckBox.Checked && prevTemp.PerformanceIssue) {
+			                                      				errmsg += "         - Performance issue\n";
+			                                      			}
+			                                      			if (IntermittentIssueCheckBox.Checked && prevTemp.IntermittentIssue) {
+			                                      				errmsg += "         - Intermittent issue\n";
+			                                      			}
+			                                      			if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
+			                                      				errmsg += "         - Related INC/CRQ\n";
+			                                      			}
+			                                      			if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms) {
+			                                      				errmsg += "         - Active Alarms\n";
+			                                      			}
+			                                      			if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory) {
+			                                      				errmsg += "         - Alarm History\n";
+			                                      			}
+			                                      			if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.Troubleshoot) {
+			                                      				errmsg += "         - Troubleshoot\n";
+			                                      			}
+			                                      			if (errmsg != "") {
+			                                      				DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+			                                      				if (ans == DialogResult.No)
+			                                      					return;
+			                                      			}
+			                                      		}
+			                                      	}
+			                                      	
+			                                      	try {
+			                                      		Clipboard.SetText(currentTemplate.ToString());
+			                                      	}
+			                                      	catch (Exception) {
+			                                      		try {
+			                                      			Clipboard.SetText(currentTemplate.ToString());
+			                                      		}
+			                                      		catch (Exception) {
+			                                      			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+			                                      		}
+			                                      	}
+			                                      	
+			                                      	FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
+			                                      	
+			                                      	if(UiMode == Template.UIenum.Template) {
+			                                      		if(!sendBCPToolStripMenuItem.Enabled)
+			                                      			sendBCPToolStripMenuItem.Enabled = true;
+			                                      		
+			                                      		// Store this template for future warning on no changes
+			                                      		prevTemp = currentTemplate;
+			                                      		
+			                                      		MainForm.logFiles.HandleLog(currentTemplate);
+			                                      	}
+			                                      });
+			LoadingPanel load = new LoadingPanel();
+			load.Show(null, actionNonThreaded, false, this.FindForm());
 		}
 		
 		void CheckOngoingCRQs() {

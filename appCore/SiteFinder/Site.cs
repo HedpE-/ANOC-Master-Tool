@@ -376,6 +376,7 @@ namespace appCore.SiteFinder
 					                           	isUpdatingIncidents = false;
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_INC";
 					threads.Add(thread);
 				}
 				
@@ -387,6 +388,7 @@ namespace appCore.SiteFinder
 					                           	isUpdatingChanges = false;
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_CRQ";
 					threads.Add(thread);
 				}
 				
@@ -398,6 +400,7 @@ namespace appCore.SiteFinder
 					                           	isUpdatingAlarms = false;
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_Alarms";
 					threads.Add(thread);
 				}
 				
@@ -409,6 +412,7 @@ namespace appCore.SiteFinder
 					                           	isUpdatingVisits = false;
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_Bookins";
 					threads.Add(thread);
 				}
 				
@@ -421,6 +425,7 @@ namespace appCore.SiteFinder
 					                           	isUpdatingAvailability = false;
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_Availability";
 					threads.Add(thread);
 				}
 				
@@ -431,6 +436,7 @@ namespace appCore.SiteFinder
 					                           	
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_PWR";
 					threads.Add(thread);
 				}
 				
@@ -441,6 +447,7 @@ namespace appCore.SiteFinder
 					                           	
 					                           	finishedThreadsCount++;
 					                           });
+					thread.Name = "requestOIData_LKULK";
 					threads.Add(thread);
 				}
 				
@@ -611,37 +618,43 @@ namespace appCore.SiteFinder
 				
 				List<Thread> threads = new List<Thread>();
 				int finishedThreadsCount = 0;
-				
-				threads.Add(new Thread(() => {
+				Thread thread;
+				thread = new Thread(() => {
 				                       	string resp = OiConnection.requestApiOutput("cells", Id, 2);
 				                       	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
 				                       	foreach(JObject jObj in jSon.data)
 				                       		list.Add(jObj.ToObject<OiCell>());
 				                       	
 				                       	finishedThreadsCount++;
-				                       }));
+				                       });
+				thread.Name = "getOiCellsState_2G";
+				threads.Add(thread);
 				
-				threads.Add(new Thread(() => {
+				thread = new Thread(() => {
 				                       	string resp = OiConnection.requestApiOutput("cells", Id, 3);
 				                       	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
 				                       	foreach(JObject jObj in jSon.data)
 				                       		list.Add(jObj.ToObject<OiCell>());
 				                       	
 				                       	finishedThreadsCount++;
-				                       }));
+				                       });
+				thread.Name = "getOiCellsState_2G";
+				threads.Add(thread);
 				
-				threads.Add(new Thread(() => {
+				thread = new Thread(() => {
 				                       	string resp = OiConnection.requestApiOutput("cells", Id, 4);
 				                       	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
 				                       	foreach(JObject jObj in jSon.data)
 				                       		list.Add(jObj.ToObject<OiCell>());
 				                       	
 				                       	finishedThreadsCount++;
-				                       }));
+				                       });
+				thread.Name = "getOiCellsState_2G";
+				threads.Add(thread);
 				
-				foreach(Thread thread in threads) {
-					thread.SetApartmentState(ApartmentState.STA);
-					thread.Start();
+				foreach(Thread th in threads) {
+					th.SetApartmentState(ApartmentState.STA);
+					th.Start();
 				}
 				
 				while(finishedThreadsCount < threads.Count) { }

@@ -73,8 +73,8 @@ namespace appCore.DB
 			
 			List<Thread> threads = new List<Thread>();
 			int finishedThreadsCount = 0;
-			
-			threads.Add(new Thread(() => {
+			Thread thread;
+			thread = new Thread(() => {
 //			                       	string response = OiConnection.requestPhpOutput("allsites");
 			                       	string response = OiConnection.requestApiOutput("sites");
 			                       	if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
@@ -95,9 +95,10 @@ namespace appCore.DB
 			                       	}
 			                       	
 			                       	finishedThreadsCount++;
-			                       }));
-			
-			threads.Add(new Thread(() => {
+			                       });
+			thread.Name = "UpdateSourceDBFiles_allsitesThread";
+			threads.Add(thread);
+			thread = new Thread(() => {
 //			                       	string response = OiConnection.requestPhpOutput("allcells");
 			                       	string response = OiConnection.requestApiOutput("cells");
 			                       	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
@@ -118,11 +119,13 @@ namespace appCore.DB
 			                       	}
 			                       	
 			                       	finishedThreadsCount++;
-			                       }));
+			                       });
+			thread.Name = "UpdateSourceDBFiles_allsitesThread";
+			threads.Add(thread);
 			
-			foreach(Thread thread in threads) {
-				thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
+			foreach(Thread th in threads) {
+				th.SetApartmentState(ApartmentState.STA);
+				th.Start();
 			}
 			
 			while(finishedThreadsCount < threads.Count) { }
@@ -139,28 +142,34 @@ namespace appCore.DB
 		public static void PopulateDatabases() {
 			List<Thread> threads = new List<Thread>();
 			int finishedThreadsCount = 0;
-			
-			threads.Add(new Thread(() => {
+			Thread thread;
+			thread = new Thread(() => {
 			                       	all_sites = new FileInfo(all_sites.FullName);
 			                       	
 			                       	finishedThreadsCount++;
-			                       }));
+			                       });
+			thread.Name = "PopulateDatabases_allsites";
+			threads.Add(thread);
 			
-			threads.Add(new Thread(() => {
+			thread = new Thread(() => {
 			                       	all_cells = new FileInfo(all_cells.FullName);
 			                       	
 			                       	finishedThreadsCount++;
-			                       }));
+			                       });
+			thread.Name = "PopulateDatabases_allcells";
+			threads.Add(thread);
 			
-			threads.Add(new Thread(() => {
+			thread = new Thread(() => {
 			                       	shiftsFile = new ShiftsFile(DateTime.Now.Year);
 			                       	
 			                       	finishedThreadsCount++;
-			                       }));
+			                       });
+			thread.Name = "PopulateDatabases_shiftsFile";
+			threads.Add(thread);
 			
-			foreach(Thread thread in threads) {
-				thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
+			foreach(Thread th in threads) {
+				th.SetApartmentState(ApartmentState.STA);
+				th.Start();
 			}
 			
 			while(finishedThreadsCount < threads.Count) { }

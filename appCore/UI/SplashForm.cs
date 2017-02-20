@@ -46,6 +46,7 @@ namespace appCore.UI
 			if (splashForm != null)
 				return;
 			thread = new Thread(new ThreadStart(SplashForm.ShowForm));
+			thread.Name = "SplashForm.ShowForm";
 			thread.IsBackground = true;
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
