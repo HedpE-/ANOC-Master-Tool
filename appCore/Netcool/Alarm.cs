@@ -377,7 +377,7 @@ namespace appCore.Netcool
 		void checkCoosOrOnM() {
 			switch (Vendor) {
 				case SiteFinder.Site.Vendors.ALU:
-					coos = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable");
+					coos = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable") && (!Element.StartsWith("RNC") || !Location.StartsWith("MTX"));
 					break;
 				case SiteFinder.Site.Vendors.Ericsson:
 					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH"))
