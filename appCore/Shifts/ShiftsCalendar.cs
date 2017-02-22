@@ -56,6 +56,10 @@ namespace appCore.Shifts
 			private set { }
 		}
 		
+		public bool isVisible {
+			get { return Location.X >= 0 && Location.Y >= 0; }
+		}
+		
 		const int shiftsRectWidth = 30; //the width of the rectangle
 		const int shiftsRectHeight = 20; //the height of the rectangle
 		
