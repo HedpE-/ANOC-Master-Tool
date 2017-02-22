@@ -43,11 +43,13 @@ namespace appCore.SiteFinder.UI
 				MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
 				InitializeToolStripMenuItems();
 				MainMenu.siteFinder_Toggle(false, false);
-				MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
-				MainMenu.MainMenu.DropDownItems.Add("-");
-				MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+				if(mode[0] != "outage") {
+					MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add("-");
+					MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+				}
 				switch(mode[0]) {
 					case "single":
 						label11.Visible = false;
@@ -87,8 +89,9 @@ namespace appCore.SiteFinder.UI
 						checkBox3.Location = new Point(296, 355);
 						label11.Visible = true;
 						label12.Location = new Point(5, 352);
-						bulkSiteSearchMenuItem.Enabled =
-							lockedCellsPageToolStripMenuItem.Enabled = false;
+						MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
+//						bulkSiteSearchMenuItem.Enabled =
+//							lockedCellsPageToolStripMenuItem.Enabled = false;
 						textBox1.ReadOnly = true;
 						break;
 				}
@@ -109,17 +112,9 @@ namespace appCore.SiteFinder.UI
 		ToolStripMenuItem lockUnlockCellsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
 		
 		Control parentControl;
-		
-//		public siteDetails(Site site)
-//		{
-//			currentSite = site;
-//			InitializeComponent();
-//			myMap = drawGMap("myMap",false);
-//			Controls.Add(myMap);
-//			Shown += populateSingleForm;
-//		}
 		
 		public siteDetails(Control parent)
 		{
@@ -141,15 +136,20 @@ namespace appCore.SiteFinder.UI
 			Shown += populateSingleForm;
 		}
 		
-		public siteDetails(bool isOutage, Templates.Types.Outage outage)
+		public siteDetails(bool isOutage, OutageControls parent)
 		{
 			InitializeComponent();
+			
+			parentControl = parent;
+			
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
 			if(isOutage) {
 				siteDetails_UIMode = "outage";
 				
-				sites = (outage.VfBulkCI + outage.TefBulkCI).Split(';');
+				
+				
+				sites = (parent.currentOutage.VfBulkCI + parent.currentOutage.TefBulkCI).Split(';');
 				for(int c = 0;c < sites.Length;c++) {
 					if(sites[c].StartsWith("0")) {
 						while(sites[c].StartsWith("0"))
@@ -160,6 +160,26 @@ namespace appCore.SiteFinder.UI
 				}
 				sites = sites.Distinct().ToArray(); // Remover duplicados
 				sites = sites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
+				System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+				st.Start();
+				parent.currentOutage.AffectedSites = Finder.getSites(sites.ToList());
+				
+				List<string> cells = parent.currentOutage.VfGsmCells;
+				cells.AddRange(parent.currentOutage.VfUmtsCells);
+				cells.AddRange(parent.currentOutage.VfLteCells);
+				cells.AddRange(parent.currentOutage.TefGsmCells);
+				cells.AddRange(parent.currentOutage.TefUmtsCells);
+				cells.AddRange(parent.currentOutage.TefLteCells);
+				
+				parent.currentOutage.AffectedCells = Finder.getCells(cells);
+				foreach(Cell cell in parent.currentOutage.AffectedCells) {
+					Site site = parent.currentOutage.AffectedSites.Find(s => s.Id == cell.ParentSite);
+					int siteIndex = parent.currentOutage.AffectedSites.IndexOf(site);
+					if(siteIndex > -1)
+						parent.currentOutage.AffectedSites[siteIndex].CellsInOutage.Add(cell);
+				}
+				st.Stop();
+				var t = st.Elapsed;
 			}
 			else
 				siteDetails_UIMode = "single";
@@ -228,7 +248,8 @@ namespace appCore.SiteFinder.UI
 			listView1.Columns.Add("OSS ID");
 			listView1.Columns.Add("Vendor");
 			listView1.Columns.Add("NOC");
-			listView1.Columns.Add("Locked").TextAlign = HorizontalAlignment.Center;
+			if(!siteDetails_UIMode.Contains("outage"))
+				listView1.Columns.Add("Locked").TextAlign = HorizontalAlignment.Center;
 			
 			listView2.View = View.Details;
 			listView2.Columns.Add("Site");
@@ -520,6 +541,11 @@ namespace appCore.SiteFinder.UI
 		void PaknetVodapageCheckBoxesMouseUp(object sender, MouseEventArgs e) {
 			CheckBox cb = sender as CheckBox;
 			cb.Checked = !cb.Checked;
+		}
+		
+		void ShowSitesPerTech(object sender, EventArgs e)
+		{
+			
 		}
 		
 		void bulkSiteSearchMenuItemClick(object sender, EventArgs e)
@@ -904,6 +930,12 @@ namespace appCore.SiteFinder.UI
 			lockedCellsPageToolStripMenuItem.Name = "lockedCellsPageToolStripMenuItem";
 			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
 			lockedCellsPageToolStripMenuItem.Click += LockedCellsPage;
+			// 
+			// sitesPerTechToolStripMenuItem
+			// 
+			sitesPerTechToolStripMenuItem.Name = "sitesPerTechToolStripMenuItem";
+			sitesPerTechToolStripMenuItem.Text = "Show Sites Per Tech...";
+			sitesPerTechToolStripMenuItem.Click += ShowSitesPerTech;
 		}
 		
 		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
