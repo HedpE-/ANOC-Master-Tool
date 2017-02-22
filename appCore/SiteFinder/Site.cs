@@ -362,7 +362,7 @@ namespace appCore.SiteFinder
 		/// <summary>
 		/// Populate with data pulled from OI
 		/// </summary>
-		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "LKULK"</param>
+		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK"</param>
 		/// <param name="forceUpdateLockedState"></param>
 		public void requestOIData(string dataToRequest, bool forceUpdateLockedState = false) {
 			if(Exists) {
@@ -445,10 +445,19 @@ namespace appCore.SiteFinder
 					threads.Add(thread);
 				}
 				
+				if(dataToRequest.Contains("CellsState")) {
+					Thread thread = new Thread(() => {
+					                           	getOiCellsState();
+					                           	
+					                           	finishedThreadsCount++;
+					                           });
+					thread.Name = "requestOIData_LKULK";
+					threads.Add(thread);
+				}
+				
 				if(dataToRequest.Contains("LKULK")) {
 					Thread thread = new Thread(() => {
-					                           	if(LockedCellsDetails == null || forceUpdateLockedState)
-					                           		getOiCellsState(true);
+					                           	getOiLockedCellsPage();
 					                           	
 					                           	finishedThreadsCount++;
 					                           });
@@ -612,12 +621,24 @@ namespace appCore.SiteFinder
 			return string.Empty;
 		}
 		
-		string getOiLockedCellsPage() {
+		void getOiLockedCellsPage() {
 			string response = OiConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
-			return response.Contains("Site " + Id + "</b><table>") ? response : "No Cells Locked";
+			response = response.Contains("Site " + Id + "</b><table>") ? response : "No Cells Locked";
+			
+			if(response != "No Cells Locked") {
+				HtmlDocument doc = new HtmlDocument();
+				doc.Load(new StringReader(response));
+				
+				HtmlNode table = doc.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
+				
+				LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+			}
+			else
+				LockedCellsDetails = new DataTable();
+			LockedCellsDetailsTimestamp = DateTime.Now;
 		}
 		
-		void getOiCellsState(bool getLockedCellsPage) {
+		void getOiCellsState() {
 			if(Exists && Cells.Count > 0) {
 				List<OiCell> list = new List<OiCell>();
 				
@@ -689,20 +710,6 @@ namespace appCore.SiteFinder
 //								cell.Locked = false;
 //						}
 //					}
-				if(getLockedCellsPage) {
-					string response = getOiLockedCellsPage();
-					if(response != "No Cells Locked") {
-						HtmlDocument doc = new HtmlDocument();
-						doc.Load(new StringReader(response));
-						
-						HtmlNode table = doc.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
-						
-						LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
-					}
-					else
-						LockedCellsDetails = new DataTable();
-					LockedCellsDetailsTimestamp = DateTime.Now;
-				}
 //					// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
 //					// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
 //				}
