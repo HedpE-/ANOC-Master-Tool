@@ -340,12 +340,12 @@ namespace appCore.SiteFinder.UI
 			
 			UiMode = "Cells Locked";
 			
-			Action actionNonThreaded = new Action(delegate {
+//			Action actionNonThreaded = new Action(delegate {
 			                                      	populateCellsLocked();
-			                                      });
-			
-			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded, true,this);
+//			                                      });
+//			
+//			LoadingPanel load = new LoadingPanel();
+//			load.ShowAsync(null, actionNonThreaded, true, this);
 		}
 		
 		public LockUnlockCellsForm(Form parent) {
@@ -466,10 +466,10 @@ namespace appCore.SiteFinder.UI
 			e.DrawBackground();
 			using(Graphics g = e.Graphics) {
 				if(((e.State & DrawItemState.Focus) != DrawItemState.Focus) && ((e.State & DrawItemState.Selected) != DrawItemState.Selected)) {
-					if(GetSiteLockedCells(lb.Items[e.Index].ToString()).LifeTime == "Expired")
-						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
 					if(cellsLockedSites.FindIndex(s => s.Id == lb.Items[e.Index].ToString()) == -1)
 						g.FillRectangle(new SolidBrush(Color.Gray), e.Bounds);
+					if(GetSiteLockedCells(lb.Items[e.Index].ToString()).LifeTime == "Expired")
+						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
 				}
 				else
 					g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
@@ -514,7 +514,7 @@ namespace appCore.SiteFinder.UI
 			                                      	checkBox1.Checked = false;
 			                                      });
 			LoadingPanel loading = new LoadingPanel();
-			loading.Show(null, actionNonThreaded, true, dataGridView1);
+			loading.Show(actionNonThreaded, dataGridView1);
 		}
 		
 		DataTable GetSiteLockedCellsDT(string site) {
@@ -584,7 +584,7 @@ namespace appCore.SiteFinder.UI
 			                                      });
 			if(!Controls.OfType<LoadingPanel>().Any()) {
 				LoadingPanel loading = new LoadingPanel();
-				loading.Show(null, actionNonThreaded, true, this);
+				loading.Show(actionNonThreaded, this);
 			}
 			else
 				actionNonThreaded();
@@ -687,103 +687,127 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
-			DialogResult ans = DialogResult.OK;
-			string name = string.Empty;
-			string contact = string.Empty;
-			string rbText = string.Empty;
-			if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
-				ans = DialogResult.Cancel;
-				Form approverForm = new Form();
-				approverForm.Size = new Size(233, 260);
-				approverForm.Text = "No book in";
-				approverForm.FormBorderStyle = FormBorderStyle.FixedSingle;
-				approverForm.Icon = Resources.MB_0001_vodafone3;
-				approverForm.MaximizeBox =
-					approverForm.MinimizeBox = false;
-				
-				Label lb = new Label();
-				lb.Location = new Point(3, 9);
-				lb.Size = new Size(253, 91);
-				lb.Text = "No valid book in found for this site.\n\n" +
-					"It's OK to lock cells without a book in, as long\n" +
-					"as you provide the FE or lockdown approver\n" +
-					"contact details on the comments.\n\n" +
-					"Please fill in the required details.";
-				
-				RadioButton rb1 = new RadioButton();
-				rb1.Text = "FE";
-				rb1.Width = 40;
-				rb1.Location = new Point(6, lb.Bottom + 8);
-				rb1.Checked = true;
-				RadioButton rb2 = new RadioButton();
-				rb2.Text = "Approver";
-				rb2.Location = new Point(rb1.Right + 5, rb1.Top);
-				
-				Label nameLb = new Label();
-				nameLb.Text = "Name";
-				nameLb.Location = new Point(3, rb1.Bottom + 10);
-				nameLb.Width = 50;
-				AMTTextBox nameTb = new AMTTextBox();
-				nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
-				nameTb.Width = 166;
-				Label contactLb = new Label();
-				contactLb.Text = "Contact";
-				contactLb.Location = new Point(3, nameLb.Bottom + 5);
-				contactLb.Width = 50;
-				AMTTextBox contactTb = new AMTTextBox();
-				contactTb.Location = new Point(contactLb.Right + 3, contactLb.Top);
-				contactTb.Width = 166;
-				Button okButton = new Button();
-				okButton.Text = "OK";
-				okButton.Location = new Point(3, contactLb.Bottom + 10);
-				Button cancelButton = new Button();
-				cancelButton.Text = "Cancel";
-				cancelButton.Location = new Point(approverForm.Width - cancelButton.Width - 10, contactLb.Bottom + 10);
-				okButton.Click += delegate {
-					if(!string.IsNullOrEmpty(nameTb.Text) && !string.IsNullOrEmpty(contactTb.Text)) {
-						name = nameTb.Text;
-						contact = contactTb.Text;
-						rbText = rb1.Checked ? rb1.Text : rb2.Text;
-						ans = DialogResult.OK;
-						approverForm.Close();
-					}
-					else
-						FlexibleMessageBox.Show("Please fill in the required information", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				};
-				cancelButton.Click += delegate {
-					ans = DialogResult.Cancel;
-					approverForm.Close();
-				};
-				approverForm.Controls.AddRange(new Control[] {
-				                               	lb,
-				                               	rb1,
-				                               	rb2,
-				                               	nameLb,
-				                               	nameTb,
-				                               	contactLb,
-				                               	contactTb,
-				                               	okButton,
-				                               	cancelButton
-				                               });
-				Action actionNonThreaded = new Action(delegate {
-				                                      	approverForm.ShowDialog();
-				                                      });
-				Toolbox.Tools.darkenBackgroundForm(actionNonThreaded, false, this);
-			}
-			if(ans == DialogResult.OK) {
-				var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
-				List<string> cellsList = new List<string>();
-				foreach(DataGridViewRow row in filtered) {
-					if(UiMode != "Cells Locked")
-						cellsList.Add(row.Cells["Cell Name"].Value.ToString());
-					else
-						cellsList.Add(row.Cells["Cell"].Value.ToString());
-				}
-				if(UiMode.StartsWith("Lock"))
-					sendLockCellsRequest(cellsList, comboBox1.Text, amtRichTextBox1.Text);
-				else
-					sendUnlockCellsRequest(cellsList, amtRichTextBox1.Text);
-			}
+			Action actionNonThreaded = new Action(delegate {
+			                                      	DialogResult ans = DialogResult.OK;
+			                                      	string name = string.Empty;
+			                                      	string contact = string.Empty;
+			                                      	string rbText = string.Empty;
+			                                      	if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
+			                                      		ans = DialogResult.Cancel;
+			                                      		Form approverForm = new Form();
+			                                      		approverForm.Size = new Size(233, 260);
+			                                      		approverForm.Text = "No book in";
+			                                      		approverForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+			                                      		approverForm.Icon = Resources.MB_0001_vodafone3;
+			                                      		approverForm.MaximizeBox =
+			                                      			approverForm.MinimizeBox = false;
+			                                      		
+			                                      		Label lb = new Label();
+			                                      		lb.Location = new Point(3, 9);
+			                                      		lb.Size = new Size(253, 91);
+			                                      		lb.Text = "No valid book in found for this site.\n\n" +
+			                                      			"It's OK to lock cells without a book in, as long\n" +
+			                                      			"as you provide the FE or lockdown approver\n" +
+			                                      			"contact details on the comments.\n\n" +
+			                                      			"Please fill in the required details.";
+			                                      		
+			                                      		RadioButton rb1 = new RadioButton();
+			                                      		rb1.Text = "FE";
+			                                      		rb1.Width = 40;
+			                                      		rb1.Location = new Point(6, lb.Bottom + 8);
+			                                      		rb1.Checked = true;
+			                                      		RadioButton rb2 = new RadioButton();
+			                                      		rb2.Text = "Requested by";
+			                                      		rb2.Width = 100;
+			                                      		rb2.Location = new Point(rb1.Right + 5, rb1.Top);
+			                                      		
+			                                      		Label nameLb = new Label();
+			                                      		nameLb.Text = "Name";
+			                                      		nameLb.Location = new Point(3, rb1.Bottom + 10);
+			                                      		nameLb.Width = 50;
+			                                      		AMTTextBox nameTb = new AMTTextBox();
+			                                      		nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
+			                                      		nameTb.Width = 166;
+			                                      		Label contactLb = new Label();
+			                                      		contactLb.Text = "Contact";
+			                                      		contactLb.Location = new Point(3, nameLb.Bottom + 5);
+			                                      		contactLb.Width = 50;
+			                                      		AMTTextBox contactTb = new AMTTextBox();
+			                                      		contactTb.Location = new Point(contactLb.Right + 3, contactLb.Top);
+			                                      		contactTb.Width = 166;
+			                                      		Button okButton = new Button();
+			                                      		okButton.Text = "OK";
+			                                      		okButton.Location = new Point(3, contactLb.Bottom + 10);
+			                                      		Button cancelButton = new Button();
+			                                      		cancelButton.Text = "Cancel";
+			                                      		cancelButton.Location = new Point(approverForm.Width - cancelButton.Width - 10, contactLb.Bottom + 10);
+			                                      		okButton.Click += delegate {
+			                                      			if(!string.IsNullOrEmpty(nameTb.Text) && !string.IsNullOrEmpty(contactTb.Text)) {
+			                                      				name = nameTb.Text;
+			                                      				contact = contactTb.Text;
+			                                      				rbText = rb1.Checked ? rb1.Text : rb2.Text;
+			                                      				ans = DialogResult.OK;
+			                                      				approverForm.Close();
+			                                      			}
+			                                      			else {
+			                                      				Action act = new Action(delegate {
+			                                      				                        	FlexibleMessageBox.Show("Please fill in the required information", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                                      				                        });
+			                                      				LoadingPanel loading = new LoadingPanel();
+			                                      				loading.Show(act, approverForm);
+			                                      			}
+			                                      		};
+			                                      		cancelButton.Click += delegate {
+			                                      			ans = DialogResult.Cancel;
+			                                      			approverForm.Close();
+			                                      		};
+			                                      		rb1.CheckedChanged += delegate {
+			                                      			contactTb.Enabled = true;
+			                                      		};
+			                                      		rb2.CheckedChanged += delegate {
+			                                      			contactTb.Enabled = false;
+			                                      		};
+			                                      		approverForm.Controls.AddRange(new Control[] {
+			                                      		                               	lb,
+			                                      		                               	rb1,
+			                                      		                               	rb2,
+			                                      		                               	nameLb,
+			                                      		                               	nameTb,
+			                                      		                               	contactLb,
+			                                      		                               	contactTb,
+			                                      		                               	okButton,
+			                                      		                               	cancelButton
+			                                      		                               });
+			                                      		Action action = new Action(delegate {
+			                                      		                           	approverForm.ShowDialog();
+			                                      		                           	name = nameTb.Text;
+			                                      		                           	contact = contactTb.Text;
+			                                      		                           	rbText = rb1.Checked ? rb1.Text : rb2.Text;
+			                                      		                           });
+			                                      		LoadingPanel load = new LoadingPanel();
+			                                      		load.Show(action, this);
+			                                      	}
+			                                      	string comment = string.Empty;
+			                                      	if(string.IsNullOrEmpty(rbText))
+			                                      		comment = rbText == "FE" ? "FE on site - " + name + ", " + contact : "Requested by" + name + Environment.NewLine;
+			                                      	comment += amtRichTextBox1.Text;
+			                                      	if(ans == DialogResult.OK) {
+			                                      		var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
+			                                      		List<string> cellsList = new List<string>();
+			                                      		foreach(DataGridViewRow row in filtered) {
+			                                      			if(UiMode != "Cells Locked")
+			                                      				cellsList.Add(row.Cells["Cell Name"].Value.ToString());
+			                                      			else
+			                                      				cellsList.Add(row.Cells["Cell"].Value.ToString());
+			                                      		}
+			                                      		if(UiMode.StartsWith("Lock"))
+			                                      			sendLockCellsRequest(cellsList, comboBox1.Text, comment);
+			                                      		else
+			                                      			sendUnlockCellsRequest(cellsList, comment);
+			                                      	}
+			                                      });
+			LoadingPanel darken = new LoadingPanel();
+			darken.Show(actionNonThreaded, this);
 		}
 		
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
