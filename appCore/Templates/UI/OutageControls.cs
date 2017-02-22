@@ -227,11 +227,18 @@ namespace appCore.Templates.UI
 //				return;
 //			}
 			bool parsingError = false;
-			Alarms_ReportTextBox.Text = string.Join(Environment.NewLine, Alarms_ReportTextBox.Text.Split('\n').Select(s => s.Trim()));
 			string textBoxContent = Alarms_ReportTextBox.Text;
 			Action actionThreaded = new Action(delegate {
 			                                   	try {
-			                                   		currentOutage = new Outage(textBoxContent.Split('\n').ToList());
+			                                   		List<string> input = textBoxContent.Contains(";") ? textBoxContent.Split(';').ToList() : textBoxContent.Split('\n').ToList();
+			                                   		
+			                                   		for(int c=0;c < input.Count;c++) {
+			                                   			input[c] = input[c].Trim();
+			                                   			while(input[c].StartsWith("0"))
+			                                   				input[c] = input[c].Substring(1);
+			                                   		}
+			                                   		
+			                                   		currentOutage = new Outage(input);
 			                                   	}
 			                                   	catch(Exception ex) {
 			                                   		var m = ex.Message;
