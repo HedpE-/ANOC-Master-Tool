@@ -187,7 +187,7 @@ namespace appCore.Templates.UI
 		
 		void OutageFollowUp(object sender, EventArgs e) {
 			Thread thread = new Thread(() => {
-			                           	siteDetails sd = new siteDetails(true, currentOutage);
+			                           	siteDetails sd = new siteDetails(true, this);
 			                           	sd.Name = "Outage Follow-up";
 			                           	sd.StartPosition = FormStartPosition.CenterParent;
 			                           	sd.ShowDialog();

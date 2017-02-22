@@ -15,10 +15,10 @@ using System.Linq;
 namespace appCore.Templates.Types
 {
 	/// <summary>
-	/// Description of TroubleShoot.
+	/// Description of Troubleshoot.
 	/// </summary>
 	[Serializable]
-	public class TroubleShoot : Template
+	public class Troubleshoot : Template
 	{
 		string inc = string.Empty;
 		public string INC { get { return inc; } protected set { inc = value; } }
@@ -55,17 +55,17 @@ namespace appCore.Templates.Types
 		string alarmHistory = string.Empty;
 		public string AlarmHistory { get { return alarmHistory; } protected set { alarmHistory = value; } }
 		string troubleshoot = string.Empty;
-		public string Troubleshoot { get { return troubleshoot; } protected set { troubleshoot = value; } }
+		public string TroubleShoot { get { return troubleshoot; } protected set { troubleshoot = value; } }
 		string bcpForm = string.Empty;
 		public string BcpForm { get { return bcpForm; } protected set { bcpForm = value; } }
 		string OngoingINCs;
 		string OngoingCRQs;
 		
-		public TroubleShoot() {
+		public Troubleshoot() {
 			LogType = "Troubleshoot";
 		}
 		
-		public TroubleShoot(Control.ControlCollection controlsCollection, string relatedCases)
+		public Troubleshoot(Control.ControlCollection controlsCollection, string relatedCases)
 		{
 			try { INC = controlsCollection["INCTextBox"].Text; } catch (Exception) { }
 			try { SiteId = controlsCollection["SiteIdTextBox"].Text; } catch (Exception) { }
@@ -119,7 +119,7 @@ namespace appCore.Templates.Types
 			catch (Exception) { }
 			try { ActiveAlarms = controlsCollection["ActiveAlarmsTextBox"].Text; } catch (Exception) { }
 			try { AlarmHistory = string.IsNullOrEmpty(controlsCollection["AlarmHistoryTextBox"].Text) ? "None related" : controlsCollection["AlarmHistoryTextBox"].Text; } catch (Exception) { }
-			try { Troubleshoot = controlsCollection["TroubleshootTextBox"].Text; } catch (Exception) { }
+			try { TroubleShoot = controlsCollection["TroubleshootTextBox"].Text; } catch (Exception) { }
 //			try {
 //				Signature = CurrentUser.fullName[1] + " " + CurrentUser.fullName[0] + Environment.NewLine + CurrentUser.department + Environment.NewLine + "ANOC Number: +44 163 569 206";
 //				Signature += CurrentUser.department == "1st Line RAN Support" ? "7" : "9";
@@ -128,13 +128,13 @@ namespace appCore.Templates.Types
 			LogType = "Troubleshoot";
 		}
 		
-		public TroubleShoot(TroubleShoot template) {
+		public Troubleshoot(Troubleshoot template) {
 			Toolbox.Tools.CopyProperties(this, template);
 			fullLog = generateFullLog();
 			LogType = "Troubleshoot";
 		}
 		
-		public TroubleShoot(string[] log, DateTime date) {
+		public Troubleshoot(string[] log, DateTime date) {
 			LoadTST(log);
 			string[] strTofind = { " - " };
 			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
@@ -285,7 +285,7 @@ namespace appCore.Templates.Types
 				else
 					complete += Environment.NewLine + log[ind];
 			}
-			Troubleshoot = complete;
+			TroubleShoot = complete;
 			
 			for(ind++; ind < log.Length; ind++) {
 				Signature += log[ind];
@@ -340,7 +340,7 @@ namespace appCore.Templates.Types
 			
 			template += "Active Alarms:" + Environment.NewLine + ActiveAlarms + Environment.NewLine + Environment.NewLine;
 			template += "Alarm History:" + Environment.NewLine + AlarmHistory + Environment.NewLine + Environment.NewLine;
-			template += "Troubleshoot:" + Environment.NewLine + Troubleshoot;
+			template += "Troubleshoot:" + Environment.NewLine + TroubleShoot;
 			template += Environment.NewLine + Environment.NewLine + Signature;
 			
 			return template;
@@ -411,8 +411,8 @@ namespace appCore.Templates.Types
 			return fullLog;
 		}
 		
-		public override TroubleShoot ToTroubleShootTemplate() {
-			return new TroubleShoot(this);
+		public override Troubleshoot ToTroubleShootTemplate() {
+			return new Troubleshoot(this);
 		}
 	}
 }

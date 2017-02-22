@@ -78,8 +78,8 @@ namespace appCore.Templates.UI
 		public static siteDetails SiteDetailsUI;
 		
 		public Site currentSite;
-		TroubleShoot currentTemplate;
-		TroubleShoot prevTemp;
+		Troubleshoot currentTemplate;
+		Troubleshoot prevTemp;
 		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
@@ -187,7 +187,7 @@ namespace appCore.Templates.UI
 				siteFinder_Toggle(false, false);
 		}
 		
-		public TroubleshootControls(TroubleShoot template, Template.UIenum uimode = Template.UIenum.Log)
+		public TroubleshootControls(Troubleshoot template, Template.UIenum uimode = Template.UIenum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
@@ -211,7 +211,7 @@ namespace appCore.Templates.UI
 			RelatedINC_CRQTextBox.Text = currentTemplate.RelatedINC_CRQ;
 			ActiveAlarmsTextBox.Text = currentTemplate.ActiveAlarms;
 			AlarmHistoryTextBox.Text = currentTemplate.AlarmHistory;
-			TroubleshootTextBox.Text = currentTemplate.Troubleshoot;
+			TroubleshootTextBox.Text = currentTemplate.TroubleShoot;
 		}
 
 		void siteFinder_Toggle(bool toggle, bool siteFound) {
@@ -792,7 +792,7 @@ namespace appCore.Templates.UI
 			                                      	
 //			if(currentTemplate != null)
 //				currentTemplate = null;
-			                                      	currentTemplate = new TroubleShoot(Controls, relatedCases);
+			                                      	currentTemplate = new Troubleshoot(Controls, relatedCases);
 			                                      	
 			                                      	if(UiMode == Template.UIenum.Template && prevTemp != null) {
 			                                      		// No changes since the last template warning
@@ -844,7 +844,7 @@ namespace appCore.Templates.UI
 			                                      			if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory) {
 			                                      				errmsg += "         - Alarm History\n";
 			                                      			}
-			                                      			if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.Troubleshoot) {
+			                                      			if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.TroubleShoot) {
 			                                      				errmsg += "         - Troubleshoot\n";
 			                                      			}
 			                                      			if (errmsg != "") {

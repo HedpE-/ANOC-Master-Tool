@@ -179,7 +179,7 @@ namespace appCore.Logs
 
 				switch(logArray[0].Split('-')[1].Substring(1)) {
 					case "Troubleshoot Template":
-						log = new TroubleShoot(logArray, logtime);
+						log = new Troubleshoot(logArray, logtime);
 						break;
 					case "Failed CRQ":
 						log = new FailedCRQ(logArray, logtime);
@@ -224,7 +224,7 @@ namespace appCore.Logs
 
 				switch(logArray[0].Split('-')[1].Substring(1)) {
 					case "Troubleshoot Template":
-						log = new TroubleShoot(logArray, list.logFileDate);
+						log = new Troubleshoot(logArray, list.logFileDate);
 						break;
 					case "Failed CRQ":
 						log = new FailedCRQ(logArray, list.logFileDate);

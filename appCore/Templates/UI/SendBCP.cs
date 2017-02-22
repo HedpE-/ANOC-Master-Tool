@@ -18,10 +18,10 @@ namespace appCore.Templates.UI
 	/// </summary>
 	public partial class SendBCP : Form
 	{
-		TroubleShoot currentTemplate;
+		Troubleshoot currentTemplate;
 		public string mailBody = string.Empty;
 		
-		public SendBCP(ref TroubleShoot template)
+		public SendBCP(ref Troubleshoot template)
 		{
 			currentTemplate = template;
 			InitializeComponent();

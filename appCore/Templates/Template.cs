@@ -40,7 +40,7 @@ namespace appCore.Templates
 			} catch (Exception) { }
 		}
 		
-		public virtual TroubleShoot ToTroubleShootTemplate() {
+		public virtual Troubleshoot ToTroubleShootTemplate() {
 			return null;
 		}
 				

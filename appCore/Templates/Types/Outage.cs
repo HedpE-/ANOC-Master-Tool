@@ -26,18 +26,21 @@ namespace appCore.Templates.Types
 		public string TefOutage;
 		public string TefBulkCI;
 		
-		List<string> VfSites = new List<string>();
-		List<string> VfGsmCells = new List<string>();
-		List<string> VfUmtsCells = new List<string>();
-		List<string> VfLteCells = new List<string>();
+		public List<Site> AffectedSites = new List<Site>();
+		public List<Cell> AffectedCells = new List<Cell>();
+		
+		public List<string> VfSites = new List<string>();
+		public List<string> VfGsmCells = new List<string>();
+		public List<string> VfUmtsCells = new List<string>();
+		public List<string> VfLteCells = new List<string>();
 		List<string> VfLocations = new List<string>();
 		DateTime VfGsmTime = new DateTime(2500,1,1);
 		DateTime VfUmtsTime = new DateTime(2500,1,1);
 		DateTime VfLteTime = new DateTime(2500,1,1);
-		List<string> TefSites = new List<string>();
-		List<string> TefGsmCells = new List<string>();
-		List<string> TefUmtsCells = new List<string>();
-		List<string> TefLteCells = new List<string>();
+		public List<string> TefSites = new List<string>();
+		public List<string> TefGsmCells = new List<string>();
+		public List<string> TefUmtsCells = new List<string>();
+		public List<string> TefLteCells = new List<string>();
 		List<string> TefLocations = new List<string>();
 		DateTime TefGsmTime = new DateTime(2500,1,1);
 		DateTime TefUmtsTime = new DateTime(2500,1,1);
@@ -111,17 +114,6 @@ namespace appCore.Templates.Types
 		}
 		
 		List<Alarm> OutageAlarms;
-		
-//		List<Alarm> VfAlarms {
-//			get {
-//				return OutageAlarms.FindAll(s => s.Operator == "VF");
-//			}
-//		}
-//		List<Alarm> TefAlarms {
-//			get {
-//				return OutageAlarms.FindAll(s => s.Operator == "TEF");
-//			}
-//		}
 		
 		public Outage() { }
 		

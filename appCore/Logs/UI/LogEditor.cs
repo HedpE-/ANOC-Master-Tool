@@ -76,7 +76,7 @@ namespace appCore.Logs.UI
 			for (int c = 0; c < Logs.Count; c++) {
 				switch (Logs[c].LogType) {
 					case "Troubleshoot":
-						TroubleShoot TSlog = new TroubleShoot();
+						Troubleshoot TSlog = new Troubleshoot();
 						Toolbox.Tools.CopyProperties(TSlog, Logs[c]);
 						listView1.Items.Add(new ListViewItem(
 							new []{
