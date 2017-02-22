@@ -134,7 +134,6 @@ namespace appCore.Templates.Types
 				LTEcells = Finder.getCells(alarms.lteSitesOnM, "4G");
 				
 				foreach(Cell cell in LTEcells) {
-					var t = LTEcells.FindIndex(s => s == cell);
 					try {
 						Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
 						OutageAlarms.Add(new Alarm(cell, true, temp));
@@ -172,16 +171,16 @@ namespace appCore.Templates.Types
 						case "VF":
 							if(string.IsNullOrEmpty(e.Record.County)) {
 								if(string.IsNullOrEmpty(e.Record.Town)) {
-									if(!VfLocations.Contains(e.Record.ParentSite.County))
-										VfLocations.Add(e.Record.ParentSite.County);
+									if(!VfLocations.Contains(e.Record.ParentSite.County.ToUpper()))
+										VfLocations.Add(e.Record.ParentSite.County.ToUpper());
 								}
 								else
-									if(!VfLocations.Contains(e.Record.Town))
-										VfLocations.Add(e.Record.Town);
+									if(!VfLocations.Contains(e.Record.Town.ToUpper()))
+										VfLocations.Add(e.Record.Town.ToUpper());
 							}
 							else
-								if(!VfLocations.Contains(e.Record.County))
-									VfLocations.Add(e.Record.County);
+								if(!VfLocations.Contains(e.Record.County.ToUpper()))
+									VfLocations.Add(e.Record.County.ToUpper());
 							if(!VfSites.Contains(tempSite))
 								VfSites.Add(tempSite);
 							switch(e.Record.Bearer) {
@@ -208,16 +207,16 @@ namespace appCore.Templates.Types
 						case "TEF":
 							if(string.IsNullOrEmpty(e.Record.County)) {
 								if(string.IsNullOrEmpty(e.Record.Town)) {
-									if(!TefLocations.Contains(e.Record.ParentSite.County))
-										TefLocations.Add(e.Record.ParentSite.County);
+									if(!TefLocations.Contains(e.Record.ParentSite.County.ToUpper()))
+										TefLocations.Add(e.Record.ParentSite.County.ToUpper());
 								}
 								else
-									if(!TefLocations.Contains(e.Record.Town))
-										TefLocations.Add(e.Record.Town);
+									if(!TefLocations.Contains(e.Record.Town.ToUpper()))
+										TefLocations.Add(e.Record.Town.ToUpper());
 							}
 							else
-								if(!TefLocations.Contains(e.Record.County))
-									TefLocations.Add(e.Record.County);
+								if(!TefLocations.Contains(e.Record.County.ToUpper()))
+									TefLocations.Add(e.Record.County.ToUpper());
 							if(!TefSites.Contains(tempSite))
 								TefSites.Add(tempSite);
 							switch(e.Record.Bearer) {
