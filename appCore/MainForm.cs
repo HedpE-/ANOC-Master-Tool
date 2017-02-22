@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Forms;
 using appCore.DB;
@@ -32,6 +33,7 @@ namespace appCore
 	
 	public partial class MainForm : Form
 	{
+		public Bitmap ScreenshotBeforeMinimize;
 		public static TrayIcon trayIcon;
 		public static TroubleshootControls TroubleshootUI = new TroubleshootControls();
 		public static FailedCRQControls FailedCRQUI = new FailedCRQControls();
@@ -144,8 +146,11 @@ namespace appCore
 //						OutageUI = new OutageControls();
 //						tabPage17.Controls.Add(OutageUI);
 						
+//						OI.OiConnection.requestApiOutput("incidents", "15");
+						
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
+						
 						ShiftsSwapForm ss = new ShiftsSwapForm();
 						ss.Show();
 					};
@@ -258,7 +263,7 @@ namespace appCore
 		}
 
 		void TicketCountLabelMouseClick(object sender, MouseEventArgs e) {
-			if(shiftsCalendar.Location.Y == 0)
+			if(shiftsCalendar.isVisible)
 				shiftsCalendar.toggleShiftsPanel();
 			switch(e.Button) {
 				case MouseButtons.Left:
@@ -340,7 +345,8 @@ namespace appCore
 					                           	textBox13.Text = "";
 					                           	textBox13.TextChanged += TextBox13TextChanged;
 					                           });
-					Tools.darkenBackgroundForm(action,false,this);
+					LoadingPanel load = new LoadingPanel();
+					load.ShowAsync(null, action, false, this);
 				}
 			}
 			else {
@@ -376,28 +382,42 @@ namespace appCore
 
 		void Button6Click(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
-			                           	if (string.IsNullOrEmpty(textBox12.Text)) {
-			                           		FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			                           		return;
-			                           	}
-			                           	try {
-			                           		Netcool.AlarmsParser netcool = new Netcool.AlarmsParser(textBox12.Text);
-			                           		textBox12.Text = netcool.ToString();
-			                           		
-			                           		textBox12.Select(0,0);
-			                           		button6.Enabled = false;
-			                           		button5.Enabled = true;
-			                           		button13.Visible = true;
-			                           		textBox12.ReadOnly = true;
-			                           		label34.Text = "Parsed alarms";
-			                           	}
-			                           	catch {
-			                           		trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
-			                           		return;
-			                           	}
-			                           });
-			Tools.darkenBackgroundForm(action, true, this);
+			if (string.IsNullOrEmpty(textBox12.Text)) {
+				Action action = new Action(delegate {
+				                           	FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				                           });
+				LoadingPanel darken = new LoadingPanel();
+				darken.Show(action, this);
+				return;
+			}
+			
+			bool parsingError = false;
+			string alarms = textBox12.Text;
+			Netcool.AlarmsParser netcool = null;
+			Action actionThreaded = new Action(delegate {
+			                                   	try {
+			                                   		netcool = new Netcool.AlarmsParser(alarms);
+			                                   	}
+			                                   	catch {
+			                                   		trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
+			                                   		parsingError = true;
+			                                   	}
+			                                   });
+			
+			Action actionNonThreaded = new Action(delegate {
+			                                      	if(!parsingError) {
+			                                      		textBox12.Text = netcool.ToString();
+			                                      		
+			                                      		textBox12.Select(0,0);
+			                                      		button6.Enabled = false;
+			                                      		button5.Enabled = true;
+			                                      		button13.Visible = true;
+			                                      		textBox12.ReadOnly = true;
+			                                      		label34.Text = String.Format("Parsed alarms ({0})",netcool.AlarmsList.Count);
+			                                      	}
+			                                      });
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(actionThreaded, actionNonThreaded, true, tabPage5);
 		}
 
 		void Button5Click(object sender, EventArgs e)
@@ -460,9 +480,10 @@ namespace appCore
 					else {
 						Action action = new Action(delegate {
 						                           	FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+						                           	return;
 						                           });
-						Tools.darkenBackgroundForm(action,false,this);
-						return;
+						LoadingPanel load = new LoadingPanel();
+						load.ShowAsync(null, action, false, this);
 					}
 				}
 			}
@@ -473,7 +494,7 @@ namespace appCore
 			//FIXME:			wholeShiftsPanelDispose();
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 				contextMenuStrip1.Show(PointToScreen(e.Location));
-			if(shiftsCalendar.Location.Y == 0)
+			if(shiftsCalendar.isVisible)
 				shiftsCalendar.toggleShiftsPanel();
 		}
 
@@ -490,7 +511,8 @@ namespace appCore
 			                           		tabPage1.BackgroundImage = Image.FromFile(fileBrowser.FileName);
 			                           	}
 			                           });
-			Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action, false, this);
 		}
 
 		void ToolStripMenuItem3Click(object sender, EventArgs e)
@@ -501,12 +523,13 @@ namespace appCore
 
 		void Button13Click(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
-			                           	TroubleshootUI.ActiveAlarmsTextBox.Text = textBox12.Text;
-			                           	tabControl1.SelectTab(1);
-			                           	tabControl2.SelectTab(0);
-			                           });
-			Tools.darkenBackgroundForm(action,false,this);
+//			Action action = new Action(delegate {
+			TroubleshootUI.ActiveAlarmsTextBox.Text = textBox12.Text;
+			tabControl1.SelectTab(1);
+			tabControl2.SelectTab(0);
+//			                           });
+//			LoadingPanel load = new LoadingPanel();
+//			load.Show(null, action, false, this);
 		}
 
 		void TextBox12TextChanged(object sender, EventArgs e)
@@ -523,7 +546,8 @@ namespace appCore
 			                           	enlarge.ShowDialog();
 			                           	textBox12.Text = enlarge.finaltext;
 			                           });
-			Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action, false, this);
 		}
 
 		void MainFormFormClosing(object sender, FormClosingEventArgs e)
@@ -532,7 +556,8 @@ namespace appCore
 			Action action = new Action(delegate {
 			                           	ans = FlexibleMessageBox.Show("Are you sure you want to quit ANOC Master Tool?","Quitting",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 			                           });
-			Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(action, this);
 			if(ans == DialogResult.Yes) {
 				UserFolder.ClearTempFolder();
 				FormCollection fc = Application.OpenForms;
@@ -562,18 +587,23 @@ namespace appCore
 			}
 		}
 		
-		public static void openSettings() {
-//			Action action = new Action(delegate {
-			Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm(GlobalProperties.siteFinder_mainswitch);
-			settings.StartPosition = FormStartPosition.CenterParent;
-			settings.ShowDialog();
-			
-			if(settings.siteFinder_newSwitch != GlobalProperties.siteFinder_mainswitch)
-				GlobalProperties.siteFinder_mainswitch = settings.siteFinder_newSwitch;
-			
+		public static void openSettings(Control callerControl, bool fromTrayIcon = false) {
+			Action action = new Action(delegate {
+			                           	Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm(GlobalProperties.siteFinder_mainswitch);
+			                           	settings.StartPosition = FormStartPosition.CenterParent;
+			                           	settings.ShowDialog();
+			                           	
+			                           	if(settings.siteFinder_newSwitch != GlobalProperties.siteFinder_mainswitch)
+			                           		GlobalProperties.siteFinder_mainswitch = settings.siteFinder_newSwitch;
+			                           	
 //			                           	SetUserFolder(false);
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			                           });
+			if(!fromTrayIcon) {
+				LoadingPanel load = new LoadingPanel();
+				load.ShowAsync(null, action, false, callerControl);
+			}
+			else
+				action();
 		}
 		
 		public static void openAMTBrowser() {
@@ -664,7 +694,7 @@ namespace appCore
 		void PictureBoxesClick(object sender, EventArgs e) {
 			PictureBox pic = (PictureBox)sender;
 			if(pic.Name != "pictureBox6") {
-				if(shiftsCalendar.Location.Y == 0)
+				if(shiftsCalendar.isVisible)
 					shiftsCalendar.toggleShiftsPanel();
 			}
 			switch(pic.Name) {
@@ -672,9 +702,10 @@ namespace appCore
 //					wholeShiftsPanelDispose();
 					MainFormActivate(null,null);
 					Action action = new Action(delegate {
-					                           	openSettings();
+					                           	openSettings(this);
 					                           });
-					Tools.darkenBackgroundForm(action,false,this);
+					LoadingPanel load = new LoadingPanel();
+					load.ShowAsync(null, action,false,this);
 					break;
 				case "pictureBox2":
 //					wholeShiftsPanelDispose();
@@ -746,8 +777,25 @@ namespace appCore
 		}
 		
 		void TabControl1MouseDown(object sender, MouseEventArgs e) {
-			if(shiftsCalendar.Location.Y == 0)
+			if(shiftsCalendar.isVisible)
 				shiftsCalendar.toggleShiftsPanel();
+		}
+		
+		const int WM_SYSCOMMAND = 0x0112;
+		const int SC_MINIMIZE = 0xF020;
+
+		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+		protected override void WndProc(ref Message m)
+		{
+			switch(m.Msg)
+			{
+				case WM_SYSCOMMAND:
+					int command = m.WParam.ToInt32() & 0xfff0;
+					if (command == SC_MINIMIZE)
+						ScreenshotBeforeMinimize = new Bitmap(ClientRectangle.Width, ClientRectangle.Height);
+					break;
+			}
+			base.WndProc(ref m);
 		}
 	}
 }
