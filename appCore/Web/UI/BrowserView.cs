@@ -40,15 +40,15 @@ namespace appCore.Web.UI
 		bool[] wb3LockCellsPanel = null;
 		Uri CitrixHome = new Uri("https://st.internal.vodafone.co.uk/");
 		Uri OILogonScreen = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/sso/index.php?url=%2F");
-		Uri OldOILogonScreen = new Uri("http://195.233.194.118/sso/index.php?url=%2F");
+//		Uri OldOILogonScreen = new Uri("http://195.233.194.118/sso/index.php?url=%2F");
 		List<UriItem> UrisList = new List<UriItem> {
 			new UriItem("SITE Lopedia", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/")), // operationalintelligence.vf-uk.corp.vodafone.com / 195.233.194.118
-			new UriItem("SITE Lopedia (Old)", new Uri("http://195.233.194.118/site_old/index.php")),
+//			new UriItem("SITE Lopedia (Old)", new Uri("http://195.233.194.118/site_old/index.php")),
 			new UriItem("Locked Cells", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/cellslocked.php")),
-			new UriItem("Locked Cells (Old)", new Uri("http://195.233.194.118/site/cellslocked.php")),
+//			new UriItem("Locked Cells (Old)", new Uri("http://195.233.194.118/site/cellslocked.php")),
 			new UriItem("Sites Off Air", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/offair.php")),
 			new UriItem("Vendor Override", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/RANOps/admin/beaconit.php")),
-			new UriItem("COOS - No Unavailability", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ranops/coos-tickets.php")),
+			new UriItem("COOS - No Unavailability", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ranops/command-centre/coos-tickets.php")),
 			new UriItem("Bulk Uploader", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/ukoim/bulk_uploader.php")),
 			new UriItem("ANOC Site Management Diary (Book Ins)", new Uri("https://smsproxy.vavs.vodafone.com/anoc/"))
 		};
@@ -56,6 +56,9 @@ namespace appCore.Web.UI
 		public BrowserView()
 		{
 			InitializeComponent();
+			
+			foreach(UriItem item in UrisList)
+				comboBox1.Items.Add(item.Name);
 			
 			tabControl1.SelectTab(1);
 			webBrowser1.Navigate(CitrixHome);
@@ -86,8 +89,8 @@ namespace appCore.Web.UI
 				}
 				
 				groupBox1.Visible &= !lockedCellsPanelEnabled;
-				if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com") || wb.Url.ToString().Contains("195.233.194.118")) {
-					if(wb.Url.ToString().Contains(@"://195.233.194.118/site_old") || wb.Url.ToString().Contains(@"://operationalintelligence.vf-uk.corp.vodafone.com/site/")) {
+				if(wb.Url.ToString().Contains("operationalintelligence.vf-uk.corp.vodafone.com")) {
+					if(wb.Url.ToString().Contains(@"://operationalintelligence.vf-uk.corp.vodafone.com/site/")) {
 						HtmlElement divCells = wb.Document.GetElementById("div_cells");
 						if(divCells != null) {
 							groupBox1.Visible |= lockedCellsPanelEnabled;
@@ -276,9 +279,8 @@ namespace appCore.Web.UI
 					webBrowser2.ResumeSession(homeAddress(webBrowser2), OiConnection.OICookieContainer);
 					break;
 				case 2:
-					OiConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
-					CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OiConnection.OldOICookieContainer : OiConnection.OICookieContainer;
-					webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, cookies);
+					OiConnection.InitiateOiConnection();
+					webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, OiConnection.OICookieContainer);
 					break;
 			}
 		}
@@ -394,9 +396,8 @@ namespace appCore.Web.UI
 		
 		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
 		{
-			OiConnection.InitiateOiConnection(comboBox1.Text.Contains("(Old)"));
-			CookieContainer cookies = comboBox1.Text.Contains("(Old)") ? OiConnection.OldOICookieContainer : OiConnection.OICookieContainer;
-			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, cookies);
+			OiConnection.InitiateOiConnection();
+			webBrowser3.ResumeSession(UrisList[comboBox1.SelectedIndex].URI, OiConnection.OICookieContainer);
 			tabPage3.Text = comboBox1.Text;
 			this.Text = "AMT Browser - " + comboBox1.Text;
 		}
