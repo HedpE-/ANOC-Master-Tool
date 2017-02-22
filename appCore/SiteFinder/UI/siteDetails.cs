@@ -390,7 +390,7 @@ namespace appCore.SiteFinder.UI
 					else
 						ossID = cell.WBTS_BCF;
 					
-					listView1.Items.Add(new ListViewItem(
+					ListViewItem lvi = new ListViewItem(
 						new[]{ cell.Bearer,
 							cell.Name,
 							cell.Id,
@@ -400,7 +400,10 @@ namespace appCore.SiteFinder.UI
 							cell.Vendor.ToString(),
 							cell.Noc,
 							cell.Locked ? "YES" : "No"
-						}));
+						});
+					lvi.UseItemStyleForSubItems = false;
+					lvi.SubItems[8].BackColor = cell.Locked ? Color.Red : Color.LightGreen;
+					listView1.Items.Add(lvi);
 				}
 				
 				foreach (ColumnHeader col in listView1.Columns)
@@ -640,7 +643,7 @@ namespace appCore.SiteFinder.UI
 				                                   	currentSite = Finder.getSite(tb.Text);
 				                                   	
 				                                   	if(currentSite.Exists) {
-				                                   		currentSite.requestOIData("INCCRQPWRLKULK");
+				                                   		currentSite.requestOIData("INCCRQPWRCellsState");
 //				                                   		currentSite.UpdateLockedCells(false);
 				                                   	}
 				                                   });
