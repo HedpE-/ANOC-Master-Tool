@@ -24,6 +24,7 @@ public static class EmbeddedAssemblies
 		Load("appCore.Assemblies.GMap.NET.Core.dll", "GMap.NET.Core.dll");
 		Load("appCore.Assemblies.FileHelpers.dll", "FileHelpers.dll");
 		Load("appCore.Assemblies.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
+		Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
 		
 		AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 	}

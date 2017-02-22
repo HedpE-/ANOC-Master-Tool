@@ -56,6 +56,10 @@
       <HintPath>Assemblies\FileHelpers.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="GeoUk">
+      <HintPath>Assemblies\GeoUk.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="GMap.NET.Core">
       <HintPath>Assemblies\GMap.NET.Core.dll</HintPath>
       <Private>False</Private>
@@ -1243,7 +1247,7 @@
     <Compile Include="Templates\Template.cs" />
     <Compile Include="Templates\Types\FailedCRQ.cs" />
     <Compile Include="Templates\Types\Outage.cs" />
-    <Compile Include="Templates\Types\TroubleShoot.cs" />
+    <Compile Include="Templates\Types\Troubleshoot.cs" />
     <Compile Include="Templates\Types\TX.cs" />
     <Compile Include="Templates\Types\Update.cs" />
     <Compile Include="Templates\UI\OutageControls.cs">
@@ -1483,6 +1487,7 @@
     <EmbeddedResource Include="Assemblies\GMap.NET.WindowsForms.dll" />
     <EmbeddedResource Include="Assemblies\FileHelpers.dll" />
     <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
+    <EmbeddedResource Include="Assemblies\GeoUk.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
