@@ -95,24 +95,23 @@ namespace appCore.SiteFinder
 			return sites;
 		}
 
-		public static Cell getCell(string cellName)
+		public static List<Cell> getCells(List<string> cellNames)
 		{
-			Cell tempCell = null;
+			List<Cell> tempCells = null;
 			
 			try {
 				var engine = new FileHelperEngine<Cell>();
 				engine.AfterReadRecord +=  (eng, e) => {
-					if(e.Record.Name != cellName)
+					if(!cellNames.Contains(e.Record.Name))
 						e.SkipThisRecord = true;
 				};
-				var res = engine.ReadFileAsList(Databases.all_cells.FullName);
-				tempCell = res.Count > 0 ? res[0] : null;
+				tempCells = engine.ReadFileAsList(Databases.all_cells.FullName);
 			}
 			catch(FileHelpersException e) {
 				string f = e.Message;
 			}
 			
-			return tempCell;
+			return tempCells;
 		}
 
 		public static List<Cell> getCells(List<string> sites, string bearers = "2G3G4G")
