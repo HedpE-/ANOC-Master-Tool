@@ -22,32 +22,66 @@ namespace appCore.OI
 	public static class OiConnection
 	{
 		static RestClient client;
-//		static List<Parameter> requiredHeaders = new List<Parameter>();
+		const string VfUkProxy = "http://vfukukproxy.internal.vodafone.com:8080/";
+		const string VfPtProxy = "10.74.51.1:80";
+		static IWebProxy proxy;
+		public static IWebProxy Proxy {
+			get {
+				if(proxy == null) {
+					try {
+						proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+							new WebProxy(VfUkProxy, true) :
+							WebRequest.GetSystemWebProxy();
+					}
+					catch (Exception) {
+						proxy = WebRequest.GetSystemWebProxy();
+					}
+					
+//					proxy = WebRequest.GetSystemWebProxy(); // Bypass UK Proxy
+					
+					proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+				}
+				return proxy;
+			}
+			set { proxy = value; }
+		}
+		
 		static string OIUsername = string.Empty;
 		static string OIPassword = string.Empty;
 		static Uri OiPortalUri = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/");
-		static Uri OldOiPortalUri = new Uri("http://195.233.194.118/");
-		public static bool LoggedOn;
-		public static bool LoggedOnOldOiPortal;
+		static bool loggedOn;
+		public static bool LoggedOn {
+			get { return loggedOn; }
+			private set {
+				loggedOn = value;
+				LoggedOnCheckTimeStamp = loggedOn ? DateTime.Now : new DateTime(1, 1, 1);
+				
+			}
+		}
 		static DateTime LoggedOnCheckTimeStamp;
-		static DateTime LoggedOnOldOiPortalCheckTimeStamp;
 		static TimeSpan LogonCheckLifeTime = new TimeSpan(0, 30, 0);
+		
+		public static bool Available {
+			get {
+				if(CheckAvailability() == HttpStatusCode.OK) {
+					AvailableCheckTimeStamp = DateTime.Now;
+					return true;
+				}
+				
+				AvailableCheckTimeStamp = new DateTime(1, 1, 1);
+				return false;
+			}
+			private set { }
+		}
+		static DateTime AvailableCheckTimeStamp;
+		static TimeSpan AvailabilityCheckLifeTime = new TimeSpan(0, 30, 0);
+		
 		public static CookieContainer OICookieContainer {
 			get;
 			private set;
 		}
-		public static CookieContainer OldOICookieContainer {
-			get;
-			private set;
-		}
-		public static bool Available {
-			get {
-				return CheckAvailability(false) == HttpStatusCode.OK;
-			}
-			private set {}
-		}
 		
-		static void Logon(bool OldOiPortal)
+		static void Logon()
 		{
 			// Load OI credentials from SettingsFile
 			OIUsername = Settings.SettingsFile.OIUsername;
@@ -55,35 +89,13 @@ namespace appCore.OI
 			if(string.IsNullOrEmpty(OIUsername) || string.IsNullOrEmpty(OIPassword)) // Request credentials if empty on SettingsFile
 				RequestOiCredentials();
 		Retry:
-			if(!OldOiPortal) {
-				OICookieContainer = new CookieContainer();
-				client.CookieContainer = OICookieContainer;
-			}
-			else {
-				OldOICookieContainer = new CookieContainer();
-				client.CookieContainer = OldOICookieContainer;
-			}
-			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
+			OICookieContainer = new CookieContainer();
+			client.CookieContainer = OICookieContainer;
+			client.BaseUrl = OiPortalUri;
 			
-			IWebProxy proxy;
-//			try {
-//				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-//					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
-//					WebRequest.GetSystemWebProxy();
-//			}
-//			catch (Exception) {
-			proxy = WebRequest.GetSystemWebProxy();
-//			}
+			client.Proxy = Proxy;
 			
-			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-			client.Proxy = proxy;
-			
-//			client.Proxy = WebRequest.DefaultWebProxy;
-//			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
-			
-			string restRequest = OldOiPortal ?
-				"/SSO/index.asp?url=%2FSSO%2Fsecurity%2Ephp&proxylogin=true" :
-				"/sso/index.php?url=%2F";
+			string restRequest = "/sso/index.php?url=%2F";
 			IRestRequest request = new RestRequest(restRequest, Method.POST);
 			request.AddParameter("username", OIUsername);
 			request.AddParameter("password", OIPassword.DecryptText());
@@ -91,20 +103,10 @@ namespace appCore.OI
 			
 			IRestResponse response = client.Execute(request);
 			
-//			if(!OldOiPortal)
-//				requiredHeaders = (List<Parameter>)response.Headers;
-			
-			if((!OldOiPortal && response.Content.Contains(@"<div class=""logged_in"">")) || (OldOiPortal && response.ContentLength == 167 && response.Content.Contains("<meta http-equiv=" + '"' + "refresh" + '"' + " content=" + '"' + "0;URL='http://operationalintelligence.vf-uk.corp.vodafone.com/'" + '"' + " />"))) {
-				if(OldOiPortal)
-					LoggedOnOldOiPortal = true;
-				else
-					LoggedOn = true;
-			}
+			if(response.Content.Contains(@"<div class=""logged_in"">"))
+				LoggedOn = true;
 			else {
-				if(OldOiPortal)
-					LoggedOnOldOiPortal = false;
-				else
-					LoggedOn = false;
+				LoggedOn = false;
 				
 				DialogResult res = FlexibleMessageBox.Show("Login failed with current OI credentials, do you want to change?\n\nIncorrect OI credentials prevents the use of this Tool's full features.","Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
 				if(res == DialogResult.Yes) {
@@ -114,24 +116,25 @@ namespace appCore.OI
 			}
 		}
 		
-		static HttpStatusCode CheckAvailability(bool OldOiPortal) {
-			client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
+		static void RevalidateLoginState() {
+			client.BaseUrl = OiPortalUri;
+			client.Proxy = Proxy;
+			client.CookieContainer = OICookieContainer;
+			IRestRequest request = new RestRequest(Method.POST);
+			request.AddHeader("Content-Type", "application/html");
+			request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+			IRestResponse response = client.Execute(request);
 			
-			IWebProxy proxy;
-//			try {
-//				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-//					new WebProxy("http://vfukukproxy.internal.vodafone.com:8080/", true) :
-//					WebRequest.GetSystemWebProxy();
-//			}
-//			catch (Exception) {
-			proxy = WebRequest.GetSystemWebProxy();
-//			}
+			if(response.Content.Contains("Not logged in")) // Login if server kicked user out
+				Logon();
+			else
+				LoggedOn = true;
+		}
+		
+		static HttpStatusCode CheckAvailability() {
+			client.BaseUrl = OiPortalUri;
 			
-			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-			client.Proxy = proxy;
-			
-//			client.Proxy = WebRequest.DefaultWebProxy;
-//			client.Proxy.Credentials = CredentialCache.DefaultCredentials;
+			client.Proxy = Proxy;
 			
 			IRestRequest request = new RestRequest(Method.HEAD);
 			IRestResponse response = client.Execute(request);
@@ -160,27 +163,24 @@ namespace appCore.OI
 			}
 		}
 		
-		public static void InitiateOiConnection(bool OldOiPortal = false) {
+		public static void InitiateOiConnection() {
 			// Instantiate RestSharp client
 			
 			client = new RestClient();
 			
-			if(CheckAvailability(OldOiPortal) == HttpStatusCode.OK) { // Check server availability
-				// Check Login status
-				bool loginState = OldOiPortal ? LoggedOnOldOiPortal : LoggedOn;
+			// Check server availability
+			bool OiAvailable = (DateTime.Now - AvailableCheckTimeStamp) > AvailabilityCheckLifeTime ?
+				Available :
+				true;
+			
+			if(OiAvailable) {
+				// Check Login state
+				bool loginState = LoggedOn;
 				if(!loginState)
-					Logon(OldOiPortal);
+					Logon();
 				else {
-					// If already logged in, confirm on server
-					client.BaseUrl = OldOiPortal ? OldOiPortalUri : OiPortalUri;
-					client.CookieContainer = OICookieContainer;
-					IRestRequest request = new RestRequest(Method.POST);
-					request.AddHeader("Content-Type", "application/html");
-					request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
-					IRestResponse response = client.Execute(request);
-					
-					if((!OldOiPortal && response.Content.Contains("Not logged in")) || (OldOiPortal && response.ContentLength != 167 && !response.Content.Contains("<meta http-equiv=" + '"' + "refresh" + '"' + " content=" + '"' + "0;URL='http://operationalintelligence.vf-uk.corp.vodafone.com/'" + '"' + " />"))) // Login if server kicked user out
-						Logon(OldOiPortal);
+					if((DateTime.Now - LoggedOnCheckTimeStamp) > LogonCheckLifeTime)
+						RevalidateLoginState(); // If logon check lifetime expired, confirm on server
 				}
 			}
 		}
@@ -195,6 +195,7 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/export-{0}", dataToRequest), Method.GET);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
@@ -217,15 +218,11 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
 				request.AddParameter("siteNumbers", site);
 				request.AddParameter("range", string.Empty);
 				request.AddParameter("bearer", bearer);
-//				request.AddHeader("Accept", "application/json, text/javascript, */*; q=0.01;");
-//				request.AddHeader("Content-Type", "application/x-www-form-urlencoded;");
-//				request.AddHeader("Referer", "http://operationalintelligence.vf-uk.corp.vodafone.com/site/");
-//				request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0");
-//				request.AddHeader("X-Requested-With", "XMLHttpRequest");
 				IRestResponse response = client.Execute(request);
 				
 				return response.Content;
@@ -243,6 +240,7 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddHeader("Content-Type", "application/html");
 				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
@@ -264,6 +262,7 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddParameter("siteinput", site);
 				request.AddHeader("Content-Type", "application/html");
@@ -289,6 +288,7 @@ namespace appCore.OI
 					days = 90;
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				request.AddParameter("site", site);
 				request.AddParameter("type", "a");
@@ -314,6 +314,7 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
 				request.AddParameter("easting", string.Empty);
 				request.AddParameter("northing", string.Empty);
@@ -345,6 +346,7 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
 				foreach(string cell in cellsList)
 					request.AddParameter("checkbox" + cell, "on");
@@ -380,6 +382,7 @@ namespace appCore.OI
 			if(LoggedOn) {
 				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
 				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.POST);
 				if(cellsList != null) {
 					foreach(string cell in cellsList)
