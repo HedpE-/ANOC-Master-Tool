@@ -366,6 +366,8 @@ namespace appCore.SiteFinder
 		/// <param name="forceUpdateLockedState"></param>
 		public void requestOIData(string dataToRequest, bool forceUpdateLockedState = false) {
 			if(Exists) {
+				if(!OiConnection.LoggedOn)
+					OiConnection.InitiateOiConnection();
 				List<Thread> threads = new List<Thread>();
 				int finishedThreadsCount = 0;
 				if(dataToRequest.Contains("INC")) {
@@ -420,8 +422,11 @@ namespace appCore.SiteFinder
 					Thread thread = new Thread(() => {
 					                           	isUpdatingAvailability = true;
 //					                           	AvailabilityChart = FetchAvailability(null);
-					                           	Availability = FetchAvailability().ToDataTable();
-					                           	updateCOOS();
+					                           	Availability avail = FetchAvailability();
+					                           	if(avail.message != "Site is Offair") {
+					                           		Availability = avail.ToDataTable();
+					                           		updateCOOS();
+					                           	}
 					                           	isUpdatingAvailability = false;
 					                           	finishedThreadsCount++;
 					                           });
@@ -620,35 +625,35 @@ namespace appCore.SiteFinder
 				int finishedThreadsCount = 0;
 				Thread thread;
 				thread = new Thread(() => {
-				                       	string resp = OiConnection.requestApiOutput("cells", Id, 2);
-				                       	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-				                       	foreach(JObject jObj in jSon.data)
-				                       		list.Add(jObj.ToObject<OiCell>());
-				                       	
-				                       	finishedThreadsCount++;
-				                       });
+				                    	string resp = OiConnection.requestApiOutput("cells", Id, 2);
+				                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+				                    	foreach(JObject jObj in jSon.data)
+				                    		list.Add(jObj.ToObject<OiCell>());
+				                    	
+				                    	finishedThreadsCount++;
+				                    });
 				thread.Name = "getOiCellsState_2G";
 				threads.Add(thread);
 				
 				thread = new Thread(() => {
-				                       	string resp = OiConnection.requestApiOutput("cells", Id, 3);
-				                       	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-				                       	foreach(JObject jObj in jSon.data)
-				                       		list.Add(jObj.ToObject<OiCell>());
-				                       	
-				                       	finishedThreadsCount++;
-				                       });
+				                    	string resp = OiConnection.requestApiOutput("cells", Id, 3);
+				                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+				                    	foreach(JObject jObj in jSon.data)
+				                    		list.Add(jObj.ToObject<OiCell>());
+				                    	
+				                    	finishedThreadsCount++;
+				                    });
 				thread.Name = "getOiCellsState_2G";
 				threads.Add(thread);
 				
 				thread = new Thread(() => {
-				                       	string resp = OiConnection.requestApiOutput("cells", Id, 4);
-				                       	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-				                       	foreach(JObject jObj in jSon.data)
-				                       		list.Add(jObj.ToObject<OiCell>());
-				                       	
-				                       	finishedThreadsCount++;
-				                       });
+				                    	string resp = OiConnection.requestApiOutput("cells", Id, 4);
+				                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+				                    	foreach(JObject jObj in jSon.data)
+				                    		list.Add(jObj.ToObject<OiCell>());
+				                    	
+				                    	finishedThreadsCount++;
+				                    });
 				thread.Name = "getOiCellsState_2G";
 				threads.Add(thread);
 				
