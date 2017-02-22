@@ -15971,6 +15971,7 @@ ZK - LTE2100 Pico</value>
 - Fixed issue causing the WholeShifts panel to display empty lines on the bottom
 - Now the Calendar auto hides when clicking anywhere
 - Fixed issue on Generate Outage From Sites List when sites were being ignored if they had spaces before and/or after the number
+- Site Finder bulk search and Generate Outage from sites list now support bulkCI input
 
 ####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
 
