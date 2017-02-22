@@ -43,6 +43,11 @@ namespace appCore.UI
 			}
 		}
 		
+		public bool isWorkerBusy {
+			get;
+			private set;
+		}
+		
 		/// <summary>
 		/// Show LoadingPanel with both Threaded and Non Threaded instructions.
 		/// For Threaded or Non Threaded action only, pass the other action argument as null
@@ -51,10 +56,11 @@ namespace appCore.UI
 		/// <param name="actionNonThreaded"></param>
 		/// <param name="showLoading"></param>
 		/// <param name="parentControl"></param>
-		public void Show(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
+		public void ShowAsync(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
 			darkenBackgroundForm(showLoading, parentControl);
 			
 			backgroundWorker.DoWork += delegate {
+				isWorkerBusy = true;
 				if(actionThreaded != null)
 					actionThreaded();
 			};
@@ -62,38 +68,50 @@ namespace appCore.UI
 			backgroundWorker.RunWorkerCompleted += delegate {
 				if(actionNonThreaded != null)
 					actionNonThreaded();
-				Parent.Controls.Remove(this);
+//				Parent.Controls.Remove(this);
+				isWorkerBusy = false;
 				this.Dispose();
 			};
 			
 			backgroundWorker.RunWorkerAsync();
 		}
 		
+		/// <summary>
+		/// Show LoadingPanel with Non Threaded instructions.
+		/// </summary>
+		/// <param name="actionNonThreaded"></param>
+		/// <param name="parentControl"></param>
+		public void Show(Action actionNonThreaded, Control parentControl) {
+			darkenBackgroundForm(false, parentControl);
+			
+			actionNonThreaded();
+			Parent.Controls.Remove(this);
+			this.Dispose();
+		}
+		
 		void darkenBackgroundForm(bool showLoading, Control parentControl) {
-//			Form parentForm = getParentForm(parentControl);
 			Form parentForm = parentControl.FindForm();
-			if(!(parentControl is Form))
+			if(!(parentControl is Form) && !(parentControl is TabPage)) {
 				parentControl.Parent.Controls.Add(this);
-			else
+				Location = parentControl.Location;
+			}
+			else {
 				parentControl.Controls.Add(this);
+				Location = Point.Empty;
+			}
 			// take a screenshot of the form and darken it
-			Bitmap bmp = new Bitmap(parentControl.ClientRectangle.Width, parentControl.ClientRectangle.Height);
-			using (Graphics g = Graphics.FromImage(bmp))
-			{
+			Bitmap bmp;
+			if(parentControl is MainForm && parentForm.WindowState == FormWindowState.Minimized)
+				bmp = ((MainForm)parentForm).ScreenshotBeforeMinimize;
+			else
+				bmp = new Bitmap(parentControl.ClientRectangle.Width, parentControl.ClientRectangle.Height);
+			using (Graphics g = Graphics.FromImage(bmp)) {
 				g.CompositingMode = CompositingMode.SourceOver;
 				g.CopyFromScreen(parentControl.PointToScreen(new Point(0, 0)), new Point(0, 0), parentControl.ClientRectangle.Size);
 				Color darken = Color.FromArgb((int)(255 * Opacity), Color.Black);
 				using (Brush brsh = new SolidBrush(darken))
 					g.FillRectangle(brsh, parentControl.ClientRectangle);
 			}
-			
-//			Location = new Point(parentControl.PointToScreen(Point.Empty).X - parentForm.PointToScreen(Point.Empty).X,
-//			                     parentControl.PointToScreen(Point.Empty).Y - parentForm.PointToScreen(Point.Empty).Y);
-			
-			if(!(parentControl is Form))
-				Location = parentControl.Location;
-			else
-				Location = Point.Empty;
 			
 			Size = parentControl.ClientRectangle.Size;
 			BackgroundImage = bmp;
@@ -103,14 +121,7 @@ namespace appCore.UI
 				Point loc = PointToScreen(Point.Empty);
 				loc.X = (parentControl.Width - spinnerSize) / 2;
 				loc.Y = (parentControl.Height - spinnerSize) / 2;
-//				ProgressSpinner loadingBox = new ProgressSpinner();
-//				loadingBox.LoadGIFImage = Resources.spinner1;
-//				loadingBox.BackColor = Color.Transparent;
-//				loadingBox.Size = new Size(spinnerSize, spinnerSize);
-//				loadingBox.Location = loc;
-//				Controls.Add(loadingBox);
-//				loadingBox.BringToFront();
-//				loadingBox.Start();
+				
 				PictureBox loadingBox = new PictureBox();
 				loadingBox.BackColor = Color.Transparent;
 				loadingBox.Image = loadingBox.InitialImage = Resources.spinner1;
@@ -120,23 +131,6 @@ namespace appCore.UI
 				Controls.Add(loadingBox);
 				loadingBox.BringToFront();
 			}
-		}
-		
-		Form getParentForm(Control control) {
-			Form parentForm = null;
-			if(control is Form)
-				parentForm = (Form)control;
-			else {
-				while(parentForm == null) {
-					try {
-						control = control.Parent;
-						if(control is Form)
-							parentForm = (Form)control;
-					}
-					catch {}
-				}
-			}
-			return parentForm;
 		}
 	}
 }
