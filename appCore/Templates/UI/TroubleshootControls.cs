@@ -313,7 +313,7 @@ namespace appCore.Templates.UI
 				                                      	SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
 				                                      });
 				LoadingPanel load = new LoadingPanel();
-				load.Show(actionThreaded, actionNonThreaded, true, this);
+				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 
@@ -727,7 +727,7 @@ namespace appCore.Templates.UI
 			                                      		FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			                                      });
 			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded, false, this);
+			load.ShowAsync(null, actionNonThreaded, false, this);
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
@@ -880,7 +880,7 @@ namespace appCore.Templates.UI
 			                                      	}
 			                                      });
 			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded, false, this.FindForm());
+			load.ShowAsync(null, actionNonThreaded, false, this.FindForm());
 		}
 		
 		void CheckOngoingCRQs() {

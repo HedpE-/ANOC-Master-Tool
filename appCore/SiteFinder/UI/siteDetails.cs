@@ -195,7 +195,8 @@ namespace appCore.SiteFinder.UI
 			                           	myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           });
 			
-			Toolbox.Tools.darkenBackgroundForm(action,true, this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action,true, this);
 		}
 		
 		void populateBulkForm(object sender, EventArgs e)
@@ -213,7 +214,8 @@ namespace appCore.SiteFinder.UI
 			                           		textBox1.Select();
 			                           });
 			
-			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action,true,this);
 		}
 		
 		void initializeListviews() {
@@ -473,7 +475,8 @@ namespace appCore.SiteFinder.UI
 					                    });
 					break;
 			}
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action,false,this);
 		}
 		
 		void ListView1KeyDown(object sender, KeyEventArgs e)
@@ -583,7 +586,8 @@ namespace appCore.SiteFinder.UI
 			                           		form.ShowDialog();
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(action, this);
 			if(string.IsNullOrEmpty(sitesList_tb.Text))
 				return;
 			
@@ -658,7 +662,7 @@ namespace appCore.SiteFinder.UI
 				                                      });
 				
 				LoadingPanel load = new LoadingPanel();
-				load.Show(actionThreaded, actionNonThreaded, true, this);
+				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 		
@@ -694,7 +698,8 @@ namespace appCore.SiteFinder.UI
 			                           		}
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,true,this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action,true,this);
 		}
 		
 		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -854,7 +859,7 @@ namespace appCore.SiteFinder.UI
 			                                      });
 			
 			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded, false, this);
+			load.ShowAsync(null, actionNonThreaded, false, this);
 		}
 		
 		void LockedCellsPage(object sender, EventArgs e) {

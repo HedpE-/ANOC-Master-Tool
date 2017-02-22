@@ -182,7 +182,7 @@ namespace appCore.Templates.UI
 			                                      	}
 			                                      });
 			LoadingPanel loading = new LoadingPanel();
-			loading.Show(actionThreaded, actionNonThreaded, true, this);
+			loading.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 		}
 		
 		void OutageFollowUp(object sender, EventArgs e) {
@@ -241,41 +241,43 @@ namespace appCore.Templates.UI
 			                                   });
 			
 			Action actionNonThreaded = new Action(delegate {
-			                                      	if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-			                                      		VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-			                                      	else {
-			                                      		if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      			MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
-			                                      			Alarms_ReportTextBox.Text = string.Empty;
-			                                      			VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
-			                                      			return;
-			                                      		}
-			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-			                                      			VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-			                                      			TFReportRadioButton.Enabled = false;
-			                                      		}
+			                                      	if(!parsingError) {
+			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+			                                      			VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
 			                                      		else {
-			                                      			if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      				TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
-			                                      				VFReportRadioButton.Enabled = false;
+			                                      			if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
+			                                      				MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
+			                                      				Alarms_ReportTextBox.Text = string.Empty;
+			                                      				VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+			                                      				return;
+			                                      			}
+			                                      			if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
+			                                      				VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+			                                      				TFReportRadioButton.Enabled = false;
+			                                      			}
+			                                      			else {
+			                                      				if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
+			                                      					TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+			                                      					VFReportRadioButton.Enabled = false;
+			                                      				}
 			                                      			}
 			                                      		}
-			                                      	}
-			                                      	if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      		generateFromSitesListToolStripMenuItem.Enabled =
-			                                      			generateReportToolStripMenuItem.Enabled = false;
-			                                      		Alarms_ReportTextBox.ReadOnly =
-			                                      			BulkCITextBox.ReadOnly = true;
-			                                      		copyToClipboardToolStripMenuItem.Enabled =
-			                                      			generateSitesListToolStripMenuItem.Enabled =
-			                                      			outageFollowUpToolStripMenuItem.Enabled = true;
-			                                      		Alarms_ReportTextBox.Focus();
-			                                      		Alarms_ReportLabel.Text = "Generated Outage Report";
-			                                      		MainForm.logFiles.HandleOutageLog(currentOutage);
+			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
+			                                      			generateFromSitesListToolStripMenuItem.Enabled =
+			                                      				generateReportToolStripMenuItem.Enabled = false;
+			                                      			Alarms_ReportTextBox.ReadOnly =
+			                                      				BulkCITextBox.ReadOnly = true;
+			                                      			copyToClipboardToolStripMenuItem.Enabled =
+			                                      				generateSitesListToolStripMenuItem.Enabled =
+			                                      				outageFollowUpToolStripMenuItem.Enabled = true;
+			                                      			Alarms_ReportTextBox.Focus();
+			                                      			Alarms_ReportLabel.Text = "Generated Outage Report";
+			                                      			MainForm.logFiles.HandleOutageLog(currentOutage);
+			                                      		}
 			                                      	}
 			                                      });
 			LoadingPanel load = new LoadingPanel();
-			load.Show(actionThreaded, actionNonThreaded, true, this);
+			load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 //			Toolbox.Tools.darkenBackgroundForm(action, true, Toolbox.Tools.getParentForm(this));
 		}
 
@@ -450,11 +452,11 @@ namespace appCore.Templates.UI
 		void GenerateSitesList(object sender, EventArgs e)
 		{
 			Action actionNonThreaded = new Action(delegate {
-			                           	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + currentOutage.SitesList + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
-			                           	Clipboard.SetText(currentOutage.SitesList);
-			                           });
+			                                      	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + currentOutage.SitesList + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+			                                      	Clipboard.SetText(currentOutage.SitesList);
+			                                      });
 			LoadingPanel load = new LoadingPanel();
-			load.Show(null, actionNonThreaded, false, this.FindForm());
+			load.ShowAsync(null, actionNonThreaded, false, this.FindForm());
 		}
 
 		void ClearAllControls(object sender, EventArgs e)

@@ -136,7 +136,7 @@ namespace appCore.UI
 			                                                 	Links,
 			                                                 	new MenuItem("-"),
 			                                                 	
-			                                                 	new MenuItem("Settings", (s, e) => MainForm.openSettings()),
+			                                                 	new MenuItem("Settings", (s, e) => MainForm.openSettings(null, true)),
 			                                                 	new MenuItem("AMT Browser", (s, e) => MainForm.openAMTBrowser()),
 			                                                 	new MenuItem("Notes", (s, e) => MainForm.openNotes()),
 			                                                 	new MenuItem("Log Browser", (s, e) => MainForm.openLogBrowser()),

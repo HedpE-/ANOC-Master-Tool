@@ -111,8 +111,7 @@ namespace appCore.Logs.UI
 		
 		void ListBox3DoubleClick(object sender, EventArgs e)
 		{
-//			Action actionNonThreaded = null;
-			Action actionThreaded = new Action(delegate {
+			Action action = new Action(delegate {
 			                                   	if (listBox3.SelectedIndex != -1) {
 			                                   		string separator = string.Empty;
 			                                   		for (int c = 1; c < 301; c++) {
@@ -128,12 +127,10 @@ namespace appCore.Logs.UI
 			                                   			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
 			                                   			if (Logs[0].Contains(" - ")) {
 			                                   				LogsCollection<Template> logs = new LogsCollection<Template>();
-//			                                   				actionNonThreaded = delegate {
 			                                   				logs = logs.ImportLogFile(new FileInfo(LogFile));
 			                                   				LogEditor LogEdit = new LogEditor(logs, myFormControl1);
 			                                   				LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                                   				LogEdit.ShowDialog(this);
-//			                                   				};
 			                                   			}
 			                                   			else {
 			                                   				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
@@ -147,19 +144,16 @@ namespace appCore.Logs.UI
 			                                   			
 			                                   			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
 			                                   			LogsCollection<Outage> logs = new LogsCollection<Outage>();
-//			                                   				actionNonThreaded = delegate {
 			                                   			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
-//			                                   			actionNonThreaded = delegate {
 			                                   			LogEditor LogEdit = new LogEditor(logs, myFormControl1);
 			                                   			LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                                   			LogEdit.ShowDialog();
-//			                                   			};
 			                                   		}
 			                                   	}
 			                                   });
-			Toolbox.Tools.darkenBackgroundForm(actionThreaded, false, this);
-//			LoadingPanel load = new LoadingPanel();
-//			load.Show(actionThreaded, actionNonThreaded, false, this);
+//			Toolbox.Tools.darkenBackgroundForm(actionThreaded, false, this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(action, this);
 		}
 		
 		void ListBox3KeyPress(object sender, KeyPressEventArgs e)

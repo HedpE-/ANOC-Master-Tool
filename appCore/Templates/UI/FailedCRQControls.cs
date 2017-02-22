@@ -346,7 +346,7 @@ namespace appCore.Templates.UI
 				                                      	siteFinder_Toggle(true, currentSite.Exists);
 				                                      });
 				LoadingPanel load = new LoadingPanel();
-				load.Show(actionThreaded, actionNonThreaded, true, this);
+				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 			}
 		}
 

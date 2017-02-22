@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +9,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using appCore.UI;
 using appCore.Settings;
 using HtmlAgilityPack;
 
@@ -57,23 +54,6 @@ namespace appCore.Toolbox
 			byte[] hash = md5.ComputeHash(inputBytes);
 
 			return convertByteArrayToHex(hash);
-		}
-		
-		public static Form getParentForm(Control control) {
-			Form parentForm = null;
-			if(control is Form)
-				parentForm = (Form)control;
-			else {
-				while(parentForm == null) {
-					try {
-						control = control.Parent;
-						if(control is Form)
-							parentForm = (Form)control;
-					}
-					catch {}
-				}
-			}
-			return parentForm;
 		}
 		
 		public static string convertByteArrayToHex(byte[] hash) {
@@ -146,61 +126,60 @@ namespace appCore.Toolbox
 			return (prefix + num);
 		}
 		
-		public static void darkenBackgroundForm(Action action, bool showLoading, Control control)
-		{
-			// Resolve Parent Form if needed
-			Form parentForm = control is Form ? control as Form : getParentForm(control);
-			// take a screenshot of the form and darken it
-			Bitmap bmp = new Bitmap(parentForm.ClientRectangle.Width, parentForm.ClientRectangle.Height);
-			using (Graphics G = Graphics.FromImage(bmp))
-			{
-				G.CompositingMode = CompositingMode.SourceOver;
-				G.CopyFromScreen(parentForm.PointToScreen(new Point(0, 0)), new Point(0, 0), parentForm.ClientRectangle.Size);
-				const double percent = 0.40;
-				Color darken = Color.FromArgb((int)(255 * percent), Color.Black);
-				using (Brush brsh = new SolidBrush(darken))
-				{
-					G.FillRectangle(brsh, parentForm.ClientRectangle);
-				}
-			}
-
-			// put the darkened screenshot into a Panel and bring it to the front:
-			using (Panel p = new Panel())
-			{
-				p.Location = new Point(0, 0);
-				p.Size = parentForm.ClientRectangle.Size;
-				p.BackgroundImage = bmp;
-				parentForm.Controls.Add(p);
-				p.BringToFront();
-				
-				// display your dialog somehow:
-				if(showLoading) {
-					const int spinnerSize = 32;
-					Point loc = p.PointToScreen(Point.Empty);
-					loc.X = loc.X + ((p.Width - spinnerSize) / 2);
-					loc.Y = loc.Y + ((p.Height - spinnerSize) / 2);
+//		public static void darkenBackgroundForm(Action action, bool showLoading, Control control)
+//		{
+//			// Resolve Parent Form if needed
+//			Form parentForm = control is Form ? control as Form : control.FindForm();
+//			// take a screenshot of the form and darken it
+//			Bitmap bmp = new Bitmap(parentForm.ClientRectangle.Width, parentForm.ClientRectangle.Height);
+//			using (Graphics G = Graphics.FromImage(bmp))
+//			{
+//				G.CompositingMode = CompositingMode.SourceOver;
+//				G.CopyFromScreen(parentForm.PointToScreen(new Point(0, 0)), new Point(0, 0), parentForm.ClientRectangle.Size);
+//				const double percent = 0.40;
+//				Color darken = Color.FromArgb((int)(255 * percent), Color.Black);
+//				using (Brush brsh = new SolidBrush(darken))
+//				{
+//					G.FillRectangle(brsh, parentForm.ClientRectangle);
+//				}
+//			}
+//
+//			// put the darkened screenshot into a Panel and bring it to the front:
+//			using (Panel p = new Panel()) {
+//				p.Location = new Point(0, 0);
+//				p.Size = parentForm.ClientRectangle.Size;
+//				p.BackgroundImage = bmp;
+//				parentForm.Controls.Add(p);
+//				p.BringToFront();
+//				
+//				// display your dialog somehow:
+//				if(showLoading) {
+//					const int spinnerSize = 32;
+//					Point loc = p.PointToScreen(Point.Empty);
+//					loc.X = loc.X + ((p.Width - spinnerSize) / 2);
+//					loc.Y = loc.Y + ((p.Height - spinnerSize) / 2);
 //					PictureBox loadingBox = new PictureBox();
 //					loadingBox.Image = Resources.spinner1;
 //					loadingBox.Location = loc;
+//					loadingBox.BackColor = Color.Transparent;
+//					loadingBox.Size = new Size(spinnerSize, spinnerSize);
 //					p.Controls.Add(loadingBox);
+//					loadingBox.BringToFront();
 //					Loading.ShowLoadingForm(loc, parentForm);
-					
-					ProgressSpinner loadingBox = new ProgressSpinner();
-					loadingBox.LoadGIFImage = Resources.spinner1;
-					loadingBox.BackColor = Color.Transparent;
-					loadingBox.Size = new Size(spinnerSize, spinnerSize);
-					loadingBox.Location = loc;
-					p.Controls.Add(loadingBox);
-					loadingBox.BringToFront();
-					loadingBox.Start();
-				}
-				
-				action();
-				
-//				if(showLoading)
-//					loadingBox.Stop();
-			} // panel will be disposed and the form will "lighten" again...
-		}
+//					
+////					ProgressSpinner loadingBox = new ProgressSpinner();
+////					loadingBox.LoadGIFImage = Resources.spinner1;
+////					loadingBox.Location = loc;
+////					p.Controls.Add(loadingBox);
+////					loadingBox.Start();
+//				}
+//				
+//				action();
+//				
+////				if(showLoading)
+////					loadingBox.Stop();
+//			} // panel will be disposed and the form will "lighten" again...
+//		}
 		
 //		static string ReadSignature()
 //		{

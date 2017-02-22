@@ -13,10 +13,10 @@ using appCore.UI;
 
 namespace appCore.Templates.UI
 {
-    /// <summary>
-    /// Description of SendBCP.
-    /// </summary>
-    public partial class SendBCP : Form
+	/// <summary>
+	/// Description of SendBCP.
+	/// </summary>
+	public partial class SendBCP : Form
 	{
 		TroubleShoot currentTemplate;
 		public string mailBody = string.Empty;
@@ -79,12 +79,13 @@ namespace appCore.Templates.UI
 		void Button3Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	appCore.UI.AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox4.Text,label5.Text,true);
+			                           	AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox4.Text,label5.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox4.Text = enlarge.finaltext;
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action,false,this);
 		}
 		
 		void Button1Click(object sender, EventArgs e)

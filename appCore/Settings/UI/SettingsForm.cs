@@ -86,7 +86,8 @@ namespace appCore.Settings.UI
 			                           		}
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action, true, this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action, false, this);
 		}
 
 		void Button3Click(object sender, EventArgs e)
@@ -95,7 +96,8 @@ namespace appCore.Settings.UI
 			                           {
 			                           	FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action, false, this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action, false, this);
 		}
 
 		void Button4Click(object sender, EventArgs e)
@@ -112,7 +114,8 @@ namespace appCore.Settings.UI
 			                           		label6.Text = auth.Username;
 			                           	}
 			                           });
-			Toolbox.Tools.darkenBackgroundForm(action, false, this);
+			LoadingPanel load = new LoadingPanel();
+			load.ShowAsync(null, action, false, this);
 		}
 
 		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
@@ -131,7 +134,7 @@ namespace appCore.Settings.UI
 			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action, true, this);
 			LoadingPanel load = new LoadingPanel();
-			load.Show(action, null, true, this);
+			load.ShowAsync(action, null, true, this);
 		}
 
 		//        void SettingsForm_Load(object sender, EventArgs e)

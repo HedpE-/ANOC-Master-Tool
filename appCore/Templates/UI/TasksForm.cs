@@ -200,7 +200,8 @@ namespace appCore.Templates.UI
 				Action action = new Action(delegate {
 				                           	FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				                           });
-				Toolbox.Tools.darkenBackgroundForm(action,false,this);
+				LoadingPanel load = new LoadingPanel();
+				load.Show(action, this);
 				return;
 			}
 			string taskString = string.Empty;
