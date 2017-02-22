@@ -183,16 +183,14 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha 22/02/2017 #######
 		///
-		///- Reduced application loading time
-		///- Reduced drastically the RAM usage, now it should be under 100Mb most of the time
-		///- Shifts Calendar is much faster to show single day shifts
-		///- Queries to all_sites &amp; all_cells DBs are much faster, mainly on bulk searches
-		///- Alarms Parsing time dratically reduced to about 2000 alarms per second
-		///- Outage Reports generation time drastically reduced
-		///- Outage Follow Up opens much faster now
-		///- INCs/CRQs/BookIns/Ala [rest of string was truncated]&quot;;.
+		///- Adaptations for new OI APIs
+		///- Tweaked OI requests, now it gets the same data using less requests, turning into reduced response times and less server load
+		///- Removed Old OI links since they&apos;ve been taken out of order
+		///- Site Details has a new menu button for the Availability chart
+		///- Tweaked site finder to get cells faster, greatly reduced time on Outages and bulk searches
+		///- Site Finder cells Locked column has color according to the cells locked st [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

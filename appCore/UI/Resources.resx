@@ -15954,7 +15954,25 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
+    <value>####### ANOC Master Tool 7.1alpha 22/02/2017 #######
+
+- Adaptations for new OI APIs
+- Tweaked OI requests, now it gets the same data using less requests, turning into reduced response times and less server load
+- Removed Old OI links since they've been taken out of order
+- Site Details has a new menu button for the Availability chart
+- Tweaked site finder to get cells faster, greatly reduced time on Outages and bulk searches
+- Site Finder cells Locked column has color according to the cells locked state
+- Fixed Outage parser duplicate locations with different casing
+- Fixed crashes when a CRQ with one or both Scheduled dates empty
+- Fixed loading spinner being hanged on fixed screen point until the app is closed
+- Fixed some ALU RNC alarms being resolved as COOS alarms
+- Fixed crash when ShiftsFile is open while the tool is loading, it now requests to close the file and try again
+- Fixed outage not being generated because the alarm date format wasn't the expected
+- Fixed issue causing the WholeShifts panel to display empty lines on the bottom
+- Now the Calendar auto hides when clicking anywhere
+- Fixed issue on Generate Outage From Sites List when sites were being ignored if they had spaces before and/or after the number
+
+####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
 
 - Reduced application loading time
 - Reduced drastically the RAM usage, now it should be under 100Mb most of the time
