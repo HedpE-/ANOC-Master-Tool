@@ -171,12 +171,22 @@ namespace appCore.SiteFinder.UI
 				cells.AddRange(parent.currentOutage.TefUmtsCells);
 				cells.AddRange(parent.currentOutage.TefLteCells);
 				
+				for(int c = 0;c < cells.Count;c++) {
+					string[] strToFind = { " - " };
+					var tempCell = cells[c].Split(strToFind, StringSplitOptions.None);
+					if(tempCell.Length > 1)
+						cells[c] = tempCell[1];
+				}
+				
 				parent.currentOutage.AffectedCells = Finder.getCells(cells);
 				foreach(Cell cell in parent.currentOutage.AffectedCells) {
 					Site site = parent.currentOutage.AffectedSites.Find(s => s.Id == cell.ParentSite);
 					int siteIndex = parent.currentOutage.AffectedSites.IndexOf(site);
-					if(siteIndex > -1)
+					if(siteIndex > -1) {
+						if(parent.currentOutage.AffectedSites[siteIndex].CellsInOutage == null)
+							parent.currentOutage.AffectedSites[siteIndex].CellsInOutage = new List<Cell>();
 						parent.currentOutage.AffectedSites[siteIndex].CellsInOutage.Add(cell);
+					}
 				}
 				st.Stop();
 				var t = st.Elapsed;
