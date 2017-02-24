@@ -294,6 +294,49 @@ namespace appCore.SiteFinder.UI
 						amtRichTextBox1.Height = dataGridView1.Height;
 						label3.Top = lb.Top - label3.Height - 3;
 						amtRichTextBox1.Top = dataGridView1.Top;
+						if(label4.Text.StartsWith("CAUTION")) {
+							amtRichTextBox1.Height = 229;
+							
+							RadioButton rb1 = new RadioButton();
+							rb1.Text = "FE";
+							rb1.Width = 40;
+							rb1.Location = new Point(amtRichTextBox1.Left + 3, amtRichTextBox1.Bottom + 5);
+							rb1.Checked = true;
+							RadioButton rb2 = new RadioButton();
+							rb2.Text = "Requested by";
+							rb2.Width = 100;
+							rb2.Location = new Point(rb1.Right + 5, rb1.Top);
+							
+							Label nameLb = new Label();
+							nameLb.Text = "Name";
+							nameLb.Location = new Point(amtRichTextBox1.Left, rb1.Bottom + 10);
+							nameLb.Width = 50;
+							AMTTextBox nameTb = new AMTTextBox();
+							nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
+							nameTb.Width = 166;
+							Label contactLb = new Label();
+							contactLb.Text = "Contact";
+							contactLb.Location = new Point(amtRichTextBox1.Left, nameLb.Bottom + 5);
+							contactLb.Width = 50;
+							AMTTextBox contactTb = new AMTTextBox();
+							contactTb.Location = new Point(contactLb.Right + 3, contactLb.Top);
+							contactTb.Width = 166;
+							rb1.CheckedChanged += delegate {
+								contactTb.Enabled = true;
+							};
+							rb2.CheckedChanged += delegate {
+								contactTb.Enabled = false;
+							};
+							
+							Controls.AddRange(new Control[]{
+							                  	rb1,
+							                  	rb2,
+							                  	nameLb,
+							                  	nameTb,
+							                  	contactLb,
+							                  	contactTb
+							                  });
+						}
 						label1.Location = new Point(lb.Left, label3.Top);
 						label1.Text = "Sites";
 						label1.Anchor = label2.Anchor = AnchorStyles.Top | AnchorStyles.Left;
@@ -341,9 +384,9 @@ namespace appCore.SiteFinder.UI
 			UiMode = "Cells Locked";
 			
 //			Action actionNonThreaded = new Action(delegate {
-			                                      	populateCellsLocked();
+			populateCellsLocked();
 //			                                      });
-//			
+//
 //			LoadingPanel load = new LoadingPanel();
 //			load.ShowAsync(null, actionNonThreaded, true, this);
 		}

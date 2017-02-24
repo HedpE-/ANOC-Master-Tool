@@ -89,7 +89,8 @@ namespace appCore.SiteFinder.UI
 						checkBox3.Location = new Point(296, 355);
 						label11.Visible = true;
 						label12.Location = new Point(5, 352);
-						MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
+						if(Settings.CurrentUser.Role == "Shift Leader")
+							MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
 //						bulkSiteSearchMenuItem.Enabled =
 //							lockedCellsPageToolStripMenuItem.Enabled = false;
 						textBox1.ReadOnly = true;
@@ -147,8 +148,6 @@ namespace appCore.SiteFinder.UI
 			if(isOutage) {
 				siteDetails_UIMode = "outage";
 				
-				
-				
 				sites = (parent.currentOutage.VfBulkCI + parent.currentOutage.TefBulkCI).Split(';');
 				for(int c = 0;c < sites.Length;c++) {
 					if(sites[c].StartsWith("0")) {
@@ -160,8 +159,6 @@ namespace appCore.SiteFinder.UI
 				}
 				sites = sites.Distinct().ToArray(); // Remover duplicados
 				sites = sites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
-				System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-				st.Start();
 				parent.currentOutage.AffectedSites = Finder.getSites(sites.ToList());
 				
 				List<string> cells = parent.currentOutage.VfGsmCells;
@@ -188,8 +185,6 @@ namespace appCore.SiteFinder.UI
 						parent.currentOutage.AffectedSites[siteIndex].CellsInOutage.Add(cell);
 					}
 				}
-				st.Stop();
-				var t = st.Elapsed;
 			}
 			else
 				siteDetails_UIMode = "single";

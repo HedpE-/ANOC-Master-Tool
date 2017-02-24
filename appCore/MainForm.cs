@@ -52,7 +52,7 @@ namespace appCore
 		
 		public MainForm(NotifyIcon tray, string[] args)
 		{
-//			args = new [] { "-otherUser", "SANTOSS2" }; // HACK: force login with another user
+//			args = new [] { "-otherUser", "SILVABT" }; // HACK: force login with another user
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			GlobalProperties.resolveOfficePath();
 			
