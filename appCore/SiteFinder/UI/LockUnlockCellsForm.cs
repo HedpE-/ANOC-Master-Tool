@@ -760,6 +760,15 @@ namespace appCore.SiteFinder.UI
 		
 		void AmtRichTextBox1TextChanged(object sender, EventArgs e) {
 			button1.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text);
+			if(UiMode.StartsWith("Lock") && label4.Text.StartsWith("CAUTION")) {
+				try {
+					Controls["rb1"].Enabled =
+						Controls["rb2"].Enabled =
+						Controls["nameTb"].Enabled =
+						Controls["contactTb"].Enabled = false;
+				}
+				catch {}
+			}
 		}
 		
 		void AmtRichTextBox1EnabledChanged(object sender, EventArgs e) {
@@ -774,11 +783,16 @@ namespace appCore.SiteFinder.UI
 			                                      	if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
 			                                      		rbText = ((RadioButton)Controls["rb1"]).Checked ? Controls["rb1"].Text : Controls["rb2"].Text;
 			                                      		if(string.IsNullOrEmpty(Controls["nameTb"].Text) || (rbText.StartsWith("FE") && string.IsNullOrEmpty(Controls["contactTb"].Text))) {
-			                                      			Action act = new Action(delegate {
-			                                      			                        	FlexibleMessageBox.Show("Please fill in the FE/Requester information", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                                      			Action action = new Action(delegate {
+			                                      			                        	FlexibleMessageBox.Show("No valid book in found for this site.\n\n" +
+			                                      			                        	                        "It's OK to lock cells without a book in, as long\n" +
+			                                      			                        	                        "as you provide the FE or lockdown approver\n" +
+			                                      			                        	                        "contact details on the comments.\n\n" +
+			                                      			                        	                        "Please fill in the required details.", "Data missing",
+			                                      			                        	                        MessageBoxButtons.OK, MessageBoxIcon.Error);
 			                                      			                        });
 			                                      			LoadingPanel loading = new LoadingPanel();
-			                                      			loading.Show(act, this);
+			                                      			loading.Show(action, this);
 			                                      			return;
 			                                      		}
 			                                      		name = Controls["nameTb"].Text;
@@ -802,23 +816,22 @@ namespace appCore.SiteFinder.UI
 			                                      		sendLockCellsRequest(cellsList, comboBox1.Text, comment);
 			                                      	else
 			                                      		sendUnlockCellsRequest(cellsList, comment);
-			                                      	}
 			                                      });
-			LoadingPanel darken = new LoadingPanel();
-			darken.Show(actionNonThreaded, this);
+			LoadingPanel load = new LoadingPanel();
+			load.Show(actionNonThreaded, this);
 		}
 		
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
 			bool manRef = !comboBox1.Items.Contains(reference);
 			OiConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
-			currentSite.requestOIData("LKULK", true);
+			currentSite.requestOIData("CellsStateLKULK", true);
 			RadioButtonsCheckedChanged(radioButton1, null);
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
 			if(UiMode != "Cells Locked") {
 				OiConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
-				currentSite.requestOIData("LKULK", true);
+				currentSite.requestOIData("CellsStateLKULK", true);
 				RadioButtonsCheckedChanged(radioButton2, null);
 			}
 			else {
@@ -1033,9 +1046,9 @@ namespace appCore.SiteFinder.UI
 					maxCount = dataGridView1.RowCount;
 				}
 				if(cb != null) {
-					cb.CheckedChanged -= CheckBoxesCheckedChanged;
-					cb.Checked = checkCount == maxCount;
-					cb.CheckedChanged += CheckBoxesCheckedChanged;
+//					cb.CheckedChanged -= CheckBoxesCheckedChanged;
+					cb.Checked = maxCount > 0 && checkCount == maxCount;
+//					cb.CheckedChanged += CheckBoxesCheckedChanged;
 				}
 			}
 		}

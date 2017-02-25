@@ -477,10 +477,32 @@ namespace appCore.SiteFinder
 		List<Incident> FetchINCs() {
 			List<Incident> list = new List<Incident>();
 			string response = OiConnection.requestApiOutput("incidents", Id);
-			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data)
-				list.Add(jObj.ToObject<Incident>());
-			IncidentsTimestamp = DateTime.Now;
+			// FIXME: crash on OI unavailability
+//			{"data":[
+			//<br />
+			//<b>Warning</b>:  oci_execute(): ORA-00942: table or view does not exist in <b>/var/SP/oiadm/docroot/common/php/DatabaseConnection.php</b> on line <b>208</b><br />
+			//<br />
+			//<b>Fatal error</b>:  unknown error in DatabaseConnection->execute with SQL{select distinct * from (SELECT HPD_HELP_DESK.Incident_Number ,
+//			nvl( HPD_HELP_DESK.Description,'Not Available') Summary,
+//			case when HPD_HELP_DESK.ServiceCI in ('Voice','Messaging Services','Data')
+//			and HPD_Impact.Impact = '4-Minor/Localized' and HPD_Urgency.Urgency ='4-Low'
+//			and HPD_Priority.priority = 'Low' then 'Low*' else HPD_Priority.priority End Priority ,
+//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Submit_Date),'dd/mm/yyyy HH24:mi') Submit_date,
+//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Last_Resolved_Date),'dd/mm/yyyy HH24:mi') Resolved_Date,
+//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Submit_Date),'yyyymmddHH24mi') Submit_date2,
+//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Last_Resolved_Date),'yyyymmddHH24mi') Resolved_Date2,
+//			HPD_Status.status,
+//						HPD_HELP_DESK.resolution_category_tier_2,
+//						HPD_HELP_DESK.resolution_category_tier_3,
+//						dbms_lob.substr( HPD_HELP_DESK.resolution, 4000,1) resolution,
+//			 in <b>/var/SP/oiadm/docroot/common/php/DatabaseConnection.php</b> on line <b>288</b><br />
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data)
+					list.Add(jObj.ToObject<Incident>());
+				IncidentsTimestamp = DateTime.Now;
+			}
+			catch { list = null; }
 			return list;
 		}
 		
@@ -497,18 +519,21 @@ namespace appCore.SiteFinder
 		List<Change> FetchCRQs() {
 			List<Change> list = new List<Change>();
 			string response = OiConnection.requestApiOutput("changes", Id);
-			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data) {
-				Change item = jObj.ToObject<Change>();
-				// remove HTML tags from Status
-				while(item.Status.Contains(">")) {
-					int startIndex = item.Status.IndexOf("<");
-					int endIndex = item.Status.IndexOf(">");
-					item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data) {
+					Change item = jObj.ToObject<Change>();
+					// remove HTML tags from Status
+					while(item.Status.Contains(">")) {
+						int startIndex = item.Status.IndexOf("<");
+						int endIndex = item.Status.IndexOf(">");
+						item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+					}
+					list.Add(item);
 				}
-				list.Add(item);
+				ChangesTimestamp = DateTime.Now;
 			}
-			ChangesTimestamp = DateTime.Now;
+			catch { list = null; }
 			return list;
 		}
 		
@@ -537,10 +562,13 @@ namespace appCore.SiteFinder
 		List<Alarm> FetchActiveAlarms() {
 			List<Alarm> list = new List<Alarm>();
 			string response = OiConnection.requestApiOutput("alarms", Id);
-			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data)
-				list.Add(jObj.ToObject<Alarm>());
-			AlarmsTimestamp = DateTime.Now;
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data)
+					list.Add(jObj.ToObject<Alarm>());
+				AlarmsTimestamp = DateTime.Now;
+			}
+			catch { list = null; }
 			return list;
 		}
 		
@@ -557,10 +585,13 @@ namespace appCore.SiteFinder
 		List<BookIn> FetchBookIns() {
 			List<BookIn> list = new List<BookIn>();
 			string response = OiConnection.requestApiOutput("visits", Id);
-			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data)
-				list.Add(jObj.ToObject<BookIn>());
-			VisitsTimestamp = DateTime.Now;
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data)
+					list.Add(jObj.ToObject<BookIn>());
+				VisitsTimestamp = DateTime.Now;
+			}
+			catch { list = null; }
 			return list;
 		}
 		
@@ -576,8 +607,12 @@ namespace appCore.SiteFinder
 		
 		Availability FetchAvailability() {
 			string response = OiConnection.requestApiOutput("availability", Id);
-			Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
-			AvailabilityTimestamp = DateTime.Now;
+			Availability jSon = null;
+			try {
+				jSon = JsonConvert.DeserializeObject<Availability>(response);
+				AvailabilityTimestamp = DateTime.Now;
+			}
+			catch { }
 			return jSon;
 		}
 		
@@ -593,12 +628,15 @@ namespace appCore.SiteFinder
 		
 		string getPowerCompany() {
 			string response = OiConnection.requestApiOutput("access", Id);
-			var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-			foreach(JObject jObj in jSon.data) {
-				AccessInformation item = jObj.ToObject<AccessInformation>();
-				if(item.CI_NAME == Id)
-					return item.POWER.Replace("<br>",";");
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data) {
+					AccessInformation item = jObj.ToObject<AccessInformation>();
+					if(item.CI_NAME == Id)
+						return item.POWER.Replace("<br>",";");
+				}
 			}
+			catch { }
 //			if(!string.IsNullOrEmpty(indexPhp)) {
 //				if(indexPhp.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
 //					HtmlDocument doc = new HtmlDocument();
