@@ -150,10 +150,6 @@ namespace appCore.SiteFinder.UI
 						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => !s.Locked).Count() > 0;
 						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => !s.Locked).Count() > 0;
 						
-						checkBox1.Checked =
-							checkBox2.Checked =
-							checkBox3.Checked = false;
-						
 						comboBox1.Items.Clear();
 						
 						if(currentSite.Incidents.Count > 0) {
@@ -181,28 +177,91 @@ namespace appCore.SiteFinder.UI
 						
 						dataGridView1.Width = checkBox1.Left - 12;
 						dataGridView1.Columns["Locked"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+						checkBookIn();
+						label4.Visible = true;
+						if(label4.Text.StartsWith("CAUTION")) {
+							if(Controls["panel"] != null) {
+								Panel curPanel = Controls["panel"] as Panel;
+								Controls.Remove(curPanel);
+								curPanel.Dispose();
+								
+								amtRichTextBox1.Height += 87;
+							}
+							
+							amtRichTextBox1.Height -= 87;
+							
+							Panel panel = new Panel();
+							panel.BackColor = Color.Transparent;
+							panel.Size = new Size(amtRichTextBox1.Width ,87);
+							panel.Location = new Point(amtRichTextBox1.Left, amtRichTextBox1.Bottom);
+							panel.Name = "panel";
+							RadioButton rb1 = new RadioButton();
+							rb1.Text = "FE";
+							rb1.Name = "rb1";
+							rb1.Anchor = ((AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right));
+							rb1.Enabled = false;
+							rb1.Width = 40;
+							rb1.Location = new Point(3, 5);
+							rb1.Checked = true;
+							RadioButton rb2 = new RadioButton();
+							rb2.Text = "Requested by";
+							rb2.Name = "rb2";
+							rb2.Anchor = ((AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right));
+							rb2.Enabled = false;
+							rb2.Width = 100;
+							rb2.Location = new Point(rb1.Right + 5, rb1.Top);
+							
+							Label nameLb = new Label();
+							nameLb.Text = "Name";
+							nameLb.Name = "nameLb";
+							nameLb.Anchor = ((AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right));
+							nameLb.Location = new Point(0, rb1.Bottom + 10);
+							nameLb.Width = 50;
+							AMTTextBox nameTb = new AMTTextBox();
+							nameTb.Name = "nameTb";
+							nameTb.Anchor = ((AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right));
+							nameTb.Enabled = false;
+							nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
+							nameTb.Width = 209;
+							Label contactLb = new Label();
+							contactLb.Text = "Contact";
+							contactLb.Name = "contactLb";
+							contactLb.Anchor = ((AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right));
+							contactLb.Location = new Point(0, nameLb.Bottom + 5);
+							contactLb.Width = 50;
+							AMTTextBox contactTb = new AMTTextBox();
+							contactTb.Name = "contactTb";
+							contactTb.Anchor = ((AnchorStyles)(AnchorStyles.Bottom | AnchorStyles.Right));
+							contactTb.Enabled = false;
+							contactTb.Location = new Point(contactLb.Right + 3, contactLb.Top);
+							contactTb.Width = 209;
+							rb1.CheckedChanged += delegate {
+								contactTb.Enabled = true;
+								nameTb.Text =
+									contactTb.Text = string.Empty;
+							};
+							rb2.CheckedChanged += delegate {
+								contactTb.Enabled = false;
+								nameTb.Text =
+									contactTb.Text = string.Empty;
+							};
+							
+							panel.Controls.AddRange(new Control[]{
+							                        	rb1,
+							                        	rb2,
+							                        	nameLb,
+							                        	nameTb,
+							                        	contactLb,
+							                        	contactTb
+							                        });
+							Controls.Add(panel);
+						}
 						break;
 					case "Unlock Cells":
 						button1.Text = "Unlock\nCells";
 						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => s.Locked).Count() > 0;
 						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => s.Locked).Count() > 0;
 						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => s.Locked).Count() > 0;
-						
-						checkBox1.Checked =
-							checkBox2.Checked =
-							checkBox3.Checked = false;
-						
-						try {
-							Controls.Remove(Controls["rb1"]);
-							Controls.Remove(Controls["rb2"]);
-							Controls.Remove(Controls["nameLb"]);
-							Controls.Remove(Controls["nameTb"]);
-							Controls.Remove(Controls["contactLb"]);
-							Controls.Remove(Controls["contactTb"]);
-							
-							amtRichTextBox1.Height = 296;
-						}
-						catch { }
 						
 						dataGridView1.Width = checkBox1.Left - 12;
 						dataGridView1.Columns["Lock Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -318,6 +377,19 @@ namespace appCore.SiteFinder.UI
 						break;
 				}
 				
+				label4.Visible = uiMode.StartsWith("Lock");
+				
+				if(!uiMode.Contains("Lock")) { // Will enter only on Unlock Cells and History
+					try {
+						Panel panel = Controls["panel"] as Panel;
+						Controls.Remove(panel);
+						panel.Dispose();
+						
+						amtRichTextBox1.Height += 87;
+					}
+					catch { }
+				}
+				
 				if(uiMode != "Cells Locked") {
 					this.Text = "Lock/Unlock Cells - Site " + currentSite.Id;
 					checkBox1.Checked =
@@ -337,66 +409,6 @@ namespace appCore.SiteFinder.UI
 									ctrl.Visible = uiMode.Contains("ock Cells");
 								break;
 						}
-					}
-					checkBookIn();
-					if(label4.Text.StartsWith("CAUTION") && uiMode.StartsWith("Lock")) {
-						amtRichTextBox1.Height = 209;
-						
-						RadioButton rb1 = new RadioButton();
-						rb1.Text = "FE";
-						rb1.Name = "rb1";
-						rb1.Enabled = false;
-						rb1.Width = 40;
-						rb1.Location = new Point(amtRichTextBox1.Left + 3, amtRichTextBox1.Bottom + 5);
-						rb1.Checked = true;
-						RadioButton rb2 = new RadioButton();
-						rb2.Text = "Requested by";
-						rb2.Name = "rb2";
-						rb2.Enabled = false;
-						rb2.Width = 100;
-						rb2.Location = new Point(rb1.Right + 5, rb1.Top);
-						
-						Label nameLb = new Label();
-						nameLb.Text = "Name";
-						nameLb.Name = "NameLb";
-						nameLb.Enabled = false;
-						nameLb.Location = new Point(amtRichTextBox1.Left, rb1.Bottom + 10);
-						nameLb.Width = 50;
-						AMTTextBox nameTb = new AMTTextBox();
-						nameTb.Name = "NameTb";
-						nameTb.Enabled = false;
-						nameTb.Location = new Point(nameLb.Right + 3, nameLb.Top);
-						nameTb.Width = 166;
-						Label contactLb = new Label();
-						contactLb.Text = "Contact";
-						contactLb.Name = "contactLb";
-						contactLb.Enabled = false;
-						contactLb.Location = new Point(amtRichTextBox1.Left, nameLb.Bottom + 5);
-						contactLb.Width = 50;
-						AMTTextBox contactTb = new AMTTextBox();
-						contactTb.Name = "contactTb";
-						contactTb.Enabled = false;
-						contactTb.Location = new Point(contactLb.Right + 3, contactLb.Top);
-						contactTb.Width = 166;
-						rb1.CheckedChanged += delegate {
-							contactTb.Enabled = true;
-							nameTb.Text =
-								contactTb.Text = string.Empty;
-						};
-						rb2.CheckedChanged += delegate {
-							contactTb.Enabled = false;
-							nameTb.Text =
-								contactTb.Text = string.Empty;
-						};
-						
-						Controls.AddRange(new Control[]{
-						                  	rb1,
-						                  	rb2,
-						                  	nameLb,
-						                  	nameTb,
-						                  	contactLb,
-						                  	contactTb
-						                  });
 					}
 				}
 			}
@@ -662,42 +674,35 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void checkBookIn() {
-			if(UiMode == "Lock Cells") {
-				if(currentSite.Visits == null)
-					currentSite.requestOIData("Bookins");
-				
-				var foundBookIns = currentSite.Visits.FindAll(s => string.IsNullOrEmpty(s.Departed_Site));
-				if(foundBookIns.Count > 0) {
-					BookIn bookIn = null;
-					foreach(BookIn bi in foundBookIns) {
-						DateTime arrivedTime = Convert.ToDateTime(bi.Arrived);
-						if(arrivedTime.Year == DateTime.Now.Year && arrivedTime.Month == DateTime.Now.Month && arrivedTime.Day == DateTime.Now.Day) {
-							bookIn = bi;
-							break;
-						}
-					}
-					if(bookIn != null) {
-						label4.Visible = true;
-						label4.Text = "Valid Book In found: " + bookIn.Engineer + " - " + bookIn.Mobile + " - " + bookIn.Reference + " - " + bookIn.Arrived;
-						label4.ForeColor = Color.DarkGreen;
-						label4.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-					}
-					else {
-						label4.Visible = true;
-						label4.Text = "CAUTION!! No valid Book In found";
-						label4.ForeColor = Color.Red;
-						label4.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+			if(currentSite.Visits == null)
+				currentSite.requestOIData("Bookins");
+			
+			var foundBookIns = currentSite.Visits.FindAll(s => string.IsNullOrEmpty(s.Departed_Site));
+			if(foundBookIns.Count > 0) {
+				BookIn bookIn = null;
+				foreach(BookIn bi in foundBookIns) {
+					DateTime arrivedTime = Convert.ToDateTime(bi.Arrived);
+					if(arrivedTime.Year == DateTime.Now.Year && arrivedTime.Month == DateTime.Now.Month && arrivedTime.Day == DateTime.Now.Day) {
+						bookIn = bi;
+						break;
 					}
 				}
+				if(bookIn != null) {
+					label4.Text = "Valid Book In found: " + bookIn.Engineer + " - " + bookIn.Mobile + " - " + bookIn.Reference + " - " + bookIn.Arrived;
+					label4.ForeColor = Color.DarkGreen;
+					label4.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+				}
 				else {
-					label4.Visible = true;
 					label4.Text = "CAUTION!! No valid Book In found";
 					label4.ForeColor = Color.Red;
 					label4.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 				}
 			}
-			else
-				label4.Visible = false;
+			else {
+				label4.Text = "CAUTION!! No valid Book In found";
+				label4.ForeColor = Color.Red;
+				label4.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+			}
 		}
 		
 		void CheckBoxesCheckedChanged(object sender, EventArgs e) {
@@ -744,12 +749,11 @@ namespace appCore.SiteFinder.UI
 		void ComboBox1TextUpdate(object sender, EventArgs e) {
 			amtRichTextBox1.Enabled = !string.IsNullOrEmpty(comboBox1.Text);
 			try {
-				Controls["rb1"].Enabled =
-					Controls["rb2"].Enabled =
-					Controls["nameLb"].Enabled =
-					Controls["nameTb"].Enabled =
-					Controls["contactLb"].Enabled =
-					Controls["contactTb"].Enabled = !string.IsNullOrEmpty(comboBox1.Text);
+				Panel panel = Controls["panel"] as Panel;
+				panel.Controls["rb1"].Enabled =
+					panel.Controls["rb2"].Enabled =
+					panel.Controls["nameTb"].Enabled =
+					panel.Controls["contactTb"].Enabled = !string.IsNullOrEmpty(comboBox1.Text);
 			}
 			catch {}
 		}
@@ -760,15 +764,6 @@ namespace appCore.SiteFinder.UI
 		
 		void AmtRichTextBox1TextChanged(object sender, EventArgs e) {
 			button1.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text);
-			if(UiMode.StartsWith("Lock") && label4.Text.StartsWith("CAUTION")) {
-				try {
-					Controls["rb1"].Enabled =
-						Controls["rb2"].Enabled =
-						Controls["nameTb"].Enabled =
-						Controls["contactTb"].Enabled = false;
-				}
-				catch {}
-			}
 		}
 		
 		void AmtRichTextBox1EnabledChanged(object sender, EventArgs e) {
@@ -781,29 +776,31 @@ namespace appCore.SiteFinder.UI
 			                                      	string contact = string.Empty;
 			                                      	string rbText = string.Empty;
 			                                      	if(label4.Visible && label4.Text.StartsWith("CAUTION")) {
-			                                      		rbText = ((RadioButton)Controls["rb1"]).Checked ? Controls["rb1"].Text : Controls["rb2"].Text;
-			                                      		if(string.IsNullOrEmpty(Controls["nameTb"].Text) || (rbText.StartsWith("FE") && string.IsNullOrEmpty(Controls["contactTb"].Text))) {
+			                                      		Panel panel = Controls["panel"] as Panel;
+			                                      		rbText = ((RadioButton)panel.Controls["rb1"]).Checked ? panel.Controls["rb1"].Text : panel.Controls["rb2"].Text;
+			                                      		if(string.IsNullOrEmpty(panel.Controls["nameTb"].Text) || (rbText.StartsWith("FE") && string.IsNullOrEmpty(panel.Controls["contactTb"].Text))) {
 			                                      			Action action = new Action(delegate {
-			                                      			                        	FlexibleMessageBox.Show("No valid book in found for this site.\n\n" +
-			                                      			                        	                        "It's OK to lock cells without a book in, as long\n" +
-			                                      			                        	                        "as you provide the FE or lockdown approver\n" +
-			                                      			                        	                        "contact details on the comments.\n\n" +
-			                                      			                        	                        "Please fill in the required details.", "Data missing",
-			                                      			                        	                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-			                                      			                        });
+			                                      			                           	FlexibleMessageBox.Show("No valid book in found for this site.\n\n" +
+			                                      			                           	                        "It's OK to lock cells without a book in, as long\n" +
+			                                      			                           	                        "as you provide the FE or lockdown approver\n" +
+			                                      			                           	                        "contact details on the comments.\n\n" +
+			                                      			                           	                        "Please fill in the required details.", "Data missing",
+			                                      			                           	                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+			                                      			                           });
 			                                      			LoadingPanel loading = new LoadingPanel();
 			                                      			loading.Show(action, this);
 			                                      			return;
 			                                      		}
-			                                      		name = Controls["nameTb"].Text;
-			                                      		contact = Controls["contactTb"].Text;
+			                                      		name = panel.Controls["nameTb"].Text;
+			                                      		contact = panel.Controls["contactTb"].Text;
 			                                      	}
-			                                      	string comment = string.Empty;
-			                                      	comment = amtRichTextBox1.Text;
+			                                      	
+			                                      	string comment = amtRichTextBox1.Text;
 			                                      	if(!string.IsNullOrEmpty(rbText)) {
 			                                      		comment += Environment.NewLine;
 			                                      		comment += rbText == "FE" ? "FE on site - " + name + ", " + contact : "Requested by " + name;
 			                                      	}
+			                                      	
 			                                      	var filtered = dataGridView1.Rows.Cast<DataGridViewRow>().Where(s => (bool?)s.Cells[0].Value == true);
 			                                      	List<string> cellsList = new List<string>();
 			                                      	foreach(DataGridViewRow row in filtered) {
@@ -824,14 +821,14 @@ namespace appCore.SiteFinder.UI
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
 			bool manRef = !comboBox1.Items.Contains(reference);
 			OiConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
-			currentSite.requestOIData("CellsStateLKULK", true);
+			currentSite.requestOIData("CellsState");
 			RadioButtonsCheckedChanged(radioButton1, null);
 		}
 		
 		void sendUnlockCellsRequest(List<string> cellsList, string comments) {
 			if(UiMode != "Cells Locked") {
 				OiConnection.requestPhpOutput("cellslocked", currentSite.Id, cellsList, comments);
-				currentSite.requestOIData("CellsStateLKULK", true);
+				currentSite.requestOIData("CellsStateLKULK");
 				RadioButtonsCheckedChanged(radioButton2, null);
 			}
 			else {
@@ -901,8 +898,8 @@ namespace appCore.SiteFinder.UI
 						row["NOC"] = cell.Noc;
 						row["Locked"] = cell.Locked ? "YES" : "No";
 						
-						if(currentSite.LockedCellsDetails == null)
-							currentSite.requestOIData("LKULK", true);
+						if(currentSite.LockedCellsDetails == null || (DateTime.Now - currentSite.LockedCellsDetailsTimestamp) >= new TimeSpan(0, 30, 0))
+							currentSite.requestOIData("LKULK");
 						
 						List<DataRow> filtered = new List<DataRow>();
 						foreach(DataRow dr in currentSite.LockedCellsDetails.Rows) {
@@ -940,7 +937,7 @@ namespace appCore.SiteFinder.UI
 					Table.Columns.AddRange(new [] { UnlockedTime, UnlockedBy, UnlockComments });
 					
 					if(currentSite.LockedCellsDetails == null)
-						currentSite.requestOIData("LKULK", true);
+						currentSite.requestOIData("LKULK");
 					foreach (DataRow dr in currentSite.LockedCellsDetails.Rows) {
 						DataRow row = Table.NewRow();
 						Cell cell = currentSite.Cells.Find(s => s.Name == dr[0].ToString());
@@ -1009,17 +1006,14 @@ namespace appCore.SiteFinder.UI
 //			}
 		}
 		
-		void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e)
-		{
+		void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e) {
 			if(e.ColumnIndex == 0) {
 				CheckBox cb = null;
 				int checkCount = 0;
 				int maxCount = 0;
 				if(UiMode != "Cells Locked") {
-					if(radioButton1.Checked)
-						comboBox1.Enabled = checkedCount > 0; // && radioButton1.Checked;
-					if(radioButton2.Checked)
-						amtRichTextBox1.Enabled = checkedCount > 0;
+					comboBox1.Enabled = radioButton1.Checked && checkedCount > 0;
+					amtRichTextBox1.Enabled = radioButton2.Checked && checkedCount > 0;
 					
 					switch(dataGridView1.Rows[e.RowIndex].Cells["Tech"].Value.ToString()) {
 						case "2G":
@@ -1046,9 +1040,9 @@ namespace appCore.SiteFinder.UI
 					maxCount = dataGridView1.RowCount;
 				}
 				if(cb != null) {
-//					cb.CheckedChanged -= CheckBoxesCheckedChanged;
+					cb.CheckedChanged -= CheckBoxesCheckedChanged;
 					cb.Checked = maxCount > 0 && checkCount == maxCount;
-//					cb.CheckedChanged += CheckBoxesCheckedChanged;
+					cb.CheckedChanged += CheckBoxesCheckedChanged;
 				}
 			}
 		}
@@ -1173,7 +1167,7 @@ namespace appCore.SiteFinder.UI
 		public string LifeTime {
 			get {
 				if(string.IsNullOrEmpty(lifeTime)) {
-					if(CellsLockedItems[0].Reference.StartsWith("INC")) {
+					if(CellsLockedItems[0].Reference.StartsWith("INC") && CellsLockedItems[0].Reference.Length == 15) {
 						if(CellsLockedItems[0].ReferenceStatus == "Resolved" || CellsLockedItems[0].ReferenceStatus == "Closed")
 							lifeTime = "Expired";
 						else
