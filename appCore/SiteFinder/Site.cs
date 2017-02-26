@@ -320,7 +320,7 @@ namespace appCore.SiteFinder
 		[FieldHidden]
 		public DataTable LockedCellsDetails;
 		[FieldHidden]
-		DateTime LockedCellsDetailsTimestamp;
+		public DateTime LockedCellsDetailsTimestamp;
 		
 		[FieldHidden]
 		GMarkerGoogle mapMarker;
@@ -364,7 +364,7 @@ namespace appCore.SiteFinder
 		/// </summary>
 		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK"</param>
 		/// <param name="forceUpdateLockedState"></param>
-		public void requestOIData(string dataToRequest, bool forceUpdateLockedState = false) {
+		public void requestOIData(string dataToRequest) {
 			if(Exists) {
 				if(!OiConnection.LoggedOn)
 					OiConnection.InitiateOiConnection();
@@ -451,7 +451,7 @@ namespace appCore.SiteFinder
 					                           	
 					                           	finishedThreadsCount++;
 					                           });
-					thread.Name = "requestOIData_LKULK";
+					thread.Name = "requestOIData_CellsState";
 					threads.Add(thread);
 				}
 				
@@ -502,7 +502,7 @@ namespace appCore.SiteFinder
 					list.Add(jObj.ToObject<Incident>());
 				IncidentsTimestamp = DateTime.Now;
 			}
-			catch { list = null; }
+			catch { return null; }
 			return list;
 		}
 		
@@ -533,7 +533,7 @@ namespace appCore.SiteFinder
 				}
 				ChangesTimestamp = DateTime.Now;
 			}
-			catch { list = null; }
+			catch { return null; }
 			return list;
 		}
 		
@@ -568,7 +568,7 @@ namespace appCore.SiteFinder
 					list.Add(jObj.ToObject<Alarm>());
 				AlarmsTimestamp = DateTime.Now;
 			}
-			catch { list = null; }
+			catch { return null; }
 			return list;
 		}
 		
@@ -591,7 +591,7 @@ namespace appCore.SiteFinder
 					list.Add(jObj.ToObject<BookIn>());
 				VisitsTimestamp = DateTime.Now;
 			}
-			catch { list = null; }
+			catch { return null; }
 			return list;
 		}
 		
@@ -607,13 +607,13 @@ namespace appCore.SiteFinder
 		
 		Availability FetchAvailability() {
 			string response = OiConnection.requestApiOutput("availability", Id);
-			Availability jSon = null;
 			try {
-				jSon = JsonConvert.DeserializeObject<Availability>(response);
+				Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
 				AvailabilityTimestamp = DateTime.Now;
+				
+				return jSon;
 			}
-			catch { }
-			return jSon;
+			catch { return null; }
 		}
 		
 //		DataTable FetchAvailability(FileSystemInfo table_ca) {
