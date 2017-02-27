@@ -342,7 +342,7 @@ namespace appCore.Templates.UI
 				                                      		PriorityTextBox.Text = string.Empty;
 				                                      		SiteDetailsToolStripMenuItem.Enabled = false;
 				                                      	}
-				                                      	
+				                                      	generateTemplateToolStripMenuItem.Enabled = true;
 				                                      	siteFinder_Toggle(true, currentSite.Exists);
 				                                      });
 				LoadingPanel load = new LoadingPanel();
