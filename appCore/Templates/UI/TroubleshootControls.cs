@@ -938,20 +938,28 @@ namespace appCore.Templates.UI
 				tempDT.Columns.Add("Start Date", typeof(DateTime));
 				tempDT.Columns.Add("End Date", typeof(DateTime));
 				
-				foreach (Incident inc in filteredINCs)
-					tempDT.Rows.Add("INC", inc.Incident_Ref, inc.Summary, inc.Status, inc.Submit_Date, inc.Resolved_Date);
-				DataView dv = tempDT.DefaultView;
-				dv.Sort = "Start Date desc";
-				currentCases = dv.ToTable();
+				if(filteredINCs != null) {
+					foreach (Incident inc in filteredINCs)
+						tempDT.Rows.Add("INC", inc.Incident_Ref, inc.Summary, inc.Status, inc.Submit_Date, inc.Resolved_Date);
+					DataView dv = tempDT.DefaultView;
+					dv.Sort = "Start Date desc";
+					currentCases = dv.ToTable();
+				}
 				
-				tempDT.Rows.Clear();
-				foreach(Change crq in filteredCRQs)
-					tempDT.Rows.Add("CRQ", crq.Change_Ref, crq.Summary, crq.Status, crq.Scheduled_Start, crq.Scheduled_End);
-				dv = tempDT.DefaultView;
-				dv.Sort = "Start Date desc";
-				DataTable temp = dv.ToTable();
-				foreach(DataRow row in temp.Rows)
-					currentCases.Rows.Add(row.ItemArray);
+				if(filteredCRQs != null) {
+					tempDT.Rows.Clear();
+					foreach(Change crq in filteredCRQs)
+						tempDT.Rows.Add("CRQ", crq.Change_Ref, crq.Summary, crq.Status, crq.Scheduled_Start, crq.Scheduled_End);
+					DataView dv = tempDT.DefaultView;
+					dv.Sort = "Start Date desc";
+					if(currentCases.Columns.Count > 0) {
+						DataTable temp = dv.ToTable();
+						foreach(DataRow row in temp.Rows)
+							currentCases.Rows.Add(row.ItemArray);
+					}
+					else
+						currentCases = dv.ToTable();
+				}
 			}
 			
 			return currentCases;

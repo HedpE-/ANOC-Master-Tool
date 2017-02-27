@@ -27,6 +27,24 @@ namespace appCore.SiteFinder.UI
 	/// </summary>
 	public partial class siteDetails : Form
 	{
+		GMapControl myMap;
+		GMapOverlay markersOverlay = new GMapOverlay("markers");
+		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
+		List<GMapMarker> markersList = new List<GMapMarker>();
+		public Site currentSite;
+		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
+		string[] sites; // for outages site list
+		byte listView2_EventCount = 1;
+		
+		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
+		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem lockUnlockCellsToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
+		
+		Control parentControl;
+		
 		string _siteDetails_UIMode = "single/readonly";
 		/// <summary>
 		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
@@ -45,10 +63,12 @@ namespace appCore.SiteFinder.UI
 				MainMenu.siteFinder_Toggle(false, false);
 				if(mode[0] != "outage") {
 					MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-					MainMenu.MainMenu.DropDownItems.Add("-");
-					MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
-					MainMenu.MainMenu.DropDownItems.Add("-");
-					MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+					if(Settings.CurrentUser.UserName == "GONCARJ3") {
+						MainMenu.MainMenu.DropDownItems.Add("-");
+						MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
+						MainMenu.MainMenu.DropDownItems.Add("-");
+						MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+					}
 				}
 				switch(mode[0]) {
 					case "single":
@@ -99,23 +119,6 @@ namespace appCore.SiteFinder.UI
 				_siteDetails_UIMode = value;
 			}
 		}
-		GMapControl myMap;
-		GMapOverlay markersOverlay = new GMapOverlay("markers");
-		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
-		List<GMapMarker> markersList = new List<GMapMarker>();
-		public Site currentSite;
-		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
-		string[] sites; // for outages site list
-		byte listView2_EventCount = 1;
-		
-		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
-		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem lockUnlockCellsToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
-		
-		Control parentControl;
 		
 		public siteDetails(Control parent)
 		{
