@@ -277,6 +277,8 @@ namespace appCore.SiteFinder.UI
 						dataGridView1.Columns["Unlock Comments"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 						dataGridView1.Columns["Unlock Comments"].Width = 300;
 						dataGridView1.Columns["Unlock Comments"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+						if((DateTime.Now - currentSite.LockedCellsDetailsTimestamp) >= new TimeSpan(0, 10, 0))
+							currentSite.requestOIData("LKULK");
 						break;
 					case "Cells Locked":
 						Text = "Locked Cells";
@@ -554,8 +556,12 @@ namespace appCore.SiteFinder.UI
 				if(((e.State & DrawItemState.Focus) != DrawItemState.Focus) && ((e.State & DrawItemState.Selected) != DrawItemState.Selected)) {
 					if(cellsLockedSites.FindIndex(s => s.Id == lb.Items[e.Index].ToString()) == -1)
 						g.FillRectangle(new SolidBrush(Color.Gray), e.Bounds);
-					if(GetSiteLockedCells(lb.Items[e.Index].ToString()).LifeTime == "Expired")
+					CellsLockedSite cls = GetSiteLockedCells(lb.Items[e.Index].ToString());
+					if(cls.LifeTime == "Expired")
 						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
+					else {
+						if(
+					}
 				}
 				else
 					g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
@@ -824,7 +830,7 @@ namespace appCore.SiteFinder.UI
 		void sendLockCellsRequest(List<string> cellsList, string reference, string comments) {
 			bool manRef = !comboBox1.Items.Contains(reference);
 			OiConnection.requestPhpOutput("enterlock", currentSite.Id, cellsList, reference, comments, manRef);
-			currentSite.requestOIData("CellsState");
+			currentSite.requestOIData("CellsStateLKULK");
 			RadioButtonsCheckedChanged(radioButton1, null);
 		}
 		
