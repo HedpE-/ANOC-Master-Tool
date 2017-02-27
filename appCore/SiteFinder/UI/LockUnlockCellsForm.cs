@@ -350,6 +350,7 @@ namespace appCore.SiteFinder.UI
 						dataGridView1.RowsAdded += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
 						dataGridView1.RowsRemoved += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
 						
+						label5.Visible =
 						comboBox1.Visible =
 							checkBox2.Visible =
 							checkBox3.Visible =
@@ -398,6 +399,8 @@ namespace appCore.SiteFinder.UI
 					amtRichTextBox1.Text =
 						comboBox1.Text = string.Empty;
 					
+					if(uiMode.Contains("ock Cells"))
+						label5.Text = "Selected:\n\n2G: " + gsmCheckedCount + "\n3G: " + umtsCheckedCount + "\n4G: " + lteCheckedCount + "\n\nTotal: " + (gsmCheckedCount + umtsCheckedCount + lteCheckedCount);
 					foreach(Control ctrl in Controls) {
 						switch(ctrl.GetType().ToString()) {
 							case "System.Windows.Forms.CheckBox":
@@ -748,14 +751,6 @@ namespace appCore.SiteFinder.UI
 		
 		void ComboBox1TextUpdate(object sender, EventArgs e) {
 			amtRichTextBox1.Enabled = !string.IsNullOrEmpty(comboBox1.Text);
-			try {
-				Panel panel = Controls["panel"] as Panel;
-				panel.Controls["rb1"].Enabled =
-					panel.Controls["rb2"].Enabled =
-					panel.Controls["nameTb"].Enabled =
-					panel.Controls["contactTb"].Enabled = !string.IsNullOrEmpty(comboBox1.Text);
-			}
-			catch {}
 		}
 		
 		void ComboBox1EnabledChanged(object sender, EventArgs e) {
@@ -768,6 +763,14 @@ namespace appCore.SiteFinder.UI
 		
 		void AmtRichTextBox1EnabledChanged(object sender, EventArgs e) {
 			button1.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text) && amtRichTextBox1.Enabled;
+			try {
+				Panel panel = Controls["panel"] as Panel;
+				panel.Controls["rb1"].Enabled =
+					panel.Controls["rb2"].Enabled =
+					panel.Controls["nameTb"].Enabled =
+					panel.Controls["contactTb"].Enabled = amtRichTextBox1.Enabled;
+			}
+			catch {}
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
@@ -987,23 +990,34 @@ namespace appCore.SiteFinder.UI
 		
 		void DataGridView1CellContentClick(object sender, DataGridViewCellEventArgs e) {
 			if(e.ColumnIndex == 0) {
-//				if(UiMode == "Cells Locked") {
-//					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
-//					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
-//				}
-//				else {
-				if(!rowInactive(dataGridView1.Rows[e.RowIndex])) {
+				bool canCheck = true;
+				if(UiMode != "Cells Locked") {
+					switch(dataGridView1.Rows[e.RowIndex].Cells["Tech"].Value.ToString()) {
+						case "2G":
+							canCheck = umtsCheckedCount == 0 && lteCheckedCount == 0;
+							if(canCheck)
+								checkBox2.Enabled =
+									checkBox3.Enabled = false;
+							break;
+						case "3G":
+							canCheck = gsmCheckedCount == 0 && lteCheckedCount == 0;
+							if(canCheck)
+								checkBox1.Enabled =
+									checkBox3.Enabled = false;
+							break;
+						case "4G":
+							canCheck = gsmCheckedCount == 0 && umtsCheckedCount == 0;
+							if(canCheck)
+								checkBox1.Enabled =
+									checkBox2.Enabled = false;
+							break;
+					}
+				}
+				if(!rowInactive(dataGridView1.Rows[e.RowIndex]) && canCheck) {
 					DataGridViewCheckBoxCell cell = dataGridView1.Rows[e.RowIndex].Cells[0] as DataGridViewCheckBoxCell;
 					cell.Value = cell.Value != null ? !Convert.ToBoolean(cell.Value) : cell.TrueValue;
 				}
-//				}
 			}
-//			else {
-//				if(e.Item.ForeColor == SystemColors.GrayText) {
-//					e.SubItem.Checked = false;
-//					return;
-//				}
-//			}
 		}
 		
 		void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e) {
@@ -1020,18 +1034,25 @@ namespace appCore.SiteFinder.UI
 							cb = checkBox1;
 							checkCount = gsmCheckedCount;
 							maxCount = gsmCellsCount;
+							checkBox2.Enabled =
+								checkBox3.Enabled = gsmCheckedCount == 0;
 							break;
 						case "3G":
 							cb = checkBox2;
 							checkCount = umtsCheckedCount;
 							maxCount = umtsCellsCount;
+							checkBox1.Enabled =
+								checkBox3.Enabled = umtsCheckedCount == 0;
 							break;
 						case "4G":
 							cb = checkBox3;
 							checkCount = lteCheckedCount;
 							maxCount = lteCellsCount;
+							checkBox1.Enabled =
+								checkBox2.Enabled = lteCheckedCount == 0;
 							break;
 					}
+					label5.Text = "Selected:\n\n2G: " + gsmCheckedCount + "\n3G: " + umtsCheckedCount + "\n4G: " + lteCheckedCount + "\n\nTotal: " + checkedCount;
 				}
 				else {
 					cb = checkBox1;
