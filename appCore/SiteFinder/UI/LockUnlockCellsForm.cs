@@ -508,6 +508,8 @@ namespace appCore.SiteFinder.UI
 				label1.Text = "Sites (" + lb.Items.Count + ")";
 				if(cellsLockedSites == null) {
 					cellsLockedSites = Finder.getSites(lb.Items.Cast<string>().ToList());
+					
+					var resp = OiConnection.requestApiOutput("availability", lb.Items.Cast<string>().ToList());
 					Thread thread = new Thread(() => {
 					                           	foreach(Site site in cellsLockedSites) {
 					                           		if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
@@ -559,9 +561,9 @@ namespace appCore.SiteFinder.UI
 					CellsLockedSite cls = GetSiteLockedCells(lb.Items[e.Index].ToString());
 					if(cls.LifeTime == "Expired")
 						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds);
-					else {
-						if(
-					}
+//					else {
+//						if(
+//					}
 				}
 				else
 					g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
@@ -569,7 +571,7 @@ namespace appCore.SiteFinder.UI
 				if(e.Index != -1)
 					g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), lb.GetItemRectangle(e.Index).Location);
 			}
-//			if((e.State & DrawItemState.Focus) != DrawItemState.Focus)
+			
 			e.DrawFocusRectangle();
 		}
 		
