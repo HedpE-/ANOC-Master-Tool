@@ -15954,7 +15954,7 @@ ZE - LTE2100 Macro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.1alpha 22/02/2017 #######
+    <value>####### ANOC Master Tool 7.0alpha12 27/02/2017 #######
 
 - Adaptations for new OI APIs
 - Tweaked OI requests, now it gets the same data using less requests, turning into reduced response times and less server load
