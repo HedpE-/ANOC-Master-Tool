@@ -28,16 +28,16 @@ namespace appCore.OI
 		public static IWebProxy Proxy {
 			get {
 				if(proxy == null) {
-					try {
-						proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-							new WebProxy(VfUkProxy, true) :
-							WebRequest.GetSystemWebProxy();
-					}
-					catch (Exception) {
-						proxy = WebRequest.GetSystemWebProxy();
-					}
+//					try {
+//						proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+//							new WebProxy(VfUkProxy, true) :
+//							WebRequest.GetSystemWebProxy();
+//					}
+//					catch (Exception) {
+//						proxy = WebRequest.GetSystemWebProxy();
+//					}
 					
-//					proxy = WebRequest.GetSystemWebProxy(); // Bypass UK Proxy
+					proxy = WebRequest.GetSystemWebProxy(); // Bypass UK Proxy
 					
 					proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 				}
@@ -221,6 +221,37 @@ namespace appCore.OI
 				client.Proxy = Proxy;
 				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
 				request.AddParameter("siteNumbers", site);
+				request.AddParameter("range", string.Empty);
+				request.AddParameter("bearer", bearer);
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI APIs
+		/// </summary>
+		/// <param name="API">"cells", "incidents", "changes", "visits", "alarms", "availability", "access"</param>
+		/// <param name="site">Site number</param>
+		/// <param name="bearer">Bearer</param>
+		public static string requestApiOutput(string API, List<string> sitesList, int bearer = 4)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				string sites = string.Empty;
+				foreach(string site in sitesList) {
+					sites += site;
+					if(site != sitesList[sitesList.Count - 1])
+						sites += ",";
+				}
+				
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
+				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
+				request.AddParameter("siteNumbers", sites);
 				request.AddParameter("range", string.Empty);
 				request.AddParameter("bearer", bearer);
 				IRestResponse response = client.Execute(request);
