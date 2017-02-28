@@ -17,6 +17,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using FileHelpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace appCore.SiteFinder.UI
 {
@@ -353,7 +355,7 @@ namespace appCore.SiteFinder.UI
 						dataGridView1.RowsRemoved += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
 						
 						label5.Visible =
-						comboBox1.Visible =
+							comboBox1.Visible =
 							checkBox2.Visible =
 							checkBox3.Visible =
 							radioButton1.Visible =
@@ -510,6 +512,18 @@ namespace appCore.SiteFinder.UI
 					cellsLockedSites = Finder.getSites(lb.Items.Cast<string>().ToList());
 					
 					var resp = OiConnection.requestApiOutput("availability", lb.Items.Cast<string>().ToList());
+					
+					Availability jSon = null;
+					try {
+						jSon = JsonConvert.DeserializeObject<Availability>(response);
+//						AvailabilityTimestamp = DateTime.Now;
+					}
+					catch { }
+					if(jSon.message != "Site is Offair") {
+//						Availability = jSon.ToDataTable();
+//						updateCOOS();
+					}
+					
 					Thread thread = new Thread(() => {
 					                           	foreach(Site site in cellsLockedSites) {
 					                           		if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
