@@ -23,7 +23,7 @@ namespace appCore.OI
 	{
 		static RestClient client;
 		const string VfUkProxy = "http://vfukukproxy.internal.vodafone.com:8080/";
-		const string VfPtProxy = "10.74.51.1:80";
+		const string VfPtProxy = "10.74.51.1:80"; 
 		static IWebProxy proxy;
 		public static IWebProxy Proxy {
 			get {
@@ -247,16 +247,31 @@ namespace appCore.OI
 						sites += ",";
 				}
 				
-				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-				client.CookieContainer = OICookieContainer;
-				client.Proxy = Proxy;
-				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
-				request.AddParameter("siteNumbers", sites);
-				request.AddParameter("range", string.Empty);
-				request.AddParameter("bearer", bearer);
-				IRestResponse response = client.Execute(request);
 				
-				return response.Content;
+				string request = "siteNumbers=" + sites + "&range=&bearer=4";
+				HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("http://operationalintelligence.vf-uk.corp.vodafone.com" + string.Format("/api/sitelopedia/get-{0}?", API) + request);
+//				webRequest.ContentType = "application/x-www-form-urlencoded; charset=ASCII";
+				webRequest.Method = "POST";
+				webRequest.CookieContainer = OICookieContainer;
+				byte[] bytes = System.Text.Encoding.ASCII.GetBytes(request);
+				webRequest.ContentLength = bytes.Length;   //Count bytes to send
+				string response = "";
+				using(var os = webRequest.GetRequestStream()) {
+					System.IO.StreamReader reader = new System.IO.StreamReader(os);
+					response = reader.ReadToEnd();
+				}
+				
+//					client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+//				client.CookieContainer = OICookieContainer;
+//				client.Proxy = Proxy;
+//				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
+//				request.RequestFormat = DataFormat.Xml;
+//				request.AddParameter("siteNumbers", sites, ");
+//				                     request.AddParameter("range", string.Empty);
+//				                     request.AddParameter("bearer", bearer);
+//				                     IRestResponse response = client.Execute(request);
+//
+//				                     return response.Content;
 			}
 			return string.Empty;
 		}
