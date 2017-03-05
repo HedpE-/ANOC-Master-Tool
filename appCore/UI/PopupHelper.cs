@@ -10,7 +10,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace appCore.Shifts
+namespace appCore.UI
 {
 	/// <summary>
 	/// PopupHelper
