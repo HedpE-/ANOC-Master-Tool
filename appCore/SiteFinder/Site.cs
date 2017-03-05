@@ -366,136 +366,121 @@ namespace appCore.SiteFinder
 		/// <param name="forceUpdateLockedState"></param>
 		public void requestOIData(string dataToRequest) {
 			if(Exists) {
-				if(!OiConnection.LoggedOn)
-					OiConnection.InitiateOiConnection();
-				List<Thread> threads = new List<Thread>();
-				int finishedThreadsCount = 0;
-				if(dataToRequest.Contains("INC")) {
-					Thread thread = new Thread(() => {
-					                           	isUpdatingIncidents = true;
+				bool connected = !OiConnection.LoggedOn ? OiConnection.InitiateOiConnection() : true;
+				
+				if(connected) {
+					List<Thread> threads = new List<Thread>();
+					int finishedThreadsCount = 0;
+					if(dataToRequest.Contains("INC")) {
+						Thread thread = new Thread(() => {
+						                           	isUpdatingIncidents = true;
 //					                           	INCs = FetchINCs(null);
-					                           	Incidents = FetchINCs();
-					                           	isUpdatingIncidents = false;
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_INC";
-					threads.Add(thread);
-				}
-				
-				if(dataToRequest.Contains("CRQ")) {
-					Thread thread = new Thread(() => {
-					                           	isUpdatingChanges = true;
+						                           	Incidents = FetchINCs();
+						                           	isUpdatingIncidents = false;
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_INC";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("CRQ")) {
+						Thread thread = new Thread(() => {
+						                           	isUpdatingChanges = true;
 //					                           	CRQs = FetchCRQs(null);
-					                           	Changes = FetchCRQs();
-					                           	isUpdatingChanges = false;
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_CRQ";
-					threads.Add(thread);
-				}
-				
-				if(dataToRequest.Contains("Alarms")) {
-					Thread thread = new Thread(() => {
-					                           	isUpdatingAlarms = true;
+						                           	Changes = FetchCRQs();
+						                           	isUpdatingChanges = false;
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_CRQ";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("Alarms")) {
+						Thread thread = new Thread(() => {
+						                           	isUpdatingAlarms = true;
 //					                           	ActiveAlarms = FetchActiveAlarms(null);
-					                           	Alarms = FetchActiveAlarms();
-					                           	isUpdatingAlarms = false;
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_Alarms";
-					threads.Add(thread);
-				}
-				
-				if(dataToRequest.Contains("Bookins")) {
-					Thread thread = new Thread(() => {
-					                           	isUpdatingVisits = true;
+						                           	Alarms = FetchActiveAlarms();
+						                           	isUpdatingAlarms = false;
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_Alarms";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("Bookins")) {
+						Thread thread = new Thread(() => {
+						                           	isUpdatingVisits = true;
 //					                           	BookIns = FetchBookIns(null);
-					                           	Visits = FetchBookIns();
-					                           	isUpdatingVisits = false;
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_Bookins";
-					threads.Add(thread);
-				}
-				
-				if(dataToRequest.Contains("Availability")) {
-					Thread thread = new Thread(() => {
-					                           	isUpdatingAvailability = true;
+						                           	Visits = FetchBookIns();
+						                           	isUpdatingVisits = false;
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_Bookins";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("Availability")) {
+						Thread thread = new Thread(() => {
+						                           	isUpdatingAvailability = true;
 //					                           	AvailabilityChart = FetchAvailability(null);
-					                           	Availability avail = FetchAvailability();
-					                           	if(avail.message != "Site is Offair") {
-					                           		Availability = avail.ToDataTable();
-					                           		updateCOOS();
-					                           	}
-					                           	isUpdatingAvailability = false;
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_Availability";
-					threads.Add(thread);
+						                           	Availability avail = FetchAvailability();
+						                           	if(avail != null) {
+						                           		if(avail.message != "Site is Offair") {
+						                           			Availability = avail.ToDataTable();
+						                           			updateCOOS();
+						                           		}
+						                           	}
+						                           	isUpdatingAvailability = false;
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_Availability";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("PWR")) {
+						Thread thread = new Thread(() => {
+						                           	if(string.IsNullOrWhiteSpace(PowerCompany))
+						                           		try { PowerCompany = getPowerCompany(); } catch {}
+						                           	
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_PWR";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("CellsState")) {
+						Thread thread = new Thread(() => {
+						                           	getOiCellsState();
+						                           	
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_CellsState";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("LKULK")) {
+						Thread thread = new Thread(() => {
+						                           	getOiLockedCellsPage();
+						                           	
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_LKULK";
+						threads.Add(thread);
+					}
+					
+					foreach(Thread thread in threads) {
+						thread.SetApartmentState(ApartmentState.STA);
+						thread.Start();
+					}
+					
+					while(finishedThreadsCount < threads.Count) { }
 				}
-				
-				if(dataToRequest.Contains("PWR")) {
-					Thread thread = new Thread(() => {
-					                           	if(string.IsNullOrWhiteSpace(PowerCompany))
-					                           		try { PowerCompany = getPowerCompany(); } catch {}
-					                           	
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_PWR";
-					threads.Add(thread);
-				}
-				
-				if(dataToRequest.Contains("CellsState")) {
-					Thread thread = new Thread(() => {
-					                           	getOiCellsState();
-					                           	
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_CellsState";
-					threads.Add(thread);
-				}
-				
-				if(dataToRequest.Contains("LKULK")) {
-					Thread thread = new Thread(() => {
-					                           	getOiLockedCellsPage();
-					                           	
-					                           	finishedThreadsCount++;
-					                           });
-					thread.Name = "requestOIData_LKULK";
-					threads.Add(thread);
-				}
-				
-				foreach(Thread thread in threads) {
-					thread.SetApartmentState(ApartmentState.STA);
-					thread.Start();
-				}
-				
-				while(finishedThreadsCount < threads.Count) { }
 			}
 		}
 		
 		List<Incident> FetchINCs() {
 			List<Incident> list = new List<Incident>();
 			string response = OiConnection.requestApiOutput("incidents", Id);
-			// FIXME: crash on OI unavailability
-//			{"data":[
-			//<br />
-			//<b>Warning</b>:  oci_execute(): ORA-00942: table or view does not exist in <b>/var/SP/oiadm/docroot/common/php/DatabaseConnection.php</b> on line <b>208</b><br />
-			//<br />
-			//<b>Fatal error</b>:  unknown error in DatabaseConnection->execute with SQL{select distinct * from (SELECT HPD_HELP_DESK.Incident_Number ,
-//			nvl( HPD_HELP_DESK.Description,'Not Available') Summary,
-//			case when HPD_HELP_DESK.ServiceCI in ('Voice','Messaging Services','Data')
-//			and HPD_Impact.Impact = '4-Minor/Localized' and HPD_Urgency.Urgency ='4-Low'
-//			and HPD_Priority.priority = 'Low' then 'Low*' else HPD_Priority.priority End Priority ,
-//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Submit_Date),'dd/mm/yyyy HH24:mi') Submit_date,
-//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Last_Resolved_Date),'dd/mm/yyyy HH24:mi') Resolved_Date,
-//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Submit_Date),'yyyymmddHH24mi') Submit_date2,
-//			to_char(aradmin.fn_adjusted_date( HPD_HELP_DESK.Last_Resolved_Date),'yyyymmddHH24mi') Resolved_Date2,
-//			HPD_Status.status,
-//						HPD_HELP_DESK.resolution_category_tier_2,
-//						HPD_HELP_DESK.resolution_category_tier_3,
-//						dbms_lob.substr( HPD_HELP_DESK.resolution, 4000,1) resolution,
-//			 in <b>/var/SP/oiadm/docroot/common/php/DatabaseConnection.php</b> on line <b>288</b><br />
 			try {
 				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
 				foreach(JObject jObj in jSon.data)
@@ -754,7 +739,7 @@ namespace appCore.SiteFinder
 			}
 		}
 		
-		void updateCOOS() {
+		public void updateCOOS() {
 			foreach(DataRow row in Availability.Rows) {
 				Cell cell = null;
 				try { cell = Cells.Find(s => s.Name == row["Cell"].ToString()); } catch { }
