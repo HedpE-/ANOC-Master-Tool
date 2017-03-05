@@ -43,7 +43,7 @@ namespace appCore.UI
 		static public void ShowSplashScreen()
 		{
 			// Make sure it is only launched once.
-			if (splashForm != null)
+			if(splashForm != null)
 				return;
 			thread = new Thread(new ThreadStart(SplashForm.ShowForm));
 			thread.Name = "SplashForm.ShowForm";
@@ -102,6 +102,7 @@ namespace appCore.UI
 				return;
 			
 			splashForm.Close();
+			splashForm = null;
 		}
 		
 		public static void UpdateLabelText(string text)
