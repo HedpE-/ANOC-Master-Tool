@@ -109,6 +109,9 @@ namespace appCore.UI
 				case "siteDetails":
 					currentSite = ((siteDetails)Parent).currentSite;
 					break;
+				case "Cells Locked":
+					currentSite = ((LockUnlockCellsForm)Parent).currentSite;
+					break;
 			}
 			foreach (ToolStripMenuItem tsmi in Items) {
 				if(tsmi.Name.Contains("Button")) {
