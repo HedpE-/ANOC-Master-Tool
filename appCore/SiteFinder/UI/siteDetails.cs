@@ -906,10 +906,24 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void LockedCellsPage(object sender, EventArgs e) {
-			if(Settings.CurrentUser.UserName == "GONCARJ3" || Settings.CurrentUser.UserName == "SANTOSS2") {
-				LockUnlockCellsForm lucf = new LockUnlockCellsForm();
-				lucf.Show();
+			FormCollection fc = Application.OpenForms;
+			
+			foreach (Form frm in fc)
+			{
+				if (frm.Name == "Cells Locked") {
+					if(frm.WindowState == FormWindowState.Minimized) frm.Invoke(new Action(() => { frm.WindowState = FormWindowState.Normal; }));;
+					frm.Invoke(new MethodInvoker(frm.Activate));
+					return;
+				}
 			}
+			
+			var thread = new System.Threading.Thread(() => {
+			                                         	LockUnlockCellsForm lucf = new LockUnlockCellsForm();
+			                                         	lucf.ShowDialog();
+			                                         });
+			thread.Name = "Cells Locked";
+			thread.SetApartmentState(System.Threading.ApartmentState.STA);
+			thread.Start();
 		}
 		
 		void InitializeToolStripMenuItems() {
