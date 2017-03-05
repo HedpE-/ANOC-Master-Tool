@@ -42,7 +42,7 @@ namespace appCore.Web.UI
 		Uri OILogonScreen = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/sso/index.php?url=%2F");
 //		Uri OldOILogonScreen = new Uri("http://195.233.194.118/sso/index.php?url=%2F");
 		List<UriItem> UrisList = new List<UriItem> {
-			new UriItem("SITE Lopedia", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/")), // operationalintelligence.vf-uk.corp.vodafone.com / 195.233.194.118
+			new UriItem("SITE Lopedia", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/index_new.php")), // operationalintelligence.vf-uk.corp.vodafone.com / 195.233.194.118
 //			new UriItem("SITE Lopedia (Old)", new Uri("http://195.233.194.118/site_old/index.php")),
 			new UriItem("Locked Cells", new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/site/cellslocked.php")),
 //			new UriItem("Locked Cells (Old)", new Uri("http://195.233.194.118/site/cellslocked.php")),
