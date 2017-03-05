@@ -23,21 +23,21 @@ namespace appCore.OI
 	{
 		static RestClient client;
 		const string VfUkProxy = "http://vfukukproxy.internal.vodafone.com:8080/";
-		const string VfPtProxy = "10.74.51.1:80"; 
+		const string VfPtProxy = "10.74.51.1:80";
 		static IWebProxy proxy;
 		public static IWebProxy Proxy {
 			get {
 				if(proxy == null) {
-//					try {
-//						proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
-//							new WebProxy(VfUkProxy, true) :
-//							WebRequest.GetSystemWebProxy();
-//					}
-//					catch (Exception) {
-//						proxy = WebRequest.GetSystemWebProxy();
-//					}
+					try {
+						proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+							new WebProxy(VfUkProxy, true) :
+							WebRequest.GetSystemWebProxy();
+					}
+					catch (Exception) {
+						proxy = WebRequest.GetSystemWebProxy();
+					}
 					
-					proxy = WebRequest.GetSystemWebProxy(); // Bypass UK Proxy
+//					proxy = WebRequest.GetSystemWebProxy(); // Bypass UK Proxy
 					
 					proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 				}
@@ -163,7 +163,7 @@ namespace appCore.OI
 			}
 		}
 		
-		public static void InitiateOiConnection() {
+		public static bool InitiateOiConnection() {
 			// Instantiate RestSharp client
 			
 			client = new RestClient();
@@ -183,6 +183,7 @@ namespace appCore.OI
 						RevalidateLoginState(); // If logon check lifetime expired, confirm on server
 				}
 			}
+			return OiAvailable;
 		}
 		
 		/// <summary>
@@ -236,42 +237,34 @@ namespace appCore.OI
 		/// <param name="API">"cells", "incidents", "changes", "visits", "alarms", "availability", "access"</param>
 		/// <param name="site">Site number</param>
 		/// <param name="bearer">Bearer</param>
-		public static string requestApiOutput(string API, List<string> sitesList, int bearer = 4)
+		public static string requestApiOutput(string API, IEnumerable<string> sitesList, int bearer = 4)
 		{
 			InitiateOiConnection();
 			if(LoggedOn) {
-				string sites = string.Empty;
-				foreach(string site in sitesList) {
-					sites += site;
-					if(site != sitesList[sitesList.Count - 1])
-						sites += ",";
-				}
-				
-				
-				string request = "siteNumbers=" + sites + "&range=&bearer=4";
-				HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("http://operationalintelligence.vf-uk.corp.vodafone.com" + string.Format("/api/sitelopedia/get-{0}?", API) + request);
-//				webRequest.ContentType = "application/x-www-form-urlencoded; charset=ASCII";
-				webRequest.Method = "POST";
-				webRequest.CookieContainer = OICookieContainer;
-				byte[] bytes = System.Text.Encoding.ASCII.GetBytes(request);
-				webRequest.ContentLength = bytes.Length;   //Count bytes to send
-				string response = "";
-				using(var os = webRequest.GetRequestStream()) {
-					System.IO.StreamReader reader = new System.IO.StreamReader(os);
-					response = reader.ReadToEnd();
-				}
-				
-//					client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-//				client.CookieContainer = OICookieContainer;
-//				client.Proxy = Proxy;
-//				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
-//				request.RequestFormat = DataFormat.Xml;
-//				request.AddParameter("siteNumbers", sites, ");
-//				                     request.AddParameter("range", string.Empty);
-//				                     request.AddParameter("bearer", bearer);
-//				                     IRestResponse response = client.Execute(request);
+//				HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("http://operationalintelligence.vf-uk.corp.vodafone.com" + string.Format("/api/sitelopedia/get-{0}", API));
+//				webRequest.Method = "POST";
+//				webRequest.CookieContainer = OICookieContainer;
 //
-//				                     return response.Content;
+//				string request = "siteNumbers=" + string.Join(",", sitesList) + "&range=&bearer=4";
+//				byte[] dataStream =  System.Text.Encoding.ASCII.GetBytes(request);
+//				webRequest.ContentLength = dataStream.Length;   //Count bytes to send
+//				var os = webRequest.GetRequestStream();
+//				os.Write(dataStream,0,dataStream.Length);
+//				os.Close();
+//				WebResponse webResponse = webRequest.GetResponse();
+				
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
+				client.Timeout = 300000;
+				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
+				request.RequestFormat = DataFormat.Xml;
+				request.AddParameter("siteNumbers", string.Join(",", sitesList));
+				request.AddParameter("range", string.Empty);
+				request.AddParameter("bearer", bearer);
+				IRestResponse response = client.Execute(request);
+
+				return response.Content;
 			}
 			return string.Empty;
 		}
