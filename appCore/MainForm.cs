@@ -24,6 +24,8 @@ using appCore.Toolbox;
 using appCore.UI;
 using appCore.Shifts;
 using appCore.OssScripts.UI;
+using appCore.OI.JSON;
+using Newtonsoft.Json;
 
 namespace appCore
 {
@@ -145,9 +147,28 @@ namespace appCore
 //						tabControl1.SelectTab(6);
 //						OutageUI = new OutageControls();
 //						tabPage17.Controls.Add(OutageUI);
+						string input = Microsoft.VisualBasic.Interaction.InputBox("sites");
+						string resp = OI.OiConnection.requestApiOutput("availability", input.Split(','));
 						
-//						OI.OiConnection.requestApiOutput("incidents", "15");
+						Availability jSon = null;
+						try {
+							jSon = JsonConvert.DeserializeObject<Availability>(resp);
+//						AvailabilityTimestamp = DateTime.Now;
+						}
+						catch { }
 						
+						System.Data.DataTable dt = jSon.ToDataTable();
+						
+						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
+						foreach(var site in sites) {
+							var drs = dt.Rows.Cast<System.Data.DataRow>().Where(s => s["Site"].ToString() == site.Id);
+							if(drs.Any()) {
+								site.Availability = dt.Clone();
+								foreach(var row in drs)
+									site.Availability.Rows.Add(row.ItemArray);
+							}
+						}
+//						updateCOOS();
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
 						
