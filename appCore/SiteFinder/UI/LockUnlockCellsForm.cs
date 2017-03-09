@@ -719,8 +719,10 @@ namespace appCore.SiteFinder.UI
 			thread = new Thread(() => {
 			                    	string resp = OiConnection.requestApiOutput("cells", sites, 2);
 			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-			                    	foreach(JObject jObj in jSon.data)
-			                    		list.Add(jObj.ToObject<OiCell>());
+			                    	foreach(JObject jObj in jSon.data) {
+			                    		OiCell oc = jObj.ToObject<OiCell>();
+			                    		list.Add(oc);
+			                    	}
 			                    	
 			                    	finishedThreadsCount++;
 			                    });
@@ -730,8 +732,10 @@ namespace appCore.SiteFinder.UI
 			thread = new Thread(() => {
 			                    	string resp = OiConnection.requestApiOutput("cells", sites, 3);
 			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-			                    	foreach(JObject jObj in jSon.data)
-			                    		list.Add(jObj.ToObject<OiCell>());
+			                    	foreach(JObject jObj in jSon.data) {
+			                    		OiCell oc = jObj.ToObject<OiCell>();
+			                    		list.Add(oc);
+			                    	}
 			                    	
 			                    	finishedThreadsCount++;
 			                    });
@@ -741,8 +745,10 @@ namespace appCore.SiteFinder.UI
 			thread = new Thread(() => {
 			                    	string resp = OiConnection.requestApiOutput("cells", sites, 4);
 			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-			                    	foreach(JObject jObj in jSon.data)
-			                    		list.Add(jObj.ToObject<OiCell>());
+			                    	foreach(JObject jObj in jSon.data) {
+			                    		OiCell oc = jObj.ToObject<OiCell>();
+			                    		list.Add(oc);
+			                    	}
 			                    	
 			                    	finishedThreadsCount++;
 			                    });
