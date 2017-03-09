@@ -54,6 +54,8 @@ namespace appCore.SiteFinder
 		[FieldConverter(ConverterKind.Boolean, "Y", "")]
 		[FieldNullValue(typeof (bool), "false")]
 		public bool COOS;
+		[FieldHidden]
+		public DateTime CoosFlagTimestamp;
 		[FieldOrder(12)]
 		string SO_EXCLUSION;
 		[FieldOrder(13)]
@@ -71,6 +73,8 @@ namespace appCore.SiteFinder
 		[FieldConverter(ConverterKind.Boolean, "Y", "")]
 		[FieldNullValue(typeof (bool), "false")]
 		public bool Locked;
+		[FieldHidden]
+		public DateTime LockedFlagTimestamp;
 		[FieldOrder(18)]
 		string IP_2G_I;
 		public string InnerIP2G { get { return IP_2G_I; } }
