@@ -355,6 +355,12 @@ namespace appCore.SiteFinder
 				cellsInOutage = value;
 			}
 		}
+		[FieldHidden]
+		public DateTime CellsStateTimestamp;
+		
+		public int DbIndex {
+			get { return DB.SitesDB.GetSiteIndex(this); }
+		}
 		
 		public Site() {
 		}
@@ -712,8 +718,11 @@ namespace appCore.SiteFinder
 					OiCell oiCell = list.Find(s => s.CELL_NAME == cell.Name);
 					if(oiCell != null) {
 						cell.Locked = !string.IsNullOrEmpty(oiCell.LOCKED);
-//						cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
+						cell.LockedFlagTimestamp = DateTime.Now;
+						cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
+						cell.CoosFlagTimestamp = DateTime.Now;
 					}
+					CellsStateTimestamp = DateTime.Now;
 				}
 //				if(string.IsNullOrEmpty(indexPhp))
 //					indexPhp = OiConnection.requestPhpOutput("index", Id, string.Empty);
@@ -750,6 +759,7 @@ namespace appCore.SiteFinder
 						cell.COOS = true;
 					else
 						cell.COOS = false;
+					cell.CoosFlagTimestamp = DateTime.Now;
 				}
 			}
 		}
@@ -770,7 +780,7 @@ namespace appCore.SiteFinder
 		}
 		
 		public void populateCells() {
-			Cells = Finder.getCells(Id);
+			Cells = DB.SitesDB.getCells(Id);
 		}
 		
 		void SplitAddress() {
@@ -780,6 +790,13 @@ namespace appCore.SiteFinder
 			try { county = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
 			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 		}
+		
+		~Site() { // destructor
+			if(DbIndex > -1)
+				DB.SitesDB.UpdateSiteOnCache(this);
+			else
+				DB.SitesDB.AddToDB(this);
+        }
 	}
 }
 
