@@ -56,16 +56,26 @@ namespace appCore.UI
 		public AMTMenuStrip(int width = 505, int height = 25) {
 			Width = width;
 			Height = height;
+			MainMenu.Text = "|||";
+			Items.Add(MainMenu);
 			InitializeComponent();
 		}
 		
 		public void InitializeTroubleshootMenu(bool enableAvailabilityButton = false) {
+			
 			AvailabilityButtonEnabled = enableAvailabilityButton;
+			INCsButton.Text = "INCs";
+			CRQsButton.Text = "CRQs";
+			BookInsButton.Text = "BookIns";
+			ActiveAlarmsButton.Text = "Alarms";
+			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
+			
 			Items.Add(INCsButton);
 			Items.Add(CRQsButton);
 			Items.Add(BookInsButton);
 			Items.Add(ActiveAlarmsButton);
 			if(AvailabilityButtonEnabled) {
+				AvailabilityButton.Text = "Availability Chart";
 				Items.Add(AvailabilityButton);
 				DynamicButtonsSizes();
 			}
@@ -106,7 +116,7 @@ namespace appCore.UI
 				case "Update Template GUI":
 					currentSite = ((UpdateControls)Parent).currentSite;
 					break;
-				case "siteDetails":
+				case "siteDetails": case "Outage Follow-up":
 					currentSite = ((siteDetails)Parent).currentSite;
 					break;
 				case "Cells Locked":
@@ -247,13 +257,18 @@ namespace appCore.UI
 				openForms[c].Close();
 		}
 		
+		protected override void OnSizeChanged(EventArgs e) {
+			base.OnSizeChanged(e);
+			InitializeComponent();
+			Invalidate();
+		}
+		
 		void InitializeComponent()
 		{
 			// 
 			// thisMenuStrip
 			// 
 			Renderer = new AMTToolStripSystemRenderer();
-			Items.Add(MainMenu);
 			GripMargin = new Padding(0, 0, 0, 0);
 			Padding = new Padding(0, 0, 0, 0);
 			Name = "AMTMenuStrip";
@@ -262,7 +277,6 @@ namespace appCore.UI
 			// MainMenuToolStripMenuItem
 			// 
 			MainMenu.Name = "MainMenu";
-			MainMenu.Text = "|||";
 			MainMenu.TextAlign = ContentAlignment.MiddleCenter;
 //			MainMenu.Font = new Font("Arial Unicode MS", 9F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowImageMargin = false;
@@ -273,7 +287,6 @@ namespace appCore.UI
 			// 
 			RefreshButton.Name = "RefreshButton";
 			RefreshButton.Font = new Font("Arial Unicode MS", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
 			RefreshButton.TextAlign = ContentAlignment.TopCenter;
 			RefreshButton.AutoSize = false;
 			RefreshButton.Size = new Size((int)(Width * 0.05), Height);
@@ -282,7 +295,6 @@ namespace appCore.UI
 			// 
 			AvailabilityButton.AutoSize = false;
 			AvailabilityButton.Name = "AvailabilityButton";
-			AvailabilityButton.Text = "Availability Chart";
 			AvailabilityButton.TextAlign = ContentAlignment.MiddleCenter;
 //			ActiveAlarmsButton.Font = new Font("Segoe UI", 9F);
 //			ActiveAlarmsButton.MouseDown += showRightClickContext;
@@ -291,7 +303,6 @@ namespace appCore.UI
 			// 
 			ActiveAlarmsButton.AutoSize = false;
 			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
-			ActiveAlarmsButton.Text = "Alarms";
 			ActiveAlarmsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			ActiveAlarmsButton.Font = new Font("Segoe UI", 9F);
 //			ActiveAlarmsButton.MouseDown += showRightClickContext;
@@ -300,7 +311,6 @@ namespace appCore.UI
 			// 
 			BookInsButton.AutoSize = false;
 			BookInsButton.Name = "BookInsButton";
-			BookInsButton.Text = "BookIns";
 			BookInsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			BookInsButton.Font = new Font("Segoe UI", 9F);
 //			BookInsButton.MouseDown += showRightClickContext;
@@ -309,7 +319,6 @@ namespace appCore.UI
 			// 
 			CRQsButton.AutoSize = false;
 			CRQsButton.Name = "CRQsButton";
-			CRQsButton.Text = "CRQs";
 			CRQsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			refreshToolStripMenuItem.Font = new Font("Segoe UI", 9F);
 //			CRQsButton.MouseDown += showRightClickContext;
@@ -318,7 +327,6 @@ namespace appCore.UI
 			// 
 			INCsButton.AutoSize = false;
 			INCsButton.Name = "INCsButton";
-			INCsButton.Text = "INCs";
 			INCsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			INCsButton.Font = new Font("Segoe UI", 9F);
 //			INCsButton.MouseDown += showRightClickContext;
