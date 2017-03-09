@@ -125,6 +125,7 @@
     <Compile Include="Assemblies\EmbeddedAssembly.cs" />
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
+    <Compile Include="DB\SitesDB.cs" />
     <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -1234,7 +1235,6 @@
     <Compile Include="Shifts\WholeShiftsPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SiteFinder\Finder.cs" />
     <Compile Include="SiteFinder\UI\CellDetailsPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
