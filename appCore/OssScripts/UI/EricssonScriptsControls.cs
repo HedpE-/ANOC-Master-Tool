@@ -100,7 +100,8 @@ namespace appCore.OssScripts.UI
 //				                           	sw.Start();
 				                                   	while(tb.Text.StartsWith("0"))
 				                                   		tb.Text = tb.Text.Substring(1);
-				                                   	currentSite = Finder.getSite(tb.Text);
+				                                   	
+				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
 				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {

@@ -123,7 +123,7 @@ namespace appCore.Templates.Types
 			List<Cell> LTEcells = new List<Cell>();
 			
 			if(alarms.lteSitesOnM.Count > 0) {
-				LTEcells = Finder.getCells(alarms.lteSitesOnM, "4G");
+				LTEcells = DB.SitesDB.getCells(alarms.lteSitesOnM, "4G");
 				
 				foreach(Cell cell in LTEcells) {
 					try {
@@ -248,7 +248,7 @@ namespace appCore.Templates.Types
 		}
 		
 		public Outage(List<string> Sites) {
-			List<Site> sites = Finder.getSites(Sites);
+			List<Site> sites = DB.SitesDB.getSites(Sites);
 			List<Cell> cells = new List<Cell>();
 			foreach(Site site in sites)
 				cells.AddRange(site.Cells);

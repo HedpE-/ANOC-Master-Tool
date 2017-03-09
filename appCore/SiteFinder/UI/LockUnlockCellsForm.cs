@@ -284,6 +284,23 @@ namespace appCore.SiteFinder.UI
 						Name = uiMode;
 						
 						MainMenu = new AMTMenuStrip();
+						ToolStripMenuItem updateAvailabilityToolStripMenuItem = new ToolStripMenuItem();
+						updateAvailabilityToolStripMenuItem.Text = "Update Availability for all sites";
+						updateAvailabilityToolStripMenuItem.Click += delegate {
+							DialogResult ans = DialogResult.No;
+							Action action = new Action(delegate {
+							                           	ans = FlexibleMessageBox.Show("This option will get all sites Availability stats from OI\nand, depending on the number of sites,\nit might take a few minutes to conclude.\n\nContinue anyway?", "Update availability", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+							                           });
+							LoadingPanel loading =  new LoadingPanel();
+							loading.Show(action, this);
+							if(ans == DialogResult.Yes) {
+								action = new Action(delegate {
+								                    	FetchAvailability(((ListBox)Controls["ListBox"]).Items.Cast<string>());
+								                    });
+								loading =  new LoadingPanel();
+								loading.ShowAsync(action, null, true, this);
+							}
+						};
 						ToolStripMenuItem refreshCellsPageToolStripMenuItem = new ToolStripMenuItem();
 						refreshCellsPageToolStripMenuItem.Text = "Refresh data";
 						refreshCellsPageToolStripMenuItem.Click += delegate {
@@ -295,10 +312,12 @@ namespace appCore.SiteFinder.UI
 						};
 						
 						Controls.Add(MainMenu);
-						MainMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+//						MainMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 						MainMenu.InitializeTroubleshootMenu(true);
 						MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
 						MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+						MainMenu.MainMenu.DropDownItems.Add(updateAvailabilityToolStripMenuItem);
+						MainMenu.MainMenu.DropDownItems.Add("-");
 						MainMenu.MainMenu.DropDownItems.Add(refreshCellsPageToolStripMenuItem);
 						
 						dataGridView1.Height -= MainMenu.Height;
@@ -315,15 +334,15 @@ namespace appCore.SiteFinder.UI
 						ListBox sitesListBox = new ListBox();
 						sitesListBox.Name = "ListBox";
 						sitesListBox.Location = dataGridView1.Location;
-						sitesListBox.Size = new Size(70, 381);
+						sitesListBox.Size = new Size(70, dataGridView1.Height);
 						sitesListBox.SelectionMode = SelectionMode.One;
 						sitesListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
 						sitesListBox.DrawMode = DrawMode.OwnerDrawFixed;
 						sitesListBox.DrawItem += ListBoxDrawItem;
 						sitesListBox.SelectedIndexChanged += ListBoxSelectedIndexChanged;
 						
-						dataGridView1.Location = new Point(sitesListBox.Right + 5, dataGridView1.Top);
 						dataGridView1.Width -= sitesListBox.Width + 5;
+						dataGridView1.Location = new Point(sitesListBox.Right + 5, dataGridView1.Top);
 						dataGridView1.RowsAdded += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
 						dataGridView1.RowsRemoved += delegate { checkBox1.Enabled = dataGridView1.RowCount > 0; };
 //						Button refreshButton = new Button();
@@ -494,6 +513,7 @@ namespace appCore.SiteFinder.UI
 						                  });
 						
 						Resize += delegate {
+							MainMenu.Width = Width;
 							offAirLabel.Left = dataGridView1.Left + ((dataGridView1.Width - offAirLabel.Width) / 2);
 						};
 						
@@ -515,11 +535,19 @@ namespace appCore.SiteFinder.UI
 				
 				if(uiMode != "Cells Locked") {
 					this.Text = "Lock/Unlock Cells - Site " + currentSite.Id;
+					checkBox1.CheckedChanged -= CheckBoxesCheckedChanged;
+					checkBox2.CheckedChanged -= CheckBoxesCheckedChanged;
+					checkBox3.CheckedChanged -= CheckBoxesCheckedChanged;
 					checkBox1.Checked =
 						checkBox2.Checked =
 						checkBox3.Checked = false;
+					checkBox1.CheckedChanged += CheckBoxesCheckedChanged;
+					checkBox2.CheckedChanged += CheckBoxesCheckedChanged;
+					checkBox3.CheckedChanged += CheckBoxesCheckedChanged;
 					amtRichTextBox1.Text =
 						comboBox1.Text = string.Empty;
+					amtRichTextBox1.Enabled = !string.IsNullOrEmpty(comboBox1.Text);
+					comboBox1.Enabled = false;
 					
 					if(uiMode.Contains("ock Cells"))
 						label5.Text = "Selected:\n\n2G: " + gsmCheckedCount + "\n3G: " + umtsCheckedCount + "\n4G: " + lteCheckedCount + "\n\nTotal: " + (gsmCheckedCount + umtsCheckedCount + lteCheckedCount);
@@ -627,16 +655,16 @@ namespace appCore.SiteFinder.UI
 			
 			if(lb.Items.Count > 0) {
 				label1.Text = "Sites (" + lb.Items.Count + ")";
-				List<string> noAvailabilitySites = new List<string>();
+				List<string> noCellsStateSites = new List<string>();
 				if(cellsLockedSites == null) {
 					if(UiMode == "Cells Locked")
 						SplashForm.UpdateLabelText("Collecting sites data");
 					
-					cellsLockedSites = Finder.getSites(lb.Items.Cast<string>().ToList());
+					cellsLockedSites = DB.SitesDB.getSites(lb.Items.Cast<string>().ToList());
 					
 					foreach(Site site in cellsLockedSites) {
-						if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
-							noAvailabilitySites.Add(site.Id);
+						if(DateTime.Now - site.CellsStateTimestamp > new TimeSpan(0, 30, 0))
+							noCellsStateSites.Add(site.Id);
 					}
 				}
 				else {
@@ -647,31 +675,101 @@ namespace appCore.SiteFinder.UI
 							sitesToRemove.Add(cellsLockedSites.IndexOf(site));
 						}
 						else {
-							if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
-								noAvailabilitySites.Add(site.Id);
+							if(DateTime.Now - site.CellsStateTimestamp > new TimeSpan(0, 30, 0))
+								noCellsStateSites.Add(site.Id);
 							sitesToAdd.Remove(site.Id);
 						}
 					}
 					
 					if(sitesToAdd.Any()) {
-						cellsLockedSites.AddRange(Finder.getSites(sitesToAdd));
+						cellsLockedSites.AddRange(DB.SitesDB.getSites(sitesToAdd));
 						foreach(string str in sitesToAdd) {
 							Site site = cellsLockedSites.Find(s => s.Id == str);
 							if(site != null) {
-								if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
-									noAvailabilitySites.Add(site.Id);
+								if(DateTime.Now - site.CellsStateTimestamp > new TimeSpan(0, 30, 0))
+									noCellsStateSites.Add(site.Id);
 							}
 						}
 					}
 					
-					foreach(int siteToRemove in sitesToRemove)
+//					List<Site> sitesToUpdate = new List<Site>();
+					foreach(int siteToRemove in sitesToRemove) {
+//						sitesToUpdate.Add(cellsLockedSites[siteToRemove]);
 						cellsLockedSites.RemoveAt(siteToRemove);
+					}
+//					if(sitesToUpdate.Count > 0)
+//						DB.SitesDB.UpdateSitesOnCache(sitesToUpdate);
 				}
 				
-				if(noAvailabilitySites.Count > 0)
-					FetchAvailability(noAvailabilitySites);
+				if(noCellsStateSites.Count > 0) {
+//					FetchAvailability(noCellsStateSites);
+					FetchCellsState(noCellsStateSites);
+				}
 				
 				lb.SetSelected(0, true);
+			}
+		}
+		
+		void FetchCellsState(IEnumerable<string> sites) {
+			List<OiCell> list = new List<OiCell>();
+			
+			List<Thread> threads = new List<Thread>();
+			int finishedThreadsCount = 0;
+			Thread thread;
+			thread = new Thread(() => {
+			                    	string resp = OiConnection.requestApiOutput("cells", sites, 2);
+			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+			                    	foreach(JObject jObj in jSon.data)
+			                    		list.Add(jObj.ToObject<OiCell>());
+			                    	
+			                    	finishedThreadsCount++;
+			                    });
+			thread.Name = "getOiCellsState_2G";
+			threads.Add(thread);
+			
+			thread = new Thread(() => {
+			                    	string resp = OiConnection.requestApiOutput("cells", sites, 3);
+			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+			                    	foreach(JObject jObj in jSon.data)
+			                    		list.Add(jObj.ToObject<OiCell>());
+			                    	
+			                    	finishedThreadsCount++;
+			                    });
+			thread.Name = "getOiCellsState_2G";
+			threads.Add(thread);
+			
+			thread = new Thread(() => {
+			                    	string resp = OiConnection.requestApiOutput("cells", sites, 4);
+			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+			                    	foreach(JObject jObj in jSon.data)
+			                    		list.Add(jObj.ToObject<OiCell>());
+			                    	
+			                    	finishedThreadsCount++;
+			                    });
+			thread.Name = "getOiCellsState_2G";
+			threads.Add(thread);
+			
+			foreach(Thread th in threads) {
+				th.SetApartmentState(ApartmentState.STA);
+				th.Start();
+			}
+			
+			while(finishedThreadsCount < threads.Count) { }
+			
+			foreach(string siteStr in sites) {
+				int siteIndex = cellsLockedSites.FindIndex(s => s.Id == siteStr);
+				if(siteIndex > -1) {
+					foreach (Cell cell in cellsLockedSites[siteIndex].Cells) {
+						OiCell oiCell = list.Find(s => s.CELL_NAME == cell.Name);
+						if(oiCell != null) {
+							cell.Locked = !string.IsNullOrEmpty(oiCell.LOCKED);
+							cell.LockedFlagTimestamp = DateTime.Now;
+							cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
+							cell.CoosFlagTimestamp = DateTime.Now;
+						}
+					}
+					cellsLockedSites[siteIndex].CellsStateTimestamp = DateTime.Now;
+				}
 			}
 		}
 		
@@ -757,13 +855,14 @@ namespace appCore.SiteFinder.UI
 			                                      	if(selectedSiteIndex > -1) {
 			                                      		Controls["offAirLabel"].Visible = false;
 			                                      		currentSite = cellsLockedSites[selectedSiteIndex];
-			                                      		if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
-			                                      			Thread thread = new Thread(() => currentSite.requestOIData("Availability"));
+//			                                      		if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
+			                                      		if(DateTime.Now - currentSite.CellsStateTimestamp >= new TimeSpan(0, 30, 0)) {
+			                                      			Thread thread = new Thread(() => currentSite.requestOIData("CellsState"));
 			                                      			thread.Name = "ListBoxSelectedIndexChanged";
 			                                      			thread.SetApartmentState(ApartmentState.STA);
 			                                      			thread.Start();
 			                                      		}
-			                                      		while((DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) || currentSite.isUpdatingAvailability) { }
+			                                      		while((DateTime.Now - currentSite.CellsStateTimestamp > new TimeSpan(0, 30, 0))) { }
 			                                      	}
 			                                      	else {
 			                                      		Controls["offAirLabel"].Visible = true;
@@ -1427,6 +1526,29 @@ namespace appCore.SiteFinder.UI
 					}
 					break;
 			}
+			
+			if(dataGridView1.Columns[e.ColumnIndex].Name == "Cell") {
+				if(!string.IsNullOrEmpty(e.Value.ToString())) {
+					string cellPrefix = e.Value.ToString();
+					if(cellPrefix.EndsWith("W") || cellPrefix.EndsWith("X") || cellPrefix.EndsWith("Y"))
+						cellPrefix = cellPrefix.Substring(0, cellPrefix.Length - 2);
+					cellPrefix = cellPrefix.RemoveDigits();
+					if(cellPrefix.StartsWith("T"))
+						cellPrefix = cellPrefix.Substring(1);
+					string prefixDescription = string.Empty;
+					List<string> temp = Resources.Cells_Prefix.Split('\n').ToList();
+					string tempStr = temp.Find(s => s.StartsWith(cellPrefix));
+					if(!string.IsNullOrEmpty(tempStr)) {
+						string[] strTofind = { " - " };
+						prefixDescription = tempStr.Split(strTofind, StringSplitOptions.None)[1];
+					}
+					
+					dataGridView1.Rows[e.RowIndex].Cells["Cell"].ToolTipText = cellPrefix;
+					if(!string.IsNullOrEmpty(prefixDescription))
+						dataGridView1.Rows[e.RowIndex].Cells["Cell"].ToolTipText += Environment.NewLine + prefixDescription;
+				}
+			}
+			
 			if(dataGridView1.Columns[e.ColumnIndex].Name == "Locked")
 				e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
 		}

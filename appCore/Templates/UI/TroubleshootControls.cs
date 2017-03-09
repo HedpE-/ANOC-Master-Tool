@@ -262,9 +262,16 @@ namespace appCore.Templates.UI
 					}
 				}
 				Action actionThreaded = new Action(delegate {
-				                                   	currentSite = Finder.getSite(tb.Text);
-				                                   	if(currentSite.Exists)
-				                                   		currentSite.requestOIData("INCCRQPWR");
+				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
+				                                   	
+				                                   	if(currentSite.Exists) {
+				                                   		string dataToRequest = "INC";
+				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+				                                   			dataToRequest += "CRQ";
+				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
+				                                   			dataToRequest += "PWR";
+				                                   		currentSite.requestOIData(dataToRequest);
+				                                   	}
 				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {

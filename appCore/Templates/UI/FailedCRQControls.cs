@@ -326,9 +326,14 @@ namespace appCore.Templates.UI
 					tb.Text = tb.Text.Substring(1);
 				
 				Action actionThreaded = new Action(delegate {
-				                                   	currentSite = Finder.getSite(tb.Text);
-				                                   	if(currentSite.Exists)
-				                                   		currentSite.requestOIData("INCCRQ");
+				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
+				                                   	
+				                                   	if(currentSite.Exists) {
+				                                   		string dataToRequest = "INC";
+				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+				                                   			dataToRequest += "CRQ";
+				                                   		currentSite.requestOIData(dataToRequest);
+				                                   	}
 				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {

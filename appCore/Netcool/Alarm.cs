@@ -92,7 +92,7 @@ namespace appCore.Netcool
 										break;
 									case "R":
 										string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
-										List<Cell> results = Finder.queryAllCellsDB("CELL_ID", UCellId);
+										List<Cell> results = DB.SitesDB.queryAllCellsDB("CELL_ID", UCellId);
 										foreach(Cell cell in results)
 											if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
 												element = cell.Name;
@@ -203,7 +203,7 @@ namespace appCore.Netcool
 		public Site ParentSite {
 			get {
 				if(_site == null)
-					_site = Finder.getSite(SiteId);
+					_site = DB.SitesDB.getSite(SiteId);
 				return _site;
 			}
 			private set {

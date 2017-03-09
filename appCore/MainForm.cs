@@ -159,7 +159,8 @@ namespace appCore
 						
 						System.Data.DataTable dt = jSon.ToDataTable();
 						
-						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
+//						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
+						var sites = SitesDB.getSites(input.Split(',').ToList());
 						foreach(var site in sites) {
 							var drs = dt.Rows.Cast<System.Data.DataRow>().Where(s => s["Site"].ToString() == site.Id);
 							if(drs.Any()) {
