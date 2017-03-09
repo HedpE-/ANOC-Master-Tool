@@ -176,7 +176,20 @@ namespace appCore
 						ShiftsSwapForm ss = new ShiftsSwapForm();
 						ss.Show();
 					};
-					tabPage1.Controls.Add(butt);
+					Button butt3 = new Button();
+					butt3.Name = "butt3";
+					butt3.Location = new Point(5, butt.Top - butt3.Height - 5);
+					butt3.Click += delegate {
+						Form form = new Form();
+						form.Size = new Size(500, 500);
+						form.Text = SitesDB.List.Count + " sites listed";
+						DataGridView dgv = new DataGridView();
+						dgv.Dock = DockStyle.Fill;
+						dgv.DataSource = SitesDB.List;
+						form.Controls.Add(dgv);
+						form.ShowDialog();
+					};
+					tabPage1.Controls.AddRange(new Control[]{ butt, butt3 });
 					
 //					OutageUI.Location = new Point(1, 2);
 //					tabPage17.Controls.Add(OutageUI);
