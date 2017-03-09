@@ -25,6 +25,10 @@ namespace appCore.DB
 //				UpdateSitesOnCache(sites[c]);
 //		}
 		
+		public static List<Site> List {
+			get { return SitesCache; }
+		}
+		
 		public static void UpdateSiteOnCache(Site site) {
 			if(site != null) {
 //				int siteIndex = SitesCache.FindIndex(S => S.Id == site.Id);
