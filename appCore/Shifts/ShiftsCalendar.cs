@@ -191,7 +191,7 @@ namespace appCore.Shifts
 			
 //			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
 			string shift = Databases.shiftsFile.GetShift(PersonName, shiftsChosenDate);
-			if(string.IsNullOrEmpty(shift))
+			if(string.IsNullOrEmpty(shift) || shift.StartsWith("H") || shift == "F")
 				return;
 			
 //			DataRow[] sameShiftRows = getWholeShift(shiftsChosenDate);
