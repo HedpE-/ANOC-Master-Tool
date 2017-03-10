@@ -61,6 +61,7 @@ namespace appCore.DB
 		public static Site getSite(string site)
 		{
 			Site foundSite = SitesCache.Find(s => s.Id == site);
+			
 			if(foundSite == null) {
 				List<string> sitesList = new List<string>();
 				sitesList.Add(site);
@@ -68,7 +69,7 @@ namespace appCore.DB
 				List<Site> res = getSites(sitesList, false);
 				
 //				res[0].DbIndex = SitesCache.Count;
-				SitesCache.Add(res[0]);
+//				SitesCache.Add(res[0]);
 				
 				return res.Count > 0 ? res[0] : new Site();
 			}
@@ -113,13 +114,13 @@ namespace appCore.DB
 				
 				if(foundSites.Count > 0)
 					sites = getCells(foundSites, sites);
-				
-				if(UpdateOnCache) {
-					for(int c = 0;c < sites.Count;c++) {
-//						sites[c].DbIndex = SitesCache.Count;
-						SitesCache.Add(sites[c]);
-					}
-				}
+//				
+//				if(UpdateOnCache) {
+//					for(int c = 0;c < sites.Count;c++) {
+////						sites[c].DbIndex = SitesCache.Count;
+//						SitesCache.Add(sites[c]);
+//					}
+//				}
 				
 				totalFoundSites.AddRange(sites);
 			}
