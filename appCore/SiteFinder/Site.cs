@@ -428,14 +428,15 @@ namespace appCore.SiteFinder
 					if(dataToRequest.Contains("Availability")) {
 						Thread thread = new Thread(() => {
 						                           	isUpdatingAvailability = true;
-//					                           	AvailabilityChart = FetchAvailability(null);
-						                           	Availability avail = FetchAvailability();
-						                           	if(avail != null) {
-						                           		if(avail.message != "Site is Offair") {
-						                           			Availability = avail.ToDataTable();
-						                           			updateCOOS();
-						                           		}
-						                           	}
+						                           	Availability = FetchAvailability(null);
+						                           	updateCOOS();
+//						                           	Availability avail = FetchAvailability();
+//						                           	if(avail != null) {
+//						                           		if(avail.message != "Site is Offair") {
+//						                           			Availability = avail.ToDataTable();
+//						                           			updateCOOS();
+//						                           		}
+//						                           	}
 						                           	isUpdatingAvailability = false;
 						                           	finishedThreadsCount++;
 						                           });
@@ -596,26 +597,28 @@ namespace appCore.SiteFinder
 //			return dt;
 //		}
 		
-		Availability FetchAvailability() {
-			string response = OiConnection.requestApiOutput("availability", Id);
-			try {
-				Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
-				AvailabilityTimestamp = DateTime.Now;
-				
-				return jSon;
-			}
-			catch { return null; }
-		}
-		
-//		DataTable FetchAvailability(FileSystemInfo table_ca) {
-//			DataTable dt = new DataTable();
-//			string response = OiConnection.requestPhpOutput("ca", Id);
-//			if(!string.IsNullOrEmpty(response)) {
-//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
-//				AvailabilityChartTimestamp = DateTime.Now;
+//		Availability FetchAvailability() {
+//			string response = OiConnection.requestApiOutput("availability", Id);
+//			try {
+//				Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
+//				AvailabilityTimestamp = DateTime.Now;
+//
+//				return jSon;
 //			}
-//			return dt;
+//			catch { return null; }
 //		}
+		
+		DataTable FetchAvailability(FileSystemInfo table_ca) {
+			DataTable dt = new DataTable();
+//			string response = OiConnection.requestApiOutput("availability", Id);
+			string response = OiConnection.requestPhpOutput("ca", Id);
+			if(!string.IsNullOrEmpty(response)) {
+//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_checkbox_availability");
+				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
+				AvailabilityTimestamp = DateTime.Now;
+			}
+			return dt;
+		}
 		
 		string getPowerCompany() {
 			string response = OiConnection.requestApiOutput("access", Id);
@@ -792,11 +795,17 @@ namespace appCore.SiteFinder
 		}
 		
 		~Site() { // destructor
-			if(DbIndex > -1)
-				DB.SitesDB.UpdateSiteOnCache(this);
-			else
-				DB.SitesDB.AddToDB(this);
-        }
+			if(Exists) {
+				if(Cells.Count == 0)
+					populateCells();
+				if(Cells.Count > 0) {
+					if(DbIndex > -1)
+						DB.SitesDB.UpdateSiteOnCache(this);
+					else
+						DB.SitesDB.AddToDB(this);
+				}
+			}
+		}
 	}
 }
 
