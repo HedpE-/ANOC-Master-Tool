@@ -151,7 +151,7 @@ namespace appCore.Toolbox
 //				p.BackgroundImage = bmp;
 //				parentForm.Controls.Add(p);
 //				p.BringToFront();
-//				
+//
 //				// display your dialog somehow:
 //				if(showLoading) {
 //					const int spinnerSize = 32;
@@ -166,18 +166,18 @@ namespace appCore.Toolbox
 //					p.Controls.Add(loadingBox);
 //					loadingBox.BringToFront();
 //					Loading.ShowLoadingForm(loc, parentForm);
-//					
-////					ProgressSpinner loadingBox = new ProgressSpinner();
-////					loadingBox.LoadGIFImage = Resources.spinner1;
-////					loadingBox.Location = loc;
-////					p.Controls.Add(loadingBox);
-////					loadingBox.Start();
+//
+		////					ProgressSpinner loadingBox = new ProgressSpinner();
+		////					loadingBox.LoadGIFImage = Resources.spinner1;
+		////					loadingBox.Location = loc;
+		////					p.Controls.Add(loadingBox);
+		////					loadingBox.Start();
 //				}
-//				
+//
 //				action();
-//				
-////				if(showLoading)
-////					loadingBox.Stop();
+//
+		////				if(showLoading)
+		////					loadingBox.Stop();
 //			} // panel will be disposed and the form will "lighten" again...
 //		}
 		
@@ -286,22 +286,33 @@ namespace appCore.Toolbox
 		/// Parse HTML tables from OI to DataTable
 		/// </summary>
 		/// <param name="html">HTML returned from OI</param>
-		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits"</param>
+		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits", "table_checkbox_availability"</param>
 		public static DataTable ConvertHtmlTabletoDataTable(string html, string tableName) {
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
+			
 			dt.TableName = tableName;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
 			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
-			var descendantNodes = table.Descendants("th");
-			foreach (HtmlNode th in descendantNodes) {
-				if(th.InnerText.Contains("Date") || th.InnerText.Contains("Scheduled") || th.InnerText == "Arrived" || th.InnerText == "Planned Finish" || th.InnerText == "Departed Site" || th.InnerText == "Time")
-					dt.Columns.Add(th.InnerText, typeof(DateTime));
+			IEnumerable<HtmlNode> descendantNodes = null;
+			if(tableName.Contains("availability")) {
+				descendantNodes = table.SelectSingleNode("/table[1]/thead[1]/tr[1]").ChildNodes; // "/table[1]/thead[1]/tr[1]"
+				descendantNodes = descendantNodes.Where(item => item.Name == "td");
+			}
+			else {
+				if(tableName == "table_ca")
+					descendantNodes = table.Descendants("thead").First().Descendants("th");
+				else
+					descendantNodes = table.Descendants("th");
+			}
+			foreach (HtmlNode node in descendantNodes) {
+				if(node.InnerText.Contains("Date") || node.InnerText.Contains("Scheduled") || node.InnerText == "Arrived" || node.InnerText == "Planned Finish" || node.InnerText == "Departed Site" || node.InnerText == "Time")
+					dt.Columns.Add(node.InnerText, typeof(DateTime));
 				else {
-					if(!dt.Columns.Contains(th.InnerText))
-						dt.Columns.Add(th.InnerText);
+					if(!dt.Columns.Contains(node.InnerText))
+						dt.Columns.Add(node.InnerText);
 				}
 			}
 			
@@ -339,7 +350,7 @@ namespace appCore.Toolbox
 				}
 			}
 			
-			if(dt.TableName == "table_ca") {
+			if(dt.TableName.Contains("availability") || dt.TableName == "table_ca") {
 				for(int c = 3;c < dt.Columns.Count;c++) {
 					string colName = dt.Columns[3].ColumnName;
 					dt.Columns[colName].SetOrdinal((dt.Columns.Count - 1) - (c - 3));
