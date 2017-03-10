@@ -285,7 +285,7 @@ namespace appCore.SiteFinder.UI
 						
 						MainMenu = new AMTMenuStrip();
 						ToolStripMenuItem updateAvailabilityToolStripMenuItem = new ToolStripMenuItem();
-						updateAvailabilityToolStripMenuItem.Text = "Update Availability for all sites";
+						updateAvailabilityToolStripMenuItem.Text = "Update all sites Availability";
 						updateAvailabilityToolStripMenuItem.Click += delegate {
 							DialogResult ans = DialogResult.No;
 							Action action = new Action(delegate {
@@ -663,7 +663,7 @@ namespace appCore.SiteFinder.UI
 					cellsLockedSites = DB.SitesDB.getSites(lb.Items.Cast<string>().ToList());
 					
 					foreach(Site site in cellsLockedSites) {
-						if(DateTime.Now - site.CellsStateTimestamp > new TimeSpan(0, 30, 0))
+						if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
 							noCellsStateSites.Add(site.Id);
 					}
 				}
@@ -675,7 +675,7 @@ namespace appCore.SiteFinder.UI
 							sitesToRemove.Add(cellsLockedSites.IndexOf(site));
 						}
 						else {
-							if(DateTime.Now - site.CellsStateTimestamp > new TimeSpan(0, 30, 0))
+							if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
 								noCellsStateSites.Add(site.Id);
 							sitesToAdd.Remove(site.Id);
 						}
@@ -686,7 +686,7 @@ namespace appCore.SiteFinder.UI
 						foreach(string str in sitesToAdd) {
 							Site site = cellsLockedSites.Find(s => s.Id == str);
 							if(site != null) {
-								if(DateTime.Now - site.CellsStateTimestamp > new TimeSpan(0, 30, 0))
+								if(DateTime.Now - site.AvailabilityTimestamp > new TimeSpan(0, 30, 0))
 									noCellsStateSites.Add(site.Id);
 							}
 						}
@@ -702,8 +702,8 @@ namespace appCore.SiteFinder.UI
 				}
 				
 				if(noCellsStateSites.Count > 0) {
-//					FetchAvailability(noCellsStateSites);
-					FetchCellsState(noCellsStateSites);
+					FetchAvailability(noCellsStateSites);
+//					FetchCellsState(noCellsStateSites);
 				}
 				
 				lb.SetSelected(0, true);
@@ -780,11 +780,13 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void FetchAvailability(IEnumerable<string> sites) {
-			string resp = OiConnection.requestApiOutput("availability", sites);
+//			string resp = OiConnection.requestApiOutput("availability", sites);
+			string resp = OiConnection.requestPhpOutput("ca", sites);
 			
 			try {
-				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
-				DataTable dt = jSon.ToDataTable();
+//				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
+//				DataTable dt = jSon.ToDataTable();
+				DataTable dt = Toolbox.Tools.ConvertHtmlTabletoDataTable(resp, "table_ca");
 				
 				foreach(var site in cellsLockedSites) {
 					var drs = dt.Rows.Cast<DataRow>().Where(s => s["Site"].ToString() == site.Id);
@@ -849,8 +851,11 @@ namespace appCore.SiteFinder.UI
 		
 		void ListBoxSelectedIndexChanged(object sender, EventArgs e) {
 			Action actionNonThreaded = new Action(delegate {
-			                                      	if(currentSite != null)
-			                                      		cellsLockedSites[cellsLockedSites.FindIndex(s => s.Id == currentSite.Id)] = currentSite;
+			                                      	if(currentSite != null) {
+			                                      		int siteIndex = cellsLockedSites.FindIndex(s => s.Id == currentSite.Id);
+			                                      		if(siteIndex > -1)
+			                                      			cellsLockedSites[siteIndex] = currentSite;
+			                                      	}
 			                                      	
 			                                      	ListBox lb = sender as ListBox;
 			                                      	
@@ -861,14 +866,15 @@ namespace appCore.SiteFinder.UI
 			                                      	if(selectedSiteIndex > -1) {
 			                                      		Controls["offAirLabel"].Visible = false;
 			                                      		currentSite = cellsLockedSites[selectedSiteIndex];
-//			                                      		if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
-			                                      		if(DateTime.Now - currentSite.CellsStateTimestamp >= new TimeSpan(0, 30, 0)) {
-			                                      			Thread thread = new Thread(() => currentSite.requestOIData("CellsState"));
+			                                      		if(DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0)) {
+//			                                      		if(DateTime.Now - currentSite.CellsStateTimestamp >= new TimeSpan(0, 30, 0)) {
+			                                      			Thread thread = new Thread(() => currentSite.requestOIData("Availability"));
 			                                      			thread.Name = "ListBoxSelectedIndexChanged";
 			                                      			thread.SetApartmentState(ApartmentState.STA);
 			                                      			thread.Start();
 			                                      		}
-			                                      		while((DateTime.Now - currentSite.CellsStateTimestamp > new TimeSpan(0, 30, 0))) { }
+			                                      		while((DateTime.Now - currentSite.AvailabilityTimestamp > new TimeSpan(0, 30, 0))) { }
+//			                                      		while((DateTime.Now - currentSite.CellsStateTimestamp > new TimeSpan(0, 30, 0))) { }
 			                                      	}
 			                                      	else {
 			                                      		Controls["offAirLabel"].Visible = true;
