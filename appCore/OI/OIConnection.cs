@@ -295,6 +295,29 @@ namespace appCore.OI
 		/// </summary>
 		/// <param name="phpFile">"inc", "crq", "alarms", "ca"</param>
 		/// <param name="site">Site number</param>
+		public static string requestPhpOutput(string phpFile, IEnumerable<string> sitesList)
+		{
+			InitiateOiConnection();
+			if(LoggedOn) {
+				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
+				client.CookieContainer = OICookieContainer;
+				client.Proxy = Proxy;
+				IRestRequest request = new RestRequest(string.Format("/site/{0}.php", phpFile), Method.GET);
+				request.AddParameter("siteinput", string.Join(",", sitesList));
+				request.AddHeader("Content-Type", "application/html");
+				request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+				IRestResponse response = client.Execute(request);
+				
+				return response.Content;
+			}
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Requests data from OI PHP files
+		/// </summary>
+		/// <param name="phpFile">"inc", "crq", "alarms", "ca"</param>
+		/// <param name="site">Site number</param>
 		public static string requestPhpOutput(string phpFile, string site)
 		{
 			InitiateOiConnection();
