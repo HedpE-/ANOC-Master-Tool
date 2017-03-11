@@ -20,56 +20,63 @@ namespace appCore.DB
 	{
 		static List<Site> SitesCache = new List<Site>();
 		
-//		public static void UpdateSitesOnCache(List<Site> sites) {
-//			for(int c = 0;c < sites.Count;c++)
-//				UpdateSitesOnCache(sites[c]);
-//		}
-		
 		public static List<Site> List {
 			get { return SitesCache; }
 		}
-		
-		public static void UpdateSiteOnCache(Site site) {
-			if(site != null) {
-//				int siteIndex = SitesCache.FindIndex(S => S.Id == site.Id);
-				if(site.DbIndex > -1)
-					SitesCache[site.DbIndex] = site;
-//				else
-//					AddToDB(out site);
-			}
-		}
 
-		public static void AddToDB(Site site) {
+		public static void Add(Site site) {
 			SitesCache.Add(site);
 		}
-//
-//		public static void AddRangeToDB(out List<Site> sites) {
-//			int count = ((ICollection<Site>)sites).Count;
-//			for(int c = 0;c < count;c++) {
-		////				Site site = sites[c];
-//				SitesCache.Add(sites[c]);
-//				int index = SitesCache.FindIndex(s => s == site);
-//				SitesCache[index].DbIndex =
-//					sites[c].DbIndex = index;
-//			}
-//		}
-		
-		public static int GetSiteIndex(Site site) {
-			return SitesCache.FindIndex(s => s.Id == site.Id);
+
+		public static void AddRange(IEnumerable<Site> sites) {
+			SitesCache.AddRange(sites);
+		}
+
+		public static void Remove(Site site) {
+			SitesCache.RemoveAt(site.DbIndex);
 		}
 		
-		public static Site getSite(string site)
+		public static int GetSiteIndex(string siteID) {
+//			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+//			sw.Start();
+//			int index = SitesCache.FindIndex(s => s.Id == site.Id);
+//			sw.Stop();
+//			var t = sw.Elapsed;
+//			sw.Reset();
+//			sw.Start();
+			int index = -1;
+			for(int c = 0; c < SitesCache.Count;c++) {
+				if(SitesCache[c].Id == siteID) {
+					index = c;
+					break;
+				}
+			}
+//			sw.Stop();
+//			var t2 = sw.Elapsed;
+			return index;
+		}
+		
+		public static void UpdateSiteData(Site site) {
+			if(site != null) {
+				int index = site.DbIndex;
+				if(index > -1)
+					SitesCache[index] = site;
+			}
+		}
+		
+		public static Site getSite(string site, bool ignoreCache = false)
 		{
-			Site foundSite = SitesCache.Find(s => s.Id == site);
+			Site foundSite = null;
+			if(!ignoreCache) {
+				int index = GetSiteIndex(site);
+				foundSite = index > -1 ? SitesCache[index] : null;
+			}
 			
 			if(foundSite == null) {
 				List<string> sitesList = new List<string>();
 				sitesList.Add(site);
 				
-				List<Site> res = getSites(sitesList, false);
-				
-//				res[0].DbIndex = SitesCache.Count;
-//				SitesCache.Add(res[0]);
+				List<Site> res = getSites(sitesList, true);
 				
 				return res.Count > 0 ? res[0] : new Site();
 			}
@@ -77,14 +84,14 @@ namespace appCore.DB
 			return foundSite;
 		}
 		
-		public static List<Site> getSites(List<string> sitesToFind, bool UpdateOnCache = true)
+		public static List<Site> getSites(List<string> sitesToFind, bool ignoreCache = false)
 		{
 			List<string> Sites = sitesToFind;
 			List<string> foundSites = new List<string>();
 			List<Site> sites = new List<Site>();
 			List<Site> totalFoundSites = new List<Site>();
 			
-			if(UpdateOnCache) {
+			if(!ignoreCache) {
 				foreach(string site in Sites) {
 					Site foundSite = SitesCache.Find(s => s.Id == site);
 					if(foundSite != null) {
@@ -100,11 +107,17 @@ namespace appCore.DB
 			if(Sites.Count > 0) {
 				try {
 					var engine = new FileHelperEngine<Site>();
+					engine.BeforeReadRecord +=  (eng, e) => {
+						if(!Sites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+							e.SkipThisRecord = true;
+					};
 					engine.AfterReadRecord +=  (eng, e) => {
 						if(!Sites.Contains(e.Record.Id))
 							e.SkipThisRecord = true;
-						else
+						else {
+							e.Record.SiteDataTimestamp = DateTime.Now;
 							foundSites.Add(e.Record.Id);
+						}
 					};
 					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
 				}
@@ -114,15 +127,15 @@ namespace appCore.DB
 				
 				if(foundSites.Count > 0)
 					sites = getCells(foundSites, sites);
-//				
-//				if(UpdateOnCache) {
-//					for(int c = 0;c < sites.Count;c++) {
-////						sites[c].DbIndex = SitesCache.Count;
-//						SitesCache.Add(sites[c]);
-//					}
-//				}
 				
 				totalFoundSites.AddRange(sites);
+				
+				if(!ignoreCache) {
+					foreach(Site site in totalFoundSites) {
+						if(site.DbIndex == -1)
+							SitesCache.Add(site);
+					}
+				}
 			}
 			
 			return totalFoundSites;

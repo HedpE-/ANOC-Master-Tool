@@ -181,11 +181,43 @@ namespace appCore
 					butt3.Location = new Point(5, butt.Top - butt3.Height - 5);
 					butt3.Click += delegate {
 						Form form = new Form();
-						form.Size = new Size(500, 500);
-						form.Text = SitesDB.List.Count + " sites listed";
+						form.Size = new Size((int)(Screen.FromControl(this).Bounds.Width * 0.85), (int)(Screen.FromControl(this).Bounds.Height * 0.6));
+						form.Text = SitesDB.List.Count.ToString();
+						form.Text += SitesDB.List.Count > 1 ? " sites listed" : " site listed";
+//						string str = null;
+//						try {
+//							var engine = new FileHelpers.FileHelperEngine<SiteFinder.Site>();
+//							str = engine.WriteString(SitesDB.List);
+//						}
+//						catch(FileHelpers.FileHelpersException e) {
+//							string f = e.Message;
+//						}
+//						System.Data.DataTable dt = null;
+//						try {
+//							var engine = new FileHelpers.FileHelperEngine<SiteFinder.Site>();
+//							dt = engine.ReadStringAsDT(str);
+//						}
+//						catch(FileHelpers.FileHelpersException e) {
+//							string f = e.Message;
+//						}
+						
 						DataGridView dgv = new DataGridView();
 						dgv.Dock = DockStyle.Fill;
+						dgv.RowHeadersVisible = false;
+						dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+						dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+						dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 						dgv.DataSource = SitesDB.List;
+//						dgv.DataSource = dt;
+						
+						foreach(DataGridViewColumn col in dgv.Columns) {
+							if(col.Name == "KeyInformation" || col.Name == "HealthAndSafety" || col.Name == "Address") {
+								col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+								col.Width = col.Name == "Address" ? 100 : 300;
+								col.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+							}
+						}
+						
 						form.Controls.Add(dgv);
 						form.ShowDialog();
 					};
@@ -266,28 +298,28 @@ namespace appCore
 					tabControl2.SelectTab(0);
 					if(TroubleshootUI != null)
 						TroubleshootUI.Dispose();
-					TroubleshootUI = new TroubleshootControls(log.ToTroubleShootTemplate(), Template.UIenum.Template);
+					TroubleshootUI = new TroubleshootControls(log.ToTroubleShootTemplate(), Template.UiEnum.Template);
 					break;
 				case "Failed CRQ":
 					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(1);
 					if(FailedCRQUI != null)
 						FailedCRQUI.Dispose();
-					FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), Template.UIenum.Template);
+					FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), Template.UiEnum.Template);
 					break;
 				case "Update":
 					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(2);
 					if(UpdateUI != null)
 						UpdateUI.Dispose();
-					UpdateUI = new UpdateControls(log.ToUpdateTemplate(), Template.UIenum.Template);
+					UpdateUI = new UpdateControls(log.ToUpdateTemplate(), Template.UiEnum.Template);
 					break;
 				case "TX":
 					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(3);
 					if(TXUI != null)
 						TXUI.Dispose();
-					TXUI = new TXControls(log.ToTXTemplate(), Template.UIenum.Template);
+					TXUI = new TXControls(log.ToTXTemplate(), Template.UiEnum.Template);
 					break;
 			}
 		}

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 using appCore.UI;
 using appCore.DB;
@@ -57,6 +58,9 @@ namespace appCore.Settings
 			}
 			private set { }
 		}
+		
+		static System.Timers.Timer LocalDbAutoUpdateTimer = new System.Timers.Timer((60 * 60) * 1 * 1000); // 1 hour in milliseconds
+		public static bool ongoingLocalDbFilesUpdate;
 		
 //		http://stackoverflow.com/questions/14465187/get-available-disk-free-space-for-a-given-path-on-windows
 //		[DllImport("kernel32.dll", SetLastError=true, CharSet=CharSet.Auto)]
@@ -140,7 +144,15 @@ namespace appCore.Settings
 					LogsFolder.Create();
 			}
 			Databases.Initialize();
+			
+			LocalDbAutoUpdateTimer.Elapsed += delegate {
+				UpdateLocalDBFilesCopy();
+			};
+			
 			UpdateLocalDBFilesCopy(true);
+			
+			LocalDbAutoUpdateTimer.Enabled = true;
+//				ResetAutoLocalUpdateTimer();
 		}
 		
 		public static bool Change(DirectoryInfo newFolder) {
@@ -249,11 +261,15 @@ namespace appCore.Settings
 		public static bool UpdateLocalDBFilesCopy(bool ForceCloseAppOnError = false) {
 		retry:
 			try {
+				ongoingLocalDbFilesUpdate = true;
+				
 				List<Thread> threads = new List<Thread>();
 				int finishedThreadsCount = 0;
 				Thread thread;
 				thread = new Thread(() => {
 				                    	// UpdateLocalDBFilesCopy() allcells.csv, allsites.csv & shifts to to UserFolder to minimize share outage impact
+				                    	while(Databases.ongoingRemoteDbFilesUpdate) { }
+				                    	
 				                    	UpdateDBFiles();
 				                    	
 				                    	finishedThreadsCount++;
@@ -262,9 +278,9 @@ namespace appCore.Settings
 				threads.Add(thread);
 				
 				thread = new Thread(() => {
-				                       	UpdateShiftsFile();
-				                       	
-				                       	finishedThreadsCount++;
+				                    	UpdateShiftsFile();
+				                    	
+				                    	finishedThreadsCount++;
 				                    });
 				thread.Name = "UpdateLocalDBFilesCopy_UpdateShiftsFile";
 				threads.Add(thread);
@@ -275,6 +291,7 @@ namespace appCore.Settings
 				}
 				
 				while(finishedThreadsCount < threads.Count) { }
+				ongoingLocalDbFilesUpdate = false;
 			}
 			catch (Exception e) {
 				int errorCode = (int)(e.HResult & 0x0000FFFF);
@@ -306,32 +323,42 @@ namespace appCore.Settings
 				int finishedThreadsCount = 0;
 				Thread thread;
 				thread = new Thread(() => {
-				                       	if(source_allsites.Exists) {
-				                       		if(Databases.all_sites != null) {
-				                       			if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime)
-				                       				source_allsites.CopyTo(Databases.all_sites.FullName, true);
-				                       		}
-				                       		else
-				                       			source_allsites.CopyTo(FullName + @"\all_sites.csv", true);
-				                       	}
-				                       	
-				                       	finishedThreadsCount++;
-				                       });
+				                    	if(source_allsites.Exists) {
+				                    		if(Databases.all_sites != null) {
+				                    			if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime) {
+				                    				MainForm.trayIcon.showBalloon("Updating file", "Local all_sites.csv updating...");
+				                    				source_allsites.CopyTo(Databases.all_sites.FullName, true);
+				                    			}
+				                    		}
+				                    		else {
+				                    			MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
+				                    			source_allsites.CopyTo(FullName + @"\all_sites.csv", true);
+				                    		}
+				                    		MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully ");
+				                    	}
+				                    	
+				                    	finishedThreadsCount++;
+				                    });
 				thread.Name = "UserFolder_UpdateDBFiles_allsites";
 				threads.Add(thread);
 				
 				thread = new Thread(() => {
-				                       	if(source_allcells.Exists) {
-				                       		if(Databases.all_cells != null) {
-				                       			if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime)
-				                       				source_allcells.CopyTo(Databases.all_cells.FullName, true);
-				                       		}
-				                       		else
-				                       			source_allcells.CopyTo(FullName + @"\all_cells.csv", true);
-				                       	}
-				                       	
-				                       	finishedThreadsCount++;
-				                       });
+				                    	if(source_allcells.Exists) {
+				                    		if(Databases.all_cells != null) {
+				                    			if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime) {
+				                    				MainForm.trayIcon.showBalloon("Updating file", "Local all_cells.csv updating...");
+				                    				source_allcells.CopyTo(Databases.all_cells.FullName, true);
+				                    			}
+				                    		}
+				                    		else {
+				                    			MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
+				                    			source_allcells.CopyTo(FullName + @"\all_cells.csv", true);
+				                    		}
+				                    		MainForm.trayIcon.showBalloon("Update complete", "Local all_cells.csv updated successfully on your UserFolder.");
+				                    	}
+				                    	
+				                    	finishedThreadsCount++;
+				                    });
 				thread.Name = "UserFolder_UpdateDBFiles_allcells";
 				threads.Add(thread);
 				
@@ -347,6 +374,11 @@ namespace appCore.Settings
 					Databases.UpdateSourceDBFiles(true);
 			}
 		}
+		
+//		public static void ResetAutoLocalUpdateTimer() {
+//			LocalDbAutoUpdateTimer.Stop();
+//			LocalDbAutoUpdateTimer.Start();
+//		}
 
 		public static FileInfo getDBFile(string pattern) {
 			if(!hasDBFile(pattern))

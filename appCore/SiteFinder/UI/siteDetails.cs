@@ -78,7 +78,7 @@ namespace appCore.SiteFinder.UI
 						checkBox2.Location = new Point(258, 230);
 						checkBox3.Location = new Point(296, 230);
 						dataGridView1.Location = new Point(5, 247);
-						dataGridView1.Size = new Size(556, 488);
+						dataGridView1.Size = new Size(555 + SystemInformation.VerticalScrollBarWidth, 488);
 						label12.Location = new Point(5, 227);
 						textBox1.ReadOnly = value.Contains("readonly");
 						bulkSiteSearchMenuItem.Enabled =
@@ -94,7 +94,7 @@ namespace appCore.SiteFinder.UI
 							checkBox6.Top =
 							checkBox7.Top = 355;
 						dataGridView1.Location = new Point(5, 372);
-						dataGridView1.Size = new Size(556, 274);
+						dataGridView1.Size = new Size(555 + SystemInformation.VerticalScrollBarWidth, 274);
 						label12.Location = new Point(5, 352);
 						bulkSiteSearchMenuItem.Enabled =
 							lockedCellsPageToolStripMenuItem.Enabled = value.Contains("readonly");
@@ -102,7 +102,7 @@ namespace appCore.SiteFinder.UI
 						break;
 					case "outage":
 						dataGridView1.Location = new Point(5, 372);
-						dataGridView1.Size = new Size(556, 274);
+						dataGridView1.Size = new Size(555 + SystemInformation.VerticalScrollBarWidth, 274);
 //						dataGridView1.CheckBoxes = true;
 						listView2.Visible = true;
 						listView2.Items.Clear();
@@ -244,6 +244,7 @@ namespace appCore.SiteFinder.UI
 			                           	}
 			                           	else
 			                           		textBox1.Select();
+//			                           	if(dataGridView1.Controls.OfType<VScrollBar>().First().Visible)
 			                           });
 			
 			LoadingPanel load = new LoadingPanel();
@@ -251,18 +252,6 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void initializeListviews() {
-//			listView1.View = View.Details;
-//			listView1.Columns.Add("Tech");
-//			listView1.Columns.Add("Cell Name");
-//			listView1.Columns.Add("Cell ID");
-//			listView1.Columns.Add("LAC TAC");
-//			listView1.Columns.Add("Switch");
-//			listView1.Columns.Add("OSS ID");
-//			listView1.Columns.Add("Vendor");
-//			listView1.Columns.Add("NOC");
-//			if(!siteDetails_UIMode.Contains("outage"))
-//				listView1.Columns.Add("Locked").TextAlign = HorizontalAlignment.Center;
-			
 			listView2.View = View.Details;
 			listView2.Columns.Add("Site");
 			listView2.Columns.Add("JVCO ID");
@@ -706,8 +695,8 @@ namespace appCore.SiteFinder.UI
 
 		void siteFinder(object sender, KeyPressEventArgs e)
 		{
-			TextBoxBase tb = (TextBoxBase)sender;
-			if(Convert.ToInt32(e.KeyChar) == 13 && !tb.ReadOnly) {
+			string site = ((TextBoxBase)sender).Text;
+			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
 				Action actionThreaded = new Action(delegate {
 				                                   	try {
 				                                   		myMap.Overlays.Remove(markersOverlay);
@@ -718,7 +707,7 @@ namespace appCore.SiteFinder.UI
 				                                   	catch (Exception) {
 				                                   	}
 				                                   	
-				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
+				                                   	currentSite = DB.SitesDB.getSite(site);
 				                                   	
 				                                   	if(currentSite.Exists) {
 				                                   		string dataToRequest = "INCCellsState";

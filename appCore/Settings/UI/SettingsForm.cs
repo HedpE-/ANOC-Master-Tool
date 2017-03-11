@@ -129,8 +129,7 @@ namespace appCore.Settings.UI
 		{
 			Action action = new Action(delegate
 			                           {
-			                           	Databases.LoadDBFiles(null, null);
-			                           	System.Threading.Thread.Sleep(10000);
+			                           	UserFolder.UpdateLocalDBFilesCopy();
 			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action, true, this);
 			LoadingPanel load = new LoadingPanel();

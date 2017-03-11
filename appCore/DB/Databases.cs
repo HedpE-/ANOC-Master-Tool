@@ -48,21 +48,37 @@ namespace appCore.DB
 		}
 		static readonly string currentAllCellsHeaders = "SITE,JVCO_ID,CELL_ID,LAC_TAC,BSC_RNC_ID,VENDOR,ENODEB_ID,TF_SITENO,CELL_NAME,BEARER,COOS,SO_EXCLUSION,WHITE_LIST,NTQ,NOC,WBTS_BCF,LOCKED,IP_2G_I,IP_2G_E,IP_3G_I,IP_3G_E,IP_4G_I,IP_4G_E,VENDOR_2G,VENDOR_3G,VENDOR_4G";
 		
-		public static ShiftsFile shiftsFile;
+		public static ShiftsFile shiftsFile;		
 		
-		static System.Timers.Timer AutoUpdateTimer = new System.Timers.Timer((60 * 60) * 2 * 1000); //2 hours in milliseconds
+		public static bool autoUpdateRemoteDbFiles = false;
+		public static bool ongoingRemoteDbFilesUpdate;
 		
-		public static void ResetAutoUpdateTimer() {
-			AutoUpdateTimer.Stop();
-			AutoUpdateTimer.Start();
-		}
+		static System.Timers.Timer RemoteDbAutoUpdateTimer = new System.Timers.Timer((60 * 60) * 2 * 1000); // 2 hours in milliseconds
 		
 		public static void Initialize() {
-//			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") && GlobalProperties.autoUpdateDbFiles)
-//				UpdateSourceDBFiles();
-			
 			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
 			_all_cells = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
+			
+			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") && autoUpdateRemoteDbFiles) {
+				RemoteDbAutoUpdateTimer.Elapsed += RemoteDbAutoUpdateTimer_Elapsed;
+				
+				Thread thread = new Thread(() => {
+				                           	RemoteDbAutoUpdateTimer_Elapsed(null, null);
+				                           });
+				thread.Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed";
+				thread.SetApartmentState(ApartmentState.STA);
+				thread.Start();				
+				
+				RemoteDbAutoUpdateTimer.Enabled = true;
+			}
+		}
+		
+		static void RemoteDbAutoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e) {
+			ongoingRemoteDbFilesUpdate = true;
+			UpdateSourceDBFiles();
+			ongoingRemoteDbFilesUpdate = false;
+			if(e != null)
+				UserFolder.UpdateLocalDBFilesCopy();
 		}
 		
 		public static void UpdateSourceDBFiles(bool onUserFolder = false) {
@@ -71,56 +87,60 @@ namespace appCore.DB
 			FileInfo source_allcells = onUserFolder ? new FileInfo(UserFolder.FullName + @"\all_cells.csv") :
 				new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv");
 			
+			string updLocation = onUserFolder ? "on your UserFolder." : "on the Remote folder.";
+			
 			List<Thread> threads = new List<Thread>();
 			int finishedThreadsCount = 0;
 			Thread thread;
 			thread = new Thread(() => {
 //			                       	string response = OiConnection.requestPhpOutput("allsites");
-			                       	string response = OiConnection.requestApiOutput("sites");
-			                       	if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
-			                       		if(response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
-			                       			MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
-			                       		if(GlobalProperties.shareAccess || onUserFolder) {
-			                       			if(source_allsites.Exists) {
-			                       				if(response != File.ReadAllText(source_allsites.FullName)) {
-			                       					MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
-			                       					File.WriteAllText(source_allsites.FullName, response);
-			                       				}
-			                       			}
-			                       			else {
-			                       				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
-			                       				File.WriteAllText(source_allsites.FullName, response);
-			                       			}
-			                       		}
-			                       	}
-			                       	
-			                       	finishedThreadsCount++;
-			                       });
+			                    	string response = OiConnection.requestApiOutput("sites");
+			                    	if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
+			                    		if(response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
+			                    			MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
+			                    		if(GlobalProperties.shareAccess || onUserFolder) {
+			                    			if(source_allsites.Exists) {
+			                    				if(response != File.ReadAllText(source_allsites.FullName)) {
+			                    					MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
+			                    					File.WriteAllText(source_allsites.FullName, response);
+			                    				}
+			                    			}
+			                    			else {
+			                    				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
+			                    				File.WriteAllText(source_allsites.FullName, response);
+			                    			}
+			                    			MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
+			                    		}
+			                    	}
+			                    	
+			                    	finishedThreadsCount++;
+			                    });
 			thread.Name = "UpdateSourceDBFiles_allsitesThread";
 			threads.Add(thread);
 			thread = new Thread(() => {
 //			                       	string response = OiConnection.requestPhpOutput("allcells");
-			                       	string response = OiConnection.requestApiOutput("cells");
-			                       	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
-			                       		if(response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
-			                       			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
-			                       		if(GlobalProperties.shareAccess || onUserFolder) {
-			                       			if(source_allcells.Exists) {
-			                       				if(response != File.ReadAllText(source_allcells.FullName)) {
-			                       					MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
-			                       					File.WriteAllText(source_allcells.FullName, response);
-			                       				}
-			                       			}
-			                       			else {
-			                       				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
-			                       				File.WriteAllText(source_allcells.FullName, response);
-			                       			}
-			                       		}
-			                       	}
-			                       	
-			                       	finishedThreadsCount++;
-			                       });
-			thread.Name = "UpdateSourceDBFiles_allsitesThread";
+			                    	string response = OiConnection.requestApiOutput("cells");
+			                    	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
+			                    		if(response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
+			                    			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
+			                    		if(GlobalProperties.shareAccess || onUserFolder) {
+			                    			if(source_allcells.Exists) {
+			                    				if(response != File.ReadAllText(source_allcells.FullName)) {
+			                    					MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
+			                    					File.WriteAllText(source_allcells.FullName, response);
+			                    				}
+			                    			}
+			                    			else {
+			                    				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
+			                    				File.WriteAllText(source_allcells.FullName, response);
+			                    			}
+			                    			MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully " + updLocation);
+			                    		}
+			                    	}
+			                    	
+			                    	finishedThreadsCount++;
+			                    });
+			thread.Name = "UpdateSourceDBFiles_allcellsThread";
 			threads.Add(thread);
 			
 			foreach(Thread th in threads) {
@@ -129,50 +149,22 @@ namespace appCore.DB
 			}
 			
 			while(finishedThreadsCount < threads.Count) { }
-			
-			AutoUpdateTimer.Elapsed += LoadDBFiles;
-			ResetAutoUpdateTimer();
-		}
-		
-		public static void LoadDBFiles(object source, ElapsedEventArgs e) {
-			if(e == null) {}
-			UserFolder.UpdateLocalDBFilesCopy();
 		}
 		
 		public static void PopulateDatabases() {
-			List<Thread> threads = new List<Thread>();
-			int finishedThreadsCount = 0;
-			Thread thread;
-			thread = new Thread(() => {
-			                       	all_sites = new FileInfo(all_sites.FullName);
-			                       	
-			                       	finishedThreadsCount++;
-			                       });
-			thread.Name = "PopulateDatabases_allsites";
-			threads.Add(thread);
+			all_sites = new FileInfo(all_sites.FullName);
+			all_cells = new FileInfo(all_cells.FullName);
+//			bool finishedThread = false;
+//			Thread thread = new Thread(() => {
+			shiftsFile = new ShiftsFile(DateTime.Now.Year);
+//
+//			                           	finishedThread = true;
+//			                           });
+//			thread.Name = "PopulateDatabases_shiftsFile";
+//			thread.SetApartmentState(ApartmentState.STA);
+//			thread.Start();
 			
-			thread = new Thread(() => {
-			                       	all_cells = new FileInfo(all_cells.FullName);
-			                       	
-			                       	finishedThreadsCount++;
-			                       });
-			thread.Name = "PopulateDatabases_allcells";
-			threads.Add(thread);
-			
-			thread = new Thread(() => {
-			                       	shiftsFile = new ShiftsFile(DateTime.Now.Year);
-			                       	
-			                       	finishedThreadsCount++;
-			                       });
-			thread.Name = "PopulateDatabases_shiftsFile";
-			threads.Add(thread);
-			
-			foreach(Thread th in threads) {
-				th.SetApartmentState(ApartmentState.STA);
-				th.Start();
-			}
-			
-			while(finishedThreadsCount < threads.Count) { }
+//			while(!finishedThread) { }
 		}
 	}
 }

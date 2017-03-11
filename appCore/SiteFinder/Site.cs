@@ -136,13 +136,21 @@ namespace appCore.SiteFinder
 		[FieldOrder(25)]
 		string SPECIAL_START;
 		public DateTime SpecialEvent_StartDate {
-			get { return Convert.ToDateTime(SPECIAL_START); }
+			get {
+				return string.IsNullOrEmpty(SPECIAL_START) ?
+					new DateTime(1, 1, 1, 0, 0, 0) :
+					Convert.ToDateTime(SPECIAL_START);
+			}
 			private set { SPECIAL_START = value.ToString(); }
 		}
 		[FieldOrder(26)]
 		string SPECIAL_END;
 		public DateTime SpecialEvent_EndDate {
-			get { return Convert.ToDateTime(SPECIAL_END); }
+			get {
+				return string.IsNullOrEmpty(SPECIAL_END) ?
+					new DateTime(1, 1, 1, 0, 0, 0) :
+					Convert.ToDateTime(SPECIAL_END);
+			}
 			private set { SPECIAL_END = value.ToString(); }
 		}
 		[FieldOrder(27)]
@@ -170,7 +178,11 @@ namespace appCore.SiteFinder
 		[FieldOrder(36)]
 		string dc_Timestamp;
 		public DateTime DC_Timestamp {
-			get { return Convert.ToDateTime(dc_Timestamp); }
+			get {
+				return string.IsNullOrEmpty(dc_Timestamp) ?
+					new DateTime(1, 1, 1, 0, 0, 0) :
+					Convert.ToDateTime(dc_Timestamp);
+			}
 			private set { dc_Timestamp = value.ToString(); }
 		}
 		[FieldOrder(37)]
@@ -178,7 +190,11 @@ namespace appCore.SiteFinder
 		[FieldOrder(38)]
 		public string cooling_Timestamp;
 		public DateTime Cooling_Timestamp {
-			get { return Convert.ToDateTime(cooling_Timestamp); }
+			get {
+				return string.IsNullOrEmpty(cooling_Timestamp) ?
+					new DateTime(1, 1, 1, 0, 0, 0) :
+					Convert.ToDateTime(cooling_Timestamp);
+			}
 			private set { cooling_Timestamp = value.ToString(); }
 		}
 		[FieldOrder(39)]
@@ -359,7 +375,35 @@ namespace appCore.SiteFinder
 		public DateTime CellsStateTimestamp;
 		
 		public int DbIndex {
-			get { return DB.SitesDB.GetSiteIndex(this); }
+			get { return DB.SitesDB.GetSiteIndex(Id); }
+		}
+		
+		[FieldHidden]
+		System.Timers.Timer UpdateTimer;
+		
+		[FieldHidden]
+		DateTime siteDataTimestamp;
+		public DateTime SiteDataTimestamp {
+			get {
+				return siteDataTimestamp;
+			}
+			set {
+				siteDataTimestamp = value;
+				if(Exists) {
+					UpdateTimer = new System.Timers.Timer(((siteDataTimestamp + new TimeSpan(2, 0, 0)) - DateTime.Now).TotalMilliseconds);
+					UpdateTimer.Elapsed += delegate {
+						Site newData = DB.SitesDB.getSite(Id, true);
+						OnTimerElapsed_UpdateSiteData(newData);
+						if(newData.Exists) {
+							siteDataTimestamp = DateTime.Now;
+							UpdateTimer.Interval = ((siteDataTimestamp + new TimeSpan(2, 0, 0)) - DateTime.Now).TotalMilliseconds;
+						}
+						else
+							DB.SitesDB.Remove(this);
+					};
+					UpdateTimer.Enabled = true;
+				}
+			}
 		}
 		
 		public Site() {
@@ -481,6 +525,13 @@ namespace appCore.SiteFinder
 					}
 					
 					while(finishedThreadsCount < threads.Count) { }
+					
+					if(Exists) {
+						if(DbIndex > -1)
+							DB.SitesDB.UpdateSiteData(this);
+						else
+							DB.SitesDB.Add(this);
+					}
 				}
 			}
 		}
@@ -597,16 +648,16 @@ namespace appCore.SiteFinder
 //			return dt;
 //		}
 		
-//		Availability FetchAvailability() {
-//			string response = OiConnection.requestApiOutput("availability", Id);
-//			try {
-//				Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
-//				AvailabilityTimestamp = DateTime.Now;
-//
-//				return jSon;
-//			}
-//			catch { return null; }
-//		}
+		Availability FetchAvailability() {
+			string response = OiConnection.requestApiOutput("availability", Id);
+			try {
+				Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
+				AvailabilityTimestamp = DateTime.Now;
+
+				return jSon;
+			}
+			catch { return null; }
+		}
 		
 		DataTable FetchAvailability(FileSystemInfo table_ca) {
 			DataTable dt = new DataTable();
@@ -793,18 +844,102 @@ namespace appCore.SiteFinder
 			try { county = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
 			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 		}
+
+		void OnTimerElapsed_UpdateSiteData(Site newData) {
+			SITE = newData.SITE;
+			JVCO_ID = newData.JVCO_ID;
+			GSM900 = newData.GSM900;
+			GSM1800 = newData.GSM1800;
+			UMTS900 = newData.UMTS900;
+			UMTS2100 = newData.UMTS2100;
+			LTE800 = newData.LTE800;
+			LTE2600 = newData.LTE2600;
+			LTE2100 = newData.LTE2100;
+			Easting = newData.Easting;
+			Northing = newData.Northing;
+			Host = newData.Host;
+			Priority = newData.Priority;
+			ADDRESS = newData.ADDRESS;
+			POWER_COMPANY = newData.POWER_COMPANY;
+			POWER_CONTACT = newData.POWER_CONTACT;
+			TellabsAtRisk = newData.TellabsAtRisk;
+			Area = newData.Area;
+			NSN_Status = newData.NSN_Status;
+			NOC2G = newData.NOC2G;
+			NOC3G = newData.NOC3G;
+			NOC4G = newData.NOC4G;
+			Region = newData.Region;
+			ClusterName = newData.ClusterName;
+			Special_Id = newData.Special_Id;
+			Special = newData.Special;
+			SPECIAL_START = newData.SPECIAL_START;
+			SPECIAL_END = newData.SPECIAL_END;
+			VIP = newData.VIP;
+			SharedOperator = newData.SharedOperator;
+			SharedOperatorSiteID = newData.SharedOperatorSiteID;
+			Site_Access = newData.Site_Access;
+			Site_Type = newData.Site_Type;
+			Site_Subtype = newData.Site_Subtype;
+			Paknet_Fitted = newData.Paknet_Fitted;
+			Vodapage_Fitted = newData.Vodapage_Fitted;
+			DC_STATUS = newData.DC_STATUS;
+			dc_Timestamp = newData.dc_Timestamp;
+			Cooling_Status = newData.Cooling_Status;
+			cooling_Timestamp = newData.cooling_Timestamp;
+			keyInformation = newData.keyInformation;
+			EF_HealthAndSafety = newData.EF_HealthAndSafety;
+			Switch2G = newData.Switch2G;
+			Switch3G = newData.Switch3G;
+			Switch4G = newData.Switch4G;
+			DRSwitch2G = newData.DRSwitch2G;
+			DRSwitch3G = newData.DRSwitch3G;
+			DRSwitch4G = newData.DRSwitch4G;
+			MTX2G = newData.MTX2G;
+			MTX3G = newData.MTX3G;
+			MTX4G = newData.MTX4G;
+			IP_2G_I = newData.IP_2G_I;
+			IP_2G_E = newData.IP_2G_E;
+			IP_3G_I = newData.IP_3G_I;
+			IP_3G_E = newData.IP_3G_E;
+			IP_4G_I = newData.IP_4G_I;
+			IP_4G_E = newData.IP_4G_E;
+			VENDOR_2G = newData.VENDOR_2G;
+			VENDOR_3G = newData.VENDOR_3G;
+			VENDOR_4G = newData.VENDOR_4G;
+			MTX_Related = newData.MTX_Related;
+			
+			Cells = newData.Cells;
+			
+			Coordinates = coordConvert.toLat_Long(new CoordPoint { Easting = Easting, Northing = Northing }, "OSGB36");
+			MapMarker = new GMarkerGoogle(new PointLatLng(Coordinates.Latitude, Coordinates.Longitude), GMarkerGoogleType.red);
+			MapMarker.Tag = Id;
+			MapMarker.ToolTip = new GMapBaloonToolTip(MapMarker);
+			MapMarker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+			MapMarker.ToolTip.Fill = new SolidBrush(Color.FromArgb(180, Color.Black));
+			MapMarker.ToolTip.Font = new Font("Courier New", 9, FontStyle.Bold);
+			MapMarker.ToolTip.Foreground = new SolidBrush(Color.White);
+			MapMarker.ToolTip.Stroke = new Pen(Color.Red);
+			MapMarker.ToolTip.Offset.X -= 15;
+			MapMarker.ToolTipText = Id;
+		}
 		
-		~Site() { // destructor
+
+		public void Dispose()
+		{
 			if(Exists) {
 				if(Cells.Count == 0)
 					populateCells();
 				if(Cells.Count > 0) {
 					if(DbIndex > -1)
-						DB.SitesDB.UpdateSiteOnCache(this);
+						DB.SitesDB.UpdateSiteData(this);
 					else
-						DB.SitesDB.AddToDB(this);
+						DB.SitesDB.Add(this);
 				}
 			}
+		}
+		
+		~Site() { // destructor
+			Dispose();
 		}
 	}
 }

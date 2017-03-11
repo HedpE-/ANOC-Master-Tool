@@ -69,7 +69,7 @@ namespace appCore.Templates
 			TicketCount
 		};
 		
-		public enum UIenum {
+		public enum UiEnum {
 			Template,
 			Log
 		}

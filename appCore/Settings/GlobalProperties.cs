@@ -29,8 +29,6 @@ namespace appCore.Settings
 		
 		public static string OfficePath = string.Empty;
 		
-		public static bool autoUpdateDbFiles = false;
-		
 		static FileVersionInfo _assemblyFileVersionInfo;
 		public static FileVersionInfo AssemblyFileVersionInfo {
 			get {

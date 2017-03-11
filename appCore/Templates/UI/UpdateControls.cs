@@ -82,12 +82,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		Template.UIenum _uiMode;
-		Template.UIenum UiMode {
+		Template.UiEnum _uiMode;
+		Template.UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UIenum.Log) {
+				if(value == Template.UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
@@ -125,12 +125,12 @@ namespace appCore.Templates.UI
 		
 		public UpdateControls()
 		{
-			UiMode = Template.UIenum.Template;
+			UiMode = Template.UiEnum.Template;
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false);
 		}
 		
-		public UpdateControls(Update template, Template.UIenum uimode = Template.UIenum.Log)
+		public UpdateControls(Update template, Template.UiEnum uimode = Template.UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
@@ -138,7 +138,7 @@ namespace appCore.Templates.UI
 //				siteFinder_Toggle(false, false);
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
-			if(UiMode == Template.UIenum.Template)
+			if(UiMode == Template.UiEnum.Template)
 				SiteIdTextBoxKeyPress(SiteIdTextBox,new KeyPressEventArgs((char)Keys.Enter));
 			INCTextBox.Text = currentTemplate.INC;
 			UpdateTextBox.Text = currentTemplate.update;
@@ -317,7 +317,7 @@ namespace appCore.Templates.UI
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UiEnum.Template) {
 				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
 				if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
 				else {
@@ -375,7 +375,7 @@ namespace appCore.Templates.UI
 			
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UiEnum.Template) {
 				// Store this template for future warning on no changes
 				
 				prevTemp = currentTemplate;

@@ -516,6 +516,17 @@ namespace appCore.SiteFinder.UI
 							MainMenu.Width = Width;
 							offAirLabel.Left = dataGridView1.Left + ((dataGridView1.Width - offAirLabel.Width) / 2);
 						};
+						FormClosing += delegate {
+							if(cellsLockedSites != null) {
+								if(currentSite != null) {
+									int siteIndex = cellsLockedSites.FindIndex(s => s.Id == currentSite.Id);
+									if(siteIndex > -1)
+										cellsLockedSites[siteIndex] = currentSite;
+								}
+								foreach(Site site in cellsLockedSites)
+									site.Dispose();
+							}
+						};
 						
 						break;
 				}

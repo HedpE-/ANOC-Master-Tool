@@ -73,12 +73,12 @@ namespace appCore.Templates.UI
 //			}
 //		}
 		
-		Template.UIenum _uiMode;
-		Template.UIenum UiMode {
+		Template.UiEnum _uiMode;
+		Template.UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UIenum.Log) {
+				if(value == Template.UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SitesTextBox.ReadOnly = true;
@@ -106,10 +106,10 @@ namespace appCore.Templates.UI
 		
 		public TXControls()
 		{
-			UiMode = Template.UIenum.Template;
+			UiMode = Template.UiEnum.Template;
 		}
 		
-		public TXControls(TX template, Template.UIenum uimode = Template.UIenum.Log)
+		public TXControls(TX template, Template.UiEnum uimode = Template.UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
@@ -126,7 +126,7 @@ namespace appCore.Templates.UI
 		void GenerateTemplate(object sender, EventArgs e)
 		{
 //			Action action = new Action(delegate {
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UiEnum.Template) {
 				string errmsg = string.Empty;
 				if (string.IsNullOrEmpty(SitesTextBox.Text)) {
 					errmsg = "         - Site(s) reference(s) missing\n";
@@ -173,7 +173,7 @@ namespace appCore.Templates.UI
 			
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UiEnum.Template) {
 				// Store this template for future warning on no changes
 				
 				prevTemp = currentTemplate;

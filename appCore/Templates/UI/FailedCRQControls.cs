@@ -104,12 +104,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		Template.UIenum _uiMode;
-		Template.UIenum UiMode {
+		Template.UiEnum _uiMode;
+		Template.UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UIenum.Log) {
+				if(value == Template.UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
@@ -166,12 +166,12 @@ namespace appCore.Templates.UI
 		
 		public FailedCRQControls()
 		{
-			UiMode = Template.UIenum.Template;
+			UiMode = Template.UiEnum.Template;
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false);
 		}
 		
-		public FailedCRQControls(FailedCRQ template, Template.UIenum uimode = Template.UIenum.Log)
+		public FailedCRQControls(FailedCRQ template, Template.UiEnum uimode = Template.UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
@@ -195,7 +195,7 @@ namespace appCore.Templates.UI
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UiEnum.Template) {
 				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
 				if (CompINC_CRQ != "error")
 					INCTextBox.Text = CompINC_CRQ;
@@ -311,7 +311,7 @@ namespace appCore.Templates.UI
 			
 			Toolbox.Tools.CreateMailItem("A-NOC-UK1stLineRANSL@internal.vodafone.com", string.Empty, currentTemplate.EmailSubject, currentTemplate.EmailBody, true);
 			
-			if(UiMode == Template.UIenum.Template) {
+			if(UiMode == Template.UiEnum.Template) {
 				prevTemp = currentTemplate;
 				
 				MainForm.logFiles.HandleLog(currentTemplate);

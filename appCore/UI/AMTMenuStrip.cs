@@ -30,7 +30,7 @@ namespace appCore.UI
 		public ToolStripMenuItem ActiveAlarmsButton = new ToolStripMenuItem();
 		public ToolStripMenuItem AvailabilityButton = new ToolStripMenuItem();
 		
-		ToolStripMenuItem RefreshButton = new ToolStripMenuItem();
+		public ToolStripMenuItem RefreshButton = new ToolStripMenuItem();
 		
 		bool AvailabilityButtonEnabled;
 		
@@ -281,7 +281,6 @@ namespace appCore.UI
 //			MainMenu.Font = new Font("Arial Unicode MS", 9F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowImageMargin = false;
 			((ToolStripDropDownMenu) MainMenu.DropDown).ShowCheckMargin = false;
-			MainMenu.Size = new Size((int)(Width / 0.05), Height);
 			// 
 			// Refresh
 			// 
@@ -289,7 +288,6 @@ namespace appCore.UI
 			RefreshButton.Font = new Font("Arial Unicode MS", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 			RefreshButton.TextAlign = ContentAlignment.TopCenter;
 			RefreshButton.AutoSize = false;
-			RefreshButton.Size = new Size((int)(Width * 0.05), Height);
 			// 
 			// AvailabilityButton
 			// 
@@ -335,14 +333,17 @@ namespace appCore.UI
 		}
 		
 		void DynamicButtonsSizes() {
-			double widthPercentage = AvailabilityButtonEnabled ? 0.18 : 0.225;
+//			double widthPercentage = AvailabilityButtonEnabled ? 0.18 : 0.225;
+			double widthPercentage = AvailabilityButtonEnabled ? 0.179 : 0.224;
 			
+			RefreshButton.Size = new Size((int)(Width * 0.05), Height);
 			if(AvailabilityButtonEnabled)
 				AvailabilityButton.Size = new Size((int)(Width * widthPercentage), Height);
 			ActiveAlarmsButton.Size = new Size((int)(Width * widthPercentage), Height);
 			BookInsButton.Size = new Size((int)(Width * widthPercentage), Height);
 			CRQsButton.Size = new Size((int)(Width * widthPercentage), Height);
 			INCsButton.Size = new Size((int)(Width * widthPercentage), Height);
+			MainMenu.Size = new Size((int)(Width / 0.05), Height);
 		}
 	}
 }
