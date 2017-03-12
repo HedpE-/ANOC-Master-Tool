@@ -426,7 +426,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails(this);
+			SiteDetailsUI = new siteDetails(currentSite);
 			SiteDetailsUI.Show();
 		}
 
