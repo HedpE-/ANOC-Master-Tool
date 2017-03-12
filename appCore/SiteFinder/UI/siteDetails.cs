@@ -43,7 +43,10 @@ namespace appCore.SiteFinder.UI
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
 		
-		Control parentControl;
+		public Control parentControl {
+			get;
+			private set;
+		}
 		
 		string _siteDetails_UIMode = "single/readonly";
 		/// <summary>
@@ -124,21 +127,25 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		public siteDetails(Control parent)
+		public siteDetails(Site site, Control parent = null)
 		{
+			currentSite = site;
+			
 			parentControl = parent;
-			switch(parent.GetType().ToString()) {
-				case "appCore.Templates.UI.TroubleshootControls":
-					currentSite = ((TroubleshootControls)parentControl).currentSite;
-					break;
-				case "appCore.Templates.UI.FailedCRQControls":
-					currentSite = ((FailedCRQControls)parentControl).currentSite;
-					break;
-				case "appCore.Templates.UI.UpdateControls":
-					currentSite = ((UpdateControls)parentControl).currentSite;
-					break;
-			}
+//			parentControl = parent;
+//			switch(parent.GetType().ToString()) {
+//				case "appCore.Templates.UI.TroubleshootControls":
+//					currentSite = ((TroubleshootControls)parentControl).currentSite;
+//					break;
+//				case "appCore.Templates.UI.FailedCRQControls":
+//					currentSite = ((FailedCRQControls)parentControl).currentSite;
+//					break;
+//				case "appCore.Templates.UI.UpdateControls":
+//					currentSite = ((UpdateControls)parentControl).currentSite;
+//					break;
+//			}
 			InitializeComponent();
+			this.Text = "Site " + site.Id + " Details";
 			myMap = drawGMap("myMap",false);
 			Controls.Add(myMap);
 			Shown += populateSingleForm;
@@ -149,6 +156,7 @@ namespace appCore.SiteFinder.UI
 			InitializeComponent();
 			
 			parentControl = parent;
+			this.Text = "Outage Follow Up";
 			
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
@@ -201,6 +209,7 @@ namespace appCore.SiteFinder.UI
 		public siteDetails()
 		{
 			InitializeComponent();
+			this.Text = "Site Finder";
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
 			siteDetails_UIMode = "single";
@@ -994,28 +1003,28 @@ namespace appCore.SiteFinder.UI
 			sitesPerTechToolStripMenuItem.Text = "Show Sites Per Tech...";
 			sitesPerTechToolStripMenuItem.Click += ShowSitesPerTech;
 		}
-
-		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
-		{
-			if(parentControl != null) {
-				switch(parentControl.GetType().ToString()) {
-					case "appCore.Templates.UI.TroubleshootControls":
-						TroubleshootControls parent = parentControl as TroubleshootControls;
-						parent.currentSite = currentSite;
-						parent.MainMenu.siteFinder_Toggle(true);
-						break;
-					case "appCore.Templates.UI.FailedCRQControls":
-						FailedCRQControls par = parentControl as FailedCRQControls;
-						par.currentSite = currentSite;
-						par.MainMenu.siteFinder_Toggle(true);
-						break;
-					case "appCore.Templates.UI.UpdateControls":
-						UpdateControls parnt = parentControl as UpdateControls;
-						parnt.currentSite = currentSite;
-						parnt.MainMenu.siteFinder_Toggle(true);
-						break;
-				}
-			}
-		}
+//
+//		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
+//		{
+//			if(parentControl != null) {
+//				switch(parentControl.GetType().ToString()) {
+//					case "appCore.Templates.UI.TroubleshootControls":
+//						TroubleshootControls parent = parentControl as TroubleshootControls;
+//						parent.currentSite = currentSite;
+//						parent.MainMenu.siteFinder_Toggle(true);
+//						break;
+//					case "appCore.Templates.UI.FailedCRQControls":
+//						FailedCRQControls par = parentControl as FailedCRQControls;
+//						par.currentSite = currentSite;
+//						par.MainMenu.siteFinder_Toggle(true);
+//						break;
+//					case "appCore.Templates.UI.UpdateControls":
+//						UpdateControls parnt = parentControl as UpdateControls;
+//						parnt.currentSite = currentSite;
+//						parnt.MainMenu.siteFinder_Toggle(true);
+//						break;
+//				}
+//			}
+//		}
 	}
 }

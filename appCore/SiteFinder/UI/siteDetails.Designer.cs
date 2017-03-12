@@ -618,7 +618,6 @@ namespace appCore.SiteFinder.UI
 			this.MaximizeBox = false;
 			this.Name = "siteDetails";
 			this.Text = "Site Details";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SiteDetailsFormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
