@@ -514,7 +514,7 @@ namespace appCore.Templates.UI
 				SiteDetailsUI.Close();
 				SiteDetailsUI.Dispose();
 			}
-			SiteDetailsUI = new siteDetails(this);
+			SiteDetailsUI = new siteDetails(currentSite);
 			SiteDetailsUI.Show();
 		}
 
@@ -792,7 +792,10 @@ namespace appCore.Templates.UI
 			                                      			if(relatedCasesForm.selectedCases.Count > 0) {
 			                                      				int c = 0;
 			                                      				foreach(DataGridViewRow row in relatedCasesForm.selectedCases) {
-			                                      					relatedCases += row.Cells[2].Value + " - " + row.Cells[3].Value + " - " + row.Cells[4].Value;
+			                                      					relatedCases += row.Cells["Reference"].Value + " - " + row.Cells["Summary"].Value;
+			                                      					if(row.Cells[1].Value.ToString() == "INC")
+			                                      						relatedCases += " - " + row.Cells["Resolution"].Value;
+			                                      					relatedCases += " - " + row.Cells["Status"].Value;
 			                                      					if(++c < relatedCasesForm.selectedCases.Count)
 			                                      						relatedCases += Environment.NewLine;
 			                                      				}
@@ -946,11 +949,12 @@ namespace appCore.Templates.UI
 				tempDT.Columns.Add("Summary");
 				tempDT.Columns.Add("Status");
 				tempDT.Columns.Add("Start Date", typeof(DateTime));
+				tempDT.Columns.Add("Resolution");
 				tempDT.Columns.Add("End Date", typeof(DateTime));
 				
 				if(filteredINCs != null) {
 					foreach (Incident inc in filteredINCs)
-						tempDT.Rows.Add("INC", inc.Incident_Ref, inc.Summary, inc.Status, inc.Submit_Date, inc.Resolved_Date);
+						tempDT.Rows.Add("INC", inc.Incident_Ref, inc.Summary, inc.Status, inc.Submit_Date, inc.Resolution, inc.Resolved_Date);
 					DataView dv = tempDT.DefaultView;
 					dv.Sort = "Start Date desc";
 					currentCases = dv.ToTable();
@@ -959,7 +963,7 @@ namespace appCore.Templates.UI
 				if(filteredCRQs != null) {
 					tempDT.Rows.Clear();
 					foreach(Change crq in filteredCRQs)
-						tempDT.Rows.Add("CRQ", crq.Change_Ref, crq.Summary, crq.Status, crq.Scheduled_Start, crq.Scheduled_End);
+						tempDT.Rows.Add("CRQ", crq.Change_Ref, crq.Summary, crq.Status, crq.Scheduled_Start, string.Empty, crq.Scheduled_End);
 					DataView dv = tempDT.DefaultView;
 					dv.Sort = "Start Date desc";
 					if(currentCases.Columns.Count > 0) {
