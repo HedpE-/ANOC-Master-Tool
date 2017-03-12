@@ -627,12 +627,14 @@ namespace appCore
 			load.Show(action, this);
 			if(ans == DialogResult.Yes) {
 				UserFolder.ClearTempFolder();
-				FormCollection fc = Application.OpenForms;
-				foreach (Form frm in fc)
-				{
-					if(frm.Name == "BrowserView") {
-						frm.Invoke(new MethodInvoker(frm.Close));
-						break;
+				
+				var fc = Application.OpenForms;
+				if(fc.Count > 0) {
+					for(int c = 0;c < fc.Count;c++) {
+						if(fc[c] != this) {
+							fc[c].Invoke(new MethodInvoker(fc[c].Close));
+							fc[c--].Dispose();
+						}
 					}
 				}
 			}
@@ -642,16 +644,14 @@ namespace appCore
 
 		void MainFormActivate(object sender, EventArgs e)
 		{
-			FormCollection fc = Application.OpenForms;
+			var form = Application.OpenForms.OfType<MainForm>().First();
 			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "MainForm") {
-					frm.Activate();
-					frm.WindowState = FormWindowState.Normal;
-					break;
-				}
-			}
+//			foreach (Form frm in fc)
+//			{
+				form.Activate();
+				form.WindowState = FormWindowState.Normal;
+//				break;
+//			}
 		}
 		
 		public static void openSettings(Control callerControl, bool fromTrayIcon = false) {
@@ -674,16 +674,16 @@ namespace appCore
 		}
 		
 		public static void openAMTBrowser() {
-			FormCollection fc = Application.OpenForms;
+			var fc = Application.OpenForms.OfType<AMTBrowser>().First();
 			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "BrowserView") {
-					if(frm.WindowState == FormWindowState.Minimized) frm.Invoke(new Action(() => { frm.WindowState = FormWindowState.Normal; }));;
-					frm.Invoke(new MethodInvoker(frm.Activate));
-					return;
-				}
-			}
+//			foreach (AMTBrowser frm in fc)
+//			{
+//				if (frm.Name == "BrowserView") {
+					if(fc.WindowState == FormWindowState.Minimized) fc.Invoke(new Action(() => { fc.WindowState = FormWindowState.Normal; }));;
+					fc.Invoke(new MethodInvoker(fc.Activate));
+//					return;
+//				}
+//			}
 			
 			Thread thread = new Thread(() => {
 			                           	Web.UI.BrowserView brwsr = new Web.UI.BrowserView();
