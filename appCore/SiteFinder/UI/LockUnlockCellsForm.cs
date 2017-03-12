@@ -280,7 +280,7 @@ namespace appCore.SiteFinder.UI
 							currentSite.requestOIData("LKULK");
 						break;
 					case "Cells Locked":
-						Text = "Locked Cells";
+						Text = "Cells Locked";
 						Name = uiMode;
 						
 						MainMenu = new AMTMenuStrip();
@@ -340,6 +340,22 @@ namespace appCore.SiteFinder.UI
 						sitesListBox.DrawMode = DrawMode.OwnerDrawFixed;
 						sitesListBox.DrawItem += ListBoxDrawItem;
 						sitesListBox.SelectedIndexChanged += ListBoxSelectedIndexChanged;
+						sitesListBox.MouseDoubleClick += (sender, e) => {
+							if(e.Button == MouseButtons.Left) {
+								int index = cellsLockedSites.FindIndex(s => s.Id == sitesListBox.Text);
+								if(index > -1) {
+									List<siteDetails> openForms = Application.OpenForms.OfType<siteDetails>().Where(f => f.Text.EndsWith("Details") && f.parentControl == (Control)this).ToList();
+									if(openForms.Any()) {
+										for(int c = 0;c < openForms.Count();c++) {
+											openForms[c].Close();
+											openForms[c--].Dispose();
+										}
+									}
+									var SiteDetailsUI = new siteDetails(cellsLockedSites[index], this);
+									SiteDetailsUI.Show();
+								}
+							}
+						};
 						
 						dataGridView1.Width -= sitesListBox.Width + 5;
 						dataGridView1.Location = new Point(sitesListBox.Right + 5, dataGridView1.Top);
@@ -861,14 +877,20 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListBoxSelectedIndexChanged(object sender, EventArgs e) {
+			ListBox lb = sender as ListBox;
+			if(currentSite != null) {
+				if(currentSite.Id == lb.Text)
+					return;
+			}
+			
 			Action actionNonThreaded = new Action(delegate {
 			                                      	if(currentSite != null) {
+			                                      		if(currentSite.Id == lb.Text)
+			                                      			return;
 			                                      		int siteIndex = cellsLockedSites.FindIndex(s => s.Id == currentSite.Id);
 			                                      		if(siteIndex > -1)
 			                                      			cellsLockedSites[siteIndex] = currentSite;
 			                                      	}
-			                                      	
-			                                      	ListBox lb = sender as ListBox;
 			                                      	
 			                                      	dataGridView1.DataSource = null;
 			                                      	dataGridView1.Columns.Clear();
