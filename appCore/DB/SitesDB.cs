@@ -107,7 +107,7 @@ namespace appCore.DB
 			if(Sites.Count > 0) {
 				try {
 					var engine = new FileHelperEngine<Site>();
-					engine.BeforeReadRecord +=  (eng, e) => {
+					engine.BeforeReadRecord += (eng, e) => {
 						if(!Sites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
 							e.SkipThisRecord = true;
 					};
