@@ -678,17 +678,15 @@ namespace appCore.Templates.UI
 
 		void GenerateTaskNotes(object sender, EventArgs e)
 		{
-			FormCollection fc = Application.OpenForms;
+			var fc = Application.OpenForms.OfType<TasksForm>().ToList();
 			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "TasksForm") {
-					frm.Activate();
-					DialogResult ans = FlexibleMessageBox.Show("Task Notes Generator is already open, in order to open the requested Task Notes Generator, the previous must be closed.\n\nDo you want to close?","Task Notes Generator",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-					if (ans == DialogResult.Yes) frm.Close();
-					else return;
-					break;
-				}
+			if(fc.Count > 0) {
+				fc[0].Activate();
+				DialogResult ans = FlexibleMessageBox.Show("Task Notes Generator is already open, in order to open the requested Task Notes Generator, the previous must be closed.\n\nDo you want to close?","Task Notes Generator",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+				if (ans == DialogResult.Yes)
+					fc[0].Close();
+				else
+					return;
 			}
 			
 			string errmsg = "";
@@ -1007,13 +1005,18 @@ namespace appCore.Templates.UI
 		}
 		
 		void LoadDisplayOiDataTable(object sender, EventArgs e) {
-			ToolStripMenuItem tsim = sender as ToolStripMenuItem;
 //			if(e.Button == MouseButtons.Left) {
+			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
+			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
+			if(fc.Count > 0) {
+				fc[0].Close();
+				fc[0].Dispose();
+			}
+			
 			if(currentSite.Exists) {
 				DataTable dt = new DataTable();
-				string dataToShow = string.Empty;
-				switch (tsim.Name) {
-					case "INCsButton":
+				switch(dataToShow) {
+					case "INCs":
 						if(currentSite.Incidents == null) {
 							currentSite.requestOIData("INC");
 							if(currentSite.Incidents != null) {
@@ -1029,9 +1032,8 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "INCs";
 						break;
-					case "CRQsButton":
+					case "CRQs":
 						if(currentSite.Changes == null) {
 							currentSite.requestOIData("CRQ");
 							if(currentSite.Changes != null) {
@@ -1047,9 +1049,8 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "CRQs";
 						break;
-					case "BookInsButton":
+					case "BookIns":
 						if(currentSite.Visits == null) {
 							currentSite.requestOIData("Bookins");
 							if(currentSite.Visits != null) {
@@ -1065,9 +1066,8 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "BookIns";
 						break;
-					case "ActiveAlarmsButton":
+					case "ActiveAlarms":
 						if(currentSite.Alarms == null) {
 							currentSite.requestOIData("Alarms");
 							if(currentSite.Alarms == null) {
@@ -1083,7 +1083,6 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "ActiveAlarms";
 						break;
 				}
 				

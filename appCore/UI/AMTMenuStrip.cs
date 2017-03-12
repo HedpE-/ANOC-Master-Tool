@@ -245,16 +245,16 @@ namespace appCore.UI
 				}
 			}
 			
-			var fc = Application.OpenForms.OfType<OiSiteTablesForm>();
-			List<OiSiteTablesForm> openForms = new List<OiSiteTablesForm>();
+			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == this.Parent).ToList();
+//			List<OiSiteTablesForm> openForms = new List<OiSiteTablesForm>();
+//			
+//			foreach(OiSiteTablesForm frm in fc) {
+//				if(frm.OwnerControl == this.Parent)
+//					openForms.Add(frm);
+//			}
 			
-			foreach(OiSiteTablesForm frm in fc) {
-				if(frm.OwnerControl == this.Parent)
-					openForms.Add(frm);
-			}
-			
-			for(int c = 0;c < openForms.Count;c++)
-				openForms[c].Close();
+			for(int c = fc.Count - 1;c >= 0;c--)
+				fc[c].Close();
 		}
 		
 		protected override void OnSizeChanged(EventArgs e) {

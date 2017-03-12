@@ -7,14 +7,15 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.IO;
-using System.Windows.Forms;
 using System.Collections;
 using System.Globalization;
-using appCore.UI;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using appCore.Settings;
 using appCore.Templates;
 using appCore.Templates.Types;
+using appCore.UI;
 
 namespace appCore.Logs.UI
 {
@@ -50,7 +51,7 @@ namespace appCore.Logs.UI
 			if (listBox1.SelectedIndex != -1) {
 				string month = string.Empty;
 				ArrayList monthsList = new ArrayList();
-				CultureInfo culture = new CultureInfo("pt-PT");				
+				CultureInfo culture = new CultureInfo("pt-PT");
 				
 				switch(chkrb) {
 					case "Templates": // get available months list for templates
@@ -112,45 +113,45 @@ namespace appCore.Logs.UI
 		void ListBox3DoubleClick(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                                   	if (listBox3.SelectedIndex != -1) {
-			                                   		string separator = string.Empty;
-			                                   		for (int c = 1; c < 301; c++) {
-			                                   			if (c == 151) separator += "\r\n";
-			                                   			separator += "*";
-			                                   		}
-			                                   		string LogFile = UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
-			                                   		string[] strTofind = { "\r\n" };
-			                                   		string[] Logs;
-			                                   		
-			                                   		if (chkrb == "Templates") {
-			                                   			LogFile += listBox3.Text + ".txt";
-			                                   			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                                   			if (Logs[0].Contains(" - ")) {
-			                                   				LogsCollection<Template> logs = new LogsCollection<Template>();
-			                                   				logs = logs.ImportLogFile(new FileInfo(LogFile));
-			                                   				LogEditor LogEdit = new LogEditor(logs, myFormControl1);
-			                                   				LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                                   				LogEdit.ShowDialog(this);
-			                                   			}
-			                                   			else {
-			                                   				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-			                                   				if(ans == DialogResult.No)
-			                                   					return;
-			                                   				System.Diagnostics.Process.Start("notepad.exe", LogFile);
-			                                   			}
-			                                   		}
-			                                   		else {
-			                                   			LogFile += "outages\\" + listBox3.Text + ".txt";
-			                                   			
-			                                   			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                                   			LogsCollection<Outage> logs = new LogsCollection<Outage>();
-			                                   			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
-			                                   			LogEditor LogEdit = new LogEditor(logs, myFormControl1);
-			                                   			LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                                   			LogEdit.ShowDialog();
-			                                   		}
-			                                   	}
-			                                   });
+			                           	if (listBox3.SelectedIndex != -1) {
+			                           		string separator = string.Empty;
+			                           		for (int c = 1; c < 301; c++) {
+			                           			if (c == 151) separator += "\r\n";
+			                           			separator += "*";
+			                           		}
+			                           		string LogFile = UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
+			                           		string[] strTofind = { "\r\n" };
+			                           		string[] Logs;
+			                           		
+			                           		if (chkrb == "Templates") {
+			                           			LogFile += listBox3.Text + ".txt";
+			                           			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			                           			if (Logs[0].Contains(" - ")) {
+			                           				LogsCollection<Template> logs = new LogsCollection<Template>();
+			                           				logs = logs.ImportLogFile(new FileInfo(LogFile));
+			                           				LogEditor LogEdit = new LogEditor(logs, myFormControl1);
+			                           				LogEdit.StartPosition = FormStartPosition.CenterParent;
+			                           				LogEdit.ShowDialog(this);
+			                           			}
+			                           			else {
+			                           				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+			                           				if(ans == DialogResult.No)
+			                           					return;
+			                           				System.Diagnostics.Process.Start("notepad.exe", LogFile);
+			                           			}
+			                           		}
+			                           		else {
+			                           			LogFile += "outages\\" + listBox3.Text + ".txt";
+			                           			
+			                           			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			                           			LogsCollection<Outage> logs = new LogsCollection<Outage>();
+			                           			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
+			                           			LogEditor LogEdit = new LogEditor(logs, myFormControl1);
+			                           			LogEdit.StartPosition = FormStartPosition.CenterParent;
+			                           			LogEdit.ShowDialog();
+			                           		}
+			                           	}
+			                           });
 //			Toolbox.Tools.darkenBackgroundForm(actionThreaded, false, this);
 			LoadingPanel load = new LoadingPanel();
 			load.Show(action, this);
@@ -166,15 +167,13 @@ namespace appCore.Logs.UI
 		
 		void LogBrowserActivated(object sender, EventArgs e)
 		{
-			FormCollection fc = Application.OpenForms;
-			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "LogEditor") {
-					frm.Activate();
-					return;
-				}
-			}
+//			var fc = Application.OpenForms.OfType<LogEditor>().ToList();
+//			
+//			if(fc.Count > 0) {
+//				if(fc[0].WindowState == FormWindowState.Minimized)
+//					fc[0].WindowState = FormWindowState.Normal;
+//				fc[0].Activate();
+//			}
 		}
 		
 		void RadioButtonsCheckedChanged(object sender, EventArgs e) {

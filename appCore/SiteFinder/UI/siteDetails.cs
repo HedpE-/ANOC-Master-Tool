@@ -145,7 +145,8 @@ namespace appCore.SiteFinder.UI
 //					break;
 //			}
 			InitializeComponent();
-			this.Text = "Site " + site.Id + " Details";
+			this.Name =
+				this.Text = "Site " + site.Id + " Details";
 			myMap = drawGMap("myMap",false);
 			Controls.Add(myMap);
 			Shown += populateSingleForm;
@@ -156,7 +157,9 @@ namespace appCore.SiteFinder.UI
 			InitializeComponent();
 			
 			parentControl = parent;
-			this.Text = "Outage Follow Up";
+			
+			this.Name =
+				this.Text = "Outage Follow-up";
 			
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
@@ -209,7 +212,8 @@ namespace appCore.SiteFinder.UI
 		public siteDetails()
 		{
 			InitializeComponent();
-			this.Text = "Site Finder";
+			this.Name =
+				this.Text = "Site Finder";
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
 			siteDetails_UIMode = "single";
@@ -246,11 +250,8 @@ namespace appCore.SiteFinder.UI
 			// TODO: Show cells for selected sites
 			Action action = new Action(delegate {
 			                           	initializeListviews();
-			                           	if(siteDetails_UIMode.Contains("outage")) {
-			                           		this.Name = "Outage Follow-up";
-			                           		this.Text = this.Name;
+			                           	if(siteDetails_UIMode.Contains("outage"))
 			                           		siteFinder(sites);
-			                           	}
 			                           	else
 			                           		textBox1.Select();
 //			                           	if(dataGridView1.Controls.OfType<VScrollBar>().First().Visible)
@@ -817,13 +818,18 @@ namespace appCore.SiteFinder.UI
 		}
 
 		void LoadDisplayOiDataTable(object sender, EventArgs e) {
-			ToolStripMenuItem tsim = sender as ToolStripMenuItem;
 //			if(e.Button == MouseButtons.Left) {
+			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
+			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
+			if(fc.Count > 0) {
+				fc[0].Close();
+				fc[0].Dispose();
+			}
+			
 			if(currentSite.Exists) {
 				DataTable dt = new DataTable();
-				string dataToShow = string.Empty;
-				switch (tsim.Name) {
-					case "INCsButton":
+				switch(dataToShow) {
+					case "INCs":
 						if(currentSite.Incidents == null) {
 							currentSite.requestOIData("INC");
 							if(currentSite.Incidents.Count > 0) {
@@ -837,9 +843,8 @@ namespace appCore.SiteFinder.UI
 							}
 							return;
 						}
-						dataToShow = "INCs";
 						break;
-					case "CRQsButton":
+					case "CRQs":
 						if(currentSite.Changes == null) {
 							currentSite.requestOIData("CRQ");
 							if(currentSite.Changes.Count > 0) {
@@ -853,9 +858,8 @@ namespace appCore.SiteFinder.UI
 							}
 							return;
 						}
-						dataToShow = "CRQs";
 						break;
-					case "BookInsButton":
+					case "BookIns":
 						if(currentSite.Visits == null) {
 							currentSite.requestOIData("Bookins");
 							if(currentSite.Visits.Count > 0) {
@@ -869,9 +873,8 @@ namespace appCore.SiteFinder.UI
 							}
 							return;
 						}
-						dataToShow = "BookIns";
 						break;
-					case "ActiveAlarmsButton":
+					case "ActiveAlarms":
 						if(currentSite.Alarms == null) {
 							currentSite.requestOIData("Alarms");
 							if(currentSite.Alarms.Count > 0) {
@@ -885,9 +888,8 @@ namespace appCore.SiteFinder.UI
 							}
 							return;
 						}
-						dataToShow = "ActiveAlarms";
 						break;
-					case "AvailabilityButton":
+					case "Availability":
 						if(currentSite.Availability == null) {
 							currentSite.requestOIData("Availability");
 							if(currentSite.Availability.Rows.Count > 0) {
@@ -901,7 +903,6 @@ namespace appCore.SiteFinder.UI
 							}
 							return;
 						}
-						dataToShow = "Availability";
 						break;
 				}
 				
@@ -920,7 +921,7 @@ namespace appCore.SiteFinder.UI
 						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
 						break;
 					case "Availability":
-						OiTable = new OiSiteTablesForm(currentSite.Availability, "Availability", currentSite.Id, this);
+						OiTable = new OiSiteTablesForm(currentSite.Availability, dataToShow, currentSite.Id, this);
 						break;
 				}
 				OiTable.Show();
@@ -949,16 +950,14 @@ namespace appCore.SiteFinder.UI
 			load.ShowAsync(null, actionNonThreaded, false, this);
 		}
 
-		void LockedCellsPage(object sender, EventArgs e) {
-			FormCollection fc = Application.OpenForms;
+		void OpenLockedCells(object sender, EventArgs e) {
+			var fc = Application.OpenForms.OfType<LockUnlockCellsForm>().ToList();
 			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "Cells Locked") {
-					if(frm.WindowState == FormWindowState.Minimized) frm.Invoke(new Action(() => { frm.WindowState = FormWindowState.Normal; }));;
-					frm.Invoke(new MethodInvoker(frm.Activate));
-					return;
-				}
+			if(fc.Count > 0) {
+				if(fc[0].WindowState == FormWindowState.Minimized)
+					fc[0].Invoke(new Action(() => { fc[0].WindowState = FormWindowState.Normal; }));;
+				fc[0].Invoke(new MethodInvoker(fc[0].Activate));
+				return;
 			}
 			
 			var thread = new System.Threading.Thread(() => {
@@ -995,7 +994,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			lockedCellsPageToolStripMenuItem.Name = "lockedCellsPageToolStripMenuItem";
 			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
-			lockedCellsPageToolStripMenuItem.Click += LockedCellsPage;
+			lockedCellsPageToolStripMenuItem.Click += OpenLockedCells;
 			// 
 			// sitesPerTechToolStripMenuItem
 			// 

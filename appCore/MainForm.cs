@@ -644,14 +644,10 @@ namespace appCore
 
 		void MainFormActivate(object sender, EventArgs e)
 		{
-			var form = Application.OpenForms.OfType<MainForm>().First();
+			var form = Application.OpenForms.OfType<MainForm>().ToList();
 			
-//			foreach (Form frm in fc)
-//			{
-				form.Activate();
-				form.WindowState = FormWindowState.Normal;
-//				break;
-//			}
+			form[0].Activate();
+			form[0].WindowState = FormWindowState.Normal;
 		}
 		
 		public static void openSettings(Control callerControl, bool fromTrayIcon = false) {
@@ -674,16 +670,14 @@ namespace appCore
 		}
 		
 		public static void openAMTBrowser() {
-			var fc = Application.OpenForms.OfType<AMTBrowser>().First();
+			var fc = Application.OpenForms.OfType<Web.UI.BrowserView>().ToList();
 			
-//			foreach (AMTBrowser frm in fc)
-//			{
-//				if (frm.Name == "BrowserView") {
-					if(fc.WindowState == FormWindowState.Minimized) fc.Invoke(new Action(() => { fc.WindowState = FormWindowState.Normal; }));;
-					fc.Invoke(new MethodInvoker(fc.Activate));
-//					return;
-//				}
-//			}
+			if(fc.Count > 0) {
+				if(fc[0].WindowState == FormWindowState.Minimized)
+					fc[0].Invoke(new Action(() => { fc[0].WindowState = FormWindowState.Normal; }));
+				fc[0].Invoke(new MethodInvoker(fc[0].Activate));
+				return;
+			}
 			
 			Thread thread = new Thread(() => {
 			                           	Web.UI.BrowserView brwsr = new Web.UI.BrowserView();
@@ -696,14 +690,11 @@ namespace appCore
 		}
 		
 		public static void openNotes() {
-			FormCollection fc = Application.OpenForms;
+			var fc = Application.OpenForms.OfType<NotesForm>().ToList();
 			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "NotesForm") {
-					frm.Activate();
-					return;
-				}
+			if(fc.Count > 0) {
+				fc[0].Activate();
+				return;
 			}
 			
 			NotesForm notes = new NotesForm();
@@ -712,19 +703,28 @@ namespace appCore
 		}
 		
 		public static void openLogBrowser() {
-			FormCollection fc = Application.OpenForms;
+			var fc = Application.OpenForms.Cast<Form>().ToList();
 			
-			MainForm _this = null;
+			var lbForm = (Logs.UI.LogBrowser)fc.Find(f => f is Logs.UI.LogBrowser);
 			
-			foreach (Form frm in fc)
-			{
-				if(frm.Name == "MainForm")
-					_this = (MainForm)frm;
-				if (frm.Name == "LogBrowser") {
-					if(frm.WindowState == FormWindowState.Minimized) frm.Invoke(new Action(() => { frm.WindowState = FormWindowState.Normal; }));
-					frm.Invoke(new MethodInvoker(frm.Activate));
-				}
+			if(lbForm != null) {
+				if(lbForm.WindowState == FormWindowState.Minimized)
+					lbForm.Invoke(new Action(() => { lbForm.WindowState = FormWindowState.Normal; }));
+				lbForm.Invoke(new MethodInvoker(lbForm.Activate));
+				return;
 			}
+			
+			MainForm _this = (MainForm)fc.Find(f => f is MainForm);
+			
+//			foreach (Form frm in fc) {
+//				if(frm.Name == "MainForm")
+//					_this = (MainForm)frm;
+//				if (frm.Name == "LogBrowser") {
+//					if(frm.WindowState == FormWindowState.Minimized) frm.Invoke(new Action(() => { frm.WindowState = FormWindowState.Normal; }));
+//					frm.Invoke(new MethodInvoker(frm.Activate));
+//					return;
+//				}
+//			}
 			
 			Thread thread = new Thread(() => {
 			                           	Logs.UI.LogBrowser LogView = new Logs.UI.LogBrowser(_this);
@@ -737,15 +737,13 @@ namespace appCore
 		}
 		
 		public static void openSiteFinder() {
-			FormCollection fc = Application.OpenForms;
+			var fc = Application.OpenForms.OfType<siteDetails>().ToList();
 			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "siteDetails") {
-					if(frm.WindowState == FormWindowState.Minimized) frm.Invoke(new Action(() => { frm.WindowState = FormWindowState.Normal; }));;
-					frm.Invoke(new MethodInvoker(frm.Activate));
-					return;
-				}
+			if(fc.Count > 0) {
+				if(fc[0].WindowState == FormWindowState.Minimized)
+					fc[0].Invoke(new Action(() => { fc[0].WindowState = FormWindowState.Normal; }));
+				fc[0].Invoke(new MethodInvoker(fc[0].Activate));
+				return;
 			}
 			
 			Thread thread = new Thread(() => {

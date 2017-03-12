@@ -406,13 +406,18 @@ namespace appCore.Templates.UI
 		}
 		
 		void LoadDisplayOiDataTable(object sender, EventArgs e) {
-			ToolStripMenuItem tsim = sender as ToolStripMenuItem;
 //			if(e.Button == MouseButtons.Left) {
+			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
+			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
+			if(fc.Count > 0) {
+				fc[0].Close();
+				fc[0].Dispose();
+			}
+			
 			if(currentSite.Exists) {
-				System.Data.DataTable dt = new System.Data.DataTable();
-				string dataToShow = string.Empty;
-				switch (tsim.Name) {
-					case "INCsButton":
+				var dt = new System.Data.DataTable();
+				switch(dataToShow) {
+					case "INCs":
 						if(currentSite.Incidents == null) {
 							currentSite.requestOIData("INC");
 							if(currentSite.Incidents.Count > 0) {
@@ -426,9 +431,8 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "INCs";
 						break;
-					case "CRQsButton":
+					case "CRQs":
 						if(currentSite.Changes == null) {
 							currentSite.requestOIData("CRQ");
 							if(currentSite.Changes.Count > 0) {
@@ -442,9 +446,8 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "CRQs";
 						break;
-					case "BookInsButton":
+					case "BookIns":
 						if(currentSite.Visits == null) {
 							currentSite.requestOIData("Bookins");
 							if(currentSite.Visits.Count > 0) {
@@ -458,9 +461,8 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "BookIns";
 						break;
-					case "ActiveAlarmsButton":
+					case "ActiveAlarms":
 						if(currentSite.Alarms == null) {
 							currentSite.requestOIData("Alarms");
 							if(currentSite.Alarms.Count > 0) {
@@ -474,7 +476,6 @@ namespace appCore.Templates.UI
 							}
 							return;
 						}
-						dataToShow = "ActiveAlarms";
 						break;
 				}
 				

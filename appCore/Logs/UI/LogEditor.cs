@@ -7,11 +7,12 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Windows.Forms;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
 using appCore.Templates;
-using appCore.Templates.UI;
 using appCore.Templates.Types;
+using appCore.Templates.UI;
 
 namespace appCore.Logs.UI
 {
@@ -261,45 +262,43 @@ namespace appCore.Logs.UI
 		
 		void LogEditorFormClosing(object sender, FormClosingEventArgs e)
 		{
-			FormCollection fc = Application.OpenForms;
-
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "LogBrowser") {
-					frm.Activate();
-					return;
-				}
+			var fc = Application.OpenForms.OfType<LogBrowser>().ToList();
+			
+			if(fc.Count > 0) {
+				if(fc[0].WindowState == FormWindowState.Minimized)
+					fc[0].WindowState = FormWindowState.Normal;
+				fc[0].Activate();
 			}
 		}
 		
 		void LogEditorActivated(object sender, EventArgs e)
 		{
-			FormCollection fc = Application.OpenForms;
-			
-			foreach (Form frm in fc)
-			{
-				if (frm.Name == "appCore.UI.LargeTextForm" || frm.Name == "ScrollableMessageBox") {
-					frm.Activate();
-					return;
-				}
-			}
+//			FormCollection fc = Application.OpenForms;
+//			
+//			foreach (Form frm in fc)
+//			{
+//				if (frm.Name == "appCore.UI.LargeTextForm" || frm.Name == "ScrollableMessageBox") {
+//					frm.Activate();
+//					return;
+//				}
+//			}
 		}
 		
 		void Form_Resize(object sender, EventArgs e)
 		{
 			// Fire Resize event to check if the window was minimized and minimize LogBrowser as well
-			if (WindowState == FormWindowState.Minimized)
-			{
-//				Form frm = (Form)this.Parent;
-				Form frm = this.Owner;
-				// FIXME: App crashes when minimizing both windows
+//			if (WindowState == FormWindowState.Minimized)
+//			{
+////				Form frm = (Form)this.Parent;
+//				Form frm = this.Owner;
+//				// FIXME: App crashes when minimizing both windows
 //				frm.WindowState = FormWindowState.Minimized;
-				frm.Invoke((MethodInvoker)delegate
-				           {
-				           	frm.WindowState = FormWindowState.Minimized;
-				           });
-//				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
-			}
+//				frm.Invoke((MethodInvoker)delegate
+//				           {
+//				           	frm.WindowState = FormWindowState.Minimized;
+//				           });
+////				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
+//			}
 		}
 	}
 }
