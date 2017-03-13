@@ -259,17 +259,17 @@ namespace appCore.Templates.Types
 			html += String.Format(HTMLtableRow, "INC raised:", INC) + Environment.NewLine;
 			html += String.Format(HTMLtableRow, "Site:", SiteId) + Environment.NewLine;
 			html += String.Format(HTMLtableRow, "CRQ:", CRQ) + Environment.NewLine;
-			html += String.Format(HTMLtableRow, "CRQ contacts:", CrqContacts) + Environment.NewLine;
+			html += String.Format(HTMLtableRow, "CRQ contacts:", CrqContacts.Replace("\n", "<br>").Replace("\r", string.Empty)) + Environment.NewLine;
 			html += String.Format(HTMLtableRow, "FE booked in:", FEBookedInName + ", " + FEBookedInTel) + Environment.NewLine;
 			html += String.Format(HTMLtableRow, "Did FE call the ANOC after CRQ:", FECalledANOC ? "Yes" : "No") + Environment.NewLine;
-			html += String.Format(HTMLtableRow, "Work performed by FE on site:", WorkPerformed) + Environment.NewLine;
-			html += String.Format(HTMLtableRow, "Troubleshooting done with FE on site to recover affected cells:", TroubleshootingDone) + Environment.NewLine;
+			html += String.Format(HTMLtableRow, "Work performed by FE on site:", WorkPerformed.Replace("\n", "<br>").Replace("\r", string.Empty)) + Environment.NewLine;
+			html += String.Format(HTMLtableRow, "Troubleshooting done with FE on site to recover affected cells:", TroubleshootingDone.Replace("\n", "<br>").Replace("\r", string.Empty)) + Environment.NewLine;
 			string contractorString = ContractorToFixFault_Name;
 			if(contractorString != "None provided" && !string.IsNullOrEmpty(ContractorToFixFault_Tel))
 				contractorString += ", " + ContractorToFixFault_Tel;
 			html += String.Format(HTMLtableRow, "Contractor to fix the fault:", contractorString) + Environment.NewLine;
 			html += String.Format(HTMLtableRow, "Time to fix the fault:", ContractorToFixFault_Date == new DateTime(1,1,1) ? "None provided" : String.Format("{0:dd/MM/yyyy H:mm}", ContractorToFixFault_Date)) + Environment.NewLine;
-			html += String.Format(HTMLtableRow, "Observations:", Observations) + Environment.NewLine;
+			html += String.Format(HTMLtableRow, "Observations:", Observations.Replace("\n", "<br>").Replace("\r", string.Empty)) + Environment.NewLine;
 			
 			return html + HTMLend;
 		}
