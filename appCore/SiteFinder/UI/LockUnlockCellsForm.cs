@@ -1317,14 +1317,16 @@ namespace appCore.SiteFinder.UI
 						case "INCs":
 							if(currentSite.Incidents == null) {
 								currentSite.requestOIData("INC");
-								if(currentSite.Incidents.Count > 0) {
-									MainMenu.INCsButton.Enabled = true;
-									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
-									MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
-								}
-								else {
-									MainMenu.INCsButton.Enabled = false;
-									MainMenu.INCsButton.Text = "No INC history";
+								if(currentSite.Incidents != null) {
+									if(currentSite.Incidents.Count > 0) {
+										MainMenu.INCsButton.Enabled = true;
+										MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+										MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
+									}
+									else {
+										MainMenu.INCsButton.Enabled = false;
+										MainMenu.INCsButton.Text = "No INC history";
+									}
 								}
 								return;
 							}
@@ -1332,14 +1334,16 @@ namespace appCore.SiteFinder.UI
 						case "CRQs":
 							if(currentSite.Changes == null) {
 								currentSite.requestOIData("CRQ");
-								if(currentSite.Changes.Count > 0) {
-									MainMenu.CRQsButton.Enabled = true;
-									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
-									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
-								}
-								else {
-									MainMenu.CRQsButton.Enabled = false;
-									MainMenu.CRQsButton.Text = "No CRQ history";
+								if(currentSite.Changes != null) {
+									if(currentSite.Changes.Count > 0) {
+										MainMenu.CRQsButton.Enabled = true;
+										MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+										MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
+									}
+									else {
+										MainMenu.CRQsButton.Enabled = false;
+										MainMenu.CRQsButton.Text = "No CRQ history";
+									}
 								}
 								return;
 							}
@@ -1347,14 +1351,18 @@ namespace appCore.SiteFinder.UI
 						case "BookIns":
 							if(currentSite.Visits == null) {
 								currentSite.requestOIData("Bookins");
-								if(currentSite.Visits.Count > 0) {
-									MainMenu.BookInsButton.Enabled = true;
-									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
-									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
-								}
-								else {
-									MainMenu.BookInsButton.Enabled = false;
-									MainMenu.BookInsButton.Text = "No Book In history";
+								if(currentSite.Visits != null) {
+									if(currentSite.Visits != null) {
+										if(currentSite.Visits.Count > 0) {
+											MainMenu.BookInsButton.Enabled = true;
+											MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+											MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
+										}
+										else {
+											MainMenu.BookInsButton.Enabled = false;
+											MainMenu.BookInsButton.Text = "No Book In history";
+										}
+									}
 								}
 								return;
 							}
@@ -1362,14 +1370,16 @@ namespace appCore.SiteFinder.UI
 						case "ActiveAlarms":
 							if(currentSite.Alarms == null) {
 								currentSite.requestOIData("Alarms");
-								if(currentSite.Alarms.Count > 0) {
-									MainMenu.ActiveAlarmsButton.Enabled = true;
-									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
-									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
-								}
-								else {
-									MainMenu.ActiveAlarmsButton.Enabled = false;
-									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+								if(currentSite.Alarms != null) {
+									if(currentSite.Alarms.Count > 0) {
+										MainMenu.ActiveAlarmsButton.Enabled = true;
+										MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+										MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+									}
+									else {
+										MainMenu.ActiveAlarmsButton.Enabled = false;
+										MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+									}
 								}
 								return;
 							}
@@ -1377,14 +1387,16 @@ namespace appCore.SiteFinder.UI
 						case "Availability":
 							if(currentSite.Availability == null) {
 								currentSite.requestOIData("Availability");
-								if(currentSite.Availability.Rows.Count > 0) {
-									MainMenu.AvailabilityButton.Enabled = true;
-									MainMenu.AvailabilityButton.ForeColor = Color.DarkGreen;
-									MainMenu.AvailabilityButton.Text = "Availability chart";
-								}
-								else {
-									MainMenu.AvailabilityButton.Enabled = false;
-									MainMenu.AvailabilityButton.Text = "No availability chart to display";
+								if(currentSite.Availability != null) {
+									if(currentSite.Availability.Rows.Count > 0) {
+										MainMenu.AvailabilityButton.Enabled = true;
+										MainMenu.AvailabilityButton.ForeColor = Color.DarkGreen;
+										MainMenu.AvailabilityButton.Text = "Availability chart";
+									}
+									else {
+										MainMenu.AvailabilityButton.Enabled = false;
+										MainMenu.AvailabilityButton.Text = "No availability chart to display";
+									}
 								}
 								return;
 							}
