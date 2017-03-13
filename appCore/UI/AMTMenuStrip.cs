@@ -106,20 +106,24 @@ namespace appCore.UI
 
 		public void siteFinder_Toggle(bool toggle, bool siteFound = true) {
 			Site currentSite = null;
-			switch(Parent.Name) {
-				case "Troubleshoot Template GUI":
+			switch(Parent.GetType().ToString()) {
+//				case "Troubleshoot Template GUI":
+				case "appCore.Templates.UI.TroubleshootControls":
 					currentSite = ((TroubleshootControls)Parent).currentSite;
 					break;
-				case "Failed CRQ Template GUI":
+//				case "Failed CRQ Template GUI":
+				case "appCore.Templates.UI.FailedCRQControls":
 					currentSite = ((FailedCRQControls)Parent).currentSite;
 					break;
-				case "Update Template GUI":
+//				case "Update Template GUI":
+				case "appCore.Templates.UI.UpdateControls":
 					currentSite = ((UpdateControls)Parent).currentSite;
 					break;
-				case "siteDetails": case "Outage Follow-up":
+//				case "siteDetails": case "Outage Follow-up":
+				case "appCore.SiteFinder.UI.siteDetails":
 					currentSite = ((siteDetails)Parent).currentSite;
 					break;
-				case "Cells Locked":
+				case "appCore.SiteFinder.UI.LockUnlockCellsForm":
 					currentSite = ((LockUnlockCellsForm)Parent).currentSite;
 					break;
 			}
