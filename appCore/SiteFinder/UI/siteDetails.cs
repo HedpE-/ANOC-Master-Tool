@@ -73,6 +73,8 @@ namespace appCore.SiteFinder.UI
 						MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
 					}
 				}
+				dataGridView1.Width = 555 + SystemInformation.VerticalScrollBarWidth;
+				dataGridView1.AlwaysVisibleVScrollBar = true;
 				switch(mode[0]) {
 					case "single":
 						label11.Visible = false;
@@ -81,7 +83,7 @@ namespace appCore.SiteFinder.UI
 						checkBox2.Location = new Point(258, 230);
 						checkBox3.Location = new Point(296, 230);
 						dataGridView1.Location = new Point(5, 247);
-						dataGridView1.Size = new Size(555 + SystemInformation.VerticalScrollBarWidth, 488);
+						dataGridView1.Height = 488;
 						label12.Location = new Point(5, 227);
 						textBox1.ReadOnly = value.Contains("readonly");
 						bulkSiteSearchMenuItem.Enabled =
@@ -97,7 +99,7 @@ namespace appCore.SiteFinder.UI
 							checkBox6.Top =
 							checkBox7.Top = 355;
 						dataGridView1.Location = new Point(5, 372);
-						dataGridView1.Size = new Size(555 + SystemInformation.VerticalScrollBarWidth, 274);
+						dataGridView1.Height = 274;
 						label12.Location = new Point(5, 352);
 						bulkSiteSearchMenuItem.Enabled =
 							lockedCellsPageToolStripMenuItem.Enabled = value.Contains("readonly");
@@ -105,7 +107,7 @@ namespace appCore.SiteFinder.UI
 						break;
 					case "outage":
 						dataGridView1.Location = new Point(5, 372);
-						dataGridView1.Size = new Size(555 + SystemInformation.VerticalScrollBarWidth, 274);
+						dataGridView1.Height = 274;
 //						dataGridView1.CheckBoxes = true;
 						listView2.Visible = true;
 						listView2.Items.Clear();
