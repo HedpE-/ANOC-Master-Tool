@@ -301,38 +301,43 @@ namespace appCore.Netcool
 		public Alarm() {}
 
 		public Alarm(string[] alarmArray, string[] headers) {
-			try { attributes = alarmArray[Array.IndexOf(headers, "Attributes")]; } catch {}
-			try { serviceImpact = alarmArray[Array.IndexOf(headers, "Service Impact")]; } catch {}
-			try { vendor = alarmArray[Array.IndexOf(headers, "Vendor")]; } catch {}
-			try { lastOccurrence = alarmArray[Array.IndexOf(headers, "Last Occurrence")]; } catch {}
-			try { alarmCount = alarmArray[Array.IndexOf(headers, "Count")]; } catch {}
-			try { rncBsc = alarmArray[Array.IndexOf(headers, "RNC/BSC")]; } catch {}
-			try { location = alarmArray[Array.IndexOf(headers, "Location")]; } catch {}
-			try { element = alarmArray[Array.IndexOf(headers, "Element")]; } catch {}
-			try { summary = alarmArray[Array.IndexOf(headers, "Summary")].Trim(); } catch {}
-			try { triagedBy = alarmArray[Array.IndexOf(headers, "Triaged By")]; } catch {}
-			try { operatorComments = alarmArray[Array.IndexOf(headers, "Operator Comments")]; } catch {}
-			try { vfTtNumber = alarmArray[Array.IndexOf(headers, "VF TT Number")]; } catch {}
-			try { vfTtPty = alarmArray[Array.IndexOf(headers, "VF TT Pty")]; } catch {}
-			try { assignedGroup = alarmArray[Array.IndexOf(headers, "Assigned Group")]; } catch {}
-			try { ttStatus = alarmArray[Array.IndexOf(headers, "TT Status")]; } catch {}
-			try { rbsDetails = alarmArray[Array.IndexOf(headers, "RBS Details")]; } catch {}
-			try { town = alarmArray[Array.IndexOf(headers, "Town")]; } catch {}
-			try { county = alarmArray[Array.IndexOf(headers, "County")]; } catch {}
-			try { specialEvent = alarmArray[Array.IndexOf(headers, "Special Event")]; } catch {}
-			try { siteType = alarmArray[Array.IndexOf(headers, "Site Type")]; } catch {}
-			try { stateChange = alarmArray[Array.IndexOf(headers, "StateChange")]; } catch {}
-			try { site = alarmArray[Array.IndexOf(headers, "Site")]; } catch {}
-			try { node = alarmArray[Array.IndexOf(headers, "Node")]; } catch {}
-			try { nodeAlias = alarmArray[Array.IndexOf(headers, "NodeAlias")]; } catch {}
-			try { identifier = alarmArray[Array.IndexOf(headers, "Identifier")]; } catch {}
-			try { parentNode = alarmArray[Array.IndexOf(headers, "ParentNode")]; } catch {}
-			try { techDomain6 = alarmArray[Array.IndexOf(headers, "TechDomain6")]; } catch {}
-			try { poc = alarmArray[Array.IndexOf(headers, "POC")]; } catch {}
-			try { intermittent = alarmArray[Array.IndexOf(headers, "Intermittent")]; } catch {}
-			try { weightage = alarmArray[Array.IndexOf(headers, "Weightage")]; } catch {}
-			try { _class = alarmArray[Array.IndexOf(headers, "Class")]; } catch {}
-			try { opState = alarmArray[Array.IndexOf(headers, "OpState")]; } catch {}
+			try {
+				attributes = alarmArray[Array.IndexOf(headers, "Attributes")];
+				serviceImpact = alarmArray[Array.IndexOf(headers, "Service Impact")];
+				vendor = alarmArray[Array.IndexOf(headers, "Vendor")];
+				lastOccurrence = alarmArray[Array.IndexOf(headers, "Last Occurrence")];
+				alarmCount = alarmArray[Array.IndexOf(headers, "Count")];
+				rncBsc = alarmArray[Array.IndexOf(headers, "RNC/BSC")];
+				location = alarmArray[Array.IndexOf(headers, "Location")];
+				element = alarmArray[Array.IndexOf(headers, "Element")];
+				summary = alarmArray[Array.IndexOf(headers, "Summary")].Trim();
+				triagedBy = alarmArray[Array.IndexOf(headers, "Triaged By")];
+				operatorComments = alarmArray[Array.IndexOf(headers, "Operator Comments")];
+				vfTtNumber = alarmArray[Array.IndexOf(headers, "VF TT Number")];
+				vfTtPty = alarmArray[Array.IndexOf(headers, "VF TT Pty")];
+				assignedGroup = alarmArray[Array.IndexOf(headers, "Assigned Group")];
+				ttStatus = alarmArray[Array.IndexOf(headers, "TT Status")];
+				rbsDetails = alarmArray[Array.IndexOf(headers, "RBS Details")];
+				town = alarmArray[Array.IndexOf(headers, "Town")];
+				county = alarmArray[Array.IndexOf(headers, "County")];
+				specialEvent = alarmArray[Array.IndexOf(headers, "Special Event")];
+				siteType = alarmArray[Array.IndexOf(headers, "Site Type")];
+				stateChange = alarmArray[Array.IndexOf(headers, "StateChange")];
+				site = alarmArray[Array.IndexOf(headers, "Site")];
+				node = alarmArray[Array.IndexOf(headers, "Node")];
+				nodeAlias = alarmArray[Array.IndexOf(headers, "NodeAlias")];
+				identifier = alarmArray[Array.IndexOf(headers, "Identifier")];
+				parentNode = alarmArray[Array.IndexOf(headers, "ParentNode")];
+				techDomain6 = alarmArray[Array.IndexOf(headers, "TechDomain6")];
+				poc = alarmArray[Array.IndexOf(headers, "POC")];
+				intermittent = alarmArray[Array.IndexOf(headers, "Intermittent")];
+				weightage = alarmArray[Array.IndexOf(headers, "Weightage")];
+				_class = alarmArray[Array.IndexOf(headers, "Class")];
+				opState = alarmArray[Array.IndexOf(headers, "OpState")];
+			}
+			catch {
+				throw new Exception("Required headers not found");
+			}
 		}
 		
 		public Alarm(Cell cell, bool alarmCOOS, DateTime alarmTime) {

@@ -51,43 +51,42 @@ namespace appCore.Netcool
 				if(string.IsNullOrWhiteSpace(line))
 					continue;
 				Alarm al = null;
-				try {
-					al = new Alarm(line.Split('\t'), headers);
-				}catch {
-					continue;
+				try { al = new Alarm(line.Split('\t'), headers); } catch { continue; }
+				AlarmsList.Add(al);
+				if(outage) {
+					if(al.Bearer == "4G" && !al.COOS && al.OnM)
+						lteSitesOnM.Add(al.SiteId);
 				}
-					AlarmsList.Add(al);
-					if(outage) {
-						if(al.Bearer == "4G" && !al.COOS && al.OnM)
-							lteSitesOnM.Add(al.SiteId);
-					}
-					else {
-						if(generateOutput) {
-							try {
-								parsedOutput += al;
-								if(line != temparr.Last())
-									parsedOutput += Environment.NewLine + Environment.NewLine;
-							}
-							catch {
-								continue;
-							}
+				else {
+					if(generateOutput) {
+						try {
+							parsedOutput += al;
+							if(line != temparr.Last())
+								parsedOutput += Environment.NewLine + Environment.NewLine;
+						}
+						catch {
+							continue;
 						}
 					}
 				}
-				
-				if(lteSitesOnM.Any())
-					lteSitesOnM = lteSitesOnM.Distinct().ToList();
+			}
+			
+			if(lteSitesOnM.Any())
+				lteSitesOnM = lteSitesOnM.Distinct().ToList();
+			
+			if(AlarmsList.Count == 0)
+				throw new Exception("No alarms");
 //			st.Stop();
 //			var t = st.Elapsed;
-			}
-			
-			public Outage GenerateOutage() {
-				return new Outage(this);
-			}
-			
-			public override string ToString()
-			{
-				return parsedOutput;
-			}
+		}
+		
+		public Outage GenerateOutage() {
+			return new Outage(this);
+		}
+		
+		public override string ToString()
+		{
+			return parsedOutput;
 		}
 	}
+}
