@@ -346,9 +346,9 @@ namespace appCore.SiteFinder.UI
 								if(index > -1) {
 									List<siteDetails> openForms = Application.OpenForms.OfType<siteDetails>().Where(f => f.parentControl == (Control)this).ToList();
 									if(openForms.Any()) {
-										for(int c = 0;c < openForms.Count();c++) {
+										for(int c = openForms.Count() - 1;c >= 0;c--) {
 											openForms[c].Close();
-											openForms[c--].Dispose();
+											openForms[c].Dispose();
 										}
 									}
 									var SiteDetailsUI = new siteDetails(cellsLockedSites[index], this);
@@ -470,9 +470,9 @@ namespace appCore.SiteFinder.UI
 							pb5.Location = new Point(6, cellsLabel.Bottom + 3);
 							Label pb5Label = new Label();
 							pb5Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-							pb5Label.Text = "COOS";
+							pb5Label.Text = "COOS or no Availability stats";
 							pb5Label.ForeColor = Color.White;
-							pb5Label.Size = new Size(100, 18);
+							pb5Label.Size = new Size(legendPanel.Width - (pb5.Right + 3), 18);
 							pb5Label.Location = new Point(pb5.Right + 3, pb5.Top + 3);
 							PictureBox pb6 = new PictureBox();
 							pb6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
