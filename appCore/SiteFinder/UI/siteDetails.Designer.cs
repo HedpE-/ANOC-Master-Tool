@@ -53,7 +53,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.CheckBox checkBox4;
 		private System.Windows.Forms.CheckBox checkBox5;
-		private System.Windows.Forms.DataGridView dataGridView1;
+		private appCore.UI.AMTDataGridView dataGridView1;
 		private System.Windows.Forms.CheckBox checkBox6;
 		private System.Windows.Forms.CheckBox checkBox7;
 		
@@ -118,7 +118,7 @@ namespace appCore.SiteFinder.UI
 			this.button1 = new System.Windows.Forms.Button();
 			this.checkBox4 = new System.Windows.Forms.CheckBox();
 			this.checkBox5 = new System.Windows.Forms.CheckBox();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			this.checkBox6 = new System.Windows.Forms.CheckBox();
 			this.checkBox7 = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -525,8 +525,10 @@ namespace appCore.SiteFinder.UI
 			this.dataGridView1.AllowUserToDeleteRows = false;
 			this.dataGridView1.AllowUserToResizeColumns = false;
 			this.dataGridView1.AllowUserToResizeRows = false;
+			this.dataGridView1.AlwaysVisibleVScrollBar = false;
 			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.Location = new System.Drawing.Point(5, 247);
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.RowHeadersVisible = false;

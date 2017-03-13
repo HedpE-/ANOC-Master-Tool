@@ -17,7 +17,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.DataGridView dataGridView1;
+		private appCore.UI.AMTDataGridView dataGridView1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -45,7 +45,7 @@ namespace appCore.SiteFinder.UI
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -107,6 +107,7 @@ namespace appCore.SiteFinder.UI
 			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlDarkDark;
 			this.dataGridView1.Location = new System.Drawing.Point(0, 0);
