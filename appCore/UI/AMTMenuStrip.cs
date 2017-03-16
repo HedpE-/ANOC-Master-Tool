@@ -70,10 +70,12 @@ namespace appCore.UI
 			ActiveAlarmsButton.Text = "Alarms";
 			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
 			
-			Items.Add(INCsButton);
-			Items.Add(CRQsButton);
-			Items.Add(BookInsButton);
-			Items.Add(ActiveAlarmsButton);
+			Items.AddRange(new ToolStripItem[]{
+			               	INCsButton,
+			               	CRQsButton,
+			               	BookInsButton,
+			               	ActiveAlarmsButton
+			               });
 			if(AvailabilityButtonEnabled) {
 				AvailabilityButton.Text = "Availability Chart";
 				Items.Add(AvailabilityButton);
@@ -251,7 +253,7 @@ namespace appCore.UI
 			
 			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == this.Parent).ToList();
 //			List<OiSiteTablesForm> openForms = new List<OiSiteTablesForm>();
-//			
+//
 //			foreach(OiSiteTablesForm frm in fc) {
 //				if(frm.OwnerControl == this.Parent)
 //					openForms.Add(frm);
