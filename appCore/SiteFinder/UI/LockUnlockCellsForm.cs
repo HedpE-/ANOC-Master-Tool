@@ -373,6 +373,7 @@ namespace appCore.SiteFinder.UI
 //							LoadingPanel load = new LoadingPanel();
 //							load.Show(action, this);
 //						};
+//						Controls.Add(refreshButton);
 						
 						checkBox1.Text = "Select All";
 						checkBox1.Height = checkBox1.Height * 2;
@@ -522,7 +523,6 @@ namespace appCore.SiteFinder.UI
 						offAirLabel.Text = "Site Off Air";
 						offAirLabel.Location = new Point(dataGridView1.Left + ((dataGridView1.Width - offAirLabel.Width) / 2), label2.Top - 2);
 						Controls.AddRange(new Control[] {
-//						                  	refreshButton,
 						                  	sitesListBox,
 						                  	legendButton,
 						                  	offAirLabel
@@ -807,14 +807,25 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void FetchAvailability(IEnumerable<string> sites) {
-//			string resp = OiConnection.requestApiOutput("availability", sites);
-			string resp = OiConnection.requestPhpOutput("ca", sites);
+			string resp = OiConnection.requestApiOutput("availability", sites);
+			DataTable dt = null;
 			
 			try {
-//				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
-//				DataTable dt = jSon.ToDataTable();
-				DataTable dt = Toolbox.Tools.ConvertHtmlTabletoDataTable(resp, "table_ca");
+				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
+				dt = jSon.ToDataTable();
+			}
+			catch { }
+			
+			if(dt == null) {
+				resp = OiConnection.requestPhpOutput("ca", sites);
 				
+				try {
+					dt = Toolbox.Tools.ConvertHtmlTabletoDataTable(resp, "table_ca");
+				}
+				catch { }
+			}
+			
+			if(dt != null) {
 				foreach(var site in cellsLockedSites) {
 					var drs = dt.Rows.Cast<DataRow>().Where(s => s["Site"].ToString() == site.Id);
 					if(drs.Any()) {
@@ -826,7 +837,8 @@ namespace appCore.SiteFinder.UI
 					}
 				}
 			}
-			catch { }
+//			else
+//				throw new Exception("Error collecting Availability data from OI");
 		}
 		
 		bool rowInactive(DataGridViewRow row) {
@@ -840,37 +852,38 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void ListBoxDrawItem(object sender, DrawItemEventArgs e) {
-			ListBox lb = sender as ListBox;
-			e.DrawBackground();
-			using(Graphics g = e.Graphics) {
-				if(((e.State & DrawItemState.Focus) != DrawItemState.Focus) && ((e.State & DrawItemState.Selected) != DrawItemState.Selected)) {
-					CellsLockedSite cls = GetSiteLockedCells(lb.Items[e.Index].ToString());
-					if(cls.LifeTime == "Expired")
-						g.FillRectangle(new SolidBrush(Color.Red), e.Bounds); // Ref expired
-					else {
-						Site site = cellsLockedSites.Find(s => s.Id == cls.Site);
-						if(site != null) {
-							foreach(CellsLockedItem cli in cls.CellsLockedItems) {
-								Cell cell = site.Cells.Find(c => c.Name == cli.Cell);
-								if(cell != null) {
-									if(!cell.COOS) {
-										g.FillRectangle(new SolidBrush(Color.LightGreen), e.Bounds); // Ref not expired but locked cells non COOS
-										break;
+			if(e.Index > -1) {
+				ListBox lb = sender as ListBox;
+				e.DrawBackground();
+				using(Graphics g = e.Graphics) {
+					if(((e.State & DrawItemState.Focus) != DrawItemState.Focus) && ((e.State & DrawItemState.Selected) != DrawItemState.Selected)) {
+						CellsLockedSite cls = GetSiteLockedCells(lb.Items[e.Index].ToString());
+						if(cls.LifeTime == "Expired")
+							g.FillRectangle(new SolidBrush(Color.Red), e.Bounds); // Ref expired
+						else {
+							Site site = cellsLockedSites.Find(s => s.Id == cls.Site);
+							if(site != null) {
+								foreach(CellsLockedItem cli in cls.CellsLockedItems) {
+									Cell cell = site.Cells.Find(c => c.Name == cli.Cell);
+									if(cell != null) {
+										if(!cell.COOS) {
+											g.FillRectangle(new SolidBrush(Color.LightGreen), e.Bounds); // Ref not expired but locked cells non COOS
+											break;
+										}
 									}
+									else
+										g.FillRectangle(new SolidBrush(Color.Yellow), e.Bounds); // Ref not expired but cells Offair
 								}
-								else
-									g.FillRectangle(new SolidBrush(Color.Yellow), e.Bounds); // Ref not expired but cells Offair
 							}
+							else
+								g.FillRectangle(new SolidBrush(Color.Gray), e.Bounds); // Site Offair
 						}
-						else
-							g.FillRectangle(new SolidBrush(Color.Gray), e.Bounds); // Site Offair
 					}
-				}
-				else
-					g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
-				
-				if(e.Index != -1)
+					else
+						g.FillRectangle(new SolidBrush(e.BackColor), e.Bounds);
+					
 					g.DrawString(lb.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), lb.GetItemRectangle(e.Index).Location);
+				}
 			}
 			
 			e.DrawFocusRectangle();
