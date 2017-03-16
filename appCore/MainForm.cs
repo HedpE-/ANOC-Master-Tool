@@ -737,9 +737,9 @@ namespace appCore
 		}
 		
 		public static void openSiteFinder() {
-			var fc = Application.OpenForms.OfType<siteDetails>().ToList();
+			var fc = Application.OpenForms.OfType<siteDetails>().Where(f => f.Text == "Site Finder").ToArray();
 			
-			if(fc.Count > 0) {
+			if(fc.Length > 0) {
 				if(fc[0].WindowState == FormWindowState.Minimized)
 					fc[0].Invoke(new Action(() => { fc[0].WindowState = FormWindowState.Normal; }));
 				fc[0].Invoke(new MethodInvoker(fc[0].Activate));
