@@ -22,7 +22,7 @@ namespace appCore.UI
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.RichTextBox textBox3;
-		private System.Windows.Forms.DataGridView dataGridView1;
+		private appCore.UI.AMTDataGridView dataGridView1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -48,7 +48,7 @@ namespace appCore.UI
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.textBox2 = new System.Windows.Forms.RichTextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -109,6 +109,7 @@ namespace appCore.UI
 			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
 			this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
 			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.dataGridView1.Location = new System.Drawing.Point(3, 3);
 			this.dataGridView1.Name = "dataGridView1";

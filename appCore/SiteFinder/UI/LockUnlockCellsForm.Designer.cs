@@ -26,7 +26,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.RadioButton radioButton3;
-		private System.Windows.Forms.DataGridView dataGridView1;
+		private appCore.UI.AMTDataGridView dataGridView1;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		
@@ -64,7 +64,7 @@ namespace appCore.SiteFinder.UI
 			this.label3 = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -231,6 +231,7 @@ namespace appCore.SiteFinder.UI
 			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
 			this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.dataGridView1.GridColor = System.Drawing.Color.Black;
 			this.dataGridView1.Location = new System.Drawing.Point(6, 32);

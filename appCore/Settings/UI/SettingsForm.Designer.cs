@@ -93,7 +93,7 @@ namespace appCore.Settings.UI
 			this.label11 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.textBox2 = new appCore.UI.AMTTextBox();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.label9 = new System.Windows.Forms.Label();
@@ -521,6 +521,7 @@ namespace appCore.Settings.UI
 			this.Username,
 			this.Permission});
 			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.Location = new System.Drawing.Point(0, 0);
 			this.dataGridView1.Margin = new System.Windows.Forms.Padding(1);
 			this.dataGridView1.Name = "dataGridView1";
@@ -586,7 +587,7 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.Panel noPermPanel;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Panel userAdminPanel;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private appCore.UI.AMTDataGridView dataGridView1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox comboBox2;
         private appCore.UI.AMTTextBox textBox3;
