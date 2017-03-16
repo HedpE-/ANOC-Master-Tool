@@ -295,7 +295,7 @@ namespace appCore.SiteFinder
 			get {
 				return (POWER_COMPANY + " " + POWER_CONTACT).Trim();
 			}
-			private set {
+			set {
 				string[] temp = value.Split(';');
 				POWER_COMPANY = temp[0].Trim();
 				POWER_CONTACT = temp[1].Trim();
@@ -460,8 +460,9 @@ namespace appCore.SiteFinder
 					if(dataToRequest.Contains("Bookins")) {
 						Thread thread = new Thread(() => {
 						                           	isUpdatingVisits = true;
-//					                           	BookIns = FetchBookIns(null);
 						                           	Visits = FetchBookIns();
+						                           	if(Visits == null)
+						                           		Visits = FetchBookIns(null);
 						                           	isUpdatingVisits = false;
 						                           	finishedThreadsCount++;
 						                           });
@@ -472,14 +473,16 @@ namespace appCore.SiteFinder
 					if(dataToRequest.Contains("Availability")) {
 						Thread thread = new Thread(() => {
 						                           	isUpdatingAvailability = true;
-						                           	Availability = FetchAvailability(null);
-						                           	updateCOOS();
 //						                           	Availability avail = FetchAvailability();
 //						                           	if(avail != null) {
 //						                           		if(avail.message != "Site is Offair") {
 //						                           			Availability = avail.ToDataTable();
 //						                           			updateCOOS();
 //						                           		}
+//						                           	}
+//						                           	else {
+						                           		Availability = FetchAvailability(null);
+						                           		updateCOOS();
 //						                           	}
 						                           	isUpdatingAvailability = false;
 						                           	finishedThreadsCount++;
@@ -634,19 +637,39 @@ namespace appCore.SiteFinder
 					list.Add(jObj.ToObject<BookIn>());
 				VisitsTimestamp = DateTime.Now;
 			}
-			catch { return null; }
+			catch(Exception e) {
+				var m = e.Message;
+				return null;
+			}
 			return list;
 		}
 		
-//		DataTable FetchBookIns(FileSystemInfo table_visits) {
-//			DataTable dt = new DataTable();
+		List<BookIn> FetchBookIns(FileSystemInfo table_visits) {
+			List<BookIn> list = new List<BookIn>();
 //			string response = OiConnection.requestPhpOutput("sitevisit", Id, 90);
-//			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
-//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
-//				BookInsTimestamp = DateTime.Now;
-//			}
-//			return dt;
-//		}
+			string response = OiConnection.requestPhpOutput("visits", Id);
+			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
+				DataTable dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
+				foreach(DataRow row in dt.Rows) {
+					BookIn bookin = new BookIn();
+					bookin.Site = row[0].ToString();
+					bookin.Visit = row[1].ToString();
+					bookin.Company = row[2].ToString();
+					bookin.Engineer = row[3].ToString();
+					bookin.Mobile = row[4].ToString();
+					bookin.Reference = row[5].ToString();
+					bookin.Visit_Type = row[6].ToString();
+					bookin.Arrived = row[7].ToString();
+					bookin.Planned_Finish = row[8].ToString();
+					bookin.Time_Taken = row[9].ToString();
+					bookin.Time_Remaining = row[10].ToString();
+					bookin.Departed_Site = row[11].ToString();
+					list.Add(bookin);
+				}
+				VisitsTimestamp = DateTime.Now;
+			}
+			return list;
+		}
 		
 		Availability FetchAvailability() {
 			string response = OiConnection.requestApiOutput("availability", Id);
@@ -661,10 +684,8 @@ namespace appCore.SiteFinder
 		
 		DataTable FetchAvailability(FileSystemInfo table_ca) {
 			DataTable dt = new DataTable();
-//			string response = OiConnection.requestApiOutput("availability", Id);
 			string response = OiConnection.requestPhpOutput("ca", Id);
 			if(!string.IsNullOrEmpty(response)) {
-//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_checkbox_availability");
 				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
 				AvailabilityTimestamp = DateTime.Now;
 			}
