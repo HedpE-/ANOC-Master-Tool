@@ -18,7 +18,10 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using appCore.UI;
-using appCore.Templates.UI;
+using appCore.Templates.Types;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using appCore.OI.JSON;
 
 namespace appCore.SiteFinder.UI
 {
@@ -30,11 +33,13 @@ namespace appCore.SiteFinder.UI
 		GMapControl myMap;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
-		List<GMapMarker> markersList = new List<GMapMarker>();
+//		List<GMapMarker> markersList = new List<GMapMarker>();
 		public Site currentSite;
+		public Outage currentOutage;
+		
 		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
-		string[] sites; // for outages site list
-		byte listView2_EventCount = 1;
+//		string[] sites; // for outages site list
+//		byte listView2_EventCount = 1;
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
@@ -48,7 +53,7 @@ namespace appCore.SiteFinder.UI
 			private set;
 		}
 		
-		string _siteDetails_UIMode = "single/readonly";
+		string _siteDetails_UIMode;
 		/// <summary>
 		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
 		/// </summary>
@@ -58,73 +63,87 @@ namespace appCore.SiteFinder.UI
 			}
 			set {
 				string[] mode = value.Split('/');
-				Controls.Add(MainMenu);
-				MainMenu.InitializeTroubleshootMenu(true);
-				MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
-				MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
-				InitializeToolStripMenuItems();
 				MainMenu.siteFinder_Toggle(false, false);
-				if(mode[0] != "outage") {
-					MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-					if(Settings.CurrentUser.UserName == "GONCARJ3") {
+				MainMenu.MainMenu.DropDownItems.Clear();
+				pictureBox1.Left = dataGridView1.Left + ((dataGridView1.Width - pictureBox1.Width) / 2);
+				listView2.Width = dataGridView1.Width;
+				int filterCheckBoxesStartPosition = dataGridView1.Left + ((dataGridView1.Width - (checkBox1.Width + checkBox2.Width + checkBox3.Width)) / 2);
+				checkBox1.Left = filterCheckBoxesStartPosition;
+				checkBox2.Left = filterCheckBoxesStartPosition + checkBox1.Width;
+				checkBox3.Left = filterCheckBoxesStartPosition + checkBox1.Width + checkBox2.Width;
+				checkBox6.Left = dataGridView1.Right - checkBox6.Width;
+				checkBox7.Left = checkBox6.Left - checkBox7.Width;
+				if(mode[0] == "single" || mode[0] == "multi") {
+					if(!value.Contains("readonly")) {
+						MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 						MainMenu.MainMenu.DropDownItems.Add("-");
 						MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
 						MainMenu.MainMenu.DropDownItems.Add("-");
 						MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
 					}
+					bulkSiteSearchMenuItem.Enabled =
+						lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 				}
-				dataGridView1.Width = 555 + SystemInformation.VerticalScrollBarWidth;
-				dataGridView1.AlwaysVisibleVScrollBar = true;
 				switch(mode[0]) {
 					case "single":
-						label11.Visible = false;
-						listView2.Visible = false;
-						checkBox1.Location = new Point(220, 230);
-						checkBox2.Location = new Point(258, 230);
-						checkBox3.Location = new Point(296, 230);
-						dataGridView1.Location = new Point(5, 247);
-						dataGridView1.Height = 488;
-						label12.Location = new Point(5, 227);
+//						if(!value.Contains("readonly")) {
+//							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
+//							MainMenu.MainMenu.DropDownItems.Add("-");
+//							MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
+//							MainMenu.MainMenu.DropDownItems.Add("-");
+//							MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+//						}
+//						bulkSiteSearchMenuItem.Enabled =
+//							lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
+						label11.Visible =
+							listView2.Visible = false;
+						dataGridView1.Top = listView2.Top;
+						label12.Top = dataGridView1.Top - label12.Height;
 						textBox1.ReadOnly = value.Contains("readonly");
-						bulkSiteSearchMenuItem.Enabled =
-							lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 						break;
 					case "multi":
-						label11.Visible = true;
-						listView2.Visible = true;
+						dataGridView1.Top = listView2.Bottom + 23;
+						label11.Visible =
+							listView2.Visible = true;
 						listView2.Items.Clear();
-						checkBox1.Top =
-							checkBox2.Top =
-							checkBox3.Top =
-							checkBox6.Top =
-							checkBox7.Top = 355;
-						dataGridView1.Location = new Point(5, 372);
-						dataGridView1.Height = 274;
-						label12.Location = new Point(5, 352);
-						bulkSiteSearchMenuItem.Enabled =
-							lockedCellsPageToolStripMenuItem.Enabled = value.Contains("readonly");
-						textBox1.ReadOnly = !value.Contains("readonly");
+//						if(!value.Contains("readonly"))
+//							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
+//						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
+						textBox1.ReadOnly = value.Contains("readonly");
 						break;
 					case "outage":
-						dataGridView1.Location = new Point(5, 372);
-						dataGridView1.Height = 274;
-//						dataGridView1.CheckBoxes = true;
-						listView2.Visible = true;
+						dataGridView1.Top = listView2.Bottom + 23;
+						label11.Visible =
+							listView2.Visible = true;
 						listView2.Items.Clear();
-						checkBox1.Top =
-							checkBox2.Top =
-							checkBox3.Top =
-							checkBox6.Top =
-							checkBox7.Top = 355;
-						label11.Visible = true;
 						label12.Top = 352;
 						if(Settings.CurrentUser.Role == "Shift Leader")
 							MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
-//						bulkSiteSearchMenuItem.Enabled =
-//							lockedCellsPageToolStripMenuItem.Enabled = false;
 						textBox1.ReadOnly = true;
 						break;
 				}
+				if(!value.Contains("single")) {
+					Button overview = new Button();
+					overview.Name = "OverviewButton";
+					overview.Text = "Back to map overview";
+					overview.Width = 130;
+					overview.Location = new Point(listView2.Right - overview.Width, listView2.Top - overview.Height - 3);
+					overview.Click += delegate {
+						listView2.SelectedIndices.Clear();
+					};
+					Controls.Add(overview);
+				}
+				else {
+					if(Controls["OverviewButton"] != null)
+						Controls.Remove(Controls["OverviewButton"]);
+				}
+				checkBox1.Top =
+					checkBox2.Top =
+					checkBox3.Top =
+					checkBox6.Top =
+					checkBox7.Top = dataGridView1.Top - checkBox1.Height + 1;
+				label12.Top = dataGridView1.Top - label12.Height;
+				dataGridView1.Height = myMap.Bottom - dataGridView1.Top;
 				_siteDetails_UIMode = value;
 			}
 		}
@@ -149,65 +168,83 @@ namespace appCore.SiteFinder.UI
 			InitializeComponent();
 			this.Name =
 				this.Text = "Site " + site.Id + " Details";
+			
+			Controls.Add(MainMenu);
+			MainMenu.InitializeTroubleshootMenu(true);
+			MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
+			MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+			InitializeToolStripMenuItems();
+			
 			myMap = drawGMap("myMap",false);
 			Controls.Add(myMap);
+			
+			siteDetails_UIMode = "single/readonly";
+			
 			Shown += populateSingleForm;
 		}
 		
-		public siteDetails(bool isOutage, OutageControls parent)
+		public siteDetails(Outage outage, Control parent)
 		{
 			InitializeComponent();
 			
 			parentControl = parent;
+			currentOutage = outage;
+			
+			Controls.Add(MainMenu);
+			MainMenu.InitializeTroubleshootMenu(true);
+			MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
+			MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+			InitializeToolStripMenuItems();
 			
 			this.Name =
 				this.Text = "Outage Follow-up";
-			
-			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
-			if(isOutage) {
+			myMap = drawGMap("myMap",true);
+			
+			if(outage != null) {
 				siteDetails_UIMode = "outage";
 				
-				sites = (parent.currentOutage.VfBulkCI + parent.currentOutage.TefBulkCI).Split(';');
-				for(int c = 0;c < sites.Length;c++) {
-					if(sites[c].StartsWith("0")) {
-						while(sites[c].StartsWith("0"))
-							sites[c] = sites[c].Substring(1);
-					}
-					else
-						break;
-				}
-				sites = sites.Distinct().ToArray(); // Remover duplicados
-				sites = sites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
-				parent.currentOutage.AffectedSites = DB.SitesDB.getSites(sites.ToList());
-				
-				List<string> cells = parent.currentOutage.VfGsmCells;
-				cells.AddRange(parent.currentOutage.VfUmtsCells);
-				cells.AddRange(parent.currentOutage.VfLteCells);
-				cells.AddRange(parent.currentOutage.TefGsmCells);
-				cells.AddRange(parent.currentOutage.TefUmtsCells);
-				cells.AddRange(parent.currentOutage.TefLteCells);
-				
-				for(int c = 0;c < cells.Count;c++) {
-					string[] strToFind = { " - " };
-					var tempCell = cells[c].Split(strToFind, StringSplitOptions.None);
-					if(tempCell.Length > 1)
-						cells[c] = tempCell[1];
-				}
-				
-				parent.currentOutage.AffectedCells = DB.SitesDB.getCells(cells);
-				foreach(Cell cell in parent.currentOutage.AffectedCells) {
-					Site site = parent.currentOutage.AffectedSites.Find(s => s.Id == cell.ParentSite);
-					int siteIndex = parent.currentOutage.AffectedSites.IndexOf(site);
-					if(siteIndex > -1) {
-						if(parent.currentOutage.AffectedSites[siteIndex].CellsInOutage == null)
-							parent.currentOutage.AffectedSites[siteIndex].CellsInOutage = new List<Cell>();
-						parent.currentOutage.AffectedSites[siteIndex].CellsInOutage.Add(cell);
-					}
-				}
+//				sites = (parent.currentOutage.VfBulkCI + parent.currentOutage.TefBulkCI).Split(';');
+//				for(int c = 0;c < sites.Length;c++) {
+//					if(sites[c].StartsWith("0")) {
+//						while(sites[c].StartsWith("0"))
+//							sites[c] = sites[c].Substring(1);
+//					}
+//					else
+//						break;
+//				}
+//				sites = sites.Distinct().ToArray(); // Remover duplicados
+//				sites = sites.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Remover null/empty
+//				parent.currentOutage.AffectedSites = DB.SitesDB.getSites(sites.ToList());
+//
+//				List<string> cells = parent.currentOutage.VfGsmCells;
+//				cells.AddRange(parent.currentOutage.VfUmtsCells);
+//				cells.AddRange(parent.currentOutage.VfLteCells);
+//				cells.AddRange(parent.currentOutage.TefGsmCells);
+//				cells.AddRange(parent.currentOutage.TefUmtsCells);
+//				cells.AddRange(parent.currentOutage.TefLteCells);
+//
+//				for(int c = 0;c < cells.Count;c++) {
+//					string[] strToFind = { " - " };
+//					var tempCell = cells[c].Split(strToFind, StringSplitOptions.None);
+//					if(tempCell.Length > 1)
+//						cells[c] = tempCell[1];
+//				}
+//
+//				parent.currentOutage.AffectedCells = DB.SitesDB.getCells(cells);
+//				foreach(Cell cell in parent.currentOutage.AffectedCells) {
+//					Site site = parent.currentOutage.AffectedSites.Find(s => s.Id == cell.ParentSite);
+//					int siteIndex = parent.currentOutage.AffectedSites.IndexOf(site);
+//					if(siteIndex > -1) {
+//						if(parent.currentOutage.AffectedSites[siteIndex].CellsInOutage == null)
+//							parent.currentOutage.AffectedSites[siteIndex].CellsInOutage = new List<Cell>();
+//						parent.currentOutage.AffectedSites[siteIndex].CellsInOutage.Add(cell);
+//					}
+//				}
 			}
 			else
 				siteDetails_UIMode = "single";
+			
 			this.Shown += populateBulkForm;
 		}
 		
@@ -216,9 +253,18 @@ namespace appCore.SiteFinder.UI
 			InitializeComponent();
 			this.Name =
 				this.Text = "Site Finder";
+			
 			myMap = drawGMap("myMap",true);
 			this.Controls.Add(myMap);
+			
+			Controls.Add(MainMenu);
+			MainMenu.InitializeTroubleshootMenu(true);
+			MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
+			MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+			InitializeToolStripMenuItems();
+			
 			siteDetails_UIMode = "single";
+			
 			lockUnlockCellsToolStripMenuItem.Enabled = false;
 			this.Shown += populateBulkForm;
 		}
@@ -233,8 +279,6 @@ namespace appCore.SiteFinder.UI
 			                           	catch (Exception) {
 			                           	}
 			                           	initializeListviews();
-			                           	
-			                           	siteDetails_UIMode = "single/readonly";
 			                           	
 			                           	selectedSiteDetailsPopulate();
 			                           	selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
@@ -252,8 +296,55 @@ namespace appCore.SiteFinder.UI
 			// TODO: Show cells for selected sites
 			Action action = new Action(delegate {
 			                           	initializeListviews();
-			                           	if(siteDetails_UIMode.Contains("outage"))
-			                           		siteFinder(sites);
+			                           	if(siteDetails_UIMode.Contains("outage")) {
+			                           		try {
+			                           			myMap.Overlays.Remove(markersOverlay);
+			                           			myMap.Overlays.Remove(selectedSiteOverlay);
+			                           			markersOverlay.Clear();
+			                           			selectedSiteOverlay.Clear();
+			                           		}
+			                           		catch (Exception) {
+			                           		}
+			                           		List<string> sites = new List<string>();
+			                           		foreach(Site site in currentOutage.AffectedSites) {
+			                           			if(string.IsNullOrEmpty(site.PowerCompany))
+			                           				sites.Add(site.Id);
+			                           		}
+			                           		if(sites.Count > 0) {
+			                           			string resp = OI.OiConnection.requestApiOutput("access", sites);
+			                           			try {
+			                           				var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+			                           				foreach(JObject jObj in jSon.data) {
+			                           					AccessInformation item = jObj.ToObject<AccessInformation>();
+			                           					int siteIndex = currentOutage.AffectedSites.FindIndex(s => s.Id == item.CI_NAME);
+			                           					if(siteIndex > -1) {
+			                           						if(string.IsNullOrEmpty(currentOutage.AffectedSites[siteIndex].PowerCompany))
+			                           							currentOutage.AffectedSites[siteIndex].PowerCompany = item.POWER.Replace("<br>",";");
+			                           					}
+			                           				}
+			                           			}
+			                           			catch { }
+			                           		}
+			                           		
+			                           		if(currentOutage.AffectedSites.Count > 1) {
+			                           			searchResultsPopulate();
+			                           			myMap.Overlays.Add(markersOverlay);
+			                           			listView2.Focus();
+//			                           			listView2.Items[0].Selected =
+//			                           				listView2.Items[0].Focused = true;
+			                           			myMap.ZoomAndCenterMarkers(markersOverlay.Id);
+			                           		}
+			                           		else {
+			                           			if(currentOutage.AffectedSites.Count == 1) {
+			                           				siteDetails_UIMode = "single";
+			                           				currentSite = currentOutage.AffectedSites[0];
+			                           				selectedSiteDetailsPopulate();
+			                           				selectedSiteOverlay.Markers.Add(currentOutage.AffectedSites[0].MapMarker);
+			                           				myMap.Overlays.Add(selectedSiteOverlay);
+			                           				myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
+			                           			}
+			                           		}
+			                           	}
 			                           	else
 			                           		textBox1.Select();
 //			                           	if(dataGridView1.Controls.OfType<VScrollBar>().First().Visible)
@@ -355,10 +446,9 @@ namespace appCore.SiteFinder.UI
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
 			}
 			
-//			dataGridView1.DataSource = null;
-//			dataGridView1.Columns.Clear();
-//
-//			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+			dataGridView1.DataSource = null;
+			dataGridView1.Columns.Clear();
+			
 			dataGridView1.DataSource = GetCellsDV();
 			int c = 0;
 			int[] columnWidths = { 35, 80, 50, 56, 70, 65, 55, 46, 45, 50 };
@@ -368,6 +458,8 @@ namespace appCore.SiteFinder.UI
 				if(dgvc.Name == "Tech" || dgvc.Name == "COOS" || dgvc.Name == "Locked")
 					dgvc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 			}
+			if(siteDetails_UIMode.Contains("outage"))
+				addCheckBoxColumn();
 			
 			MainMenu.siteFinder_Toggle(currentSite.Exists);
 			pictureBox1.UpdateCells(currentSite.Cells);
@@ -384,10 +476,9 @@ namespace appCore.SiteFinder.UI
 			table.Columns.Add("OSS ID");
 			table.Columns.Add("Vendor");
 			table.Columns.Add("NOC");
-			if(!siteDetails_UIMode.Contains("outage")) {
+			if(!siteDetails_UIMode.Contains("outage"))
 				table.Columns.Add("COOS");
-				table.Columns.Add("Locked");
-			}
+			table.Columns.Add("Locked");
 			
 			foreach(Cell cell in currentSite.Cells) {
 				string ossID;
@@ -396,13 +487,51 @@ namespace appCore.SiteFinder.UI
 				else
 					ossID = cell.WBTS_BCF;
 				var row = table.Rows.Add(cell.Bearer, cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, ossID, cell.Vendor.ToString(), cell.Noc);
-				if(!siteDetails_UIMode.Contains("outage")) {
+				if(!siteDetails_UIMode.Contains("outage"))
 					row["COOS"] = cell.COOS ? "YES" : "No";
-					row["Locked"] = cell.Locked ? "YES" : "No";
-				}
+				row["Locked"] = cell.Locked ? "YES" : "No";
 			}
 			
 			return table.DefaultView;
+		}
+		
+		DataGridViewCheckBoxColumn addCheckBoxColumn() {
+			DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();
+			chkColumn.Name = "CheckBoxes";
+			chkColumn.HeaderText = "";
+			chkColumn.ThreeState = false;
+			chkColumn.FalseValue = false;
+			chkColumn.TrueValue = true;
+			chkColumn.Width = 50;
+			chkColumn.ToolTipText = "Cells Included in Outage\n\nSelect/Unselect all";
+			dataGridView1.Columns.Insert(0, chkColumn);
+			
+			Rectangle rect = dataGridView1.GetCellDisplayRectangle(0, -1, true);
+			
+//			rect.Y = 3;
+//			rect.X = rect.Location.X + (rect.Width / 4);
+			CheckBox checkboxHeader = new CheckBox();
+			checkboxHeader.BackColor = Color.Transparent;
+			checkboxHeader.Name = "checkboxHeader";
+//			dataGridView1.Columns[0].HeaderCell.ToolTipText = "Cells Included in Outage\n\nSelect/Unselect all";
+			checkboxHeader.Size = new Size(18, 18);
+			checkboxHeader.Location = new Point(rect.X + 2 + ((rect.Width - checkboxHeader.Width) / 2),
+			                                    rect.Y + 1 + ((rect.Height - checkboxHeader.Height) / 2));
+			checkboxHeader.CheckedChanged += datagridViewCheckBoxHeaderCell_OnCheckBoxClicked;
+			dataGridView1.Controls.Add(checkboxHeader);
+			
+			return chkColumn;
+		}
+		
+		void datagridViewCheckBoxHeaderCell_OnCheckBoxClicked(object sender, EventArgs e)
+		{
+			CheckBox cb = sender as CheckBox;
+
+			foreach(DataGridViewRow dgvr in dataGridView1.Rows) {
+				DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
+				
+				cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
+			}
 		}
 		
 		void GMapKeyDown(object sender, KeyEventArgs e)
@@ -524,29 +653,38 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
-			if(dataGridView1.Columns[e.ColumnIndex].Name == "Locked" || dataGridView1.Columns[e.ColumnIndex].Name == "COOS")
-				e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
-			
-			if(dataGridView1.Columns[e.ColumnIndex].Name == "Cell Name") {
-				if(!string.IsNullOrEmpty(e.Value.ToString())) {
-					string cellPrefix = e.Value.ToString();
-					if(cellPrefix.EndsWith("W") || cellPrefix.EndsWith("X") || cellPrefix.EndsWith("Y"))
-						cellPrefix = cellPrefix.Substring(0, cellPrefix.Length - 2);
-					cellPrefix = cellPrefix.RemoveDigits();
-					if(cellPrefix.StartsWith("T"))
-						cellPrefix = cellPrefix.Substring(1);
-					string prefixDescription = string.Empty;
-					List<string> temp = Resources.Cells_Prefix.Split('\n').ToList();
-					string tempStr = temp.Find(s => s.StartsWith(cellPrefix));
-					if(!string.IsNullOrEmpty(tempStr)) {
-						string[] strTofind = { " - " };
-						prefixDescription = tempStr.Split(strTofind, StringSplitOptions.None)[1];
+			switch(dataGridView1.Columns[e.ColumnIndex].Name) {
+				case "Locked": case "COOS":
+					e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
+					break;
+				case "Cell Name":
+					if(!string.IsNullOrEmpty(e.Value.ToString())) {
+						string cellPrefix = e.Value.ToString();
+						if(cellPrefix.EndsWith("W") || cellPrefix.EndsWith("X") || cellPrefix.EndsWith("Y"))
+							cellPrefix = cellPrefix.Substring(0, cellPrefix.Length - 2);
+						cellPrefix = cellPrefix.RemoveDigits();
+						if(cellPrefix.StartsWith("T"))
+							cellPrefix = cellPrefix.Substring(1);
+						string prefixDescription = string.Empty;
+						List<string> temp = Resources.Cells_Prefix.Split('\n').ToList();
+						string tempStr = temp.Find(s => s.StartsWith(cellPrefix));
+						if(!string.IsNullOrEmpty(tempStr)) {
+							string[] strTofind = { " - " };
+							prefixDescription = tempStr.Split(strTofind, StringSplitOptions.None)[1];
+						}
+						
+						dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText = cellPrefix;
+						if(!string.IsNullOrEmpty(prefixDescription))
+							dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText += Environment.NewLine + prefixDescription;
 					}
-					
-					dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText = cellPrefix;
-					if(!string.IsNullOrEmpty(prefixDescription))
-						dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText += Environment.NewLine + prefixDescription;
-				}
+					break;
+				case "CheckBoxes":
+					if(currentOutage.AffectedCells.FindIndex(s => s.Name == dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].Value.ToString()) > -1) {
+						e.CellStyle.BackColor = Color.LightGreen;
+						DataGridViewCheckBoxCell cell = dataGridView1[e.ColumnIndex, e.RowIndex] as DataGridViewCheckBoxCell;
+						cell.Value = cell.TrueValue;
+					}
+					break;
 			}
 		}
 
@@ -679,12 +817,15 @@ namespace appCore.SiteFinder.UI
 		}
 
 		void searchResultsPopulate() {
+			if(currentOutage != null)
+				foundSites = currentOutage.AffectedSites;
+			
 			foreach (Site site in foundSites) {
 				listView2.Items.Add(new ListViewItem(new[]{ site.Id, site.JVCO_Id, site.Priority, site.Host, site.PostCode }));
 				
-				foreach (ColumnHeader col in listView2.Columns)
-					col.Width = -2;
-				listView2.ResumeLayout();
+//				foreach (ColumnHeader col in listView2.Columns)
+//					col.Width = -2;
+//				listView2.ResumeLayout();
 				
 				markersOverlay.Markers.Add(site.MapMarker);
 			}
@@ -732,6 +873,8 @@ namespace appCore.SiteFinder.UI
 				                                   });
 				
 				Action actionNonThreaded = new Action(delegate {
+				                                      	if(siteDetails_UIMode.Contains("multi"))
+				                                      		siteDetails_UIMode = "single";
 				                                      	if(currentSite.Exists) {
 				                                      		selectedSiteDetailsPopulate();
 				                                      		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
@@ -790,33 +933,36 @@ namespace appCore.SiteFinder.UI
 
 		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			if(listView2_EventCount == 0)
-				listView2_EventCount++;
-			else {
-				if(listView2.SelectedItems.Count > 0) {
-					if(currentSite != null)
-						foundSites[foundSites.FindIndex(s => s.Id == currentSite.Id)] = currentSite;
-					
-					currentSite = foundSites[listView2.SelectedItems[0].Index];
-					
-					selectedSiteDetailsPopulate();
-					if(listView2_EventCount == 1) {
-						foreach(GMapMarker marker in markersOverlay.Markers) {
-							if(marker.Tag.ToString() == textBox1.Text) {
-								myMap.Position = marker.Position;
-								myMap.Zoom = 14;
-								break;
-							}
-						}
-					}
-					MainMenu.siteFinder_Toggle(currentSite.Exists);
-				}
-				else {
-					myMap.ZoomAndCenterMarkers(markersOverlay.Id);
-				}
-				if(listView2_EventCount == 1)
-					listView2_EventCount--;
+//			if(listView2_EventCount == 0)
+//				listView2_EventCount++;
+//			else {
+			if(listView2.SelectedItems.Count > 0) {
+//					if(currentSite != null)
+//						foundSites[foundSites.FindIndex(s => s.Id == currentSite.Id)] = currentSite;
+				
+				currentSite = foundSites[listView2.SelectedItems[0].Index];
+				
+				selectedSiteDetailsPopulate();
+//					if(listView2_EventCount == 1) {
+				
+//						foreach(GMapMarker marker in markersOverlay.Markers) {
+//							if(marker.Tag.ToString() == textBox1.Text) {
+//								myMap.Position = marker.Position;
+//								myMap.Zoom = 14;
+//								break;
+//							}
+//						}
+//					}
+				
+				myMap.Position = markersOverlay.Markers.First(m => m.Tag.ToString() == textBox1.Text).Position;
+				myMap.Zoom = 14;
+				MainMenu.siteFinder_Toggle(currentSite.Exists);
 			}
+			else
+				myMap.ZoomAndCenterMarkers(markersOverlay.Id);
+//				if(listView2_EventCount == 1)
+//					listView2_EventCount--;
+//			}
 		}
 
 		void LoadDisplayOiDataTable(object sender, EventArgs e) {

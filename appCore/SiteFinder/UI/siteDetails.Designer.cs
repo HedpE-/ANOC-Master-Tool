@@ -227,7 +227,7 @@ namespace appCore.SiteFinder.UI
 			this.textBox5.MaxLength = 5;
 			this.textBox5.Name = "textBox5";
 			this.textBox5.ReadOnly = true;
-			this.textBox5.Size = new System.Drawing.Size(140, 20);
+			this.textBox5.Size = new System.Drawing.Size(156, 20);
 			this.textBox5.TabIndex = 89;
 			// 
 			// label7
@@ -245,7 +245,7 @@ namespace appCore.SiteFinder.UI
 			this.textBox8.MaxLength = 5;
 			this.textBox8.Name = "textBox8";
 			this.textBox8.ReadOnly = true;
-			this.textBox8.Size = new System.Drawing.Size(34, 20);
+			this.textBox8.Size = new System.Drawing.Size(43, 20);
 			this.textBox8.TabIndex = 91;
 			// 
 			// checkBox1
@@ -311,12 +311,12 @@ namespace appCore.SiteFinder.UI
 			this.textBox6.MaxLength = 5;
 			this.textBox6.Name = "textBox6";
 			this.textBox6.ReadOnly = true;
-			this.textBox6.Size = new System.Drawing.Size(140, 20);
+			this.textBox6.Size = new System.Drawing.Size(156, 20);
 			this.textBox6.TabIndex = 93;
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(457, 82);
+			this.label5.Location = new System.Drawing.Point(464, 82);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(50, 20);
 			this.label5.TabIndex = 96;
@@ -325,11 +325,11 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox7
 			// 
-			this.textBox7.Location = new System.Drawing.Point(508, 82);
+			this.textBox7.Location = new System.Drawing.Point(515, 82);
 			this.textBox7.MaxLength = 5;
 			this.textBox7.Name = "textBox7";
 			this.textBox7.ReadOnly = true;
-			this.textBox7.Size = new System.Drawing.Size(53, 20);
+			this.textBox7.Size = new System.Drawing.Size(62, 20);
 			this.textBox7.TabIndex = 95;
 			// 
 			// pictureBox1
@@ -374,7 +374,7 @@ namespace appCore.SiteFinder.UI
 			this.textBox10.MaxLength = 5;
 			this.textBox10.Name = "textBox10";
 			this.textBox10.ReadOnly = true;
-			this.textBox10.Size = new System.Drawing.Size(140, 20);
+			this.textBox10.Size = new System.Drawing.Size(156, 20);
 			this.textBox10.TabIndex = 113;
 			// 
 			// label11
@@ -396,7 +396,7 @@ namespace appCore.SiteFinder.UI
 			this.listView2.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listView2.Location = new System.Drawing.Point(5, 247);
 			this.listView2.Name = "listView2";
-			this.listView2.Size = new System.Drawing.Size(556, 102);
+			this.listView2.Size = new System.Drawing.Size(572, 102);
 			this.listView2.TabIndex = 115;
 			this.listView2.UseCompatibleStateImageBehavior = false;
 			this.listView2.View = System.Windows.Forms.View.Details;
@@ -415,16 +415,16 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label16
 			// 
-			this.label16.Location = new System.Drawing.Point(749, 28);
+			this.label16.Location = new System.Drawing.Point(766, 28);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(293, 20);
+			this.label16.Size = new System.Drawing.Size(319, 20);
 			this.label16.TabIndex = 137;
 			this.label16.Text = "Key Information";
 			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// amtTextBox2
 			// 
-			this.amtTextBox2.Location = new System.Drawing.Point(625, 82);
+			this.amtTextBox2.Location = new System.Drawing.Point(642, 82);
 			this.amtTextBox2.MaxLength = 5;
 			this.amtTextBox2.Name = "amtTextBox2";
 			this.amtTextBox2.ReadOnly = true;
@@ -433,7 +433,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(567, 106);
+			this.label8.Location = new System.Drawing.Point(584, 106);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(52, 20);
 			this.label8.TabIndex = 134;
@@ -442,7 +442,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox3
 			// 
-			this.amtTextBox3.Location = new System.Drawing.Point(625, 107);
+			this.amtTextBox3.Location = new System.Drawing.Point(642, 107);
 			this.amtTextBox3.MaxLength = 5;
 			this.amtTextBox3.Name = "amtTextBox3";
 			this.amtTextBox3.ReadOnly = true;
@@ -451,7 +451,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label13
 			// 
-			this.label13.Location = new System.Drawing.Point(567, 81);
+			this.label13.Location = new System.Drawing.Point(584, 81);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(52, 20);
 			this.label13.TabIndex = 131;
@@ -460,7 +460,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox7
 			// 
-			this.amtTextBox7.Location = new System.Drawing.Point(625, 57);
+			this.amtTextBox7.Location = new System.Drawing.Point(642, 57);
 			this.amtTextBox7.MaxLength = 5;
 			this.amtTextBox7.Name = "amtTextBox7";
 			this.amtTextBox7.ReadOnly = true;
@@ -469,7 +469,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label18
 			// 
-			this.label18.Location = new System.Drawing.Point(567, 57);
+			this.label18.Location = new System.Drawing.Point(584, 57);
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(42, 20);
 			this.label18.TabIndex = 139;
@@ -479,7 +479,7 @@ namespace appCore.SiteFinder.UI
 			// richTextBox1
 			// 
 			this.richTextBox1.DetectUrls = false;
-			this.richTextBox1.Location = new System.Drawing.Point(749, 57);
+			this.richTextBox1.Location = new System.Drawing.Point(766, 57);
 			this.richTextBox1.Name = "richTextBox1";
 			this.richTextBox1.ReadOnly = true;
 			this.richTextBox1.Size = new System.Drawing.Size(319, 70);
@@ -490,7 +490,7 @@ namespace appCore.SiteFinder.UI
 			// button1
 			// 
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(1044, 32);
+			this.button1.Location = new System.Drawing.Point(1061, 32);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(24, 20);
 			this.button1.TabIndex = 145;
@@ -500,7 +500,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// checkBox4
 			// 
-			this.checkBox4.Location = new System.Drawing.Point(596, 28);
+			this.checkBox4.Location = new System.Drawing.Point(613, 28);
 			this.checkBox4.Name = "checkBox4";
 			this.checkBox4.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.checkBox4.Size = new System.Drawing.Size(69, 24);
@@ -511,7 +511,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// checkBox5
 			// 
-			this.checkBox5.Location = new System.Drawing.Point(671, 28);
+			this.checkBox5.Location = new System.Drawing.Point(688, 28);
 			this.checkBox5.Name = "checkBox5";
 			this.checkBox5.Size = new System.Drawing.Size(81, 24);
 			this.checkBox5.TabIndex = 147;
@@ -525,14 +525,14 @@ namespace appCore.SiteFinder.UI
 			this.dataGridView1.AllowUserToDeleteRows = false;
 			this.dataGridView1.AllowUserToResizeColumns = false;
 			this.dataGridView1.AllowUserToResizeRows = false;
-			this.dataGridView1.AlwaysVisibleVScrollBar = false;
+			this.dataGridView1.AlwaysVisibleVScrollBar = true;
 			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.Location = new System.Drawing.Point(5, 247);
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.RowHeadersVisible = false;
-			this.dataGridView1.Size = new System.Drawing.Size(556, 488);
+			this.dataGridView1.Size = new System.Drawing.Size(572, 488);
 			this.dataGridView1.TabIndex = 148;
 			this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
 			// 
@@ -572,7 +572,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1074, 741);
+			this.ClientSize = new System.Drawing.Size(1091, 741);
 			this.Controls.Add(this.listView2);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.checkBox6);
