@@ -32,15 +32,26 @@ namespace appCore.UI
 		
 		public AMTDataGridView() {
 			this.VerticalScrollBar.VisibleChanged += VerticalScrollBar_VisibleChanged;
+			this.VerticalScrollBar.SizeChanged += VerticalScrollBar_SizeChanged;
 		}
 		
 		void VerticalScrollBar_VisibleChanged(object sender, EventArgs e) {
 			if(alwaysVisibleVScrollBar && !VerticalScrollBar.Visible)
 				VerticalScrollBar.Visible = true;
+			
 			if(VerticalScrollBar.Visible) {
-				VerticalScrollBar.Location = new System.Drawing.Point(Width - VerticalScrollBar.Width, 0);
-				VerticalScrollBar.SetBounds(VerticalScrollBar.Location.X, VerticalScrollBar.Location.Y, VerticalScrollBar.Width, Height);
+				VerticalScrollBar.Location = new System.Drawing.Point(Width - VerticalScrollBar.Width - 1, 1);
+				VerticalScrollBar.Height = Height - 2;
+				VerticalScrollBar.SetBounds(VerticalScrollBar.Location.X, VerticalScrollBar.Location.Y, VerticalScrollBar.Width, VerticalScrollBar.Height);
 			}
+		}
+		
+		void VerticalScrollBar_SizeChanged(object sender, EventArgs e) {
+			this.VerticalScrollBar.SizeChanged -= VerticalScrollBar_SizeChanged;
+			VerticalScrollBar.Location = new System.Drawing.Point(Width - VerticalScrollBar.Width - 1, 1);
+			VerticalScrollBar.Height = Height - 2;
+			VerticalScrollBar.SetBounds(VerticalScrollBar.Location.X, VerticalScrollBar.Location.Y, VerticalScrollBar.Width, VerticalScrollBar.Height);
+			this.VerticalScrollBar.SizeChanged += VerticalScrollBar_SizeChanged;
 		}
 	}
 }
