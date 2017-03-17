@@ -46,7 +46,6 @@ namespace appCore.SiteFinder.UI
 		ToolStripMenuItem lockUnlockCellsToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
 		
 		public Control parentControl {
 			get;
@@ -117,8 +116,6 @@ namespace appCore.SiteFinder.UI
 							listView2.Visible = true;
 						listView2.Items.Clear();
 						label12.Top = 352;
-						if(Settings.CurrentUser.Role == "Shift Leader")
-							MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
 						textBox1.ReadOnly = true;
 						break;
 				}
@@ -728,11 +725,6 @@ namespace appCore.SiteFinder.UI
 			cb.Checked = !cb.Checked;
 		}
 
-		void ShowSitesPerTech(object sender, EventArgs e)
-		{
-			
-		}
-
 		void bulkSiteSearchMenuItemClick(object sender, EventArgs e)
 		{
 			AMTRichTextBox sitesList_tb = new AMTRichTextBox();
@@ -1153,12 +1145,6 @@ namespace appCore.SiteFinder.UI
 			lockedCellsPageToolStripMenuItem.Name = "lockedCellsPageToolStripMenuItem";
 			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
 			lockedCellsPageToolStripMenuItem.Click += OpenLockedCells;
-			// 
-			// sitesPerTechToolStripMenuItem
-			// 
-			sitesPerTechToolStripMenuItem.Name = "sitesPerTechToolStripMenuItem";
-			sitesPerTechToolStripMenuItem.Text = "Show Sites Per Tech...";
-			sitesPerTechToolStripMenuItem.Click += ShowSitesPerTech;
 		}
 //
 //		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
