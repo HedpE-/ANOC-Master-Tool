@@ -746,10 +746,10 @@ namespace appCore.SiteFinder
 			if(Exists && Cells.Count > 0) {
 				List<OiCell> list = new List<OiCell>();
 				
-				List<Thread> threads = new List<Thread>();
-				int finishedThreadsCount = 0;
-				Thread thread;
-				thread = new Thread(() => {
+//				List<Thread> threads = new List<Thread>();
+//				int finishedThreadsCount = 0;
+//				Thread thread;
+//				thread = new Thread(() => {
 //				                    	string resp = OiConnection.requestApiOutput("cells", Id, 2);
 //
 //				                    	try {
@@ -789,16 +789,19 @@ namespace appCore.SiteFinder
 				                    		cell.VENDOR = row[8].ToString();
 				                    		cell.NOC = row[9].ToString();
 				                    		cell.COOS = row[10].ToString();
-//				                    		cell.JVCO_ID = row[11].ToString();
+				                    		string[] attr = row[11].ToString().Split('/');
+				                    		cell.JVCO_ID = attr[1];
 //				                    		cell.LOCK = Convert.ToInt16(row[12]);
-				                    		cell.LOCKED = row[11].ToString();
+				                    		cell.LOCKED = attr[0];
 				                    		list.Add(cell);
 				                    	}
 				                    	
-				                    	finishedThreadsCount++;
-				                    });
-				thread.Name = "getOiCellsState_2G";
-				threads.Add(thread);
+//				                    	finishedThreadsCount++;
+//				                    });
+//				thread.Name = "getOiCellsState_2G";
+////				threads.Add(thread);
+//				thread.SetApartmentState(ApartmentState.STA);
+//				thread.Start();
 				
 //				thread = new Thread(() => {
 //				                    	string resp = OiConnection.requestApiOutput("cells", Id, 3);
@@ -830,12 +833,12 @@ namespace appCore.SiteFinder
 //				thread.Name = "getOiCellsState_4G";
 //				threads.Add(thread);
 				
-				foreach(Thread th in threads) {
-					th.SetApartmentState(ApartmentState.STA);
-					th.Start();
-				}
+//				foreach(Thread th in threads) {
+//					th.SetApartmentState(ApartmentState.STA);
+//					th.Start();
+//				}
 				
-				while(finishedThreadsCount < threads.Count) { }
+//				while(finishedThreadsCount < 1) { }
 				
 				foreach (Cell cell in Cells) {
 					OiCell oiCell = list.Find(s => s.CELL_NAME == cell.Name);
@@ -845,8 +848,9 @@ namespace appCore.SiteFinder
 						cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
 						cell.CoosFlagTimestamp = DateTime.Now;
 					}
-					CellsStateTimestamp = DateTime.Now;
 				}
+				
+				CellsStateTimestamp = DateTime.Now;
 //				if(string.IsNullOrEmpty(indexPhp))
 //					indexPhp = OiConnection.requestPhpOutput("index", Id, string.Empty);
 				

@@ -311,8 +311,8 @@ namespace appCore.Toolbox
 				default:
 					descendantNodes = table.Descendants("th");
 					break;
-			}			
-			
+			}
+//			int lockedColumnIndex;
 			foreach (HtmlNode node in descendantNodes) {
 				if(node.InnerText.Contains("Date") || node.InnerText.Contains("Scheduled") || node.InnerText == "Arrived" || node.InnerText == "Planned Finish" || node.InnerText == "Departed Site" || node.InnerText == "Time")
 					dt.Columns.Add(node.InnerText, typeof(DateTime));
@@ -335,8 +335,16 @@ namespace appCore.Toolbox
 						
 						if(node.InnerText == "&nbsp;")
 							tableRow.Add(string.Empty);
-						else
-							tableRow.Add(node.InnerText);
+						else {
+							if(tableName.Contains("_cells ") && tableRow.Count == dt.Columns["&nbsp;"].Ordinal) {
+								HtmlNode input = node.FirstChild;
+								var checkd = input.Attributes.Contains("checked") ? "Y" : "";
+								var jvco = input.Attributes["data-jvco"].Value;
+								tableRow.Add(checkd + '/' + jvco);
+							}
+							else
+								tableRow.Add(node.InnerText);
+						}
 					}
 				}
 				
