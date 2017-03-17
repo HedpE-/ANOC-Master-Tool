@@ -287,7 +287,7 @@ namespace appCore.Toolbox
 		/// </summary>
 		/// <param name="html">HTML returned from OI</param>
 		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits", "table_checkbox_availability"</param>
-		public static DataTable ConvertHtmlTabletoDataTable(string html, string tableName) {
+		public static DataTable ConvertHtmlTableToDT(string html, string tableName) {
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
@@ -297,16 +297,22 @@ namespace appCore.Toolbox
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
 			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
 			IEnumerable<HtmlNode> descendantNodes = null;
-			if(tableName.Contains("availability")) {
-				descendantNodes = table.SelectSingleNode("/table[1]/thead[1]/tr[1]").ChildNodes; // "/table[1]/thead[1]/tr[1]"
-				descendantNodes = descendantNodes.Where(item => item.Name == "td");
-			}
-			else {
-				if(tableName == "table_ca")
+			switch(tableName) {
+				case "table_checkbox_availability":
+					descendantNodes = table.SelectSingleNode("/table[1]/thead[1]/tr[1]").ChildNodes; // "/table[1]/thead[1]/tr[1]"
+					descendantNodes = descendantNodes.Where(item => item.Name == "td");
+					break;
+				case "table_ca":
 					descendantNodes = table.Descendants("thead").First().Descendants("th");
-				else
+					break;
+				case "table_checkbox_cells 2G": case "table_checkbox_cells 3G": case "table_checkbox_cells 4G":
+					descendantNodes = table.Descendants("thead").First().Descendants("tr").First().Descendants("td");
+					break;
+				default:
 					descendantNodes = table.Descendants("th");
-			}
+					break;
+			}			
+			
 			foreach (HtmlNode node in descendantNodes) {
 				if(node.InnerText.Contains("Date") || node.InnerText.Contains("Scheduled") || node.InnerText == "Arrived" || node.InnerText == "Planned Finish" || node.InnerText == "Departed Site" || node.InnerText == "Time")
 					dt.Columns.Add(node.InnerText, typeof(DateTime));
@@ -317,10 +323,11 @@ namespace appCore.Toolbox
 			}
 			
 			// Build DataTable
-			descendantNodes = table.Descendants("tr");
-			foreach (HtmlNode tr in descendantNodes) {
+			
+			descendantNodes = tableName.Contains("_cells ") ? table.Descendants("tbody").First().Descendants("tr") : table.Descendants("tr");
+			foreach(HtmlNode tr in descendantNodes) {
 				List<string> tableRow = new List<string>();
-				if(tr.Name != "#text") {
+				if(tr.Name != "#text" && tr.ParentNode.Name != "thead") {
 					var childNodes = tr.ChildNodes;
 					foreach(var node in childNodes) {
 						if(node.Name != "td")
@@ -335,14 +342,14 @@ namespace appCore.Toolbox
 				
 				if(tableRow.Count > 0) {
 					DataRow dataRow = dt.NewRow();
-					for(int c = 0;c < tableRow.Count;c++) {
-						if(c < dataRow.ItemArray.Count()) {
-							if(dt.Columns[c].DataType == typeof(DateTime)) {
-								if(!string.IsNullOrWhiteSpace(tableRow[c]))
-									dataRow[c] = Convert.ToDateTime(tableRow[c]);
+					for(int i = 0;i < tableRow.Count;i++) {
+						if(i < dataRow.ItemArray.Count()) {
+							if(dt.Columns[i].DataType == typeof(DateTime)) {
+								if(!string.IsNullOrWhiteSpace(tableRow[i]))
+									dataRow[i] = Convert.ToDateTime(tableRow[i]);
 							}
 							else {
-								dataRow[c] = tableRow[c];
+								dataRow[i] = tableRow[i];
 							}
 						}
 					}

@@ -481,8 +481,8 @@ namespace appCore.SiteFinder
 //						                           		}
 //						                           	}
 //						                           	else {
-						                           		Availability = FetchAvailability(null);
-						                           		updateCOOS();
+						                           	Availability = FetchAvailability(null);
+						                           	updateCOOS();
 //						                           	}
 						                           	isUpdatingAvailability = false;
 						                           	finishedThreadsCount++;
@@ -649,7 +649,7 @@ namespace appCore.SiteFinder
 //			string response = OiConnection.requestPhpOutput("sitevisit", Id, 90);
 			string response = OiConnection.requestPhpOutput("visits", Id);
 			if(!string.IsNullOrEmpty(response) && !response.Contains("No site visits")) {
-				DataTable dt = Tools.ConvertHtmlTabletoDataTable(response, "table_visits");
+				DataTable dt = Tools.ConvertHtmlTableToDT(response, "table_visits");
 				foreach(DataRow row in dt.Rows) {
 					BookIn bookin = new BookIn();
 					bookin.Site = row[0].ToString();
@@ -686,7 +686,7 @@ namespace appCore.SiteFinder
 			DataTable dt = new DataTable();
 			string response = OiConnection.requestPhpOutput("ca", Id);
 			if(!string.IsNullOrEmpty(response)) {
-				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_ca");
+				dt = Tools.ConvertHtmlTableToDT(response, "table_ca");
 				AvailabilityTimestamp = DateTime.Now;
 			}
 			return dt;
@@ -735,7 +735,7 @@ namespace appCore.SiteFinder
 				
 				HtmlNode table = doc.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
 				
-				LockedCellsDetails = Tools.ConvertHtmlTabletoDataTable("<table>" + table.InnerHtml + "</table>", string.Empty);
+				LockedCellsDetails = Tools.ConvertHtmlTableToDT("<table>" + table.InnerHtml + "</table>", string.Empty);
 			}
 			else
 				LockedCellsDetails = new DataTable();
@@ -750,37 +750,85 @@ namespace appCore.SiteFinder
 				int finishedThreadsCount = 0;
 				Thread thread;
 				thread = new Thread(() => {
-				                    	string resp = OiConnection.requestApiOutput("cells", Id, 2);
-				                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-				                    	foreach(JObject jObj in jSon.data)
-				                    		list.Add(jObj.ToObject<OiCell>());
+//				                    	string resp = OiConnection.requestApiOutput("cells", Id, 2);
+//
+//				                    	try {
+//				                    		var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+//				                    		foreach(JObject jObj in jSon.data)
+//				                    			list.Add(jObj.ToObject<OiCell>());
+//				                    	}
+//				                    	catch { }
+				                    	
+				                    	string resp = OiConnection.requestApiOutput("cells-html", Id);
+				                    	DataTable dt = null;
+				                    	for(int c = 2;c <= 4;c++) {
+				                    		string tableName = "table_checkbox_cells " + c + "G";
+				                    		if(resp.Contains("id=" + '"' + tableName + '"')) {
+				                    			DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
+				                    			if(tempDT.Rows.Count > 0) {
+				                    				if(dt == null)
+				                    					dt = tempDT;
+				                    				else {
+				                    					foreach(DataRow row in tempDT.Rows)
+				                    						dt.Rows.Add(row.ItemArray);
+				                    				}
+				                    			}
+				                    		}
+				                    	}
+				                    	
+				                    	foreach(DataRow row in dt.Rows) {
+				                    		OiCell cell = new OiCell();
+				                    		cell.SITE = row[0].ToString();
+				                    		cell.BEARER = row[1].ToString();
+				                    		cell.CELL_NAME = row[2].ToString();
+				                    		cell.CELL_ID = row[3].ToString();
+				                    		cell.LAC_TAC = row[4].ToString();
+				                    		cell.BSC_RNC_ID = row[5].ToString();
+				                    		cell.ENODEB_ID = row[6].ToString();
+				                    		cell.WBTS_BCF = row[7].ToString();
+				                    		cell.VENDOR = row[8].ToString();
+				                    		cell.NOC = row[9].ToString();
+				                    		cell.COOS = row[10].ToString();
+//				                    		cell.JVCO_ID = row[11].ToString();
+//				                    		cell.LOCK = Convert.ToInt16(row[12]);
+				                    		cell.LOCKED = row[11].ToString();
+				                    		list.Add(cell);
+				                    	}
 				                    	
 				                    	finishedThreadsCount++;
 				                    });
 				thread.Name = "getOiCellsState_2G";
 				threads.Add(thread);
 				
-				thread = new Thread(() => {
-				                    	string resp = OiConnection.requestApiOutput("cells", Id, 3);
-				                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-				                    	foreach(JObject jObj in jSon.data)
-				                    		list.Add(jObj.ToObject<OiCell>());
-				                    	
-				                    	finishedThreadsCount++;
-				                    });
-				thread.Name = "getOiCellsState_2G";
-				threads.Add(thread);
-				
-				thread = new Thread(() => {
-				                    	string resp = OiConnection.requestApiOutput("cells", Id, 4);
-				                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-				                    	foreach(JObject jObj in jSon.data)
-				                    		list.Add(jObj.ToObject<OiCell>());
-				                    	
-				                    	finishedThreadsCount++;
-				                    });
-				thread.Name = "getOiCellsState_2G";
-				threads.Add(thread);
+//				thread = new Thread(() => {
+//				                    	string resp = OiConnection.requestApiOutput("cells", Id, 3);
+//
+//				                    	try {
+//				                    		var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+//				                    		foreach(JObject jObj in jSon.data)
+//				                    			list.Add(jObj.ToObject<OiCell>());
+//				                    	}
+//				                    	catch { }
+//
+//				                    	finishedThreadsCount++;
+//				                    });
+//				thread.Name = "getOiCellsState_3G";
+//				threads.Add(thread);
+//
+//				thread = new Thread(() => {
+//				                    	string resp = OiConnection.requestApiOutput("cells", Id, 4);
+//
+//				                    	try {
+//				                    		var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
+//				                    		foreach(JObject jObj in jSon.data)
+//				                    			list.Add(jObj.ToObject<OiCell>());
+//				                    	}
+//				                    	catch { }
+//
+//				                    	finishedThreadsCount++;
+//				                    });
+//				thread.Name = "getOiCellsState_4G";
+//				threads.Add(thread);
 				
 				foreach(Thread th in threads) {
 					th.SetApartmentState(ApartmentState.STA);

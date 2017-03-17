@@ -820,7 +820,7 @@ namespace appCore.SiteFinder.UI
 				resp = OiConnection.requestPhpOutput("ca", sites);
 				
 				try {
-					dt = Toolbox.Tools.ConvertHtmlTabletoDataTable(resp, "table_ca");
+					dt = Toolbox.Tools.ConvertHtmlTableToDT(resp, "table_ca");
 				}
 				catch { }
 			}

@@ -333,8 +333,8 @@ namespace appCore.OI.JSON
 		public string VENDOR { get; set; }
 		public string NOC { get; set; }
 		public string COOS { get; set; }
-		public string JVCO_ID { get; set; }
-		public int LOCK { get; set; }
+//		public string JVCO_ID { get; set; }
+//		public int LOCK { get; set; }
 		public string LOCKED { get; set; }
 	}
 	
