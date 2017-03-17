@@ -42,6 +42,7 @@ namespace appCore.Templates.UI
 		ToolStripMenuItem generateSitesListToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem outageFollowUpToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateFromSitesListToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
 		
 		int paddingLeftRight = 1;
 		public int PaddingLeftRight {
@@ -74,6 +75,7 @@ namespace appCore.Templates.UI
 					Alarms_ReportLabel.Text = "Generated Outage Report";
 					
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(copyToClipboardToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add(generateSitesListToolStripMenuItem);
@@ -86,6 +88,7 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(generateFromSitesListToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(generateSitesListToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add(copyToClipboardToolStripMenuItem);
@@ -97,7 +100,8 @@ namespace appCore.Templates.UI
 						clearToolStripMenuItem.Enabled =
 						copyToClipboardToolStripMenuItem.Enabled =
 						generateSitesListToolStripMenuItem.Enabled =
-						outageFollowUpToolStripMenuItem.Enabled = false;
+						outageFollowUpToolStripMenuItem.Enabled =
+						sitesPerTechToolStripMenuItem.Enabled = false;
 				}
 			}
 		}
@@ -286,6 +290,15 @@ namespace appCore.Templates.UI
 			LoadingPanel load = new LoadingPanel();
 			load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 //			Toolbox.Tools.darkenBackgroundForm(action, true, Toolbox.Tools.getParentForm(this));
+		}
+
+		void ShowSitesPerTech(object sender, EventArgs e)
+		{
+			Action action = new Action(delegate {
+			                           	
+			                                      });
+			LoadingPanel load = new LoadingPanel();
+			load.Show(action, this);
 		}
 
 		void IncludeListForm_cbCheckedChanged(object sender, EventArgs e)
@@ -584,6 +597,12 @@ namespace appCore.Templates.UI
 			outageFollowUpToolStripMenuItem.Name = "outageFollowUpToolStripMenuItem";
 			outageFollowUpToolStripMenuItem.Text = "Outage Follow Up";
 			outageFollowUpToolStripMenuItem.Click += OutageFollowUp;
+			// 
+			// sitesPerTechToolStripMenuItem
+			// 
+			sitesPerTechToolStripMenuItem.Name = "sitesPerTechToolStripMenuItem";
+			sitesPerTechToolStripMenuItem.Text = "Show Sites Per Tech...";
+			sitesPerTechToolStripMenuItem.Click += ShowSitesPerTech;
 			// 
 			// Alarms_ReportLabel
 			// 
