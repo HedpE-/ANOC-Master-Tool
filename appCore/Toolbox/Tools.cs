@@ -338,9 +338,13 @@ namespace appCore.Toolbox
 						else {
 							if(tableName.Contains("_cells ") && tableRow.Count == dt.Columns["&nbsp;"].Ordinal) {
 								HtmlNode input = node.FirstChild;
-								var checkd = input.Attributes.Contains("checked") ? "Y" : "";
-								var jvco = input.Attributes["data-jvco"].Value;
-								tableRow.Add(checkd + '/' + jvco);
+								if(input != null) {
+									var checkd = input.Attributes.Contains("checked") ? "Y" : "";
+									var jvco = input.Attributes["data-jvco"].Value;
+									tableRow.Add(checkd + '/' + jvco);
+								}
+								else
+									tableRow.Add(string.Empty);
 							}
 							else
 								tableRow.Add(node.InnerText);

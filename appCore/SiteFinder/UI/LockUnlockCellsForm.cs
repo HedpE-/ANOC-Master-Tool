@@ -730,7 +730,7 @@ namespace appCore.SiteFinder.UI
 				
 				if(noCellsStateSites.Count > 0) {
 					FetchAvailability(noCellsStateSites);
-//					FetchCellsState(noCellsStateSites);
+					FetchCellsState(noCellsStateSites);
 				}
 				
 				lb.SetSelected(0, true);
@@ -740,54 +740,42 @@ namespace appCore.SiteFinder.UI
 		void FetchCellsState(IEnumerable<string> sites) {
 			List<OiCell> list = new List<OiCell>();
 			
-			List<Thread> threads = new List<Thread>();
-			int finishedThreadsCount = 0;
-			Thread thread;
-			thread = new Thread(() => {
-			                    	string resp = OiConnection.requestApiOutput("cells", sites, 2);
-			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-			                    	foreach(JObject jObj in jSon.data) {
-			                    		OiCell oc = jObj.ToObject<OiCell>();
-			                    		list.Add(oc);
-			                    	}
-			                    	
-			                    	finishedThreadsCount++;
-			                    });
-			thread.Name = "getOiCellsState_2G";
-			threads.Add(thread);
 			
-			thread = new Thread(() => {
-			                    	string resp = OiConnection.requestApiOutput("cells", sites, 3);
-			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-			                    	foreach(JObject jObj in jSon.data) {
-			                    		OiCell oc = jObj.ToObject<OiCell>();
-			                    		list.Add(oc);
-			                    	}
-			                    	
-			                    	finishedThreadsCount++;
-			                    });
-			thread.Name = "getOiCellsState_2G";
-			threads.Add(thread);
-			
-			thread = new Thread(() => {
-			                    	string resp = OiConnection.requestApiOutput("cells", sites, 4);
-			                    	var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-			                    	foreach(JObject jObj in jSon.data) {
-			                    		OiCell oc = jObj.ToObject<OiCell>();
-			                    		list.Add(oc);
-			                    	}
-			                    	
-			                    	finishedThreadsCount++;
-			                    });
-			thread.Name = "getOiCellsState_2G";
-			threads.Add(thread);
-			
-			foreach(Thread th in threads) {
-				th.SetApartmentState(ApartmentState.STA);
-				th.Start();
+			string resp = OiConnection.requestApiOutput("cells-html", sites);
+			DataTable dt = null;
+			for(int c = 2;c <= 4;c++) {
+				string tableName = "table_checkbox_cells " + c + "G";
+				if(resp.Contains("id=" + '"' + tableName + '"')) {
+					DataTable tempDT = Toolbox.Tools.ConvertHtmlTableToDT(resp, tableName);
+					if(tempDT.Rows.Count > 0) {
+						if(dt == null)
+							dt = tempDT;
+						else {
+							foreach(DataRow row in tempDT.Rows)
+								dt.Rows.Add(row.ItemArray);
+						}
+					}
+				}
 			}
 			
-			while(finishedThreadsCount < threads.Count) { }
+			foreach(DataRow row in dt.Rows) {
+				OiCell cell = new OiCell();
+				cell.SITE = row[0].ToString();
+				cell.BEARER = row[1].ToString();
+				cell.CELL_NAME = row[2].ToString();
+				cell.CELL_ID = row[3].ToString();
+				cell.LAC_TAC = row[4].ToString();
+				cell.BSC_RNC_ID = row[5].ToString();
+				cell.ENODEB_ID = row[6].ToString();
+				cell.WBTS_BCF = row[7].ToString();
+				cell.VENDOR = row[8].ToString();
+				cell.NOC = row[9].ToString();
+				cell.COOS = row[10].ToString();
+				string[] attr = row[11].ToString().Split('/');
+				cell.JVCO_ID = attr[1];
+				cell.LOCKED = attr[0];
+				list.Add(cell);
+			}
 			
 			foreach(string siteStr in sites) {
 				int siteIndex = cellsLockedSites.FindIndex(s => s.Id == siteStr);
