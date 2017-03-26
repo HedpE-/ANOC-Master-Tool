@@ -82,7 +82,7 @@ namespace appCore.Shifts
 				g.DrawString("Agents:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
 				previousRectBottomCoord = rectangle.Bottom;
 				
-				filteredList = sameShiftRows.Where(s => s.Role == "Agent").ToList();
+				filteredList = sameShiftRows.Where(s => s.Role != "Shift Leader").ToList();
 				for(int c = 1;c <= filteredList.Count;c++) {
 					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
 					wholeShiftString += filteredList[c - 1].Name + '\t';
