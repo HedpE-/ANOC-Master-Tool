@@ -145,16 +145,17 @@ namespace appCore.UI {
 		///B - UMTS2100 Micro
 		///C - UMTS2100 Pico
 		///D - DCS1800 Macro
-		///F - Polecat
+		///F - LTE800 Pico
 		///G - GSM900 Macro
 		///H - UMTS900 Pico
-		///I - GSM900 Indoor
+		///I - GSM900 Pico
 		///J - Premier Paging
 		///K - Select Paging
 		///L - Flex Paging
 		///M - UMTS900 Macro
 		///N - LTE800 Macro
-		///P - DCS1800 Indoor
+		///O - LTE800 Micro
+		///P - DCS1800 Pico
 		///Q - LTE2600 Macro
 		///R - LTE2600 Pico
 		///S - GSM900 Micro
@@ -162,9 +163,13 @@ namespace appCore.UI {
 		///V - UMTS2100 Femto
 		///W - UMTS2100 Macro
 		///X - Paknet
+		///Y - LTE2600 Micro
 		///Z - TACS
 		///ZE - LTE2100 Macro
-		///ZK - LTE2100 Pico.
+		///ZF - LTE1800 Macro
+		///ZG - LTE1800 Pico
+		///ZH - LTE1800 Femto
+		///ZI [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Cells_Prefix {
 			get {
