@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.AccountManagement;
 using System.IO;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,14 +35,16 @@ namespace Launcher
 		static void Main(string[] args)
 		{
 			// Check if in VF computer
-			UserPrincipal current = UserPrincipal.Current;
-			if (!current.SamAccountName.Contains("Caramelos") && current.SamAccountName != "Hugo Gonçalves")
+			WindowsIdentity currentUser = WindowsIdentity.GetCurrent();
+//			UserPrincipal current = UserPrincipal.Current;
+//			if (!current.SamAccountName.Contains("Caramelos") && current.SamAccountName != "Hugo Gonçalves")
+			if (!currentUser.Name.Contains("Caramelos") && currentUser.Name.Split('\\')[1] != "Hugo Gonçalves")
 			{
 				Domain dom;
 				try
 				{
 					dom = Domain.GetComputerDomain();
-					if (dom.Name != "internal.vodafone.com")
+					if(dom.Name != "internal.vodafone.com")
 					{
 						MessageBox.Show("ANOC Master Tool not running in VF computer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						Environment.Exit(1);
@@ -51,8 +54,10 @@ namespace Launcher
 				{
 					if (ex is ActiveDirectoryObjectNotFoundException)
 					{
-						MessageBox.Show("ANOC Master Tool not running in VF computer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						Environment.Exit(1);
+						if(!currentUser.Name.Split('\\')[0].StartsWith("VF-")) {
+							MessageBox.Show("ANOC Master Tool not running in VF computer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							Environment.Exit(1);
+						}
 					}
 				}
 			}
@@ -240,39 +245,22 @@ namespace Launcher
 			trayIcon.ShowBalloonTip(10000);
 		}
 
-		static bool getNetworkAccess(string dirPath, bool throwIfFails = false)
+		static bool getNetworkAccess(string dirPath)
 		{
-			var task = new Task(() =>
+			var task = new Task<bool>(() =>
 			                    {
 			                    	try
 			                    	{
-			                    		File.Create(dirPath, 1, FileOptions.DeleteOnClose);
+			                    		File.Create(dirPath, 1024, FileOptions.DeleteOnClose);
+			                    		return true;
 			                    	}
-			                    	catch { }
+			                    	catch { return false; }
 			                    });
 			task.Start();
 
-			networkAccess = task.Wait(10 * 1000);
-			task.Dispose();
-
-			//			var networkAccessCheck = new Thread(() => {
-			//			                                    	try {
-			//			                                    		File.Create(dirPath, 1, FileOptions.DeleteOnClose);
-			//			                                    		networkAccess = true;
-			//			                                    	} catch {
-			//			                                    		if (throwIfFails) {
-			//			                                    			throw;
-			//			                                    		}
-			//			                                    	}
-			//			                                    });
-			//			networkAccessCheck.IsBackground = true;
-			//			networkAccessCheck.Start();
-			//			if (!networkAccessCheck.Join(TimeSpan.FromSeconds(10))) {
-			//				try {
-			//					networkAccessCheck.Abort();
-			//				}
-			//				catch(ThreadAbortException) { }
-			//			}
+			networkAccess = task.Wait(TimeSpan.FromSeconds(10)) && task.Result;
+//			task.Dispose();
+			
 			return networkAccess;
 		}
 	}
