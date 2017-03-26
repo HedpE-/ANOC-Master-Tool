@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -46,7 +47,7 @@ namespace appCore
 		public static OutageControls OutageUI = new OutageControls();
 		public static LogsCollection<Template> logFiles = new LogsCollection<Template>();
 		public static ShiftsCalendar shiftsCalendar;
-		static Label TicketCountLabel = new Label();
+		public static Label TicketCountLabel = new Label();
 		
 		EricssonScriptsControls ericssonScriptsControls = new EricssonScriptsControls();
 		NokiaScriptsControls nokiaScriptsControls = new NokiaScriptsControls();
@@ -54,7 +55,7 @@ namespace appCore
 		
 		public MainForm(NotifyIcon tray, string[] args)
 		{
-//			args = new [] { "-otherUser", "SILVABT" }; // HACK: force login with another user
+//			args = new [] { "-otherUser", "CUNHAPM1" }; // HACK: force login with another user
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			GlobalProperties.resolveOfficePath();
 			
@@ -73,7 +74,8 @@ namespace appCore
 			
 			string otherUser = string.Empty;
 			if(args.Contains("-otherUser"))
-				try { otherUser = args[Array.FindIndex(args, str => str.Equals("-otherUser")) + 1]; } catch {}
+				try { otherUser = args[Array.FindIndex(args, str => str.Equals("-otherUser")) + 1].ToUpper(); } catch {}
+			
 			CurrentUser.InitializeUserProperties(otherUser);
 			
 			SplashForm.UpdateLabelText("Setting User Settings");
@@ -84,6 +86,17 @@ namespace appCore
 			
 			InitializeComponent();
 			panel1.BackColor = CurrentUser.UserName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
+			if(!string.IsNullOrEmpty(otherUser)) {
+				Label otherUserLabel = new Label();
+				otherUserLabel.Name = "otherUserLabel";
+				otherUserLabel.Text = "Logged on as " + otherUser;
+				otherUserLabel.Font = new Font("Courier New", 12F, FontStyle.Bold);
+				otherUserLabel.AutoSize = true;
+				otherUserLabel.Location = new Point(0, (tabPage1.Height + tabPage1.Bounds.X) - otherUserLabel.Height);
+				otherUserLabel.BackColor = Color.FromArgb(150, Color.LightGray);
+				otherUserLabel.ForeColor = Color.Red;
+				tabPage1.Controls.Add(otherUserLabel);
+			}
 			
 			string img = SettingsFile.BackgroundImage;
 			
@@ -130,13 +143,9 @@ namespace appCore
 				butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
 				butt2.Text = "Update OI DB Files";
 				butt2.AutoSize = true;
-				butt2.Click += delegate {
-					Thread t = new Thread(() => { Databases.UpdateSourceDBFiles(); });
-					t.Name = "UpdateSourceDBFiles_MainFormButton";
-					t.SetApartmentState(ApartmentState.STA);
-					t.Start();
-				};
+				butt2.Click += UpdateDbFilesButtonClick;
 				tabPage1.Controls.Add(butt2);
+				
 				if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "Caramelos") {
 					Button butt = new Button();
 					butt.Name = "butt";
@@ -147,29 +156,30 @@ namespace appCore
 //						tabControl1.SelectTab(6);
 //						OutageUI = new OutageControls();
 //						tabPage17.Controls.Add(OutageUI);
-						string input = Microsoft.VisualBasic.Interaction.InputBox("sites");
-						string resp = OI.OiConnection.requestApiOutput("availability", input.Split(','));
-						
-						Availability jSon = null;
-						try {
-							jSon = JsonConvert.DeserializeObject<Availability>(resp);
+//						string input = Microsoft.VisualBasic.Interaction.InputBox("sites");
+//						string resp = OI.OiConnection.requestApiOutput("availability", input.Split(','));
+//
+//						Availability jSon = null;
+//						try {
+//							jSon = JsonConvert.DeserializeObject<Availability>(resp);
 //						AvailabilityTimestamp = DateTime.Now;
-						}
-						catch { }
+//						}
+//						catch { }
 						
-						System.Data.DataTable dt = jSon.ToDataTable();
+//						System.Data.DataTable dt = jSon.ToDataTable();
 						
 //						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
-						var sites = SitesDB.getSites(input.Split(',').ToList());
-						foreach(var site in sites) {
-							var drs = dt.Rows.Cast<System.Data.DataRow>().Where(s => s["Site"].ToString() == site.Id);
-							if(drs.Any()) {
-								site.Availability = dt.Clone();
-								foreach(var row in drs)
-									site.Availability.Rows.Add(row.ItemArray);
-							}
-						}
+//						var sites = SitesDB.getSites(input.Split(',').ToList());
+//						foreach(var site in sites) {
+//							var drs = dt.Rows.Cast<System.Data.DataRow>().Where(s => s["Site"].ToString() == site.Id);
+//							if(drs.Any()) {
+//								site.Availability = dt.Clone();
+//								foreach(var row in drs)
+//									site.Availability.Rows.Add(row.ItemArray);
+//							}
+//						}
 //						updateCOOS();
+						
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
 						
@@ -255,8 +265,11 @@ namespace appCore
 			
 			Databases.PopulateDatabases();
 			
-			comboBox1.Items.AddRange(new []{ "CBV", CurrentUser.ClosureCode });
-			comboBox1.Text = CurrentUser.ClosureCode;
+			string closureCode = CurrentUser.ClosureCode;
+			if(!string.IsNullOrEmpty(closureCode))
+				comboBox1.Items.Add(closureCode);
+			comboBox1.Items.Add("CBV");
+			comboBox1.Text = closureCode;
 			
 			GlobalProperties.siteFinder_mainswitch = false;
 			GlobalProperties.siteFinder_mainswitch = Databases.all_sites.Exists || Databases.all_cells.Exists;
@@ -264,12 +277,12 @@ namespace appCore
 			if((CurrentUser.Department.Contains("1st Line RAN") || CurrentUser.Department.Contains("First Line Operations")) && Databases.shiftsFile.Exists) {
 				string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], DateTime.Now.Month);
 				
-				if(monthShifts.Length > 0) {
-					pictureBox6.Visible = true;
-					shiftsCalendar = new ShiftsCalendar();
-					shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
-					tabPage1.Controls.Add(shiftsCalendar);
-				}
+//				if(monthShifts.Length > 0) {
+				pictureBox6.Visible = true;
+				shiftsCalendar = new ShiftsCalendar();
+				shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
+				tabPage1.Controls.Add(shiftsCalendar);
+//				}
 			}
 			
 			// TODO: get sites list from alarms
@@ -445,6 +458,25 @@ namespace appCore
 				}
 			}
 			finally {}
+		}
+		
+		void UpdateDbFilesButtonClick(object sender, EventArgs e) {
+			Thread t = new Thread(() => {
+			                      	Button butt2 = sender as Button;
+			                      	
+			                      	butt2.Invoke((MethodInvoker)delegate {
+			                      	             	butt2.Enabled = false;
+			                      	             });
+			                      	
+			                      	Databases.UpdateSourceDBFiles();
+			                      	
+			                      	butt2.Invoke((MethodInvoker)delegate {
+			                      	             	butt2.Enabled = true;
+			                      	             });
+			                      });
+			t.Name = "UpdateSourceDBFiles_MainFormButton";
+			t.SetApartmentState(ApartmentState.STA);
+			t.Start();
 		}
 
 		void Button6Click(object sender, EventArgs e)
