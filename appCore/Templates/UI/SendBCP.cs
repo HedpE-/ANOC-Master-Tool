@@ -79,7 +79,7 @@ namespace appCore.Templates.UI
 		void Button3Click(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new appCore.UI.AMTLargeTextForm(textBox4.Text,label5.Text,true);
+			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox4.Text,label5.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox4.Text = enlarge.finaltext;

@@ -210,24 +210,11 @@ namespace appCore.OI
 		/// <summary>
 		/// Requests data from OI APIs
 		/// </summary>
-		/// <param name="API">sites-information", "cells", "incidents", "changes", "visits", "alarms", "availability", "access"</param>
+		/// <param name="API">"sites-information", "labels-html", "cells-html", "summary", "access", "temperature", "availability-Html", "incidents", "changes", "visits", "alarms", "touchpoint", "zenpm"</param>
 		/// <param name="site">Site number</param>
 		/// <param name="bearer">Bearer</param>
 		public static string requestApiOutput(string API, string site, int bearer = 4)
 		{
-//			InitiateOiConnection();
-//			if(LoggedOn) {
-//				client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
-//				client.CookieContainer = OICookieContainer;
-//				client.Proxy = Proxy;
-//				IRestRequest request = new RestRequest(string.Format("/api/sitelopedia/get-{0}", API), Method.POST);
-//				request.AddParameter("siteNumbers", site);
-//				request.AddParameter("range", string.Empty);
-//				request.AddParameter("bearer", bearer);
-//				IRestResponse response = client.Execute(request);
-//				
-//				return response.Content;
-//			}
 			List<string> siteList = new List<string>();
 			siteList.Add(site);
 			return requestApiOutput(API, siteList, bearer);
@@ -236,7 +223,7 @@ namespace appCore.OI
 		/// <summary>
 		/// Requests bulk data from OI APIs
 		/// </summary>
-		/// <param name="API">"sites-information", "cells", "incidents", "changes", "visits", "alarms", "availability", "access"</param>
+		/// <param name="API">"sites-information", "labels-html", "cells-html", "summary", "access", "temperature", "availability-Html", "incidents", "changes", "visits", "alarms", "touchpoint", "zenpm"</param>
 		/// <param name="site">Site number</param>
 		/// <param name="bearer">Bearer</param>
 		public static string requestApiOutput(string API, IEnumerable<string> sitesList, int bearer = 4)
