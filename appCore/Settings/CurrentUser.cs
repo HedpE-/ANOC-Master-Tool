@@ -50,7 +50,7 @@ namespace appCore.Settings
 		}
 		public static string Role {
 			get {
-				return DB.Databases.shiftsFile.getRole(FullName[1] + " " + FullName[0]);
+				return DB.Databases.shiftsFile.GetRole(FullName[1] + " " + FullName[0]);
 			}
 			set { }
 		}
@@ -58,7 +58,7 @@ namespace appCore.Settings
 		static string OtherUser;
 		static UserPrincipal ActiveDirectoryUser;
 
-		public static void InitializeUserProperties(string logonAsOtherUser = "")
+		public static void InitializeUserProperties(string logonAsOtherUser)
 		{
 			OtherUser = logonAsOtherUser;
 			UserName = GetUserDetails("Username");
@@ -93,7 +93,7 @@ namespace appCore.Settings
 					}
 				}
 			}
-			if (detail != null)
+			if(!string.IsNullOrEmpty(detail))
 			{
 				switch (detail)
 				{
@@ -104,9 +104,9 @@ namespace appCore.Settings
 							return "Gonçalves, Hugo";
 						return ActiveDirectoryUser.DisplayName;
 					case "Username":
-						return ActiveDirectoryUser.SamAccountName;
+						return ActiveDirectoryUser.SamAccountName.ToUpper();
 					case "Department":
-						if (ActiveDirectoryUser.SamAccountName.Contains("Caramelos"))
+						if (ActiveDirectoryUser.SamAccountName.Contains("CARAMELOS"))
 							return "1st Line RAN";
 						else
 						{
