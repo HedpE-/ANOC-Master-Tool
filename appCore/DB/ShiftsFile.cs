@@ -73,7 +73,17 @@ namespace appCore.DB
 			private set;
 		}
 		
-		public List<string> Agents {
+		public List<string> RAN {
+			get;
+			private set;
+		}
+		
+		public List<string> TEF {
+			get;
+			private set;
+		}
+		
+		public List<string> External {
 			get;
 			private set;
 		}
@@ -110,28 +120,58 @@ namespace appCore.DB
 				SortAlphabetLength alphaLen = new SortAlphabetLength();
 				monthRanges.Sort(alphaLen);
 				
-				bool slListEnd = false;
-				foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
-					if(cell.Value != null) {
-						if(cell.Text != "Closure Code") {
-							if(!slListEnd) {
-								if(ShiftLeaders == null)
-									ShiftLeaders = new List<string>();
-								ShiftLeaders.Add(cell.Offset(0, 2).Text);
-							}
-							else {
-								if(Agents == null)
-									Agents = new List<string>();
-								Agents.Add(cell.Offset(0, 2).Text);
-								LastRow = cell.Start.Row;
-							}
-						}
-					}
-					else {
-						if(!slListEnd && cell.Offset(0, 2).Value != null)
-							slListEnd = cell.Offset(0, 2).Text == "Morning";
-					}
+				var currentCell = package.Workbook.Worksheets[1].Cells["a:a"].FirstOrDefault(c => c.Text == "Closure Code").Offset(2, 0);
+//					package.Workbook.Worksheets[1].Cells[rangeStartCell + ":a"].FirstOrDefault(c => string.IsNullOrEmpty(c.Text)).Address];
+				while(!string.IsNullOrEmpty(currentCell.Text)) {
+					if(ShiftLeaders == null)
+						ShiftLeaders = new List<string>();
+					ShiftLeaders.Add(currentCell.Offset(0, 2).Text);
+					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
 				}
+				while(string.IsNullOrEmpty(currentCell.Text)) {
+					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				}
+				while(!string.IsNullOrEmpty(currentCell.Text)) {
+					if(TEF == null)
+						TEF = new List<string>();
+					TEF.Add(currentCell.Offset(0, 2).Text);
+					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				}
+				currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				while(!string.IsNullOrEmpty(currentCell.Text)) {
+					if(External == null)
+						External = new List<string>();
+					External.Add(currentCell.Offset(0, 2).Text);
+					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				}
+				currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				while(!string.IsNullOrEmpty(currentCell.Text)) {
+					if(RAN == null)
+						RAN = new List<string>();
+					RAN.Add(currentCell.Offset(0, 2).Text);
+					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				}
+//				foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
+//					if(cell.Value != null) {
+//						if(cell.Text != "Closure Code") {
+//							if(!slListEnd) {
+//								if(ShiftLeaders == null)
+//									ShiftLeaders = new List<string>();
+//								ShiftLeaders.Add(cell.Offset(0, 2).Text);
+//							}
+//							else {
+//								if(RAN == null)
+//									RAN = new List<string>();
+//								RAN.Add(cell.Offset(0, 2).Text);
+//								LastRow = cell.Start.Row;
+//							}
+//						}
+//					}
+//					else {
+//						if(!slListEnd && cell.Offset(0, 2).Value != null)
+//							slListEnd = cell.Offset(0, 2).Text == "Morning";
+//					}
+//				}
 			}
 			Year = year;
 			if(package.File.FullName.Contains(UserFolder.TempFolder.FullName))
@@ -140,29 +180,47 @@ namespace appCore.DB
 		
 		public string GetShift(string name, DateTime date) {
 			int personRow = FindPersonRow(name);
-			foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace('1','3')]) {
-				if(cell.Value != null) {
-					if(cell.Text == date.Day.ToString())
-						return package.Workbook.Worksheets[1].Cells[personRow, cell.Start.Column].Text;
+			if(personRow > 0) {
+				foreach(var cell in package.Workbook.Worksheets[1].Cells[monthRanges[date.Month - 1].ToString().Replace('1','3')]) {
+					if(cell.Value != null) {
+						if(cell.Text == date.Day.ToString())
+							return package.Workbook.Worksheets[1].Cells[personRow, cell.Start.Column].Text;
+					}
 				}
-//				else
-//					return string.Empty;
 			}
 			return string.Empty;
 		}
 		
-		public string[] GetAllShiftsInMonth(string name, int month) {
-			List<string> list = new List<string>();
+		public string[] GetShiftsRange(string name, DateTime startDate, DateTime endDate) {
 			int personRow = FindPersonRow(name);
-			var personRange = package.Workbook.Worksheets[1].Cells[monthRanges[month - 1].ToString().Replace("1",personRow.ToString())];
-			for(int c = personRange.Start.Column;c <= personRange.End.Column;c++) {
-				var cell = package.Workbook.Worksheets[1].Cells[personRow, c];
-				if(cell.Value == null)
-					list.Add(string.Empty);
-				else
-					list.Add(cell.Text);
+			var shiftsRange = package.Workbook.Worksheets[1].Cells[FindDayColumn(startDate) + personRow + ":" +
+			                                                       FindDayColumn(endDate) + personRow];
+			
+			List<string> shifts = new List<string>();
+			
+			foreach(var cell in shiftsRange) {
+				if(cell.Value != null)
+					shifts.Add(cell.Text);
 			}
-			return list.ToArray();
+			
+			return shifts.ToArray();
+		}
+		
+		public string[] GetAllShiftsInMonth(string name, int month) {
+			List<string> list = null;
+			int personRow = FindPersonRow(name);
+			if(personRow > 0) {
+				list = new List<string>();
+				var personRange = package.Workbook.Worksheets[1].Cells[monthRanges[month - 1].ToString().Replace("1",personRow.ToString())];
+				for(int c = personRange.Start.Column;c <= personRange.End.Column;c++) {
+					var cell = package.Workbook.Worksheets[1].Cells[personRow, c];
+					if(cell.Value == null)
+						list.Add(string.Empty);
+					else
+						list.Add(cell.Text);
+				}
+			}
+			return list == null ? null : list.ToArray();
 		}
 		
 		public List<SingleShift> GetWholeShift(string shift, DateTime date) {
@@ -231,12 +289,20 @@ namespace appCore.DB
 			return 0;
 		}
 		
-		public string getRole(string name) {
-			int personRow = FindPersonRow(name);
-			if(personRow > 3 && personRow < 12)
+		public string GetRole(string name) {
+			if(ShiftLeaders.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
 				return "Shift Leader";
 			
-			return "Agent";
+			if(TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+				return "TEF";
+			
+			if(External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+				return "External";
+			
+			if(RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+				return "RAN";
+			
+			return string.Empty;
 		}
 		
 		public string GetClosureCode(string name) {
