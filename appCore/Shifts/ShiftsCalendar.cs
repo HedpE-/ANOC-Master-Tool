@@ -89,19 +89,30 @@ namespace appCore.Shifts
 			shiftsPanel_icon.Location = new Point(5, 5);
 			Controls.Add(shiftsPanel_icon);
 			
-			PictureBox shiftsPanel_refresh = new PictureBox();
-			((System.ComponentModel.ISupportInitialize)(shiftsPanel_refresh)).BeginInit();
-			shiftsPanel_refresh.BackColor = Color.Gray;
-			shiftsPanel_refresh.Name = "shiftsPanel_refresh";
-			shiftsPanel_refresh.Size = new Size(16, 16);
-			shiftsPanel_refresh.Image = Resources.Replace_64;
-			shiftsPanel_refresh.SizeMode = PictureBoxSizeMode.StretchImage;
-			shiftsPanel_refresh.Parent = this;
-			shiftsPanel_refresh.Location = new Point(this.Width - 21, 5);
-			shiftsPanel_refresh.Click += shiftsPanel_refreshClick;
+			PictureBox shiftsPanel_swapShifts = new PictureBox();
+			((System.ComponentModel.ISupportInitialize)(shiftsPanel_swapShifts)).BeginInit();
+			shiftsPanel_swapShifts.BackColor = Color.Gray;
+			shiftsPanel_swapShifts.Name = "shiftsPanel_swapShifts";
+			shiftsPanel_swapShifts.Size = new Size(16, 16);
+			shiftsPanel_swapShifts.Image = Resources.Replace_64;
+			shiftsPanel_swapShifts.SizeMode = PictureBoxSizeMode.StretchImage;
+			shiftsPanel_swapShifts.Parent = this;
+			shiftsPanel_swapShifts.Location = new Point(this.Width - 21, 5);
+			shiftsPanel_swapShifts.Click += shiftsPanel_swapShiftsClick;
+			ToolTip toolTip = new ToolTip();
+			toolTip.AutoPopDelay = 600000;
+			toolTip.InitialDelay = 500;
+			toolTip.ReshowDelay = 500;
+			toolTip.ShowAlways = false; // Force the ToolTip text to be displayed whether or not the form is active.
+			toolTip.IsBalloon = true;
+			toolTip.UseAnimation = true;
+			toolTip.UseFading = false;
+			toolTip.BackColor = Color.White;
+			toolTip.ForeColor = Color.Firebrick;
+			toolTip.SetToolTip(shiftsPanel_swapShifts, "Request Shifts Swap");
 //			shiftsPanel_refresh.MouseLeave += (this.PictureBox5MouseLeave);
 //			shiftsPanel_refresh.MouseHover += (this.PictureBox5MouseHover);
-			Controls.Add(shiftsPanel_refresh);
+			Controls.Add(shiftsPanel_swapShifts);
 			Name = "ShiftsCalendar";
 //			this.MouseMove += shiftsPanel_MouseMove;
 //			http://www.codeproject.com/Articles/38436/Extended-Graphics-Rounded-rectangles-Font-metrics
@@ -189,16 +200,22 @@ namespace appCore.Shifts
 			if(loopFinished)
 				return;
 			
-//			string shift = Databases.shiftsFile.monthTables[shiftsChosenDate.Month - 1].Select("AbsName Like '" + CurrentUser.fullName[1].RemoveDiacritics().ToUpper() + "%' AND AbsName Like '%" + CurrentUser.fullName[0].RemoveDiacritics().ToUpper() + "'")[0]["Day" + shiftsChosenDate.Day].ToString();
 			string shift = Databases.shiftsFile.GetShift(PersonName, shiftsChosenDate);
-			if(string.IsNullOrEmpty(shift) || shift.StartsWith("H") || shift == "F")
-				return;
+			if(string.IsNullOrEmpty(shift) || shift.StartsWith("H") || shift == "F") {
+				if(DateTime.Now.Hour >= 0 && DateTime.Now.Hour < 8)
+					shift = "N";
+				else {
+					if(DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 16)
+						shift = "M";
+					else
+						shift = "A";
+				}
+			}
+//			if(string.IsNullOrEmpty(shift) || shift.StartsWith("H") || shift == "F")
+//				return;
 			
-//			DataRow[] sameShiftRows = getWholeShift(shiftsChosenDate);
 			List<SingleShift> sameShiftRows = Databases.shiftsFile.GetWholeShift(shift, shiftsChosenDate);
 			
-//			if(sameShiftRows == null)
-//				return;
 			if(sameShiftRows.Count == 0)
 				return;
 			
@@ -207,8 +224,21 @@ namespace appCore.Shifts
 			popup.Show(this);
 		}
 		
-		void shiftsPanel_refreshClick(object sender, EventArgs e)
+		void shiftsPanel_swapShiftsClick(object sender, EventArgs e)
 		{
+			if(CurrentUser.UserName == "GONCARJ3") {
+				var fc = Application.OpenForms.OfType<ShiftsSwapForm>().ToList();
+				
+				if(fc.Any()) {
+					fc[0].Activate();
+					return;
+				}
+				
+				ShiftsSwapForm ss = new ShiftsSwapForm();
+				ss.Show();
+			}
+			else
+				FlexibleMessageBox.Show("New feature coming soon...", "Request Shifts Swap", MessageBoxButtons.OK);
 			// FIXME: shiftsPanel_refreshClick disabled due to System.InvalidOperationException on this.Invalidate(true)
 			// System.InvalidOperationException: Cross-thread operation not valid: Control 'shiftsPanel' accessed from a thread other than the thread it was created on.
 
@@ -358,17 +388,3 @@ namespace appCore.Shifts
 		}
 	}
 }
-public enum Months : byte {
-	January,
-	February,
-	March,
-	April,
-	May,
-	June,
-	July,
-	August,
-	September,
-	October,
-	November,
-	December
-};
