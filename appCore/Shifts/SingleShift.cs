@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Linq;
 
 namespace appCore.Shifts
 {
@@ -38,11 +39,20 @@ namespace appCore.Shifts
 			Name = name;
 			Shift = shift;
 			Date = date;
-			if(DB.Databases.shiftsFile.ShiftLeaders.Contains(name))
+			if(DB.Databases.shiftsFile.ShiftLeaders.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
 				Role = "Shift Leader";
-			else
-				if(DB.Databases.shiftsFile.Agents.Contains(name))
-					Role = "Agent";
+			else {
+				if(DB.Databases.shiftsFile.TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+					Role = "TEF";
+				else {
+					if(DB.Databases.shiftsFile.External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+						Role = "External";
+					else {
+						if(DB.Databases.shiftsFile.RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+							Role = "RAN";
+					}
+				}
+			}
 		}
 	}
 }
