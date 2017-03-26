@@ -677,7 +677,7 @@ namespace appCore.SiteFinder.UI
 					break;
 				case "CheckBoxes":
 					if(currentOutage.AffectedCells.FindIndex(s => s.Name == dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].Value.ToString()) > -1) {
-						e.CellStyle.BackColor = Color.LightGreen;
+						e.CellStyle.BackColor = Color.OrangeRed;
 						DataGridViewCheckBoxCell cell = dataGridView1[e.ColumnIndex, e.RowIndex] as DataGridViewCheckBoxCell;
 						cell.Value = cell.TrueValue;
 					}
