@@ -7,9 +7,12 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Exchange.WebServices.Data;
+using appCore.UI;
 
 namespace appCore.Shifts
 {
@@ -26,17 +29,26 @@ namespace appCore.Shifts
 		public ShiftsSwapForm() {
 			InitializeComponent();
 			
-			if(Settings.CurrentUser.Role == "Shift Leader") {
-				foreach(string str in DB.Databases.shiftsFile.ShiftLeaders) {
-					comboBox1.Items.Add(str);
-					comboBox2.Items.Add(str);
-				}
+			List<string> list = null;
+			
+			switch(Settings.CurrentUser.Role) {
+				case "Shift Leader":
+					list = DB.Databases.shiftsFile.ShiftLeaders;
+					break;
+				case "TEF":
+					list = DB.Databases.shiftsFile.TEF;
+					break;
+				case "External":
+					list = DB.Databases.shiftsFile.External;
+					break;
+				case "RAN":
+					list = DB.Databases.shiftsFile.RAN;
+					break;
 			}
-			else {
-				foreach(string str in DB.Databases.shiftsFile.Agents) {
-					comboBox1.Items.Add(str);
-					comboBox2.Items.Add(str);
-				}
+			
+			foreach(string str in list) {
+				comboBox1.Items.Add(str);
+				comboBox2.Items.Add(str);
 			}
 			
 			
@@ -60,8 +72,8 @@ namespace appCore.Shifts
 			Controls.Add(requesterCalendar);
 			
 			requesterCalendar.BackColor = SystemColors.Control;
-			requesterCalendar.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
-			requesterCalendar.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
+			requesterCalendar.BordersToDraw = AMTRoundCornersPanel.Borders.None;
+			requesterCalendar.CornersToRound = AMTRoundCornersPanel.Corners.None;
 			requesterCalendar.DoubleBufferActive = false;
 			requesterCalendar.Location = new Point(3, 144);
 			requesterCalendar.Name = "requesterCalendar";
@@ -70,8 +82,8 @@ namespace appCore.Shifts
 			Controls.Add(swappedCalendar);
 			
 			swappedCalendar.BackColor = SystemColors.Control;
-			swappedCalendar.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
-			swappedCalendar.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.None;
+			swappedCalendar.BordersToDraw = AMTRoundCornersPanel.Borders.None;
+			swappedCalendar.CornersToRound = AMTRoundCornersPanel.Corners.None;
 			swappedCalendar.DoubleBufferActive = false;
 			swappedCalendar.Location = new Point(237, 144);
 			swappedCalendar.Name = "swappedCalendar";
@@ -102,71 +114,83 @@ namespace appCore.Shifts
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
-			NameResolutionCollection foundContacts = service.ResolveName(comboBox1.Text, ResolveNameSearchLocation.DirectoryOnly, true);
-			NameResolution requesterContact = null;
-			if(foundContacts.Count > 0) {
-				if(foundContacts.Count == 1)
-					requesterContact = foundContacts[0];
-				else {
-					foreach(NameResolution nr in foundContacts) {
-						if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
-							requesterContact = nr;
-							break;
-						}
-					}
-				}
-			}
-			foundContacts = service.ResolveName(comboBox2.Text, ResolveNameSearchLocation.DirectoryOnly, true);
-			NameResolution swapContact = null;
-			if(foundContacts.Count > 0) {
-				if(foundContacts.Count == 1)
-					swapContact = foundContacts[0];
-				else {
-					foreach(NameResolution nr in foundContacts) {
-						if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
-							swapContact = nr;
-							break;
-						}
-					}
-				}
-			}
-			foundContacts = service.ResolveName("Rui Gonçalves", ResolveNameSearchLocation.DirectoryOnly, true);
-			NameResolution approverContact = null;
-			if(foundContacts.Count > 0) {
-				if(foundContacts.Count == 1)
-					approverContact = foundContacts[0];
-				else {
-					foreach(NameResolution nr in foundContacts) {
-						if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
-							approverContact = nr;
-							break;
-						}
-					}
-				}
-			}
+			string[] requesterShifts = DB.Databases.shiftsFile.GetShiftsRange(comboBox1.Text, dateTimePicker1.Value, dateTimePicker2.Value);
+			string[] swappedShifts = DB.Databases.shiftsFile.GetShiftsRange(comboBox2.Text, dateTimePicker3.Value, dateTimePicker4.Value);
 			
-			EmailMessage message = new EmailMessage(service);
-			
-			message.Subject = "Troca de turno";
-			string body = "Interessado: " + comboBox1.Text + Environment.NewLine +
-				"Data início: " + dateTimePicker1.Value.ToString(dateTimePicker1.CustomFormat) + Environment.NewLine +
-				"Data fim: " + dateTimePicker2.Value.ToString(dateTimePicker2.CustomFormat) + Environment.NewLine +
-				"Troca com: " + comboBox2.Text + Environment.NewLine +
-				"Data início: " + dateTimePicker3.Value.ToString(dateTimePicker3.CustomFormat) + Environment.NewLine +
-				"Data fim: " + dateTimePicker4.Value.ToString(dateTimePicker4.CustomFormat);
-			
-			if(((int)(dateTimePicker2.Value - dateTimePicker1.Value).TotalDays) != ((int)(dateTimePicker4.Value - dateTimePicker3.Value).TotalDays)) {
-				
+			if(requesterShifts.SequenceEqual(swappedShifts)) {
+				FlexibleMessageBox.Show("Same shifts on the chosen days!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			
-			message.Body = new MessageBody(BodyType.Text, body);
-			message.ToRecipients.Add(approverContact.Mailbox);
-//			message.CcRecipients.Add(swapContact.Mailbox);
-			
-			message.SendAndSaveCopy();
-			
-			MainForm.trayIcon.showBalloon("Shift swap request sent", body);
+			Action action = new Action(delegate {
+			                           	NameResolutionCollection foundContacts = service.ResolveName(comboBox1.Text, ResolveNameSearchLocation.DirectoryOnly, true);
+			                           	NameResolution requesterContact = null;
+			                           	if(foundContacts.Count > 0) {
+			                           		if(foundContacts.Count == 1)
+			                           			requesterContact = foundContacts[0];
+			                           		else {
+			                           			foreach(NameResolution nr in foundContacts) {
+			                           				if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
+			                           					requesterContact = nr;
+			                           					break;
+			                           				}
+			                           			}
+			                           		}
+			                           	}
+			                           	foundContacts = service.ResolveName(comboBox2.Text, ResolveNameSearchLocation.DirectoryOnly, true);
+			                           	NameResolution swapContact = null;
+			                           	if(foundContacts.Count > 0) {
+			                           		if(foundContacts.Count == 1)
+			                           			swapContact = foundContacts[0];
+			                           		else {
+			                           			foreach(NameResolution nr in foundContacts) {
+			                           				if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
+			                           					swapContact = nr;
+			                           					break;
+			                           				}
+			                           			}
+			                           		}
+			                           	}
+			                           	foundContacts = service.ResolveName("Rui Gonçalves", ResolveNameSearchLocation.DirectoryOnly, true);
+			                           	NameResolution approverContact = null;
+			                           	if(foundContacts.Count > 0) {
+			                           		if(foundContacts.Count == 1)
+			                           			approverContact = foundContacts[0];
+			                           		else {
+			                           			foreach(NameResolution nr in foundContacts) {
+			                           				if(nr.Contact.CompanyName == "Vodafone Portugal" && (nr.Contact.Department.StartsWith("First Line Operations UK") || nr.Contact.Department.EndsWith("UK - RAN"))) {
+			                           					approverContact = nr;
+			                           					break;
+			                           				}
+			                           			}
+			                           		}
+			                           	}
+			                           	
+			                           	EmailMessage message = new EmailMessage(service);
+			                           	
+			                           	message.Subject = "Troca de turno";
+			                           	string body = "Interessado: " + comboBox1.Text + Environment.NewLine +
+			                           		"Data início: " + dateTimePicker1.Value.ToString(dateTimePicker1.CustomFormat) + Environment.NewLine +
+			                           		"Data fim: " + dateTimePicker2.Value.ToString(dateTimePicker2.CustomFormat) + Environment.NewLine +
+			                           		"Troca com: " + comboBox2.Text + Environment.NewLine +
+			                           		"Data início: " + dateTimePicker3.Value.ToString(dateTimePicker3.CustomFormat) + Environment.NewLine +
+			                           		"Data fim: " + dateTimePicker4.Value.ToString(dateTimePicker4.CustomFormat);
+			                           	
+			                           	if(((int)(dateTimePicker2.Value - dateTimePicker1.Value).TotalDays) != ((int)(dateTimePicker4.Value - dateTimePicker3.Value).TotalDays)) {
+			                           		
+			                           		return;
+			                           	}
+			                           	
+			                           	message.Body = new MessageBody(BodyType.Text, body);
+			                           	message.ToRecipients.Add(approverContact.Mailbox);
+//										message.CcRecipients.Add(swapContact.Mailbox);
+			                           	
+			                           	message.SendAndSaveCopy();
+			                           	
+			                           	MainForm.trayIcon.showBalloon("Shift swap request sent", body);
+			                           });
+			LoadingPanel load = new LoadingPanel();
+			load.Show(action, this);
 		}
 	}
 }
