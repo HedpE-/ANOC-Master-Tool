@@ -152,7 +152,6 @@ namespace appCore.Settings
 			UpdateLocalDBFilesCopy(true);
 			
 			LocalDbAutoUpdateTimer.Enabled = true;
-//				ResetAutoLocalUpdateTimer();
 		}
 		
 		public static bool Change(DirectoryInfo newFolder) {
@@ -324,17 +323,21 @@ namespace appCore.Settings
 				Thread thread;
 				thread = new Thread(() => {
 				                    	if(source_allsites.Exists) {
+				                    		bool updated = false;
 				                    		if(Databases.all_sites != null) {
 				                    			if(!Databases.all_sites.Exists || source_allsites.LastWriteTime > Databases.all_sites.LastWriteTime) {
 				                    				MainForm.trayIcon.showBalloon("Updating file", "Local all_sites.csv updating...");
 				                    				source_allsites.CopyTo(Databases.all_sites.FullName, true);
+				                    				updated = true;
 				                    			}
 				                    		}
 				                    		else {
 				                    			MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
 				                    			source_allsites.CopyTo(FullName + @"\all_sites.csv", true);
+				                    			updated = true;
 				                    		}
-				                    		MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully ");
+				                    		if(updated)
+				                    			MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully on your UserFolder.");
 				                    	}
 				                    	
 				                    	finishedThreadsCount++;
@@ -344,17 +347,21 @@ namespace appCore.Settings
 				
 				thread = new Thread(() => {
 				                    	if(source_allcells.Exists) {
+				                    		bool updated = false;
 				                    		if(Databases.all_cells != null) {
 				                    			if(!Databases.all_cells.Exists || source_allcells.LastWriteTime > Databases.all_cells.LastWriteTime) {
 				                    				MainForm.trayIcon.showBalloon("Updating file", "Local all_cells.csv updating...");
 				                    				source_allcells.CopyTo(Databases.all_cells.FullName, true);
+				                    				updated = true;
 				                    			}
 				                    		}
 				                    		else {
 				                    			MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
 				                    			source_allcells.CopyTo(FullName + @"\all_cells.csv", true);
+				                    			updated = true;
 				                    		}
-				                    		MainForm.trayIcon.showBalloon("Update complete", "Local all_cells.csv updated successfully on your UserFolder.");
+				                    		if(updated)
+				                    			MainForm.trayIcon.showBalloon("Update complete", "Local all_cells.csv updated successfully on your UserFolder.");
 				                    	}
 				                    	
 				                    	finishedThreadsCount++;
@@ -476,6 +483,10 @@ namespace appCore.Settings
 									try {
 										currentShiftsFile.Delete();
 										newestFile.CopyTo(FullName + "\\" + newestFile.Name, true);
+										string notificationText = currentShiftsFile.Name == newestFile.Name ?
+											"Changes found on the Shifts file, updated on your User Folder" :
+											"Next Shifts month available, copied to your User Folder";
+										MainForm.trayIcon.showBalloon("Shifts File updated", notificationText);
 									}
 									catch(Exception e) {
 										int errorCode = (int)(e.HResult & 0x0000FFFF);
@@ -490,8 +501,10 @@ namespace appCore.Settings
 								}
 							}
 						}
-						else
+						else {
 							newestFile.CopyTo(FullName + "\\" + newestFile.Name);
+							MainForm.trayIcon.showBalloon("Shifts File updated", "Shifts file copied to your User Folder");
+						}
 					}
 					if(DateTime.Now.Month == 12) {
 						if(newestNextYear != null) {
@@ -500,10 +513,13 @@ namespace appCore.Settings
 									if(DateTime.Now.Month != 12 && !newestNextYear.Name.Contains((DateTime.Now.Year + 1).ToString()))
 										currentNextYearShiftsFile.Delete();
 									newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name, true);
+									MainForm.trayIcon.showBalloon("Shifts File updated", "Changes found on the " + DateTime.Now.Year + 1 + " Shifts file, updated on your User Folder");
 								}
 							}
-							else
+							else {
 								newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name);
+								MainForm.trayIcon.showBalloon("Shifts File updated", DateTime.Now.Year + 1 + " Shifts file copied to your User Folder");
+							}
 						}
 					}
 				}
