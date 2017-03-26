@@ -1070,7 +1070,7 @@ namespace appCore.Templates.UI
 					case "ActiveAlarms":
 						if(currentSite.Alarms == null) {
 							currentSite.requestOIData("Alarms");
-							if(currentSite.Alarms == null) {
+							if(currentSite.Alarms != null) {
 								if(currentSite.Alarms.Count > 0) {
 									MainMenu.ActiveAlarmsButton.Enabled = true;
 									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
