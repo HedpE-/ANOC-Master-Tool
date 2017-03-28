@@ -57,7 +57,8 @@ namespace appCore.Templates.Types
 		public List<Cell> AffectedCells {
 			get {
 				if(affectedCells.Count == 0) {
-					List<string> list = VfGsmCells;
+					List<string> list = new List<string>();
+					list.AddRange(VfGsmCells);
 					list.AddRange(VfUmtsCells);
 					list.AddRange(VfLteCells);
 					list.AddRange(TefGsmCells);
