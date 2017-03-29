@@ -345,8 +345,8 @@ namespace appCore.SiteFinder.UI
 			                           	}
 			                           	else
 			                           		textBox1.Select();
-			                           	var t = myMap.Visible;
-			                           	System.Threading.Thread.Sleep(1);
+//			                           	var t = myMap.Visible;
+//			                           	System.Threading.Thread.Sleep(1);
 			                           });
 			
 			LoadingPanel load = new LoadingPanel();
