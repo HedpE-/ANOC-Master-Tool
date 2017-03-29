@@ -193,10 +193,11 @@ namespace appCore.SiteFinder.UI
 			MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
 			InitializeToolStripMenuItems();
 			
-			this.Name =
-				this.Text = "Outage Follow-up";
-			this.Controls.Add(myMap);
+			Name =
+				Text = "Outage Follow-up";
+			
 			myMap = drawGMap("myMap",true);
+			this.Controls.Add(myMap);
 			
 			if(outage != null) {
 				siteDetails_UIMode = "outage";
@@ -344,7 +345,8 @@ namespace appCore.SiteFinder.UI
 			                           	}
 			                           	else
 			                           		textBox1.Select();
-//			                           	if(dataGridView1.Controls.OfType<VScrollBar>().First().Visible)
+			                           	var t = myMap.Visible;
+			                           	System.Threading.Thread.Sleep(1);
 			                           });
 			
 			LoadingPanel load = new LoadingPanel();

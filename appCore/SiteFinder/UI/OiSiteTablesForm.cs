@@ -287,7 +287,7 @@ namespace appCore.SiteFinder.UI
 				case "BookIns":
 					if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived") {
 						if(Convert.ToDateTime(e.Value) <= DateTime.Now &&
-						   string.IsNullOrEmpty(dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value.ToString()))
+						   dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value == null)
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 					}
 					break;
