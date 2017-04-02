@@ -306,7 +306,7 @@ namespace appCore.Toolbox
 					descendantNodes = table.Descendants("thead").First().Descendants("th");
 					break;
 				case "table_checkbox_cells 2G": case "table_checkbox_cells 3G": case "table_checkbox_cells 4G":
-					descendantNodes = table.Descendants("thead").First().Descendants("tr").First().Descendants("td");
+					descendantNodes = table.Descendants("thead").First().Descendants("tr").First().Descendants("th");
 					break;
 				default:
 					descendantNodes = table.Descendants("th");
