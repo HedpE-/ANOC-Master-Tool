@@ -790,7 +790,7 @@ namespace appCore.SiteFinder
 				                    		cell.NOC = row[9].ToString();
 				                    		cell.COOS = row[10].ToString();
 				                    		string[] attr = row[11].ToString().Split('/');
-				                    		cell.JVCO_ID = attr[1];
+				                    		cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
 //				                    		cell.LOCK = Convert.ToInt16(row[12]);
 				                    		cell.LOCKED = attr[0];
 				                    		list.Add(cell);

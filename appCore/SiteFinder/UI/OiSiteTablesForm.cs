@@ -145,7 +145,9 @@ namespace appCore.SiteFinder.UI
 					dataGridView1.DataSource = Incidents;
 					break;
 				case "CRQs":
+					dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
 					dataGridView1.DataSource = Changes;
+					dataGridView1.RowTemplate.Height = 30;
 					break;
 				case "ActiveAlarms":
 					dataGridView1.DataSource = Alarms;
@@ -199,6 +201,13 @@ namespace appCore.SiteFinder.UI
 			}
 			
 			dataGridView1.ResumeLayout();
+			
+//			foreach(DataGridViewRow row in dataGridView1.Rows) {
+//				if(row.Height > 10) {
+//					dataGridView1.AutoResizeRow(row.Index, DataGridViewAutoSizeRowMode.RowHeader);
+//					row.Height = 10;
+//				}
+//			}
 		}
 		
 		void Button1Click(object sender, EventArgs e) {
@@ -283,6 +292,12 @@ namespace appCore.SiteFinder.UI
 								e.CellStyle.BackColor = System.Drawing.Color.Red;
 						}
 					}
+//					else {
+//						if(dataGridView1.Columns[e.ColumnIndex].Name == "Programme") {
+//							if(dataGridView1.Rows[e.RowIndex].Height > 10)
+//								dataGridView1.Rows[e.RowIndex].Height = 10;
+//						}
+//					}
 					break;
 				case "BookIns":
 					if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived") {
