@@ -380,7 +380,7 @@ namespace appCore.SiteFinder.UI
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
-			map.Location = new Point(dataGridView1.Right + 5, amtTextBox3.Bottom + 5);
+			map.Location = new Point(dataGridView1.Right + 5, amtTextBox1.Bottom + 5);
 			map.Size = new Size(button1.Right - map.Left, dataGridView1.Bottom - map.Top);
 			map.MapProvider = GoogleHybridMapProvider.Instance;
 			
@@ -423,6 +423,10 @@ namespace appCore.SiteFinder.UI
 				checkBox4.Checked = currentSite.Paknet_Fitted;
 				checkBox5.Checked = currentSite.Vodapage_Fitted;
 				richTextBox1.Text = currentSite.KeyInformation;
+				amtTextBox4.Text = currentSite.CramerData != null ? currentSite.CramerData.PocType : string.Empty;
+				amtTextBox5.Text = currentSite.CramerData != null ? currentSite.CramerData.OnwardSitesCount.ToString() : string.Empty;
+				button2.Enabled = currentSite.CramerData != null ? currentSite.CramerData.OnwardSitesCount > 0 : false;
+				amtTextBox6.Text = currentSite.CramerData != null ? currentSite.CramerData.TxLastMileRef : string.Empty;
 				lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
 				
 //				addCheckBoxColumn();
@@ -436,6 +440,12 @@ namespace appCore.SiteFinder.UI
 							TextBoxBase tb = ctr as TextBoxBase;
 							if(tb != null)
 								tb.Text = string.Empty;
+							else {
+								if(ctr.Name == "button2") {
+									Button btn = ctr as Button;
+									btn.Enabled = false;
+								}
+							}
 						}
 					}
 				}
@@ -839,6 +849,11 @@ namespace appCore.SiteFinder.UI
 				form.Controls["sitesList_tb"].Text = string.Empty;
 			form.Close();
 		}
+		
+		void Button2Click(object sender, EventArgs e)
+		{
+			
+		}
 
 		void siteFinder(object sender, KeyPressEventArgs e)
 		{
@@ -862,6 +877,8 @@ namespace appCore.SiteFinder.UI
 				                                   			dataToRequest += "CRQ";
 				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
 				                                   			dataToRequest += "PWR";
+				                                   		if(currentSite.CramerData == null)
+				                                   			dataToRequest += "Cramer";
 				                                   		currentSite.requestOIData(dataToRequest);
 				                                   	}
 				                                   });

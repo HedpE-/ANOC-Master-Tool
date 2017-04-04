@@ -167,6 +167,8 @@ namespace appCore
 //						catch { }
 						
 //						System.Data.DataTable dt = jSon.ToDataTable();
+						SiteFinder.Site site = SitesDB.getSite("864");
+						site.requestOIData("Cramer");
 						
 //						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
 //						var sites = SitesDB.getSites(input.Split(',').ToList());
@@ -183,8 +185,8 @@ namespace appCore
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
 						
-						ShiftsSwapForm ss = new ShiftsSwapForm();
-						ss.Show();
+//						ShiftsSwapForm ss = new ShiftsSwapForm();
+//						ss.Show();
 					};
 					Button butt3 = new Button();
 					butt3.Name = "butt3";

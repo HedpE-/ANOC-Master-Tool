@@ -332,6 +332,12 @@ namespace appCore.SiteFinder
 		public DateTime AvailabilityTimestamp;
 		[FieldHidden]
 		public bool isUpdatingAvailability;
+		[FieldHidden]
+		public CramerDetails CramerData;
+		[FieldHidden]
+		public DateTime CramerDataTimestamp;
+		[FieldHidden]
+		public bool isUpdatingCramerData;
 		
 		[FieldHidden]
 		public DataTable LockedCellsDetails;
@@ -412,7 +418,7 @@ namespace appCore.SiteFinder
 		/// <summary>
 		/// Populate with data pulled from OI
 		/// </summary>
-		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK"</param>
+		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK", "Cramer"</param>
 		/// <param name="forceUpdateLockedState"></param>
 		public void requestOIData(string dataToRequest) {
 			if(Exists) {
@@ -519,6 +525,17 @@ namespace appCore.SiteFinder
 						                           	finishedThreadsCount++;
 						                           });
 						thread.Name = "requestOIData_LKULK";
+						threads.Add(thread);
+					}
+					
+					if(dataToRequest.Contains("Cramer")) {
+						Thread thread = new Thread(() => {
+						                           	isUpdatingCramerData = true;
+						                           	CramerData = FetchCramerData(null);
+						                           	isUpdatingCramerData = false;
+						                           	finishedThreadsCount++;
+						                           });
+						thread.Name = "requestOIData_Alarms";
 						threads.Add(thread);
 					}
 					
@@ -692,6 +709,21 @@ namespace appCore.SiteFinder
 			return dt;
 		}
 		
+		CramerDetails FetchCramerData(FileSystemInfo table_ca) {
+			DataTable dt = new DataTable();
+			string response = OiConnection.requestApiOutput("labels-html", Id);
+			if(!string.IsNullOrEmpty(response)) {
+//				string str = response.Substring(response.IndexOf("<strong style=" + '"' + "margin-left: 15px;" + '"' + ">Cramer POC List"));
+				string str = response.Substring(response.IndexOf("Cramer POC List"));
+				if(str.Substring(24).StartsWith("<p style"))
+					return null;
+				str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+				dt = Tools.ConvertHtmlTableToDT(str, "table_cramer");
+				CramerDataTimestamp = DateTime.Now;
+			}
+			return new CramerDetails(dt.Rows[0]);
+		}
+		
 		string getPowerCompany() {
 			string response = OiConnection.requestApiOutput("access", Id);
 			try {
@@ -758,48 +790,48 @@ namespace appCore.SiteFinder
 //				                    			list.Add(jObj.ToObject<OiCell>());
 //				                    	}
 //				                    	catch { }
-				                    	
-				                    	string resp = OiConnection.requestApiOutput("cells-html", Id);
-				                    	DataTable dt = null;
-				                    	for(int c = 2;c <= 4;c++) {
-				                    		string tableName = "table_checkbox_cells " + c + "G";
-				                    		if(resp.Contains("id=" + '"' + tableName + '"')) {
-				                    			DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
-				                    			if(tempDT.Rows.Count > 0) {
-				                    				if(dt == null)
-				                    					dt = tempDT;
-				                    				else {
-				                    					foreach(DataRow row in tempDT.Rows)
-				                    						dt.Rows.Add(row.ItemArray);
-				                    				}
-				                    			}
-				                    		}
-				                    	}
-				                    	
-				                    	foreach(DataRow row in dt.Rows) {
-				                    		OiCell cell = new OiCell();
-				                    		cell.SITE = row[0].ToString();
-				                    		cell.BEARER = row[1].ToString();
-				                    		cell.CELL_NAME = row[2].ToString();
-				                    		cell.CELL_ID = row[3].ToString();
-				                    		cell.LAC_TAC = row[4].ToString();
-				                    		cell.BSC_RNC_ID = row[5].ToString();
-				                    		cell.ENODEB_ID = row[6].ToString();
-				                    		cell.WBTS_BCF = row[7].ToString();
-				                    		cell.VENDOR = row[8].ToString();
-				                    		cell.NOC = row[9].ToString();
-				                    		cell.COOS = row[10].ToString();
-				                    		string[] attr = row[11].ToString().Split('/');
-				                    		cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
+				
+				string resp = OiConnection.requestApiOutput("cells-html", Id);
+				DataTable dt = null;
+				for(int c = 2;c <= 4;c++) {
+					string tableName = "table_checkbox_cells " + c + "G";
+					if(resp.Contains("id=" + '"' + tableName + '"')) {
+						DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
+						if(tempDT.Rows.Count > 0) {
+							if(dt == null)
+								dt = tempDT;
+							else {
+								foreach(DataRow row in tempDT.Rows)
+									dt.Rows.Add(row.ItemArray);
+							}
+						}
+					}
+				}
+				
+				foreach(DataRow row in dt.Rows) {
+					OiCell cell = new OiCell();
+					cell.SITE = row[0].ToString();
+					cell.BEARER = row[1].ToString();
+					cell.CELL_NAME = row[2].ToString();
+					cell.CELL_ID = row[3].ToString();
+					cell.LAC_TAC = row[4].ToString();
+					cell.BSC_RNC_ID = row[5].ToString();
+					cell.ENODEB_ID = row[6].ToString();
+					cell.WBTS_BCF = row[7].ToString();
+					cell.VENDOR = row[8].ToString();
+					cell.NOC = row[9].ToString();
+					cell.COOS = row[10].ToString();
+					string[] attr = row[11].ToString().Split('/');
+					cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
 //				                    		cell.LOCK = Convert.ToInt16(row[12]);
-				                    		cell.LOCKED = attr[0];
-				                    		list.Add(cell);
-				                    	}
-				                    	
+					cell.LOCKED = attr[0];
+					list.Add(cell);
+				}
+				
 //				                    	finishedThreadsCount++;
 //				                    });
 //				thread.Name = "getOiCellsState_2G";
-////				threads.Add(thread);
+				////				threads.Add(thread);
 //				thread.SetApartmentState(ApartmentState.STA);
 //				thread.Start();
 				
@@ -1013,6 +1045,31 @@ namespace appCore.SiteFinder
 		
 		~Site() { // destructor
 			Dispose();
+		}
+		
+		public class CramerDetails {
+			public string PocType { get; private set; }
+			public int OnwardSitesCount { get; private set; }
+			public string TxMedium { get; private set; }
+			public string TxLastMileRef { get; private set; }
+			public List<string> OnwardSites { get; private set; }
+			public string EvenflowStatus { get; private set; }
+			
+			public CramerDetails(DataRow details) {
+				PocType = details["POC TYPE"].ToString();
+				OnwardSitesCount = Convert.ToInt16(details["EFFECTED SITE COUNT"]);
+				TxMedium = details["TX MEDIUM"].ToString();
+				TxLastMileRef = details["TX LAST MILE REF"].ToString();
+				EvenflowStatus = details["EVENFLOW STATUS"].ToString();
+				OnwardSites = new List<string>();
+				string sitesList = details["EFFECTED SITE LIST"].ToString();
+				if(!string.IsNullOrEmpty(sitesList)) {
+					OnwardSites.AddRange(sitesList.Split(','));
+					for(int c = 0;c < OnwardSites.Count;c++)
+						if(OnwardSites[c].StartsWith("0"))
+							OnwardSites[c] = Convert.ToInt16(OnwardSites[c]).ToString();
+				}
+			}
 		}
 	}
 }

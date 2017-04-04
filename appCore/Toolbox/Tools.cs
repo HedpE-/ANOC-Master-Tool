@@ -302,7 +302,7 @@ namespace appCore.Toolbox
 					descendantNodes = table.SelectSingleNode("/table[1]/thead[1]/tr[1]").ChildNodes; // "/table[1]/thead[1]/tr[1]"
 					descendantNodes = descendantNodes.Where(item => item.Name == "td");
 					break;
-				case "table_ca":
+				case "table_ca": case "table_cramer":
 					descendantNodes = table.Descendants("thead").First().Descendants("th");
 					break;
 				case "table_checkbox_cells 2G": case "table_checkbox_cells 3G": case "table_checkbox_cells 4G":
@@ -324,11 +324,12 @@ namespace appCore.Toolbox
 			
 			// Build DataTable
 			
-			descendantNodes = tableName.Contains("_cells ") ? table.Descendants("tbody").First().Descendants("tr") : table.Descendants("tr");
+			descendantNodes = tableName.Contains("_cells ") || tableName.Contains("_cramer") ? table.Descendants("tbody").First().Descendants("tr") : table.Descendants("tr");
+			descendantNodes = descendantNodes.Where(dn => dn.Name != "#text");
 			foreach(HtmlNode tr in descendantNodes) {
 				List<string> tableRow = new List<string>();
 				if(tr.Name != "#text" && tr.ParentNode.Name != "thead") {
-					var childNodes = tr.ChildNodes;
+					var childNodes = tr.ChildNodes.Where(cn => cn.Name != "#text");
 					foreach(var node in childNodes) {
 						if(node.Name != "td")
 							continue;

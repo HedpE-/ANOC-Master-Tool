@@ -257,7 +257,7 @@ namespace appCore.Templates.UI
 				if(currentSite != null) {
 					if(tb.Text == currentSite.Id) {
 						if(currentSite.Exists)
-							currentSite.requestOIData("INCCRQPWR");
+							currentSite.requestOIData("INCCRQ");
 						return;
 					}
 				}
@@ -270,6 +270,8 @@ namespace appCore.Templates.UI
 				                                   			dataToRequest += "CRQ";
 				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
 				                                   			dataToRequest += "PWR";
+				                                   		if(currentSite.CramerData == null)
+				                                   			dataToRequest += "Cramer";
 				                                   		currentSite.requestOIData(dataToRequest);
 				                                   	}
 				                                   });
@@ -287,6 +289,8 @@ namespace appCore.Templates.UI
 				                                      			SiteOwnerComboBox.Text = "VF";
 				                                      			TefSiteTextBox.Text = string.Empty;
 				                                      		}
+				                                      		if(currentSite.CramerData != null)
+				                                      			CCTRefTextBox.Text = currentSite.CramerData.TxLastMileRef;
 				                                      		
 				                                      		List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
 				                                      		COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
@@ -331,8 +335,12 @@ namespace appCore.Templates.UI
 				currentSite = null;
 			}
 			siteFinder_Toggle(false, false);
-			PowerCompanyTextBox.Text = RegionTextBox.Text = AddressTextBox.Text = string.Empty;
+			PowerCompanyTextBox.Text =
+				RegionTextBox.Text =
+				AddressTextBox.Text =
+				CCTRefTextBox.Text = string.Empty;
 			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
+			sendBCPToolStripMenuItem.Enabled = false;
 		}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
