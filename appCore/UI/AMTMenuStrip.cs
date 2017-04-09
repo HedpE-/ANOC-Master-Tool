@@ -34,6 +34,30 @@ namespace appCore.UI
 		
 		bool AvailabilityButtonEnabled;
 		
+		Site currentSite {
+			get {
+				Site site = null;
+				switch(Parent.GetType().ToString()) {
+					case "appCore.Templates.UI.TroubleshootControls":
+						site = ((TroubleshootControls)Parent).currentSite;
+						break;
+					case "appCore.Templates.UI.FailedCRQControls":
+						site = ((FailedCRQControls)Parent).currentSite;
+						break;
+					case "appCore.Templates.UI.UpdateControls":
+						site = ((UpdateControls)Parent).currentSite;
+						break;
+					case "appCore.SiteFinder.UI.siteDetails":
+						site = ((siteDetails)Parent).currentSite;
+						break;
+					case "appCore.SiteFinder.UI.LockUnlockCellsForm":
+						site = ((LockUnlockCellsForm)Parent).currentSite;
+						break;
+				}
+				return site;
+			}
+		}
+		
 		public EventHandler OiButtonsOnClickDelegate {
 			get { return null; }
 			set {
@@ -84,51 +108,49 @@ namespace appCore.UI
 			Items.Add(RefreshButton);
 		}
 		
-//		void showRightClickContext(object sender, MouseEventArgs e) {
-//			if(e.Button == MouseButtons.Right) {
-//				ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-//				switch(tsmi.Name) {
-//					case "INCsButton":
-//						refreshToolStripMenuItem.Text = "Refresh INC data";
-//						break;
-//					case "CRQsButton":
-//						refreshToolStripMenuItem.Text = "Refresh CRQ data";
-//						break;
-//					case "ActiveAlarmsButton":
-//						refreshToolStripMenuItem.Text = "Refresh Alarms data";
-//						break;
-//					case "BookInsButton":
-//						refreshToolStripMenuItem.Text = "Refresh Visits data";
-//						break;
-//				}
-//
-//				context.Show((Control)sender, e.Location);
-//			}
-//		}
+		void showRightClickContext(object sender, MouseEventArgs e) {
+			if(e.Button == MouseButtons.Right) {
+				ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+				if(tsmi != null) {
+					if(!tsmi.Text.StartsWith("No ") && !tsmi.Text.StartsWith("Click ")) {
+						ContextMenuStrip context = new ContextMenuStrip();
+						ToolStripItem item = null;
+						string dataToRequest = string.Empty;
+						switch(tsmi.Name) {
+							case "INCsButton":
+								item = context.Items.Add("Refresh INC data");
+								dataToRequest = "INC";
+								break;
+							case "CRQsButton":
+								item = context.Items.Add("Refresh CRQ data");
+								dataToRequest = "CRQ";
+								break;
+							case "ActiveAlarmsButton":
+								item = context.Items.Add("Refresh Alarms data");
+								dataToRequest = "Alarms";
+								break;
+							case "BookInsButton":
+								item = context.Items.Add("Refresh Visits data");
+								dataToRequest = "Bookins";
+								break;
+							case "AvailabilityButton":
+								item = context.Items.Add("Refresh Availability data");
+								dataToRequest = "Availability";
+								break;
+						}
+						
+						item.Click += (s, a) => {
+							currentSite.requestOIData(dataToRequest);
+							siteFinder_Toggle(true);
+						};
+						
+						context.Show(this, PointToClient(Cursor.Position));
+					}
+				}
+			}
+		}
 
 		public void siteFinder_Toggle(bool toggle, bool siteFound = true) {
-			Site currentSite = null;
-			switch(Parent.GetType().ToString()) {
-//				case "Troubleshoot Template GUI":
-				case "appCore.Templates.UI.TroubleshootControls":
-					currentSite = ((TroubleshootControls)Parent).currentSite;
-					break;
-//				case "Failed CRQ Template GUI":
-				case "appCore.Templates.UI.FailedCRQControls":
-					currentSite = ((FailedCRQControls)Parent).currentSite;
-					break;
-//				case "Update Template GUI":
-				case "appCore.Templates.UI.UpdateControls":
-					currentSite = ((UpdateControls)Parent).currentSite;
-					break;
-//				case "siteDetails": case "Outage Follow-up":
-				case "appCore.SiteFinder.UI.siteDetails":
-					currentSite = ((siteDetails)Parent).currentSite;
-					break;
-				case "appCore.SiteFinder.UI.LockUnlockCellsForm":
-					currentSite = ((LockUnlockCellsForm)Parent).currentSite;
-					break;
-			}
 			foreach (ToolStripMenuItem tsmi in Items) {
 				if(tsmi.Name.Contains("Button")) {
 					if(currentSite != null) {
@@ -175,7 +197,7 @@ namespace appCore.UI
 										if(currentSite.Visits.Count > 0) {
 											tsmi.Enabled = true;
 											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
+											tsmi.Text = "Book Ins (" + currentSite.Visits.Count + ")";
 										}
 										else {
 											tsmi.Enabled = false;
@@ -300,8 +322,8 @@ namespace appCore.UI
 			AvailabilityButton.AutoSize = false;
 			AvailabilityButton.Name = "AvailabilityButton";
 			AvailabilityButton.TextAlign = ContentAlignment.MiddleCenter;
-//			ActiveAlarmsButton.Font = new Font("Segoe UI", 9F);
-//			ActiveAlarmsButton.MouseDown += showRightClickContext;
+//			AvailabilityButton.Font = new Font("Segoe UI", 9F);
+			AvailabilityButton.MouseDown += showRightClickContext;
 			// 
 			// ActiveAlarmsButton
 			// 
@@ -309,7 +331,7 @@ namespace appCore.UI
 			ActiveAlarmsButton.Name = "ActiveAlarmsButton";
 			ActiveAlarmsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			ActiveAlarmsButton.Font = new Font("Segoe UI", 9F);
-//			ActiveAlarmsButton.MouseDown += showRightClickContext;
+			ActiveAlarmsButton.MouseDown += showRightClickContext;
 			// 
 			// BookInsButton
 			// 
@@ -317,7 +339,7 @@ namespace appCore.UI
 			BookInsButton.Name = "BookInsButton";
 			BookInsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			BookInsButton.Font = new Font("Segoe UI", 9F);
-//			BookInsButton.MouseDown += showRightClickContext;
+			BookInsButton.MouseDown += showRightClickContext;
 			// 
 			// CRQsButton
 			// 
@@ -325,7 +347,7 @@ namespace appCore.UI
 			CRQsButton.Name = "CRQsButton";
 			CRQsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			refreshToolStripMenuItem.Font = new Font("Segoe UI", 9F);
-//			CRQsButton.MouseDown += showRightClickContext;
+			CRQsButton.MouseDown += showRightClickContext;
 			// 
 			// INCsButton
 			// 
@@ -333,7 +355,7 @@ namespace appCore.UI
 			INCsButton.Name = "INCsButton";
 			INCsButton.TextAlign = ContentAlignment.MiddleCenter;
 //			INCsButton.Font = new Font("Segoe UI", 9F);
-//			INCsButton.MouseDown += showRightClickContext;
+			INCsButton.MouseDown += showRightClickContext;
 			
 			DynamicButtonsSizes();
 		}
