@@ -12,6 +12,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Windows.Forms;
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -33,6 +34,7 @@ namespace appCore.SiteFinder.UI
 		GMapControl myMap;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
+		GMapOverlay onwardSitesOverlay = new GMapOverlay("onwardSites");
 //		List<GMapMarker> markersList = new List<GMapMarker>();
 		public Site currentSite;
 		public Outage currentOutage;
@@ -270,12 +272,10 @@ namespace appCore.SiteFinder.UI
 		void populateSingleForm(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	try {
-			                           		myMap.Overlays.Remove(markersOverlay);
-			                           		myMap.Overlays.Remove(selectedSiteOverlay);
-			                           	}
-			                           	catch (Exception) {
-			                           	}
+			                           	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			                           	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			                           	
 			                           	initializeListviews();
 			                           	
 			                           	selectedSiteDetailsPopulate();
@@ -852,24 +852,57 @@ namespace appCore.SiteFinder.UI
 		
 		void Button2Click(object sender, EventArgs e)
 		{
+			Panel panel = new Panel();
+			panel.BackColor = Color.Black;
+			panel.Size = new Size(100, 213);
+			DataGridView dgv = new DataGridView();
+			dgv.Size = panel.Size;
+			dgv.Columns.Add("Site", "Site");
+			dgv.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+			dgv.RowHeadersVisible =
+				dgv.ColumnHeadersVisible = false;
+			dgv.EditMode = DataGridViewEditMode.EditProgrammatically;
+			dgv.AllowUserToAddRows =
+				dgv.AllowUserToResizeRows =
+				dgv.AllowUserToResizeColumns = false;
 			
+			foreach(string site in currentSite.CramerData.OnwardSites) {
+				DataGridViewRow row = new DataGridViewRow();
+				row.CreateCells(dgv);
+				row.Cells[0].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+				row.Cells[0].Value = site;
+				dgv.Rows.Add(row);
+			}
+			
+			panel.Controls.AddRange(new Control[] {
+			                        	dgv
+			                        });
+			PopupHelper popup = new PopupHelper(panel);
+			popup.Show(this);
 		}
 
 		void siteFinder(object sender, KeyPressEventArgs e)
 		{
-			string site = ((TextBoxBase)sender).Text;
+			string enteredSite = ((TextBoxBase)sender).Text;
 			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
 				Action actionThreaded = new Action(delegate {
 				                                   	try {
-				                                   		myMap.Overlays.Remove(markersOverlay);
-				                                   		myMap.Overlays.Remove(selectedSiteOverlay);
 				                                   		markersOverlay.Clear();
+				                                   		myMap.Overlays.Remove(markersOverlay);
+				                                   	}
+				                                   	catch (Exception) { }
+				                                   	try {
 				                                   		selectedSiteOverlay.Clear();
+				                                   		myMap.Overlays.Remove(selectedSiteOverlay);
 				                                   	}
-				                                   	catch (Exception) {
+				                                   	catch (Exception) { }
+				                                   	try {
+				                                   		onwardSitesOverlay.Clear();
+				                                   		myMap.Overlays.Remove(onwardSitesOverlay);
 				                                   	}
+				                                   	catch (Exception) { }
 				                                   	
-				                                   	currentSite = DB.SitesDB.getSite(site);
+				                                   	currentSite = DB.SitesDB.getSite(enteredSite);
 				                                   	
 				                                   	if(currentSite.Exists) {
 				                                   		string dataToRequest = "INCCellsState";
@@ -888,6 +921,22 @@ namespace appCore.SiteFinder.UI
 				                                      		siteDetails_UIMode = "single";
 				                                      	if(currentSite.Exists) {
 				                                      		selectedSiteDetailsPopulate();
+				                                      		if(currentSite.CramerData != null) {
+				                                      			if(currentSite.CramerData.OnwardSitesCount > 0) {
+				                                      				var sites = DB.SitesDB.getSites(currentSite.CramerData.OnwardSites);
+				                                      				foreach(Site site in sites) {
+				                                      					GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue_small);
+				                                      					tempMarker.Tag = site.MapMarker.Tag;
+				                                      					tempMarker.ToolTip = site.MapMarker.ToolTip;
+				                                      					tempMarker.ToolTipMode = site.MapMarker.ToolTipMode;
+				                                      					tempMarker.ToolTipText = site.MapMarker.ToolTipText;
+//				                                      					tempMarker.ToolTipPosition = site.MapMarker.ToolTipPosition;
+				                                      					
+				                                      					onwardSitesOverlay.Markers.Add(tempMarker);
+				                                      				}
+				                                      				myMap.Overlays.Add(onwardSitesOverlay);
+				                                      			}
+				                                      		}
 				                                      		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
 				                                      		myMap.Overlays.Add(selectedSiteOverlay);
 				                                      		myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
