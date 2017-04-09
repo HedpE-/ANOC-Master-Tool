@@ -150,9 +150,9 @@ namespace appCore.SiteFinder.UI
 				switch(uiMode) {
 					case "Lock Cells":
 						button1.Text = "Lock\nCells";
-						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Where(s => !s.Locked).Count() > 0;
-						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Where(s => !s.Locked).Count() > 0;
-						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Where(s => !s.Locked).Count() > 0;
+						checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Count(s => !s.Locked) > 0;
+						checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Count(s => !s.Locked) > 0;
+						checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Count(s => !s.Locked) > 0;
 						
 						comboBox1.Items.Clear();
 						
@@ -1489,22 +1489,22 @@ namespace appCore.SiteFinder.UI
 							cb = checkBox1;
 							checkCount = gsmCheckedCount;
 							maxCount = gsmCellsCount;
-							checkBox2.Enabled =
-								checkBox3.Enabled = gsmCheckedCount == 0;
+							checkBox2.Enabled = gsmCheckedCount == 0 && umtsCellsCount > 0;
+							checkBox3.Enabled = gsmCheckedCount == 0 && lteCellsCount > 0;
 							break;
 						case "3G":
 							cb = checkBox2;
 							checkCount = umtsCheckedCount;
 							maxCount = umtsCellsCount;
-							checkBox1.Enabled =
-								checkBox3.Enabled = umtsCheckedCount == 0;
+							checkBox1.Enabled = umtsCheckedCount == 0 && gsmCellsCount > 0;
+							checkBox3.Enabled = umtsCheckedCount == 0 && lteCellsCount > 0;
 							break;
 						case "4G":
 							cb = checkBox3;
 							checkCount = lteCheckedCount;
 							maxCount = lteCellsCount;
-							checkBox1.Enabled =
-								checkBox2.Enabled = lteCheckedCount == 0;
+							checkBox1.Enabled = lteCheckedCount == 0 && gsmCellsCount > 0;
+							checkBox2.Enabled = lteCheckedCount == 0 && umtsCellsCount > 0;
 							break;
 					}
 					label5.Text = "Selected:\n\n2G: " + gsmCheckedCount + "\n3G: " + umtsCheckedCount + "\n4G: " + lteCheckedCount + "\n\nTotal: " + checkedCount;
