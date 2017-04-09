@@ -1068,6 +1068,7 @@ namespace appCore.SiteFinder
 					for(int c = 0;c < OnwardSites.Count;c++)
 						if(OnwardSites[c].StartsWith("0"))
 							OnwardSites[c] = Convert.ToInt16(OnwardSites[c]).ToString();
+					OnwardSites = OnwardSites.OrderBy(c => int.Parse(c)).ToList();
 				}
 			}
 		}
