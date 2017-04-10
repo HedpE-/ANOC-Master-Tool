@@ -598,7 +598,7 @@ namespace appCore.SiteFinder.UI
 		string LockedCellsCSV;
 		
 		public LockUnlockCellsForm() {
-			SplashForm.ShowSplashScreen();
+			SplashForm.ShowSplashScreen(false);
 			SplashForm.UpdateLabelText("Loading Cells Locked");
 			InitializeComponent();
 			dataGridView1.CellFormatting += dataGridView1_CellFormatting;

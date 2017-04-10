@@ -55,11 +55,12 @@ namespace appCore
 		
 		public MainForm(NotifyIcon tray, string[] args)
 		{
+			GlobalProperties.ApplicationStartTime = DateTime.Now;
 //			args = new [] { "-otherUser", "CUNHAPM1" }; // HACK: force login with another user
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			GlobalProperties.resolveOfficePath();
 			
-			SplashForm.ShowSplashScreen();
+			SplashForm.ShowSplashScreen(true);
 			trayIcon = new TrayIcon(tray);
 			
 			EmbeddedAssemblies.Init();
