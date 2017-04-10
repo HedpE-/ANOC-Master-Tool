@@ -32,12 +32,20 @@ namespace appCore.Templates.Types
 				if(affectedSites.Count == 0) {
 					List<string> list = new List<string>();
 					foreach(string siteStr in VfSites) {
-						string tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
+						string tempSite = string.Empty;
+						if(siteStr.Contains(" - "))
+							tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
+						else
+							tempSite = siteStr.Split(new []{ " (" }, StringSplitOptions.None)[0];
 						tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
 						list.Add(tempSite);
 					}
-					foreach(string site in TefSites) {
-						string tempSite = site.Split(new []{ " - " }, StringSplitOptions.None)[0];
+					foreach(string siteStr in TefSites) {
+						string tempSite = string.Empty;
+						if(siteStr.Contains(" - "))
+							tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
+						else
+							tempSite = siteStr.Split(new []{ " (" }, StringSplitOptions.None)[0];
 						tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
 						list.Add(tempSite);
 					}
