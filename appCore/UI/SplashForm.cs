@@ -27,6 +27,8 @@ namespace appCore.UI
 
 		static System.Windows.Forms.Timer tIn = new System.Windows.Forms.Timer();
 		static System.Windows.Forms.Timer tOut = new System.Windows.Forms.Timer();
+		
+		static bool ShowVersionDetails;
 
 		SplashForm()
 		{
@@ -40,11 +42,12 @@ namespace appCore.UI
 			tIn.Enabled = true;
 		}
 		
-		static public void ShowSplashScreen()
+		static public void ShowSplashScreen(bool versionDetails)
 		{
 			// Make sure it is only launched once.
 			if(splashForm != null)
 				return;
+			ShowVersionDetails = versionDetails;
 			thread = new Thread(new ThreadStart(SplashForm.ShowForm));
 			thread.Name = "SplashForm.ShowForm";
 			thread.IsBackground = true;
@@ -120,10 +123,35 @@ namespace appCore.UI
 		
 		void ExtraFormSettings()
 		{
-			var fnv = FileVersionInfo.GetVersionInfo(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll");
-			label3.Text = "Version: " + fnv.FileVersion;
-			label4.Text = "Release date: " + File.GetLastWriteTime(fnv.FileName).ToString("dd-MM-yyyy");
-			
+			if(ShowVersionDetails) {
+				var fnv = FileVersionInfo.GetVersionInfo(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll");
+				
+				// 
+				// versionLabel
+				// 
+				Label versionLabel = new Label();
+				versionLabel.AutoSize = true;
+				versionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				versionLabel.Location = new System.Drawing.Point(12, 126);
+				versionLabel.Name = "versionLabel";
+				versionLabel.Size = new System.Drawing.Size(0, 12);
+				versionLabel.Text = "Version: " + fnv.FileVersion;
+				// 
+				// releaseDateLabel
+				// 
+				Label releaseDateLabel = new Label();
+				releaseDateLabel.AutoSize = true;
+				releaseDateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+				releaseDateLabel.Location = new System.Drawing.Point(12, 114);
+				releaseDateLabel.Name = "releaseDateLabel";
+				releaseDateLabel.Size = new System.Drawing.Size(0, 12);
+				releaseDateLabel.Text = "Release date: " + File.GetLastWriteTime(fnv.FileName).ToString("dd-MM-yyyy");
+				
+				this.Controls.AddRange(new Control[]{
+				                       	versionLabel,
+				                       	releaseDateLabel
+				                       });
+			}
 			label1.Left = (this.ClientSize.Width - label1.Width) / 2;
 			pictureBox1.Left = (this.ClientSize.Width - pictureBox1.Width) / 2;
 		}
