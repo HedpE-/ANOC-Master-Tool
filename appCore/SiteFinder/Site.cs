@@ -557,13 +557,13 @@ namespace appCore.SiteFinder
 		}
 		
 		List<Incident> FetchINCs() {
+			IncidentsTimestamp = DateTime.Now;
 			List<Incident> list = new List<Incident>();
 			string response = OiConnection.requestApiOutput("incidents", Id);
 			try {
 				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
 				foreach(JObject jObj in jSon.data)
 					list.Add(jObj.ToObject<Incident>());
-				IncidentsTimestamp = DateTime.Now;
 			}
 			catch { return null; }
 			return list;
@@ -580,6 +580,7 @@ namespace appCore.SiteFinder
 //		}
 		
 		List<Change> FetchCRQs() {
+			ChangesTimestamp = DateTime.Now;
 			List<Change> list = new List<Change>();
 			string response = OiConnection.requestApiOutput("changes", Id);
 			try {
@@ -594,7 +595,6 @@ namespace appCore.SiteFinder
 					}
 					list.Add(item);
 				}
-				ChangesTimestamp = DateTime.Now;
 			}
 			catch { return null; }
 			return list;
@@ -623,13 +623,13 @@ namespace appCore.SiteFinder
 //		}
 		
 		List<Alarm> FetchActiveAlarms() {
+			AlarmsTimestamp = DateTime.Now;
 			List<Alarm> list = new List<Alarm>();
 			string response = OiConnection.requestApiOutput("alarms", Id);
 			try {
 				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
 				foreach(JObject jObj in jSon.data)
 					list.Add(jObj.ToObject<Alarm>());
-				AlarmsTimestamp = DateTime.Now;
 			}
 			catch { return null; }
 			return list;
@@ -646,13 +646,13 @@ namespace appCore.SiteFinder
 //		}
 		
 		List<BookIn> FetchBookIns() {
+			VisitsTimestamp = DateTime.Now;
 			List<BookIn> list = new List<BookIn>();
 			string response = OiConnection.requestApiOutput("visits", Id);
 			try {
 				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
 				foreach(JObject jObj in jSon.data)
 					list.Add(jObj.ToObject<BookIn>());
-				VisitsTimestamp = DateTime.Now;
 			}
 			catch(Exception e) {
 				var m = e.Message;
@@ -662,6 +662,7 @@ namespace appCore.SiteFinder
 		}
 		
 		List<BookIn> FetchBookIns(FileSystemInfo table_visits) {
+			VisitsTimestamp = DateTime.Now;
 			List<BookIn> list = new List<BookIn>();
 //			string response = OiConnection.requestPhpOutput("sitevisit", Id, 90);
 			string response = OiConnection.requestPhpOutput("visits", Id);
@@ -683,16 +684,15 @@ namespace appCore.SiteFinder
 					bookin.Departed_Site = row[11].ToString();
 					list.Add(bookin);
 				}
-				VisitsTimestamp = DateTime.Now;
 			}
 			return list;
 		}
 		
 		Availability FetchAvailability() {
+			AvailabilityTimestamp = DateTime.Now;
 			string response = OiConnection.requestApiOutput("availability", Id);
 			try {
 				Availability jSon = JsonConvert.DeserializeObject<Availability>(response);
-				AvailabilityTimestamp = DateTime.Now;
 
 				return jSon;
 			}
@@ -700,16 +700,17 @@ namespace appCore.SiteFinder
 		}
 		
 		DataTable FetchAvailability(FileSystemInfo table_ca) {
+			AvailabilityTimestamp = DateTime.Now;
 			DataTable dt = new DataTable();
 			string response = OiConnection.requestPhpOutput("ca", Id);
 			if(!string.IsNullOrEmpty(response)) {
 				dt = Tools.ConvertHtmlTableToDT(response, "table_ca");
-				AvailabilityTimestamp = DateTime.Now;
 			}
 			return dt;
 		}
 		
 		CramerDetails FetchCramerData(FileSystemInfo table_ca) {
+			CramerDataTimestamp = DateTime.Now;
 			DataTable dt = new DataTable();
 			string response = OiConnection.requestApiOutput("labels-html", Id);
 			if(!string.IsNullOrEmpty(response)) {
@@ -719,7 +720,6 @@ namespace appCore.SiteFinder
 					return null;
 				str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
 				dt = Tools.ConvertHtmlTableToDT(str, "table_cramer");
-				CramerDataTimestamp = DateTime.Now;
 			}
 			return new CramerDetails(dt.Rows[0]);
 		}
@@ -775,6 +775,7 @@ namespace appCore.SiteFinder
 		}
 		
 		void getOiCellsState() {
+			CellsStateTimestamp = DateTime.Now;
 			if(Exists && Cells.Count > 0) {
 				List<OiCell> list = new List<OiCell>();
 				
@@ -882,7 +883,6 @@ namespace appCore.SiteFinder
 					}
 				}
 				
-				CellsStateTimestamp = DateTime.Now;
 //				if(string.IsNullOrEmpty(indexPhp))
 //					indexPhp = OiConnection.requestPhpOutput("index", Id, string.Empty);
 				
