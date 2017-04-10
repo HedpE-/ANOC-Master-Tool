@@ -130,7 +130,7 @@ namespace appCore.UI
 								dataToRequest = "Alarms";
 								break;
 							case "BookInsButton":
-								item = context.Items.Add("Refresh Visits data");
+								item = context.Items.Add("Refresh BookIns data");
 								dataToRequest = "Bookins";
 								break;
 							case "AvailabilityButton":
