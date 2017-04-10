@@ -19,6 +19,9 @@ namespace appCore.Settings
 	/// </summary>
 	public static class GlobalProperties
 	{
+		public static DateTime ApplicationStartTime;
+		public static TimeSpan UpTime { get { return DateTime.Now - ApplicationStartTime; } }
+		
 		public static CultureInfo culture = new CultureInfo("pt-PT");
 		public static DateTime dt = DateTime.Parse(DateTime.Now.ToString(), culture);
 		public static DirectoryInfo ShareRootDir = new DirectoryInfo(@"\\vf-pt\fs\ANOC-UK\ANOC-UK 1st LINE\1. RAN 1st LINE\ANOC Master Tool");
