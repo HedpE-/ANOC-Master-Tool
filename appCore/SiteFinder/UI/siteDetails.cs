@@ -128,6 +128,9 @@ namespace appCore.SiteFinder.UI
 					overview.Width = 130;
 					overview.Location = new Point(listView2.Right - overview.Width, listView2.Top - overview.Height - 3);
 					overview.Click += delegate {
+						try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+						try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+						
 						listView2.SelectedIndices.Clear();
 					};
 					Controls.Add(overview);
@@ -188,7 +191,7 @@ namespace appCore.SiteFinder.UI
 			
 			parentControl = parent;
 			currentOutage = outage;
-			
+			// TODO: request Cramer Data on opening
 			Controls.Add(MainMenu);
 			MainMenu.InitializeTroubleshootMenu(true);
 			MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
@@ -273,15 +276,15 @@ namespace appCore.SiteFinder.UI
 		{
 			Action action = new Action(delegate {
 			                           	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			                           	try { markersOverlay.Clear(); } catch (Exception) { }
 			                           	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			                           	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
 			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			                           	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			                           	
 			                           	initializeListviews();
 			                           	
 			                           	selectedSiteDetailsPopulate();
-			                           	selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
-			                           	myMap.Overlays.Add(selectedSiteOverlay);
-			                           	myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           });
 			
 			LoadingPanel load = new LoadingPanel();
@@ -295,14 +298,14 @@ namespace appCore.SiteFinder.UI
 			Action action = new Action(delegate {
 			                           	initializeListviews();
 			                           	if(siteDetails_UIMode.Contains("outage")) {
-			                           		try {
-			                           			myMap.Overlays.Remove(markersOverlay);
-			                           			myMap.Overlays.Remove(selectedSiteOverlay);
-			                           			markersOverlay.Clear();
-			                           			selectedSiteOverlay.Clear();
-			                           		}
-			                           		catch (Exception) {
-			                           		}
+			                           		
+			                           		try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			                           		try { markersOverlay.Clear(); } catch (Exception) { }
+			                           		try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			                           		try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+			                           		try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			                           		try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+			                           		
 			                           		List<string> sites = new List<string>();
 			                           		foreach(Site site in currentOutage.AffectedSites) {
 			                           			if(string.IsNullOrEmpty(site.PowerCompany))
@@ -328,8 +331,6 @@ namespace appCore.SiteFinder.UI
 			                           			searchResultsPopulate();
 			                           			myMap.Overlays.Add(markersOverlay);
 			                           			listView2.Focus();
-//			                           			listView2.Items[0].Selected =
-//			                           				listView2.Items[0].Focused = true;
 			                           			myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 			                           		}
 			                           		else {
@@ -337,16 +338,11 @@ namespace appCore.SiteFinder.UI
 			                           				siteDetails_UIMode = "single";
 			                           				currentSite = currentOutage.AffectedSites[0];
 			                           				selectedSiteDetailsPopulate();
-			                           				selectedSiteOverlay.Markers.Add(currentOutage.AffectedSites[0].MapMarker);
-			                           				myMap.Overlays.Add(selectedSiteOverlay);
-			                           				myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           			}
 			                           		}
 			                           	}
 			                           	else
 			                           		textBox1.Select();
-//			                           	var t = myMap.Visible;
-//			                           	System.Threading.Thread.Sleep(1);
 			                           });
 			
 			LoadingPanel load = new LoadingPanel();
@@ -362,7 +358,7 @@ namespace appCore.SiteFinder.UI
 			listView2.Columns.Add("Post Code");
 		}
 		
-		GMapControl drawGMap(string mapName,bool multi) {
+		GMapControl drawGMap(string mapName, bool multi) {
 			// TODO: implement weather layer if possible with GMaps
 			GMapProvider.TimeoutMs = 20*1000;
 			IWebProxy proxy;
@@ -380,7 +376,7 @@ namespace appCore.SiteFinder.UI
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
-			map.Location = new Point(dataGridView1.Right + 5, amtTextBox1.Bottom + 5);
+			map.Location = new Point(dataGridView1.Right + 5, amtTextBox3.Bottom + 5 + amtTextBox3.Height + 5);
 			map.Size = new Size(button1.Right - map.Left, dataGridView1.Bottom - map.Top);
 			map.MapProvider = GoogleHybridMapProvider.Instance;
 			
@@ -429,9 +425,45 @@ namespace appCore.SiteFinder.UI
 				amtTextBox6.Text = currentSite.CramerData != null ? currentSite.CramerData.TxLastMileRef : string.Empty;
 				lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
 				
-//				addCheckBoxColumn();
-				
-//				listboxFilter_Changed(checkBox1, null);
+				if(currentSite.CramerData == null && currentSite.CramerDataTimestamp < Settings.GlobalProperties.ApplicationStartTime)
+					currentSite.requestOIData("Cramer");
+				if(currentSite.CramerData != null) {
+					if(currentSite.CramerData.OnwardSitesCount > 0) {
+						var sites = DB.SitesDB.getSites(currentSite.CramerData.OnwardSites);
+						foreach(Site site in sites) {
+							GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue);
+							tempMarker.Tag = site.MapMarker.Tag;
+							tempMarker.ToolTip = new GMap.NET.WindowsForms.ToolTips.GMapBaloonToolTip(tempMarker);
+							tempMarker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+							tempMarker.ToolTip.Fill = new SolidBrush(Color.FromArgb(180, Color.Black));
+							tempMarker.ToolTip.Font  = new Font("Courier New", 9, FontStyle.Bold);
+							tempMarker.ToolTip.Foreground = new SolidBrush(Color.White);
+							tempMarker.ToolTip.Stroke = new Pen(Color.Red);
+							tempMarker.ToolTip.Offset.X -= 15;
+							tempMarker.ToolTipText = site.MapMarker.ToolTipText;
+							
+							onwardSitesOverlay.Markers.Add(tempMarker);
+						}
+						myMap.Overlays.Add(onwardSitesOverlay);
+					}
+				}
+				selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
+				myMap.Overlays.Add(selectedSiteOverlay);
+				if(!siteDetails_UIMode.Contains("single")) {
+					var t = onwardSitesOverlay.Markers.Count;
+					if(myMap.Overlays.Contains(onwardSitesOverlay))
+						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
+					else {
+						myMap.Position = markersOverlay.Markers.First(m => m.Tag.ToString() == textBox1.Text).Position;
+						myMap.Zoom = 14;
+					}
+				}
+				else {
+					if(myMap.Overlays.Contains(onwardSitesOverlay))
+						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
+					else
+						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
+				}
 			}
 			else {
 				foreach(Control ctr in Controls) {
@@ -451,7 +483,7 @@ namespace appCore.SiteFinder.UI
 				}
 				textBox4.Text = "Site not found";
 				myMap.SetPositionByKeywords("UK");
-				myMap.Zoom = 4;
+				myMap.Zoom = 6;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
 			}
 			
@@ -517,12 +549,9 @@ namespace appCore.SiteFinder.UI
 			
 			Rectangle rect = dataGridView1.GetCellDisplayRectangle(0, -1, true);
 			
-//			rect.Y = 3;
-//			rect.X = rect.Location.X + (rect.Width / 4);
 			CheckBox checkboxHeader = new CheckBox();
 			checkboxHeader.BackColor = Color.Transparent;
 			checkboxHeader.Name = "checkboxHeader";
-//			dataGridView1.Columns[0].HeaderCell.ToolTipText = "Cells Included in Outage\n\nSelect/Unselect all";
 			checkboxHeader.Size = new Size(18, 18);
 			checkboxHeader.Location = new Point(rect.X + 2 + ((rect.Width - checkboxHeader.Width) / 2),
 			                                    rect.Y + 1 + ((rect.Height - checkboxHeader.Height) / 2));
@@ -560,8 +589,7 @@ namespace appCore.SiteFinder.UI
 				GMarkerGoogle marker = (GMarkerGoogle)sender;
 				listView2.ItemSelectionChanged -= ListView2ItemSelectionChanged;
 				int markerIndex = -1;
-				foreach (ListViewItem item in listView2.Items)
-				{
+				foreach (ListViewItem item in listView2.Items) {
 					if(item.SubItems[0].Text == marker.Tag.ToString())
 						markerIndex = item.Index;
 					item.Selected = false;
@@ -701,17 +729,6 @@ namespace appCore.SiteFinder.UI
 //		{
 //			if(e.Control && e.KeyCode != Keys.ControlKey) {
 //				switch(e.KeyCode) {
-//					case Keys.C:
-//						if(listView1.SelectedItems.Count > 0) {
-//							string copiedCells = string.Empty;
-//							foreach (ListViewItem cell in listView1.SelectedItems) {
-//								if(!string.IsNullOrEmpty(copiedCells))
-//									copiedCells += Environment.NewLine;
-//								copiedCells += cell.SubItems[1].Text;
-//							}
-//							Clipboard.SetText(copiedCells);
-//						}
-//						break;
 //					case Keys.A:
 //						if(listView1.SelectedItems.Count < listView1.Items.Count) {
 //							foreach (ListViewItem item in listView1.Items)
@@ -827,10 +844,6 @@ namespace appCore.SiteFinder.UI
 			foreach (Site site in foundSites) {
 				listView2.Items.Add(new ListViewItem(new[]{ site.Id, site.JVCO_Id, site.Priority, site.Host, site.PostCode }));
 				
-//				foreach (ColumnHeader col in listView2.Columns)
-//					col.Width = -2;
-//				listView2.ResumeLayout();
-				
 				markersOverlay.Markers.Add(site.MapMarker);
 			}
 			
@@ -886,21 +899,12 @@ namespace appCore.SiteFinder.UI
 			string enteredSite = ((TextBoxBase)sender).Text;
 			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
 				Action actionThreaded = new Action(delegate {
-				                                   	try {
-				                                   		markersOverlay.Clear();
-				                                   		myMap.Overlays.Remove(markersOverlay);
-				                                   	}
-				                                   	catch (Exception) { }
-				                                   	try {
-				                                   		selectedSiteOverlay.Clear();
-				                                   		myMap.Overlays.Remove(selectedSiteOverlay);
-				                                   	}
-				                                   	catch (Exception) { }
-				                                   	try {
-				                                   		onwardSitesOverlay.Clear();
-				                                   		myMap.Overlays.Remove(onwardSitesOverlay);
-				                                   	}
-				                                   	catch (Exception) { }
+				                                   	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+				                                   	try { markersOverlay.Clear(); } catch (Exception) { }
+				                                   	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+				                                   	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+				                                   	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+				                                   	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 				                                   	
 				                                   	currentSite = DB.SitesDB.getSite(enteredSite);
 				                                   	
@@ -919,33 +923,7 @@ namespace appCore.SiteFinder.UI
 				Action actionNonThreaded = new Action(delegate {
 				                                      	if(siteDetails_UIMode.Contains("multi"))
 				                                      		siteDetails_UIMode = "single";
-				                                      	if(currentSite.Exists) {
-				                                      		selectedSiteDetailsPopulate();
-				                                      		if(currentSite.CramerData != null) {
-				                                      			if(currentSite.CramerData.OnwardSitesCount > 0) {
-				                                      				var sites = DB.SitesDB.getSites(currentSite.CramerData.OnwardSites);
-				                                      				foreach(Site site in sites) {
-				                                      					GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue_small);
-				                                      					tempMarker.Tag = site.MapMarker.Tag;
-				                                      					tempMarker.ToolTip = site.MapMarker.ToolTip;
-				                                      					tempMarker.ToolTipMode = site.MapMarker.ToolTipMode;
-				                                      					tempMarker.ToolTipText = site.MapMarker.ToolTipText;
-//				                                      					tempMarker.ToolTipPosition = site.MapMarker.ToolTipPosition;
-				                                      					
-				                                      					onwardSitesOverlay.Markers.Add(tempMarker);
-				                                      				}
-				                                      				myMap.Overlays.Add(onwardSitesOverlay);
-				                                      			}
-				                                      		}
-				                                      		selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
-				                                      		myMap.Overlays.Add(selectedSiteOverlay);
-				                                      		myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
-				                                      	}
-				                                      	else {
-				                                      		selectedSiteDetailsPopulate();
-				                                      		myMap.SetPositionByKeywords("UK");
-				                                      		myMap.Zoom = 6;
-				                                      	}
+				                                      	selectedSiteDetailsPopulate();
 				                                      	MainMenu.siteFinder_Toggle(currentSite.Exists);
 				                                      });
 				
@@ -957,14 +935,13 @@ namespace appCore.SiteFinder.UI
 		void siteFinder(string[] src)
 		{
 			Action action = new Action(delegate {
-			                           	try {
-			                           		myMap.Overlays.Remove(markersOverlay);
-			                           		myMap.Overlays.Remove(selectedSiteOverlay);
-			                           		markersOverlay.Clear();
-			                           		selectedSiteOverlay.Clear();
-			                           	}
-			                           	catch (Exception) {
-			                           	}
+			                           	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			                           	try { markersOverlay.Clear(); } catch (Exception) { }
+			                           	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			                           	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			                           	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+			                           	
 			                           	foundSites = DB.SitesDB.getSites(src.ToList());
 			                           	
 			                           	if(foundSites.Count > 1) {
@@ -981,9 +958,6 @@ namespace appCore.SiteFinder.UI
 			                           			siteDetails_UIMode = "single";
 			                           			currentSite = foundSites[0];
 			                           			selectedSiteDetailsPopulate();
-			                           			selectedSiteOverlay.Markers.Add(foundSites[0].MapMarker);
-			                           			myMap.Overlays.Add(selectedSiteOverlay);
-			                           			myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 			                           		}
 			                           	}
 			                           });
@@ -993,40 +967,23 @@ namespace appCore.SiteFinder.UI
 
 		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-//			if(listView2_EventCount == 0)
-//				listView2_EventCount++;
-//			else {
+			try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+			
 			if(listView2.SelectedItems.Count > 0) {
-//					if(currentSite != null)
-//						foundSites[foundSites.FindIndex(s => s.Id == currentSite.Id)] = currentSite;
-				
 				currentSite = foundSites[listView2.SelectedItems[0].Index];
 				
 				selectedSiteDetailsPopulate();
-//					if(listView2_EventCount == 1) {
 				
-//						foreach(GMapMarker marker in markersOverlay.Markers) {
-//							if(marker.Tag.ToString() == textBox1.Text) {
-//								myMap.Position = marker.Position;
-//								myMap.Zoom = 14;
-//								break;
-//							}
-//						}
-//					}
-				
-				myMap.Position = markersOverlay.Markers.First(m => m.Tag.ToString() == textBox1.Text).Position;
-				myMap.Zoom = 14;
 				MainMenu.siteFinder_Toggle(currentSite.Exists);
 			}
 			else
 				myMap.ZoomAndCenterMarkers(markersOverlay.Id);
-//				if(listView2_EventCount == 1)
-//					listView2_EventCount--;
-//			}
 		}
 
 		void LoadDisplayOiDataTable(object sender, EventArgs e) {
-//			if(e.Button == MouseButtons.Left) {
 			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
 			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
 			if(fc.Count > 0) {
