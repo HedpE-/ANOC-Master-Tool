@@ -56,8 +56,6 @@ namespace appCore.SiteFinder.UI
 		private appCore.UI.AMTDataGridView dataGridView1;
 		private System.Windows.Forms.CheckBox checkBox6;
 		private System.Windows.Forms.CheckBox checkBox7;
-		private appCore.UI.AMTTextBox amtTextBox1;
-		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.Label label15;
 		private appCore.UI.AMTTextBox amtTextBox4;
 		private System.Windows.Forms.Label label17;
@@ -130,8 +128,6 @@ namespace appCore.SiteFinder.UI
 			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			this.checkBox6 = new System.Windows.Forms.CheckBox();
 			this.checkBox7 = new System.Windows.Forms.CheckBox();
-			this.amtTextBox1 = new appCore.UI.AMTTextBox();
-			this.label14 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.amtTextBox4 = new appCore.UI.AMTTextBox();
 			this.label17 = new System.Windows.Forms.Label();
@@ -586,24 +582,6 @@ namespace appCore.SiteFinder.UI
 			this.checkBox7.UseVisualStyleBackColor = true;
 			this.checkBox7.CheckedChanged += new System.EventHandler(this.dataGridViewFilter_Changed);
 			// 
-			// amtTextBox1
-			// 
-			this.amtTextBox1.Location = new System.Drawing.Point(642, 132);
-			this.amtTextBox1.MaxLength = 5;
-			this.amtTextBox1.Name = "amtTextBox1";
-			this.amtTextBox1.ReadOnly = true;
-			this.amtTextBox1.Size = new System.Drawing.Size(118, 20);
-			this.amtTextBox1.TabIndex = 152;
-			// 
-			// label14
-			// 
-			this.label14.Location = new System.Drawing.Point(584, 131);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(52, 20);
-			this.label14.TabIndex = 151;
-			this.label14.Text = "SubType";
-			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
 			// label15
 			// 
 			this.label15.Location = new System.Drawing.Point(258, 29);
@@ -681,8 +659,6 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.amtTextBox5);
 			this.Controls.Add(this.label15);
 			this.Controls.Add(this.amtTextBox4);
-			this.Controls.Add(this.amtTextBox1);
-			this.Controls.Add(this.label14);
 			this.Controls.Add(this.listView2);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.checkBox6);
