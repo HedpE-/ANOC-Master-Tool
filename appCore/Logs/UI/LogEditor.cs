@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -40,7 +41,7 @@ namespace appCore.Logs.UI
 		{
 			InitializeComponent();
 			
-			myFormControl1 = myForm;
+//			myFormControl1 = myForm;
 			Logs = logs;
 			
 			string WindowTitle = Logs.logFileDate.Day.ToString();
@@ -74,11 +75,19 @@ namespace appCore.Logs.UI
 			listView1.Columns.Add("Target").Width = -2;
 			listView1.Columns.Add("Timestamp").Width = -2;
 			
-			for (int c = 0; c < Logs.Count; c++) {
+			var emptyList = new List<dynamic>();
+			
+			for(int c = 0; c < Logs.Count; c++) {
 				switch (Logs[c].LogType) {
 					case "Troubleshoot":
 						Troubleshoot TSlog = new Troubleshoot();
 						Toolbox.Tools.CopyProperties(TSlog, Logs[c]);
+						emptyList.Add(new {
+						              	LogType = "Troubleshoot Template",
+						              	INC = TSlog.INC,
+						              	Target = TSlog.SiteId,
+						              	Timestamp = TSlog.GenerationDate.ToString("HH:mm:ss")
+						              });
 						listView1.Items.Add(new ListViewItem(
 							new []{
 								"Troubleshoot Template",
@@ -91,6 +100,12 @@ namespace appCore.Logs.UI
 					case "Failed CRQ":
 						FailedCRQ FCRQlog = new FailedCRQ();
 						Toolbox.Tools.CopyProperties(FCRQlog, Logs[c]);
+						emptyList.Add(new {
+						              	LogType = "Failed CRQ",
+						              	INC = FCRQlog.INC,
+						              	Target = FCRQlog.SiteId,
+						              	Timestamp = FCRQlog.GenerationDate.ToString("HH:mm:ss")
+						              });
 						listView1.Items.Add(new ListViewItem(
 							new []{
 								"Failed CRQ",
@@ -103,6 +118,12 @@ namespace appCore.Logs.UI
 					case "TX":
 						TX TXlog = new TX();
 						Toolbox.Tools.CopyProperties(TXlog, Logs[c]);
+						emptyList.Add(new {
+						              	LogType = "TX Template",
+						              	INC = "-",
+						              	Target = TXlog.SiteIDs,
+						              	Timestamp = TXlog.GenerationDate.ToString("HH:mm:ss")
+						              });
 						listView1.Items.Add(new ListViewItem(
 							new []{
 								"TX Template",
@@ -115,6 +136,12 @@ namespace appCore.Logs.UI
 					case "Update":
 						Update UPDlog = new Update();
 						Toolbox.Tools.CopyProperties(UPDlog, Logs[c]);
+						emptyList.Add(new {
+						              	LogType = "Update Template",
+						              	INC = UPDlog.INC,
+						              	Target = UPDlog.SiteId,
+						              	Timestamp = UPDlog.GenerationDate.ToString("HH:mm:ss")
+						              });
 						listView1.Items.Add(new ListViewItem(
 							new []{
 								"Update Template",
@@ -125,6 +152,9 @@ namespace appCore.Logs.UI
 						));
 						break;
 				}
+				
+				dataGridView1.DataSource = emptyList;
+				dataGridView1.Columns["LogType"].HeaderText = "Log Type";
 			}
 		}
 		
@@ -132,7 +162,7 @@ namespace appCore.Logs.UI
 		{
 			InitializeComponent();
 			
-			myFormControl1 = myForm;
+//			myFormControl1 = myForm;
 			OutageLogs = logs;
 			
 			string WindowTitle = OutageLogs.logFileDate.Day.ToString();
@@ -170,9 +200,21 @@ namespace appCore.Logs.UI
 			listView1.Columns.Add("TF Report").Width = -2;
 			listView1.Columns[listView1.Columns.Count -1].TextAlign = HorizontalAlignment.Center;
 			
+			var emptyList = new List<dynamic>();
+			
 			for (int c = 0; c < OutageLogs.Count; c++) {
 				char VfReportExists = !string.IsNullOrEmpty(OutageLogs[c].VfOutage) ? '\u2714' : '\u2718';
 				char TefReportExists = !string.IsNullOrEmpty(OutageLogs[c].TefOutage) ? '\u2714' : '\u2718';
+				emptyList.Add(new {
+				              	Timestamp = OutageLogs[c].GenerationDate.ToString(),
+				              	Summary = OutageLogs[c].Summary,
+				              	Gsm = OutageLogs[c].GsmCells.ToString(),
+				              	Umts = OutageLogs[c].UmtsCells.ToString(),
+				              	Lte = OutageLogs[c].LteCells.ToString(),
+				              	EventTime = OutageLogs[c].EventTime.ToString(),
+				              	VfReport = VfReportExists.ToString(),
+				              	TfReport = TefReportExists.ToString()
+				              });
 				listView1.Items.Add(new ListViewItem(
 					new []{
 						OutageLogs[c].GenerationDate.ToString(),
@@ -186,6 +228,14 @@ namespace appCore.Logs.UI
 					}
 				));
 			}
+			
+			dataGridView1.DataSource = emptyList;
+			dataGridView1.Columns["Gsm"].HeaderText = "2G";
+			dataGridView1.Columns["Umts"].HeaderText = "3G";
+			dataGridView1.Columns["Lte"].HeaderText = "4G";
+			dataGridView1.Columns["EventTime"].HeaderText = "Event Time";
+			dataGridView1.Columns["VfReport"].HeaderText = "VF Report";
+			dataGridView1.Columns["TfReport"].HeaderText = "TF Report";
 		}
 		
 		void ListView1SelectedIndexChanged(object sender, EventArgs e)
@@ -274,7 +324,7 @@ namespace appCore.Logs.UI
 		void LogEditorActivated(object sender, EventArgs e)
 		{
 //			FormCollection fc = Application.OpenForms;
-//			
+//
 //			foreach (Form frm in fc)
 //			{
 //				if (frm.Name == "appCore.UI.LargeTextForm" || frm.Name == "ScrollableMessageBox") {
@@ -284,12 +334,90 @@ namespace appCore.Logs.UI
 //			}
 		}
 		
+		void DataGridView1SelectionChanged(object sender, EventArgs e)
+		{
+			this.SuspendLayout();
+			List<DataGridViewRow> selectedRowsList = new List<DataGridViewRow>();
+			foreach(DataGridViewCell cell in dataGridView1.SelectedCells) {
+				if(!selectedRowsList.Contains(cell.OwningRow))
+					selectedRowsList.Add(cell.OwningRow);
+			}
+			
+			if(selectedRowsList.Count == 1) {
+				switch(GlobalLogType) {
+					case "Templates":
+						switch (selectedRowsList[0].Cells["LogType"].Value.ToString()) {
+							case "Troubleshoot Template":
+								if(TroubleshootUI != null)
+									TroubleshootUI.Dispose();
+								
+								TroubleshootUI = new TroubleshootControls(Logs[selectedRowsList[0].Index].ToTroubleShootTemplate());
+								TroubleshootUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+								this.Controls.Add(TroubleshootUI);
+								
+								this.Size = new System.Drawing.Size(TroubleshootUI.Right + 6, TroubleshootUI.Bottom + 29);
+								break;
+							case "Failed CRQ":
+								if(FailedCRQUI != null)
+									FailedCRQUI.Dispose();
+								
+								FailedCRQUI = new FailedCRQControls(Logs[selectedRowsList[0].Index].ToFailedCRQTemplate());
+								FailedCRQUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+								this.Controls.Add(FailedCRQUI);
+								this.Size = new System.Drawing.Size(FailedCRQUI.Right + 6, FailedCRQUI.Bottom + 29);
+								break;
+							case "TX Template":
+								if(TXUI != null)
+									TXUI.Dispose();
+								
+								TXUI = new TXControls(Logs[selectedRowsList[0].Index].ToTXTemplate());
+								TXUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+								this.Controls.Add(TXUI);
+								this.Size = new System.Drawing.Size(TXUI.Right + 6, TXUI.Bottom + 29);
+								break;
+							case "Update Template":
+								if(UpdateUI != null)
+									UpdateUI.Dispose();
+								
+								UpdateUI = new UpdateControls(Logs[selectedRowsList[0].Index].ToUpdateTemplate());
+								UpdateUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+								this.Controls.Add(UpdateUI);
+								this.Size = new System.Drawing.Size(UpdateUI.Right + 6, UpdateUI.Bottom + 29);
+								break;
+						}
+						break;
+					case "Outages":
+						if(OutageUI != null)
+							OutageUI.Dispose();
+						
+						OutageUI = new OutageControls(OutageLogs[selectedRowsList[0].Index]);
+						OutageUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+						this.Controls.Add(OutageUI);
+						this.Size = new System.Drawing.Size(OutageUI.Right + 6, OutageUI.Bottom + 29);
+						break;
+				}
+			}
+			else {
+				if(TroubleshootUI != null)
+					TroubleshootUI.Dispose();
+				if(FailedCRQUI != null)
+					FailedCRQUI.Dispose();
+				if(UpdateUI != null)
+					UpdateUI.Dispose();
+				if(TXUI != null)
+					TXUI.Dispose();
+				if(OutageUI != null)
+					OutageUI.Dispose();
+			}
+			this.ResumeLayout();
+		}
+		
 		void Form_Resize(object sender, EventArgs e)
 		{
 			// Fire Resize event to check if the window was minimized and minimize LogBrowser as well
 //			if (WindowState == FormWindowState.Minimized)
 //			{
-////				Form frm = (Form)this.Parent;
+			////				Form frm = (Form)this.Parent;
 //				Form frm = this.Owner;
 //				// FIXME: App crashes when minimizing both windows
 //				frm.WindowState = FormWindowState.Minimized;
@@ -297,7 +425,7 @@ namespace appCore.Logs.UI
 //				           {
 //				           	frm.WindowState = FormWindowState.Minimized;
 //				           });
-////				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
+			////				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
 //			}
 		}
 	}

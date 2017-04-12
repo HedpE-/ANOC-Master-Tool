@@ -155,7 +155,6 @@ namespace appCore.SiteFinder.UI
 			currentSite = site;
 			
 			parentControl = parent;
-//			parentControl = parent;
 //			switch(parent.GetType().ToString()) {
 //				case "appCore.Templates.UI.TroubleshootControls":
 //					currentSite = ((TroubleshootControls)parentControl).currentSite;
