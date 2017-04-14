@@ -62,12 +62,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		Template.UiEnum _uiMode;
-		Template.UiEnum UiMode {
+		UiEnum _uiMode;
+		UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UiEnum.Log) {
+				if(value == UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					BulkCITextBox.ReadOnly =
@@ -108,10 +108,10 @@ namespace appCore.Templates.UI
 		
 		public OutageControls()
 		{
-			UiMode = Template.UiEnum.Template;
+			UiMode = UiEnum.Template;
 		}
 		
-		public OutageControls(Outage outage, Template.UiEnum uimode = Template.UiEnum.Log)
+		public OutageControls(Outage outage, UiEnum uimode = UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentOutage = outage;
@@ -213,7 +213,7 @@ namespace appCore.Templates.UI
 					BulkCITextBox.Text = currentOutage.TefBulkCI;
 				}
 				
-				if(UiMode == Template.UiEnum.Template) {
+				if(UiMode == UiEnum.Template) {
 					Alarms_ReportTextBox.Select(0,0);
 					BulkCITextBox.Select(0,0);
 				}
