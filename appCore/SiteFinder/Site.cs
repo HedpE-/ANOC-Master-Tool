@@ -415,6 +415,10 @@ namespace appCore.SiteFinder
 		public Site() {
 		}
 		
+		public Site(string siteId) {
+			Id = siteId;
+		}
+		
 		/// <summary>
 		/// Populate with data pulled from OI
 		/// </summary>
