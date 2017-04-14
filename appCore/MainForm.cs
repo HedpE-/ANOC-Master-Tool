@@ -314,38 +314,54 @@ namespace appCore
 //				                   });
 //			else
 			tabControl1.SelectTab(1);
-			
+			Action action = null;
+			Control parent = null;
 			switch(log.LogType) {
 				case "Troubleshoot":
 					tabControl2.SelectTab(0);
-					if(TroubleshootUI != null)
-						TroubleshootUI.Dispose();
-					TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
-					tabPage8.Controls.Add(TroubleshootUI);
+					parent = tabPage8;
+					action = new Action(delegate {
+					                    	if(TroubleshootUI != null)
+					                    		TroubleshootUI.Dispose();
+					                    	TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
+					                    	tabPage8.Controls.Add(TroubleshootUI);
+					                    });
 					break;
 				case "Failed CRQ":
 					tabControl2.SelectTab(1);
-					if(FailedCRQUI != null)
-						FailedCRQUI.Dispose();
-					FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
-					tabPage10.Controls.Add(FailedCRQUI);
+					parent = tabPage10;
+					action = new Action(delegate {
+					                    	if(FailedCRQUI != null)
+					                    		FailedCRQUI.Dispose();
+					                    	FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
+					                    	tabPage10.Controls.Add(FailedCRQUI);
+					                    });
 					break;
 				case "Update":
 					tabControl2.SelectTab(2);
-					if(UpdateUI != null)
-						UpdateUI.Dispose();
-					UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
-					tabPage6.Controls.Add(UpdateUI);
+					parent = tabPage6;
+					action = new Action(delegate {
+					                    	if(UpdateUI != null)
+					                    		UpdateUI.Dispose();
+					                    	UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
+					                    	tabPage6.Controls.Add(UpdateUI);
+					                    });
 					break;
 				case "TX":
 					tabControl2.SelectTab(3);
-					if(TxUI != null)
-						TxUI.Dispose();
-					TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
-					tabPage9.Controls.Add(TxUI);
+					parent = tabPage9;
+					action = new Action(delegate {
+					                    	if(TxUI != null)
+					                    		TxUI.Dispose();
+					                    	TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
+					                    	tabPage9.Controls.Add(TxUI);
+					                    });
 					break;
 			}
+			LoadingPanel loading = new LoadingPanel();
+			loading.Show(action, parent);
 			MainFormActivate(null,null);
+			
 		}
 		
 		public static void UpdateTicketCountLabel(bool ignoreLabelVisibility = false) {
