@@ -78,10 +78,10 @@ namespace appCore.DB
 				
 				List<Site> res = getSites(sitesList, true);
 				
-				return res.Count > 0 ? res[0] : new Site();
+				return res.Count > 0 ? res[0] : new Site(site);
 			}
 			
-			return foundSite;
+			return new Site(site);
 		}
 		
 		public static List<Site> getSites(List<string> sitesToFind, bool ignoreCache = false)
