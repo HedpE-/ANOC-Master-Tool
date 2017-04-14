@@ -22,8 +22,8 @@ namespace appCore.Templates.Types
 	{
 		string inc = string.Empty;
 		public string INC { get { return inc; } protected set { inc = value; } }
-		string site = string.Empty;
-		public string SiteId { get { return site; } protected set { site = value; } }
+		string siteId = string.Empty;
+		public string SiteId { get { return siteId; } protected set { siteId = value; } }
 		string owner = string.Empty;
 		public string SiteOwner { get { return owner; } protected set { owner = value; } }
 		string tefSite = string.Empty;
@@ -60,6 +60,15 @@ namespace appCore.Templates.Types
 		public string BcpForm { get { return bcpForm; } protected set { bcpForm = value; } }
 		string OngoingINCs;
 		string OngoingCRQs;
+		
+		SiteFinder.Site site;
+		public SiteFinder.Site Site {
+			get {
+				if(site == null)
+					site = DB.SitesDB.getSite(SiteId);
+				return site;
+			}
+		}
 		
 		public Troubleshoot() {
 			LogType = "Troubleshoot";
@@ -411,7 +420,7 @@ namespace appCore.Templates.Types
 			return fullLog;
 		}
 		
-		public override Troubleshoot ToTroubleShootTemplate() {
+		public override Troubleshoot ToTroubleshootTemplate() {
 			return new Troubleshoot(this);
 		}
 	}

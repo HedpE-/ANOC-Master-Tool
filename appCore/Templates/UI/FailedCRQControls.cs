@@ -104,12 +104,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		Template.UiEnum _uiMode;
-		Template.UiEnum UiMode {
+		UiEnum _uiMode;
+		UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UiEnum.Log) {
+				if(value == UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
@@ -166,19 +166,21 @@ namespace appCore.Templates.UI
 		
 		public FailedCRQControls()
 		{
-			UiMode = Template.UiEnum.Template;
+			UiMode = UiEnum.Template;
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false);
 		}
 		
-		public FailedCRQControls(FailedCRQ template, Template.UiEnum uimode = Template.UiEnum.Log)
+		public FailedCRQControls(FailedCRQ template, UiEnum uimode = UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
-//			if(UiMode == Template.UIenum.Template)
+			if(UiMode == UiEnum.Template)
 			SiteIdTextBoxKeyPress(SiteIdTextBox, new KeyPressEventArgs((char)Keys.Enter));
+			else
+				currentSite = currentTemplate.Site;
 			INCTextBox.Text = currentTemplate.INC;
 			CRQTextBox.Text = currentTemplate.CRQ;
 			CRQContactsTextBox.Text = currentTemplate.CrqContacts;
@@ -195,7 +197,7 @@ namespace appCore.Templates.UI
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == Template.UiEnum.Template) {
+			if(UiMode == UiEnum.Template) {
 				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
 				if (CompINC_CRQ != "error")
 					INCTextBox.Text = CompINC_CRQ;
@@ -311,7 +313,7 @@ namespace appCore.Templates.UI
 			
 			Toolbox.Tools.CreateMailItem("A-NOC-UK1stLineRANSL@internal.vodafone.com", string.Empty, currentTemplate.EmailSubject, currentTemplate.EmailBody, true);
 			
-			if(UiMode == Template.UiEnum.Template) {
+			if(UiMode == UiEnum.Template) {
 				prevTemp = currentTemplate;
 				
 				MainForm.logFiles.HandleLog(currentTemplate);
@@ -350,8 +352,14 @@ namespace appCore.Templates.UI
 				                                      	generateTemplateToolStripMenuItem.Enabled = true;
 				                                      	siteFinder_Toggle(true, currentSite.Exists);
 				                                      });
-				LoadingPanel load = new LoadingPanel();
-				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+				if(this.Parent != null) {
+					LoadingPanel load = new LoadingPanel();
+					load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+				}
+				else {
+					actionThreaded();
+					actionNonThreaded();
+				}
 			}
 		}
 
@@ -528,6 +536,11 @@ namespace appCore.Templates.UI
 			tb.Text = enlarge.finaltext;
 //			                           });
 //			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+		}
+		
+		void LoadTemplateFromLog(object sender, EventArgs e) {
+			var form = Application.OpenForms.OfType<MainForm>().First();
+			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
 		}
 
 		void ClearAllControls(object sender, EventArgs e)
@@ -722,7 +735,7 @@ namespace appCore.Templates.UI
 			// 
 			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
 			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
-//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
+			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
 			// INCLabel
 			// 

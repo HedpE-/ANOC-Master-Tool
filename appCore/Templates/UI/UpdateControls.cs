@@ -82,12 +82,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		Template.UiEnum _uiMode;
-		Template.UiEnum UiMode {
+		UiEnum _uiMode;
+		UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UiEnum.Log) {
+				if(value == UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
@@ -125,12 +125,12 @@ namespace appCore.Templates.UI
 		
 		public UpdateControls()
 		{
-			UiMode = Template.UiEnum.Template;
+			UiMode = UiEnum.Template;
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false);
 		}
 		
-		public UpdateControls(Update template, Template.UiEnum uimode = Template.UiEnum.Log)
+		public UpdateControls(Update template, UiEnum uimode = UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
@@ -138,7 +138,7 @@ namespace appCore.Templates.UI
 //				siteFinder_Toggle(false, false);
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
-			if(UiMode == Template.UiEnum.Template)
+			if(UiMode == UiEnum.Template)
 				SiteIdTextBoxKeyPress(SiteIdTextBox,new KeyPressEventArgs((char)Keys.Enter));
 			INCTextBox.Text = currentTemplate.INC;
 			UpdateTextBox.Text = currentTemplate.update;
@@ -309,15 +309,12 @@ namespace appCore.Templates.UI
 		}
 		
 		void LoadTemplateFromLog(object sender, EventArgs e) {
-//			MainForm.FillTemplateFromLog(currentTemplate);
-//			TabControl tb1 = (TabControl)MainForm.Controls["tabControl1"];
-//			TabControl tb2 = (TabControl)MainForm.Controls["tabControl2"];
-//			tb1.SelectTab(1);
-//			tb2.SelectTab(4);
+			var form = Application.OpenForms.OfType<MainForm>().First();
+			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
 		}
 		
 		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == Template.UiEnum.Template) {
+			if(UiMode == UiEnum.Template) {
 				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
 				if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
 				else {
@@ -375,7 +372,7 @@ namespace appCore.Templates.UI
 			
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
-			if(UiMode == Template.UiEnum.Template) {
+			if(UiMode == UiEnum.Template) {
 				// Store this template for future warning on no changes
 				
 				prevTemp = currentTemplate;
@@ -560,7 +557,7 @@ namespace appCore.Templates.UI
 			// 
 			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
 			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
-//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
+			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
 			// SiteIdLabel
 			// 

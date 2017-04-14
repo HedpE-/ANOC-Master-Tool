@@ -41,7 +41,7 @@ namespace appCore
 		public static TroubleshootControls TroubleshootUI = new TroubleshootControls();
 		public static FailedCRQControls FailedCRQUI = new FailedCRQControls();
 		public static UpdateControls UpdateUI = new UpdateControls();
-		public static TXControls TXUI = new TXControls();
+		public static TxControls TxUI = new TxControls();
 		public static siteDetails SiteDetailsUI;
 		public static PictureBox SiteDetailsPictureBox = new PictureBox();
 		public static OutageControls OutageUI = new OutageControls();
@@ -56,7 +56,7 @@ namespace appCore
 		public MainForm(NotifyIcon tray, string[] args)
 		{
 			GlobalProperties.ApplicationStartTime = DateTime.Now;
-//			args = new [] { "-otherUser", "CUNHAPM1" }; // HACK: force login with another user
+//			args = new [] { "-otherUser", "FERNANDEST1" }; // HACK: force login with another user
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			GlobalProperties.resolveOfficePath();
 			
@@ -251,8 +251,8 @@ namespace appCore
 			tabPage10.Controls.Add(FailedCRQUI);
 			UpdateUI.Location = new Point(1, 2);
 			tabPage6.Controls.Add(UpdateUI);
-			TXUI.Location = new Point(1, 2);
-			tabPage9.Controls.Add(TXUI);
+			TxUI.Location = new Point(1, 2);
+			tabPage9.Controls.Add(TxUI);
 			
 			nokiaScriptsControls.Location = new Point(1, 2);
 			tabPage12.Controls.Add(nokiaScriptsControls);
@@ -308,36 +308,44 @@ namespace appCore
 		
 		public void FillTemplateFromLog(Template log)
 		{
+//			if(tabControl1.InvokeRequired)
+//				tabControl1.Invoke((MethodInvoker)delegate {
+//				                   	tabControl1.SelectTab(1);
+//				                   });
+//			else
+			tabControl1.SelectTab(1);
+			
 			switch(log.LogType) {
 				case "Troubleshoot":
-					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(0);
 					if(TroubleshootUI != null)
 						TroubleshootUI.Dispose();
-					TroubleshootUI = new TroubleshootControls(log.ToTroubleShootTemplate(), Template.UiEnum.Template);
+					TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
+					tabPage8.Controls.Add(TroubleshootUI);
 					break;
 				case "Failed CRQ":
-					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(1);
 					if(FailedCRQUI != null)
 						FailedCRQUI.Dispose();
-					FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), Template.UiEnum.Template);
+					FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
+					tabPage10.Controls.Add(FailedCRQUI);
 					break;
 				case "Update":
-					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(2);
 					if(UpdateUI != null)
 						UpdateUI.Dispose();
-					UpdateUI = new UpdateControls(log.ToUpdateTemplate(), Template.UiEnum.Template);
+					UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
+					tabPage6.Controls.Add(UpdateUI);
 					break;
 				case "TX":
-					tabControl1.SelectTab(1);
 					tabControl2.SelectTab(3);
-					if(TXUI != null)
-						TXUI.Dispose();
-					TXUI = new TXControls(log.ToTXTemplate(), Template.UiEnum.Template);
+					if(TxUI != null)
+						TxUI.Dispose();
+					TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
+					tabPage9.Controls.Add(TxUI);
 					break;
 			}
+			MainFormActivate(null,null);
 		}
 		
 		public static void UpdateTicketCountLabel(bool ignoreLabelVisibility = false) {
@@ -392,6 +400,7 @@ namespace appCore
 			toolTip.SetToolTip(pictureBox3, "Notes");
 			toolTip.SetToolTip(pictureBox4, "Log Browser");
 			toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
+			toolTip.SetToolTip(pictureBox6, "Shifts Calendar");
 		}
 
 		void TextBox13TextChanged(object sender, EventArgs e)
@@ -566,7 +575,7 @@ namespace appCore
 					UpdateUI.SiteIdTextBox.Focus();
 					break;
 				case 3:
-					TXUI.SitesTextBox.Focus();
+					TxUI.SitesTextBox.Focus();
 					break;
 			}
 		}
@@ -679,10 +688,10 @@ namespace appCore
 
 		void MainFormActivate(object sender, EventArgs e)
 		{
-			var form = Application.OpenForms.OfType<MainForm>().ToList();
+			var form = Application.OpenForms.OfType<MainForm>().First();
 			
-			form[0].Activate();
-			form[0].WindowState = FormWindowState.Normal;
+			form.Activate();
+			form.WindowState = FormWindowState.Normal;
 		}
 		
 		public static void openSettings(Control callerControl, bool fromTrayIcon = false) {

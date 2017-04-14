@@ -8,6 +8,7 @@
  */
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using appCore.Templates.Types;
 using appCore.UI;
@@ -15,9 +16,9 @@ using appCore.UI;
 namespace appCore.Templates.UI
 {
 	/// <summary>
-	/// Description of TXControls.
+	/// Description of TxControls.
 	/// </summary>
-	public class TXControls : Panel
+	public class TxControls : Panel
 	{
 		Button SitesLargeTextButton = new Button();
 		Button DetailedRanTroubleshootLargeTextButton = new Button();
@@ -61,24 +62,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-//		bool toggle;
-//		public bool ToggledState {
-//			get {
-//				return toggle;
-//			}
-//			set {
-//				if(value != toggle){
-//					toggle = value;
-//				}
-//			}
-//		}
-		
-		Template.UiEnum _uiMode;
-		Template.UiEnum UiMode {
+		UiEnum _uiMode;
+		UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UiEnum.Log) {
+				if(value == UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SitesTextBox.ReadOnly = true;
@@ -104,12 +93,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		public TXControls()
+		public TxControls()
 		{
-			UiMode = Template.UiEnum.Template;
+			UiMode = UiEnum.Template;
 		}
 		
-		public TXControls(TX template, Template.UiEnum uimode = Template.UiEnum.Log)
+		public TxControls(TX template, UiEnum uimode = UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
@@ -126,7 +115,7 @@ namespace appCore.Templates.UI
 		void GenerateTemplate(object sender, EventArgs e)
 		{
 //			Action action = new Action(delegate {
-			if(UiMode == Template.UiEnum.Template) {
+			if(UiMode == UiEnum.Template) {
 				string errmsg = string.Empty;
 				if (string.IsNullOrEmpty(SitesTextBox.Text)) {
 					errmsg = "         - Site(s) reference(s) missing\n";
@@ -173,7 +162,7 @@ namespace appCore.Templates.UI
 			
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
-			if(UiMode == Template.UiEnum.Template) {
+			if(UiMode == UiEnum.Template) {
 				// Store this template for future warning on no changes
 				
 				prevTemp = currentTemplate;
@@ -185,11 +174,8 @@ namespace appCore.Templates.UI
 		}
 		
 		void LoadTemplateFromLog(object sender, EventArgs e) {
-//			MainForm.FillTemplateFromLog(currentTemplate);
-//			TabControl tb1 = (TabControl)MainForm.Controls["tabControl1"];
-//			TabControl tb2 = (TabControl)MainForm.Controls["tabControl2"];
-//			tb1.SelectTab(1);
-//			tb2.SelectTab(4);
+			var form = Application.OpenForms.OfType<MainForm>().First();
+			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
 		}
 
 		void TxTypeComboBoxSelectedIndexChanged(object sender, EventArgs e)
@@ -305,7 +291,7 @@ namespace appCore.Templates.UI
 			// 
 			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
 			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
-//			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
+			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
 			// SitesLabel
 			// 

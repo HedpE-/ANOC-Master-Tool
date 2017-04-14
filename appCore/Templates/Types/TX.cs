@@ -140,7 +140,7 @@ namespace appCore.Templates.Types
 			return fullLog;
 		}
 		
-		public override TX ToTXTemplate() {
+		public override TX ToTxTemplate() {
 			return new TX(this);
 		}
 	}

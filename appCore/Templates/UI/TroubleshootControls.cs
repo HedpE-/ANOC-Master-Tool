@@ -111,12 +111,12 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		Template.UiEnum _uiMode;
-		Template.UiEnum UiMode {
+		UiEnum _uiMode;
+		UiEnum UiMode {
 			get { return _uiMode; }
 			set {
 				_uiMode = value;
-				if(value == Template.UiEnum.Log) {
+				if(value == UiEnum.Log) {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
@@ -182,19 +182,21 @@ namespace appCore.Templates.UI
 		
 		public TroubleshootControls()
 		{
-			UiMode = Template.UiEnum.Template;
+			UiMode = UiEnum.Template;
 			if(GlobalProperties.siteFinder_mainswitch)
 				siteFinder_Toggle(false, false);
 		}
 		
-		public TroubleshootControls(Troubleshoot template, Template.UiEnum uimode = Template.UiEnum.Log)
+		public TroubleshootControls(Troubleshoot template, UiEnum uimode = UiEnum.Log)
 		{
 			UiMode = uimode;
 			currentTemplate = template;
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
-			if(UiMode == Template.UiEnum.Template)
+			if(UiMode == UiEnum.Template)
 				SiteIdTextBoxKeyPress(SiteIdTextBox,new KeyPressEventArgs((char)Keys.Enter));
+			else
+				currentSite = currentTemplate.Site;
 			INCTextBox.Text = currentTemplate.INC;
 			AddressTextBox.Text = currentTemplate.SiteAddress;
 			OtherSitesImpactedCheckBox.Checked = currentTemplate.OtherSitesImpacted;
@@ -212,6 +214,10 @@ namespace appCore.Templates.UI
 			ActiveAlarmsTextBox.Text = currentTemplate.ActiveAlarms;
 			AlarmHistoryTextBox.Text = currentTemplate.AlarmHistory;
 			TroubleshootTextBox.Text = currentTemplate.TroubleShoot;
+			PowerCompanyTextBox.Text = currentSite.PowerCompany;
+			RegionTextBox.Text = currentSite.Region;
+//			currentSite.requestOIData("INCCRQ");
+//			siteFinder_Toggle(true, currentSite.Exists);
 		}
 
 		void siteFinder_Toggle(bool toggle, bool siteFound) {
@@ -323,8 +329,14 @@ namespace appCore.Templates.UI
 				                                      		sendBCPToolStripMenuItem.Enabled = true;
 				                                      	SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
 				                                      });
-				LoadingPanel load = new LoadingPanel();
-				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+				if(Parent != null) {
+					LoadingPanel load = new LoadingPanel();
+					load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+				}
+				else {
+					actionThreaded();
+					actionNonThreaded();
+				}
 			}
 		}
 
@@ -676,12 +688,8 @@ namespace appCore.Templates.UI
 		}
 		
 		void LoadTemplateFromLog(object sender, EventArgs e) {
-			// TODO: LoadTemplateFromLog
-//			MainForm.FillTemplateFromLog(currentTemplate);
-//			TabControl tb1 = (TabControl)MainForm.Controls["tabControl1"];
-//			TabControl tb2 = (TabControl)MainForm.Controls["tabControl2"];
-//			tb1.SelectTab(1);
-//			tb2.SelectTab(4);
+			var form = Application.OpenForms.OfType<MainForm>().First();
+			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
 		}
 
 		void GenerateTaskNotes(object sender, EventArgs e)
@@ -748,7 +756,7 @@ namespace appCore.Templates.UI
 		
 		void GenerateTemplate(object sender, EventArgs e) {
 			Action actionNonThreaded = new Action(delegate {
-			                                      	if(UiMode == Template.UiEnum.Template) {
+			                                      	if(UiMode == UiEnum.Template) {
 			                                      		string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
 			                                      		if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
 			                                      		else {
@@ -813,7 +821,7 @@ namespace appCore.Templates.UI
 //				currentTemplate = null;
 			                                      	currentTemplate = new Troubleshoot(Controls, relatedCases);
 			                                      	
-			                                      	if(UiMode == Template.UiEnum.Template && prevTemp != null) {
+			                                      	if(UiMode == UiEnum.Template && prevTemp != null) {
 			                                      		// No changes since the last template warning
 			                                      		string errmsg = "";
 			                                      		if(currentTemplate.ToString() != prevTemp.ToString()) {
@@ -888,7 +896,7 @@ namespace appCore.Templates.UI
 			                                      	
 			                                      	FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			                                      	
-			                                      	if(UiMode == Template.UiEnum.Template) {
+			                                      	if(UiMode == UiEnum.Template) {
 			                                      		if(!sendBCPToolStripMenuItem.Enabled)
 			                                      			sendBCPToolStripMenuItem.Enabled = true;
 			                                      		

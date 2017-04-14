@@ -27,6 +27,15 @@ namespace appCore.Templates.Types
 		string _update = string.Empty;
 		public string update { get { return _update; } protected set { _update = value; } }
 		
+		SiteFinder.Site site;
+		public SiteFinder.Site Site {
+			get {
+				if(site == null)
+					site = DB.SitesDB.getSite(SiteId);
+				return site;
+			}
+		}
+		
 		public Update() {
 			LogType = "Update";
 		}

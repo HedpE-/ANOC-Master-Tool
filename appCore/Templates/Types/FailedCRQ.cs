@@ -50,6 +50,15 @@ namespace appCore.Templates.Types
 		string emailbody = string.Empty;
 		public string EmailBody { get { return emailbody; } protected set { emailbody = value; } }
 		
+		SiteFinder.Site site;
+		public SiteFinder.Site Site {
+			get {
+				if(site == null)
+					site = DB.SitesDB.getSite(SiteId);
+				return site;
+			}
+		}
+		
 		public FailedCRQ() {
 			LogType = "Failed CRQ";
 		}

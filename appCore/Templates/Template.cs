@@ -40,7 +40,7 @@ namespace appCore.Templates
 			} catch (Exception) { }
 		}
 		
-		public virtual Troubleshoot ToTroubleShootTemplate() {
+		public virtual Troubleshoot ToTroubleshootTemplate() {
 			return null;
 		}
 				
@@ -52,7 +52,7 @@ namespace appCore.Templates
 			return null;
 		}
 		
-		public virtual TX ToTXTemplate() {
+		public virtual TX ToTxTemplate() {
 			return null;
 		}
 		
@@ -68,10 +68,5 @@ namespace appCore.Templates
 			Outage,
 			TicketCount
 		};
-		
-		public enum UiEnum {
-			Template,
-			Log
-		}
 	}
 }
