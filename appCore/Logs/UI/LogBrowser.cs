@@ -129,7 +129,7 @@ namespace appCore.Logs.UI
 			                           			if (Logs[0].Contains(" - ")) {
 			                           				LogsCollection<Template> logs = new LogsCollection<Template>();
 			                           				logs = logs.ImportLogFile(new FileInfo(LogFile));
-			                           				LogEditor LogEdit = new LogEditor(logs, myFormControl1);
+			                           				LogEditor LogEdit = new LogEditor(logs);
 			                           				LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                           				LogEdit.ShowDialog(this);
 			                           			}
@@ -146,13 +146,12 @@ namespace appCore.Logs.UI
 			                           			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
 			                           			LogsCollection<Outage> logs = new LogsCollection<Outage>();
 			                           			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
-			                           			LogEditor LogEdit = new LogEditor(logs, myFormControl1);
+			                           			LogEditor LogEdit = new LogEditor(logs);
 			                           			LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                           			LogEdit.ShowDialog();
 			                           		}
 			                           	}
 			                           });
-//			Toolbox.Tools.darkenBackgroundForm(actionThreaded, false, this);
 			LoadingPanel load = new LoadingPanel();
 			load.Show(action, this);
 		}
@@ -160,9 +159,7 @@ namespace appCore.Logs.UI
 		void ListBox3KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
 				ListBox3DoubleClick(sender, e);
-			}
 		}
 		
 		void LogBrowserActivated(object sender, EventArgs e)
