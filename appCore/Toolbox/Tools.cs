@@ -435,3 +435,8 @@ public enum Months : byte {
 	November,
 	December
 };
+
+public enum UiEnum {
+	Template,
+	Log
+}
