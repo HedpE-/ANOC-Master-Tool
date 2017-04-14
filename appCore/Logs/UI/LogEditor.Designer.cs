@@ -14,7 +14,6 @@ namespace appCore.Logs.UI
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-		private System.Windows.Forms.ListView listView1;
 		private appCore.UI.AMTDataGridView dataGridView1;
 		
 		/// <summary>
@@ -38,39 +37,36 @@ namespace appCore.Logs.UI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listView1 = new System.Windows.Forms.ListView();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.dataGridView1 = new appCore.UI.AMTDataGridView();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// listView1
-			// 
-			this.listView1.Activation = System.Windows.Forms.ItemActivation.OneClick;
-			this.listView1.AutoArrange = false;
-			this.listView1.FullRowSelect = true;
-			this.listView1.GridLines = true;
-			this.listView1.HideSelection = false;
-			this.listView1.Location = new System.Drawing.Point(7, 7);
-			this.listView1.MultiSelect = false;
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(510, 112);
-			this.listView1.TabIndex = 0;
-			this.listView1.UseCompatibleStateImageBehavior = false;
-			this.listView1.SelectedIndexChanged += new System.EventHandler(this.ListView1SelectedIndexChanged);
 			// 
 			// dataGridView1
 			// 
 			this.dataGridView1.AllowUserToAddRows = false;
 			this.dataGridView1.AllowUserToDeleteRows = false;
+			this.dataGridView1.AllowUserToResizeColumns = false;
+			this.dataGridView1.AllowUserToResizeRows = false;
+			this.dataGridView1.AlwaysVisibleVScrollBar = false;
 			this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridView1.DoubleBuffer = true;
 			this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
 			this.dataGridView1.Location = new System.Drawing.Point(7, 7);
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.ReadOnly = true;
-			this.dataGridView1.RowHeadersVisible = false;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			this.dataGridView1.RowHeadersWidth = 15;
 			this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-			this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
 			this.dataGridView1.Size = new System.Drawing.Size(510, 112);
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.SelectionChanged += new System.EventHandler(this.DataGridView1SelectionChanged);
@@ -81,7 +77,6 @@ namespace appCore.Logs.UI
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(524, 733);
 			this.Controls.Add(this.dataGridView1);
-			this.Controls.Add(this.listView1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
 			this.MaximizeBox = false;
