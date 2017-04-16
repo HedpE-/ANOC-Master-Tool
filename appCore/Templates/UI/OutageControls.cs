@@ -174,10 +174,11 @@ namespace appCore.Templates.UI
 			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
 			                                      			generateReportToolStripMenuItem.Enabled =
 			                                      				generateFromSitesListToolStripMenuItem.Enabled = false;
-			                                      			Alarms_ReportTextBox.ReadOnly = true;
-			                                      			BulkCITextBox.ReadOnly = true;
+			                                      			Alarms_ReportTextBox.ReadOnly =
+			                                      				BulkCITextBox.ReadOnly = true;
 			                                      			outageFollowUpToolStripMenuItem.Enabled =
 			                                      				copyToClipboardToolStripMenuItem.Enabled =
+			                                      				sitesPerTechToolStripMenuItem.Enabled =
 			                                      				generateSitesListToolStripMenuItem.Enabled = true;
 			                                      			Alarms_ReportTextBox.Focus();
 			                                      			Alarms_ReportLabel.Text = "Generated Outage Report";
@@ -295,8 +296,104 @@ namespace appCore.Templates.UI
 		void ShowSitesPerTech(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
+			                           	Label gsmLabel = new Label {
+			                           		Text = "2G Affected Sites",
+			                           		TextAlign = ContentAlignment.BottomLeft,
+			                           		Width = 100,
+			                           		Location = new Point(5, 5)
+			                           	};
+			                           	Label umtsLabel = new Label {
+			                           		Text = "3G Affected Sites",
+			                           		TextAlign = ContentAlignment.BottomLeft,
+			                           		Width = 100,
+			                           		Location = new Point(gsmLabel.Right + 10, 5)
+			                           	};
+			                           	Label lteLabel = new Label {
+			                           		Text = "4G Affected Sites",
+			                           		TextAlign = ContentAlignment.BottomLeft,
+			                           		Width = 100,
+			                           		Location = new Point(umtsLabel.Right + 10, 5)
+			                           	};
+			                           	AMTRichTextBox gsmAmtRichTextBox = new AMTRichTextBox {
+			                           		ReadOnly = true,
+			                           		Size = new Size(100, 220),
+			                           		Location = new Point(5, gsmLabel.Bottom + 5)
+			                           	};
+			                           	AMTRichTextBox umtsAmtRichTextBox = new AMTRichTextBox {
+			                           		ReadOnly = true,
+			                           		Size = new Size(100, 220),
+			                           		Location = new Point(gsmAmtRichTextBox.Right + 10, umtsLabel.Bottom + 5)
+			                           	};
+			                           	AMTRichTextBox lteAmtRichTextBox = new AMTRichTextBox {
+			                           		ReadOnly = true,
+			                           		Size = new Size(100, 220),
+			                           		Location = new Point(umtsAmtRichTextBox.Right + 10, lteLabel.Bottom + 5)
+			                           	};
+			                           	CheckBox sitesFullNameCheckBox = new CheckBox {
+			                           		Text = "View Sites full ID",
+			                           		Width = 150,
+			                           		Location = new Point(5, gsmAmtRichTextBox.Bottom + 5)
+			                           	};
+			                           	sitesFullNameCheckBox.CheckedChanged += (s, a) => {
+			                           		if(sitesFullNameCheckBox.Checked) {
+			                           			if(VFReportRadioButton.Checked) {
+			                           				gsmAmtRichTextBox.Text = currentOutage.VfGsmAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.VfGsmAffectedSites) : string.Empty;
+			                           				umtsAmtRichTextBox.Text = currentOutage.VfUmtsAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.VfUmtsAffectedSites) : string.Empty;
+			                           				lteAmtRichTextBox.Text = currentOutage.VfLteAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.VfLteAffectedSites) : string.Empty;
+			                           			}
+			                           			else {
+			                           				gsmAmtRichTextBox.Text = currentOutage.TefGsmAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.TefGsmAffectedSites) : string.Empty;
+			                           				umtsAmtRichTextBox.Text = currentOutage.TefUmtsAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.TefUmtsAffectedSites) : string.Empty;
+			                           				lteAmtRichTextBox.Text = currentOutage.TefLteAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.TefLteAffectedSites) : string.Empty;
+			                           			}
+			                           		}
+			                           		else {
+			                           			string[] lines = gsmAmtRichTextBox.Lines;
+			                           			for(int c = 0;c < lines.Length;c++) {
+			                           				lines[c] = lines[c].RemoveLetters();
+			                           				while(lines[c].StartsWith("0"))
+			                           					lines[c] = lines[c].Substring(1);
+			                           			}
+			                           			gsmAmtRichTextBox.Text = string.Join(Environment.NewLine, lines);
+			                           			lines = umtsAmtRichTextBox.Lines;
+			                           			for(int c = 0;c < lines.Length;c++) {
+			                           				lines[c] = lines[c].RemoveLetters();
+			                           				while(lines[c].StartsWith("0"))
+			                           					lines[c] = lines[c].Substring(1);
+			                           			}
+			                           			umtsAmtRichTextBox.Text = string.Join(Environment.NewLine, lines);
+			                           			lines = lteAmtRichTextBox.Lines;
+			                           			for(int c = 0;c < lines.Length;c++) {
+			                           				lines[c] = lines[c].RemoveLetters();
+			                           				while(lines[c].StartsWith("0"))
+			                           					lines[c] = lines[c].Substring(1);
+			                           			}
+			                           			lteAmtRichTextBox.Text = string.Join(Environment.NewLine, lines);
+			                           		}
+			                           	};
+			                           	sitesFullNameCheckBox.Checked = true;
 			                           	
-			                                      });
+			                           	Form showSitesPerTechForm = new Form {
+			                           		Text = (VFReportRadioButton.Checked ? "VF" : "TF") + " Affected Sites Per Tech",
+			                           		Name = "showSitesPerTechForm",
+			                           		Size = new Size(338, 312),
+			                           		MaximizeBox = false,
+			                           		FormBorderStyle = FormBorderStyle.FixedDialog
+			                           	};
+			                           	
+			                           	showSitesPerTechForm.Controls.AddRange(new Control[]{
+			                           	                                       	gsmLabel,
+			                           	                                       	umtsLabel,
+			                           	                                       	lteLabel,
+			                           	                                       	gsmAmtRichTextBox,
+			                           	                                       	umtsAmtRichTextBox,
+			                           	                                       	lteAmtRichTextBox,
+			                           	                                       	sitesFullNameCheckBox
+			                           	                                       });
+			                           	
+			                           	
+			                           	showSitesPerTechForm.ShowDialog();
+			                           });
 			LoadingPanel load = new LoadingPanel();
 			load.Show(action, this);
 		}
@@ -490,6 +587,7 @@ namespace appCore.Templates.UI
 				BulkCITextBox.Text = string.Empty;
 			copyToClipboardToolStripMenuItem.Enabled =
 				generateSitesListToolStripMenuItem.Enabled =
+				sitesPerTechToolStripMenuItem.Enabled =
 				outageFollowUpToolStripMenuItem.Enabled = false;
 			VFReportRadioButton.Enabled =
 				VFReportRadioButton.Checked =
