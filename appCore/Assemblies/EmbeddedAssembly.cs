@@ -25,6 +25,7 @@ public static class EmbeddedAssemblies
 		Load("appCore.Assemblies.FileHelpers.dll", "FileHelpers.dll");
 		Load("appCore.Assemblies.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
 		Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
+		Load("appCore.Assemblies.Svg2.3.0.dll", "Svg2.3.0.dll");
 		
 		AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 	}

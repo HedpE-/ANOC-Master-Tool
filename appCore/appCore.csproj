@@ -90,6 +90,10 @@
       <HintPath>Assemblies\RestSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Svg2.3.0">
+      <HintPath>Assemblies\Svg2.3.0.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -1285,6 +1289,7 @@
     <Compile Include="Toolbox\StringExtensions.cs" />
     <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\StringLogicalComparer.cs" />
+    <Compile Include="Toolbox\SVGParser.cs" />
     <Compile Include="Toolbox\Tools.cs" />
     <Compile Include="SiteFinder\Vendors.cs" />
     <Compile Include="Toolbox\Transitions\IManagedType.cs" />
@@ -1361,6 +1366,7 @@
     <Compile Include="UI\SplashForm.Designer.cs">
       <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ToolsMenu.cs" />
     <Compile Include="UI\trayIcon.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
@@ -1493,6 +1499,7 @@
     <EmbeddedResource Include="Assemblies\FileHelpers.dll" />
     <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Assemblies\GeoUk.dll" />
+    <EmbeddedResource Include="Assemblies\Svg2.3.0.dll" />
     <None Include="GMap.NET\GMap.Net.README.md" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
