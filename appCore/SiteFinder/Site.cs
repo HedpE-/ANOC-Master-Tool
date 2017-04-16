@@ -288,6 +288,19 @@ namespace appCore.SiteFinder
 			private set { }
 		}
 		[FieldHidden]
+		string fullId;
+		public string FullId {
+			get {
+				if(string.IsNullOrEmpty(fullId)) {
+					fullId = Id;
+					while(fullId.Length < 5)
+						fullId = 0 + fullId;
+					fullId = "RBS" + fullId;
+				}
+				return fullId;
+			}
+		}
+		[FieldHidden]
 		string POWER_COMPANY;
 		[FieldHidden]
 		string POWER_CONTACT;
