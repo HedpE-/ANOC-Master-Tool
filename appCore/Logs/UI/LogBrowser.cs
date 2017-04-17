@@ -31,6 +31,13 @@ namespace appCore.Logs.UI
 				return radioButton2.Checked ? radioButton2.Text : string.Empty;
 			}
 		}
+		
+		DateTime ChosenDate {
+			get {
+				return new DateTime(int.Parse(listBox1.Text), DateTime.ParseExact(listBox2.Text, "MMM", CultureInfo.CurrentCulture).Month, int.Parse(listBox3.Text), 0, 0, 0);
+			}
+		}
+		
 		MainForm myFormControl1;
 		
 		public LogBrowser(MainForm myForm)
@@ -127,8 +134,9 @@ namespace appCore.Logs.UI
 			                           			LogFile += listBox3.Text + ".txt";
 			                           			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
 			                           			if (Logs[0].Contains(" - ")) {
-			                           				LogsCollection<Template> logs = new LogsCollection<Template>();
-			                           				logs = logs.ImportLogFile(new FileInfo(LogFile));
+			                           				LogsCollection<Template> logs = ChosenDate == DateTime.Now ?
+			                           					MainForm.logFiles :
+			                           					new LogsCollection<Template>().ImportLogFile(new FileInfo(LogFile));
 			                           				LogEditor LogEdit = new LogEditor(logs);
 			                           				LogEdit.StartPosition = FormStartPosition.CenterParent;
 			                           				LogEdit.ShowDialog(this);
@@ -165,7 +173,7 @@ namespace appCore.Logs.UI
 		void LogBrowserActivated(object sender, EventArgs e)
 		{
 //			var fc = Application.OpenForms.OfType<LogEditor>().ToList();
-//			
+//
 //			if(fc.Count > 0) {
 //				if(fc[0].WindowState == FormWindowState.Minimized)
 //					fc[0].WindowState = FormWindowState.Normal;
