@@ -60,7 +60,7 @@ namespace appCore.Logs
 		
 		bool ForceOverwriteLog;
 		System.Timers.Timer timer;
-		public DateTime logFileDate = DateTime.Now;
+		public DateTime logFileDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 		string logSeparator = getLogSeparator();
 		
 //		public static bool IsFileLocked(FileInfo file)
