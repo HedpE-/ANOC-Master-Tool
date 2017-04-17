@@ -81,7 +81,7 @@ namespace appCore.DB
 				return res.Count > 0 ? res[0] : new Site(site);
 			}
 			
-			return new Site(site);
+			return foundSite;
 		}
 		
 		public static List<Site> getSites(List<string> sitesToFind, bool ignoreCache = false)
