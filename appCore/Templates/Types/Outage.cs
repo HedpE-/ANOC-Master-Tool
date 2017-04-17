@@ -673,20 +673,38 @@ namespace appCore.Templates.Types
 					tempSites[c] = Convert.ToInt32(tempSites[c].Split(' ')[0].Replace("RBS",string.Empty)).ToString();
 				List<Site> sites = DB.SitesDB.getSites(tempSites);
 				foreach(Site site in sites) {
-					if(site.Cells.Filter(Cell.Filters.VF_2G).Count > 0) {
+					List<Cell> cells = site.Cells.Filter(Cell.Filters.VF_2G);
+					if(cells.Count > 0) {
 						if(VfGsmAffectedSites == null)
 							VfGsmAffectedSites = new List<string>();
-						VfGsmAffectedSites.Add(site.FullId);
+						foreach(Cell cell in cells) {
+							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
+								VfGsmAffectedSites.Add(site.FullId);
+								break;
+							}
+						}
 					}
-					if(site.Cells.Filter(Cell.Filters.VF_3G).Count > 0) {
+					cells = site.Cells.Filter(Cell.Filters.VF_3G);
+					if(cells.Count > 0) {
 						if(VfUmtsAffectedSites == null)
 							VfUmtsAffectedSites = new List<string>();
-						VfUmtsAffectedSites.Add(site.FullId);
+						foreach(Cell cell in cells) {
+							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
+								VfUmtsAffectedSites.Add(site.FullId);
+								break;
+							}
+						}
 					}
-					if(site.Cells.Filter(Cell.Filters.VF_4G).Count > 0) {
+					cells = site.Cells.Filter(Cell.Filters.VF_4G);
+					if(cells.Count > 0) {
 						if(VfLteAffectedSites == null)
 							VfLteAffectedSites = new List<string>();
-						VfLteAffectedSites.Add(site.FullId);
+						foreach(Cell cell in cells) {
+							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
+								VfLteAffectedSites.Add(site.FullId);
+								break;
+							}
+						}
 					}
 				}
 				
@@ -785,20 +803,38 @@ namespace appCore.Templates.Types
 					tempSites[c] = Convert.ToInt32(tempSites[c].Split(' ')[0].Replace("RBS",string.Empty)).ToString();
 				List<Site> sites = DB.SitesDB.getSites(tempSites);
 				foreach(Site site in sites) {
-					if(site.Cells.Filter(Cell.Filters.TF_2G).Count > 0) {
+					List<Cell> cells = site.Cells.Filter(Cell.Filters.TF_2G);
+					if(cells.Count > 0) {
 						if(TefGsmAffectedSites == null)
 							TefGsmAffectedSites = new List<string>();
-						TefGsmAffectedSites.Add(site.FullId);
+						foreach(Cell cell in cells) {
+							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
+								TefGsmAffectedSites.Add(site.FullId);
+								break;
+							}
+						}
 					}
+					cells = site.Cells.Filter(Cell.Filters.TF_3G);
 					if(site.Cells.Filter(Cell.Filters.TF_3G).Count > 0) {
 						if(TefUmtsAffectedSites == null)
 							TefUmtsAffectedSites = new List<string>();
-						TefUmtsAffectedSites.Add(site.FullId);
+						foreach(Cell cell in cells) {
+							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
+								TefUmtsAffectedSites.Add(site.FullId);
+								break;
+							}
+						}
 					}
+					cells = site.Cells.Filter(Cell.Filters.TF_4G);
 					if(site.Cells.Filter(Cell.Filters.TF_4G).Count > 0) {
 						if(TefLteAffectedSites == null)
 							TefLteAffectedSites = new List<string>();
-						TefLteAffectedSites.Add(site.FullId);
+						foreach(Cell cell in cells) {
+							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
+								TefLteAffectedSites.Add(site.FullId);
+								break;
+							}
+						}
 					}
 				}
 				
