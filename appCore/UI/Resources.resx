@@ -15961,7 +15961,36 @@ ZJ - LTE2100 Micro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.0alpha12 27/02/2017 #######
+    <value>####### ANOC Master Tool 7.1alpha1 17/04/2017 #######
+
+- Fixed "Generate Template" not becoming active on Failed CRQs
+- Tweaked the way the tool searches sites on DB to make it work faster especially on bulk searches and outages
+- New Lock/Unlock cells and Cells Locked features on Site Finder
+- Updated SiteLopedia address on AMT Browser
+- Tweaked the Shifts Calendar for better functionality
+- Almost all Tables tweaked to be able to multi select cell by cell and copy any value with CTRL+C
+- Tables containing "Cell Name" column will show a tooltip with the Cell prefix and frequency/cell type
+- Added Onward Sites count/list and markers on Site Finder
+- Added CCT ref on the Troubleshoot Template and Site Finder
+- The INCs/CRQs/BookIns/Alarms/Availability Menu buttons now allow to right click and refresh data individually
+- The tool now searches for updated DB files every 2 hours and self updates if new files found
+- Tweaked notifications
+- Added the resolution to the related INCs, on the Troubleshoot Template
+- Fixed crash whenever the OI APIs returned an error message
+- Fixed the Failed CRQ layout, entered text now contains correct line breaks
+- Outage Report now contains the affected number of cells per site/technology on the sites list
+- New Menu option "View sites per tech"
+- Site Finder cells list now contain additional filters to show/hide VF/TF cells
+- New button "Back to map overview" on Outage Follow Up to easily view all sites on the map again
+- Outage Follow Up cells list per site now gets the cells on the report back color painted on red if present on the report
+- Fixed crash for users not present on the shifts file
+- Fixed crash starting the app when the Active Directory is unavailable
+- Fixed crash getting the network access flag if the share is available but slow
+- Added all missing cells prefix on Notes
+- Fixed UI bugs on the Ericsson L/U cells script panel
+- Fixed "Copy log to new template" on LogEditor
+
+####### ANOC Master Tool 7.0alpha12 27/02/2017 #######
 
 - Adaptations for new OI APIs
 - Tweaked OI requests, now it gets the same data using less requests, turning into reduced response times and less server load

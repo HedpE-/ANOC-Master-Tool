@@ -188,14 +188,15 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.0alpha12 27/02/2017 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha1 17/04/2017 #######
 		///
-		///- Adaptations for new OI APIs
-		///- Tweaked OI requests, now it gets the same data using less requests, turning into reduced response times and less server load
-		///- Removed Old OI links since they&apos;ve been taken out of order
-		///- Site Details has a new menu button for the Availability chart
-		///- Tweaked site finder to get cells faster, greatly reduced time on Outages and bulk searches
-		///- Site Finder cells Locked column has color according to the cells locked  [rest of string was truncated]&quot;;.
+		///- Fixed &quot;Generate Template&quot; not becoming active on Failed CRQs
+		///- Tweaked the way the tool searches sites on DB to make it work faster especially on bulk searches and outages
+		///- New Lock/Unlock cells and Cells Locked features on Site Finder
+		///- Updated SiteLopedia address on AMT Browser
+		///- Tweaked the Shifts Calendar for better functionality
+		///- Almost all Tables tweaked to be able to multi select cell by cell and copy any value with CTRL+C
+		///- Tables co [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
