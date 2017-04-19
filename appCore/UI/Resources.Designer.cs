@@ -353,6 +353,16 @@ namespace appCore.UI {
 		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Bitmap.
 		/// </summary>
+		internal static System.Drawing.Bitmap SMS_Book_In {
+			get {
+				object obj = ResourceManager.GetObject("SMS Book In", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
 		internal static System.Drawing.Bitmap Spinner {
 			get {
 				object obj = ResourceManager.GetObject("Spinner", resourceCulture);

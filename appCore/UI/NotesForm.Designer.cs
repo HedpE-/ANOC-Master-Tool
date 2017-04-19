@@ -23,6 +23,8 @@ namespace appCore.UI
 		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.RichTextBox textBox3;
 		private appCore.UI.AMTDataGridView dataGridView1;
+		private System.Windows.Forms.TabPage tabPage5;
+		private System.Windows.Forms.PictureBox pictureBox2;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -55,6 +57,8 @@ namespace appCore.UI
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.textBox3 = new System.Windows.Forms.RichTextBox();
+			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -62,6 +66,8 @@ namespace appCore.UI
 			this.tabPage3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.tabPage4.SuspendLayout();
+			this.tabPage5.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -73,6 +79,7 @@ namespace appCore.UI
 			this.tabControl1.Controls.Add(this.tabPage2);
 			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Controls.Add(this.tabPage4);
+			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
@@ -96,6 +103,7 @@ namespace appCore.UI
 			this.dataGridView1.AllowUserToDeleteRows = false;
 			this.dataGridView1.AllowUserToResizeColumns = false;
 			this.dataGridView1.AllowUserToResizeRows = false;
+			this.dataGridView1.AlwaysVisibleVScrollBar = false;
 			this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
 			this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
 			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
@@ -195,6 +203,28 @@ namespace appCore.UI
 			this.textBox3.TabIndex = 2;
 			this.textBox3.Text = "";
 			// 
+			// tabPage5
+			// 
+			this.tabPage5.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage5.Controls.Add(this.pictureBox2);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Name = "tabPage5";
+			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage5.Size = new System.Drawing.Size(538, 532);
+			this.tabPage5.TabIndex = 4;
+			this.tabPage5.Text = "SMS Book In";
+			// 
+			// pictureBox2
+			// 
+			this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pictureBox2.Image = global::appCore.UI.Resources.SMS_Book_In;
+			this.pictureBox2.Location = new System.Drawing.Point(3, 3);
+			this.pictureBox2.Name = "pictureBox2";
+			this.pictureBox2.Size = new System.Drawing.Size(532, 526);
+			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox2.TabIndex = 1;
+			this.pictureBox2.TabStop = false;
+			// 
 			// NotesForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -212,6 +242,8 @@ namespace appCore.UI
 			this.tabPage3.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.tabPage4.ResumeLayout(false);
+			this.tabPage5.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.ResumeLayout(false);
 
 		}
