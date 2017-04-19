@@ -100,7 +100,8 @@ namespace appCore.SiteFinder.UI
 							listView2.Visible = false;
 						dataGridView1.Top = listView2.Top;
 						label12.Top = dataGridView1.Top - label12.Height;
-						textBox1.ReadOnly = value.Contains("readonly");
+						textBox1.ReadOnly =
+							textBox3.ReadOnly = value.Contains("readonly");
 						break;
 					case "multi":
 						dataGridView1.Top = listView2.Bottom + 23;
@@ -110,7 +111,8 @@ namespace appCore.SiteFinder.UI
 //						if(!value.Contains("readonly"))
 //							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 //						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
-						textBox1.ReadOnly = value.Contains("readonly");
+						textBox1.ReadOnly =
+							textBox3.ReadOnly = value.Contains("readonly");
 						break;
 					case "outage":
 						dataGridView1.Top = listView2.Bottom + 23;
@@ -118,7 +120,8 @@ namespace appCore.SiteFinder.UI
 							listView2.Visible = true;
 						listView2.Items.Clear();
 						label12.Top = 352;
-						textBox1.ReadOnly = true;
+						textBox1.ReadOnly =
+							textBox3.ReadOnly = true;
 						break;
 				}
 				if(!value.Contains("single")) {
@@ -466,7 +469,7 @@ namespace appCore.SiteFinder.UI
 			}
 			else {
 				foreach(Control ctr in Controls) {
-					if(ctr.Name != "textBox1" && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
+					if(ctr.Name != "textBox1" && ctr.Name != "textBox3" && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
 						if(ctr.Name != "dataGridView1") {
 							TextBoxBase tb = ctr as TextBoxBase;
 							if(tb != null)
@@ -895,7 +898,7 @@ namespace appCore.SiteFinder.UI
 
 		void siteFinder(object sender, KeyPressEventArgs e)
 		{
-			string enteredSite = ((TextBoxBase)sender).Text;
+			TextBoxBase tb = (TextBoxBase)sender;
 			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
 				Action actionThreaded = new Action(delegate {
 				                                   	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
@@ -905,7 +908,10 @@ namespace appCore.SiteFinder.UI
 				                                   	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 				                                   	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 				                                   	
-				                                   	currentSite = DB.SitesDB.getSite(enteredSite);
+				                                   	if(tb.Name == "textBox1")
+				                                   		currentSite = DB.SitesDB.getSite(tb.Text);
+				                                   	else
+				                                   		currentSite = DB.SitesDB.getSiteWithJVCO(tb.Text);
 				                                   	
 				                                   	if(currentSite.Exists) {
 				                                   		string dataToRequest = "INCCellsState";

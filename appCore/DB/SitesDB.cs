@@ -56,6 +56,17 @@ namespace appCore.DB
 			return index;
 		}
 		
+		public static int GetSiteIndexWithJVCO(string JVCO) {
+			int index = -1;
+			for(int c = 0; c < SitesCache.Count;c++) {
+				if(SitesCache[c].JVCO_Id == JVCO) {
+					index = c;
+					break;
+				}
+			}
+			return index;
+		}
+		
 		public static void UpdateSiteData(Site site) {
 			if(site != null) {
 				int index = site.DbIndex;
@@ -79,6 +90,41 @@ namespace appCore.DB
 				List<Site> res = getSites(sitesList, true);
 				
 				return res.Count > 0 ? res[0] : new Site(site);
+			}
+			
+			return foundSite;
+		}
+		
+		public static Site getSiteWithJVCO(string JVCO, bool ignoreCache = false)
+		{
+			Site foundSite = null;
+			if(!ignoreCache) {
+				int index = GetSiteIndexWithJVCO(JVCO);
+				foundSite = index > -1 ? SitesCache[index] : null;
+			}
+			
+			if(foundSite == null) {
+				try {
+					var engine = new FileHelperEngine<Site>();
+					engine.BeforeReadRecord += (eng, e) => {
+						if(!Sites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+							e.SkipThisRecord = true;
+					};
+					engine.AfterReadRecord +=  (eng, e) => {
+						if(!Sites.Contains(e.Record.Id))
+							e.SkipThisRecord = true;
+						else {
+							e.Record.SiteDataTimestamp = DateTime.Now;
+							foundSites.Add(e.Record.Id);
+						}
+					};
+					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+				}
+				catch(FileHelpersException e) {
+					string f = e.Message;
+				}
+				
+				return res.Count > 0 ? res[0] : new Site(JVCO);
 			}
 			
 			return foundSite;
@@ -127,6 +173,63 @@ namespace appCore.DB
 				
 				if(foundSites.Count > 0)
 					sites = getCells(foundSites, sites);
+				
+				totalFoundSites.AddRange(sites);
+				
+				if(!ignoreCache) {
+					foreach(Site site in totalFoundSites) {
+						if(site.DbIndex == -1)
+							SitesCache.Add(site);
+					}
+				}
+			}
+			
+			return totalFoundSites;
+		}
+		
+		public static List<Site> getSitesWithJVCO(List<string> JVCOsToFind, bool ignoreCache = false)
+		{
+			List<string> JVCOs = JVCOsToFind;
+			List<string> foundJVCOs = new List<string>();
+			List<Site> sites = new List<Site>();
+			List<Site> totalFoundSites = new List<Site>();
+			
+			if(!ignoreCache) {
+				foreach(string JVCO in JVCOs) {
+					Site foundSite = SitesCache.Find(s => s.JVCO_Id == JVCO);
+					if(foundSite != null) {
+						foundJVCOs.Add(JVCO);
+						totalFoundSites.Add(foundSite);
+					}
+				}
+				foreach(string JVCO in foundJVCOs)
+					JVCOs.Remove(JVCO);
+				foundJVCOs = new List<string>();
+			}
+			
+			if(JVCOs.Count > 0) {
+				try {
+					var engine = new FileHelperEngine<Site>();
+					engine.BeforeReadRecord += (eng, e) => {
+						if(!JVCOs.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+							e.SkipThisRecord = true;
+					};
+					engine.AfterReadRecord +=  (eng, e) => {
+						if(!JVCOs.Contains(e.Record.JVCO_Id))
+							e.SkipThisRecord = true;
+						else {
+							e.Record.SiteDataTimestamp = DateTime.Now;
+							foundJVCOs.Add(e.Record.JVCO_Id);
+						}
+					};
+					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+				}
+				catch(FileHelpersException e) {
+					string f = e.Message;
+				}
+				
+				if(foundJVCOs.Count > 0)
+					sites = getCellsWithJVCO(foundJVCOs, sites);
 				
 				totalFoundSites.AddRange(sites);
 				
@@ -194,6 +297,27 @@ namespace appCore.DB
 				var engine = new FileHelperEngine<Cell>();
 				engine.AfterReadRecord +=  (eng, e) => {
 					if(!sites.Contains(e.Record.ParentSite))
+						e.SkipThisRecord = true;
+					else {
+						Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
+						if(tempSite != null)
+							tempSite.Cells.Add(e.Record);
+					}
+				};
+				engine.ReadFileAsList(Databases.all_cells.FullName);
+			}
+			catch(FileHelpersException e) {
+				string f = e.Message;
+			}
+			
+			return Sites;
+		}
+		
+		static List<Site> getCellsWithJVCO(ICollection<string> JVCOs, List<Site> Sites) {
+			try {
+				var engine = new FileHelperEngine<Cell>();
+				engine.AfterReadRecord +=  (eng, e) => {
+					if(!JVCOs.Contains(e.Record.ParentSite))
 						e.SkipThisRecord = true;
 					else {
 						Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);

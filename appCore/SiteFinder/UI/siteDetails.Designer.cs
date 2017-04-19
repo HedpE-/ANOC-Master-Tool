@@ -174,7 +174,6 @@ namespace appCore.SiteFinder.UI
 			// textBox2
 			// 
 			this.textBox2.Location = new System.Drawing.Point(87, 132);
-			this.textBox2.MaxLength = 5;
 			this.textBox2.Name = "textBox2";
 			this.textBox2.ReadOnly = true;
 			this.textBox2.Size = new System.Drawing.Size(280, 20);
@@ -220,11 +219,11 @@ namespace appCore.SiteFinder.UI
 			// textBox3
 			// 
 			this.textBox3.Location = new System.Drawing.Point(87, 55);
-			this.textBox3.MaxLength = 6;
 			this.textBox3.Name = "textBox3";
 			this.textBox3.ReadOnly = true;
 			this.textBox3.Size = new System.Drawing.Size(70, 20);
 			this.textBox3.TabIndex = 86;
+			this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
 			// 
 			// label6
 			// 
@@ -238,7 +237,6 @@ namespace appCore.SiteFinder.UI
 			// textBox5
 			// 
 			this.textBox5.Location = new System.Drawing.Point(421, 55);
-			this.textBox5.MaxLength = 5;
 			this.textBox5.Name = "textBox5";
 			this.textBox5.ReadOnly = true;
 			this.textBox5.Size = new System.Drawing.Size(156, 20);
@@ -256,7 +254,6 @@ namespace appCore.SiteFinder.UI
 			// textBox8
 			// 
 			this.textBox8.Location = new System.Drawing.Point(421, 107);
-			this.textBox8.MaxLength = 5;
 			this.textBox8.Name = "textBox8";
 			this.textBox8.ReadOnly = true;
 			this.textBox8.Size = new System.Drawing.Size(43, 20);
@@ -322,7 +319,6 @@ namespace appCore.SiteFinder.UI
 			// textBox6
 			// 
 			this.textBox6.Location = new System.Drawing.Point(421, 82);
-			this.textBox6.MaxLength = 5;
 			this.textBox6.Name = "textBox6";
 			this.textBox6.ReadOnly = true;
 			this.textBox6.Size = new System.Drawing.Size(156, 20);
@@ -340,7 +336,6 @@ namespace appCore.SiteFinder.UI
 			// textBox7
 			// 
 			this.textBox7.Location = new System.Drawing.Point(515, 107);
-			this.textBox7.MaxLength = 5;
 			this.textBox7.Name = "textBox7";
 			this.textBox7.ReadOnly = true;
 			this.textBox7.Size = new System.Drawing.Size(62, 20);
@@ -367,7 +362,6 @@ namespace appCore.SiteFinder.UI
 			// textBox9
 			// 
 			this.textBox9.Location = new System.Drawing.Point(190, 30);
-			this.textBox9.MaxLength = 6;
 			this.textBox9.Name = "textBox9";
 			this.textBox9.ReadOnly = true;
 			this.textBox9.Size = new System.Drawing.Size(62, 20);
@@ -385,7 +379,6 @@ namespace appCore.SiteFinder.UI
 			// textBox10
 			// 
 			this.textBox10.Location = new System.Drawing.Point(421, 132);
-			this.textBox10.MaxLength = 5;
 			this.textBox10.Name = "textBox10";
 			this.textBox10.ReadOnly = true;
 			this.textBox10.Size = new System.Drawing.Size(156, 20);
@@ -439,7 +432,6 @@ namespace appCore.SiteFinder.UI
 			// amtTextBox2
 			// 
 			this.amtTextBox2.Location = new System.Drawing.Point(642, 82);
-			this.amtTextBox2.MaxLength = 5;
 			this.amtTextBox2.Name = "amtTextBox2";
 			this.amtTextBox2.ReadOnly = true;
 			this.amtTextBox2.Size = new System.Drawing.Size(118, 20);
@@ -457,7 +449,6 @@ namespace appCore.SiteFinder.UI
 			// amtTextBox3
 			// 
 			this.amtTextBox3.Location = new System.Drawing.Point(642, 107);
-			this.amtTextBox3.MaxLength = 5;
 			this.amtTextBox3.Name = "amtTextBox3";
 			this.amtTextBox3.ReadOnly = true;
 			this.amtTextBox3.Size = new System.Drawing.Size(118, 20);
@@ -475,7 +466,6 @@ namespace appCore.SiteFinder.UI
 			// amtTextBox7
 			// 
 			this.amtTextBox7.Location = new System.Drawing.Point(642, 57);
-			this.amtTextBox7.MaxLength = 5;
 			this.amtTextBox7.Name = "amtTextBox7";
 			this.amtTextBox7.ReadOnly = true;
 			this.amtTextBox7.Size = new System.Drawing.Size(118, 20);
@@ -594,7 +584,6 @@ namespace appCore.SiteFinder.UI
 			// amtTextBox4
 			// 
 			this.amtTextBox4.Location = new System.Drawing.Point(302, 30);
-			this.amtTextBox4.MaxLength = 6;
 			this.amtTextBox4.Name = "amtTextBox4";
 			this.amtTextBox4.ReadOnly = true;
 			this.amtTextBox4.Size = new System.Drawing.Size(65, 20);
@@ -612,7 +601,6 @@ namespace appCore.SiteFinder.UI
 			// amtTextBox5
 			// 
 			this.amtTextBox5.Location = new System.Drawing.Point(239, 55);
-			this.amtTextBox5.MaxLength = 6;
 			this.amtTextBox5.Name = "amtTextBox5";
 			this.amtTextBox5.ReadOnly = true;
 			this.amtTextBox5.Size = new System.Drawing.Size(57, 20);
@@ -641,7 +629,6 @@ namespace appCore.SiteFinder.UI
 			// amtTextBox6
 			// 
 			this.amtTextBox6.Location = new System.Drawing.Point(421, 31);
-			this.amtTextBox6.MaxLength = 5;
 			this.amtTextBox6.Name = "amtTextBox6";
 			this.amtTextBox6.ReadOnly = true;
 			this.amtTextBox6.Size = new System.Drawing.Size(156, 20);
