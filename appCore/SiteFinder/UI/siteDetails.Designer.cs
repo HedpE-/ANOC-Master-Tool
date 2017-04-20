@@ -19,9 +19,9 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label56;
 		private appCore.UI.AMTTextBox textBox2;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label2;
 		private appCore.UI.AMTTextBox textBox1;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
 		private appCore.UI.AMTTextBox textBox3;
 		private System.Windows.Forms.Label label5;
 		private appCore.UI.AMTTextBox textBox7;
@@ -91,9 +91,9 @@ namespace appCore.SiteFinder.UI
 			this.label56 = new System.Windows.Forms.Label();
 			this.textBox2 = new appCore.UI.AMTTextBox();
 			this.label4 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.textBox1 = new appCore.UI.AMTTextBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.textBox3 = new appCore.UI.AMTTextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.textBox5 = new appCore.UI.AMTTextBox();
@@ -188,15 +188,6 @@ namespace appCore.SiteFinder.UI
 			this.label4.Text = "Address";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(5, 30);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(60, 20);
-			this.label2.TabIndex = 80;
-			this.label2.Text = "Site ID";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
 			// textBox1
 			// 
 			this.textBox1.Location = new System.Drawing.Point(87, 30);
@@ -206,6 +197,13 @@ namespace appCore.SiteFinder.UI
 			this.textBox1.Size = new System.Drawing.Size(53, 20);
 			this.textBox1.TabIndex = 79;
 			this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
+			// 
+			// label2
+			// 
+			label2.Location = new System.Drawing.Point(5, 30);
+			label2.Name = "label2";
+			label2.Size = new System.Drawing.Size(76, 21);
+			label2.Text = "Site ID";
 			// 
 			// label1
 			// 
@@ -683,7 +681,6 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.textBox4);
 			this.Controls.Add(this.button45);
 			this.Controls.Add(this.label4);
-			this.Controls.Add(this.label2);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.label56);
 			this.Controls.Add(this.label5);

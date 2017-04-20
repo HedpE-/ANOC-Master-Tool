@@ -54,6 +54,20 @@ namespace appCore.SiteFinder.UI
 			private set;
 		}
 		
+		string SelectedSearchItem {
+			get {
+				Control cb = Controls["comboBox1"];
+				string item = string.Empty;
+				if(cb != null) {
+					if(cb.InvokeRequired)
+						cb.Invoke(new Action(() => { item = cb.Text; }));
+					else
+						item = cb.Text;
+				}
+				return item;
+			}
+		}
+		
 		string _siteDetails_UIMode;
 		/// <summary>
 		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
@@ -81,10 +95,42 @@ namespace appCore.SiteFinder.UI
 						MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
 						MainMenu.MainMenu.DropDownItems.Add("-");
 						MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+						
+						label2.Visible = false;
+						
+						ComboBox comboBox1 = new ComboBox();
+						comboBox1.BackColor = SystemColors.Control;
+						comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+						comboBox1.FlatStyle = FlatStyle.Popup;
+						comboBox1.Items.AddRange(new object[] {
+						                         	"Site ID",
+						                         	"JVCO ID"});
+						comboBox1.Location = new Point(5, 30);
+						comboBox1.Name = "comboBox1";
+						comboBox1.Size = new Size(76, 21);
+						comboBox1.SelectedIndexChanged += (sender, e) => {
+							switch(comboBox1.SelectedIndex) {
+								case 0:
+									textBox1.MaxLength = 6;
+									break;
+								case 1:
+									textBox1.MaxLength = 20;
+									break;
+							}
+						};
+						comboBox1.Text = "Site ID";
+						Controls.Add(comboBox1);
+					}
+					if(value.Contains("readonly")) {
+						ComboBox cb = Controls["comboBox1"] as ComboBox;
+						if(cb != null)
+							Controls.Remove(cb);
+						label2.Visible = true;
 					}
 					bulkSiteSearchMenuItem.Enabled =
 						lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 				}
+				
 				switch(mode[0]) {
 					case "single":
 //						if(!value.Contains("readonly")) {
@@ -100,8 +146,7 @@ namespace appCore.SiteFinder.UI
 							listView2.Visible = false;
 						dataGridView1.Top = listView2.Top;
 						label12.Top = dataGridView1.Top - label12.Height;
-						textBox1.ReadOnly =
-							textBox3.ReadOnly = value.Contains("readonly");
+						textBox1.ReadOnly = value.Contains("readonly");
 						break;
 					case "multi":
 						dataGridView1.Top = listView2.Bottom + 23;
@@ -111,8 +156,7 @@ namespace appCore.SiteFinder.UI
 //						if(!value.Contains("readonly"))
 //							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 //						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
-						textBox1.ReadOnly =
-							textBox3.ReadOnly = value.Contains("readonly");
+						textBox1.ReadOnly = value.Contains("readonly");
 						break;
 					case "outage":
 						dataGridView1.Top = listView2.Bottom + 23;
@@ -120,8 +164,7 @@ namespace appCore.SiteFinder.UI
 							listView2.Visible = true;
 						listView2.Items.Clear();
 						label12.Top = 352;
-						textBox1.ReadOnly =
-							textBox3.ReadOnly = true;
+						textBox1.ReadOnly = true;
 						break;
 				}
 				if(!value.Contains("single")) {
@@ -469,7 +512,7 @@ namespace appCore.SiteFinder.UI
 			}
 			else {
 				foreach(Control ctr in Controls) {
-					if(ctr.Name != "textBox1" && ctr.Name != "textBox3" && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
+					if(ctr.Name != "textBox1" && ctr.Name != "comboBox1" && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
 						if(ctr.Name != "dataGridView1") {
 							TextBoxBase tb = ctr as TextBoxBase;
 							if(tb != null)
@@ -483,11 +526,14 @@ namespace appCore.SiteFinder.UI
 						}
 					}
 				}
-				textBox4.Text = "Site not found";
+				textBox4.Text = !string.IsNullOrEmpty(SelectedSearchItem) ? SelectedSearchItem + " not found" : "Please select a search pattern";
 				myMap.SetPositionByKeywords("UK");
 				myMap.Zoom = 6;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
 			}
+			Control cb = Controls["comboBox1"];
+			if(cb != null)
+				cb.Text = "Site ID";
 			
 			dataGridView1.DataSource = null;
 			dataGridView1.Columns.Clear();
@@ -898,7 +944,7 @@ namespace appCore.SiteFinder.UI
 
 		void siteFinder(object sender, KeyPressEventArgs e)
 		{
-			TextBoxBase tb = (TextBoxBase)sender;
+			string filterProperty = ((TextBoxBase)sender).Text;
 			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
 				Action actionThreaded = new Action(delegate {
 				                                   	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
@@ -908,10 +954,10 @@ namespace appCore.SiteFinder.UI
 				                                   	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 				                                   	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 				                                   	
-				                                   	if(tb.Name == "textBox1")
-				                                   		currentSite = DB.SitesDB.getSite(tb.Text);
+				                                   	if(SelectedSearchItem == "Site ID")
+				                                   		currentSite = DB.SitesDB.getSite(filterProperty);
 				                                   	else
-				                                   		currentSite = DB.SitesDB.getSiteWithJVCO(tb.Text);
+				                                   		currentSite = DB.SitesDB.getSiteWithJVCO(filterProperty);
 				                                   	
 				                                   	if(currentSite.Exists) {
 				                                   		string dataToRequest = "INCCellsState";
