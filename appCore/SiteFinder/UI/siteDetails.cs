@@ -398,9 +398,11 @@ namespace appCore.SiteFinder.UI
 			listView2.View = View.Details;
 			listView2.Columns.Add("Site");
 			listView2.Columns.Add("JVCO ID");
-			listView2.Columns.Add("Priority");
 			listView2.Columns.Add("Site Host");
 			listView2.Columns.Add("Post Code");
+			listView2.Columns.Add("Priority");
+			listView2.Columns.Add("POC");
+			listView2.Columns.Add("CCT");
 		}
 		
 		GMapControl drawGMap(string mapName, bool multi) {
@@ -474,8 +476,7 @@ namespace appCore.SiteFinder.UI
 					currentSite.requestOIData("Cramer");
 				if(currentSite.CramerData != null) {
 					if(currentSite.CramerData.OnwardSitesCount > 0) {
-						var sites = DB.SitesDB.getSites(currentSite.CramerData.OnwardSites);
-						foreach(Site site in sites) {
+						foreach(Site site in currentSite.CramerData.OnwardSitesObjects) {
 							GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue);
 							tempMarker.Tag = site.MapMarker.Tag;
 							tempMarker.ToolTip = new GMap.NET.WindowsForms.ToolTips.GMapBaloonToolTip(tempMarker);
@@ -890,7 +891,15 @@ namespace appCore.SiteFinder.UI
 				foundSites = currentOutage.AffectedSites;
 			
 			foreach (Site site in foundSites) {
-				listView2.Items.Add(new ListViewItem(new[]{ site.Id, site.JVCO_Id, site.Priority, site.Host, site.PostCode }));
+				string dataToRequest = "CellsState";
+				if(string.IsNullOrEmpty(site.PowerCompany))
+					dataToRequest += "PWR";
+				if(site.CramerData == null)
+					dataToRequest += "Cramer";
+				site.requestOIData(dataToRequest);
+				
+				string poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
+				listView2.Items.Add(new ListViewItem(new[]{ site.Id, site.JVCO_Id, site.Host, site.PostCode, site.Priority, poc, site.CramerData.TxLastMileRef }));
 				
 				markersOverlay.Markers.Add(site.MapMarker);
 			}
@@ -916,7 +925,8 @@ namespace appCore.SiteFinder.UI
 			Panel panel = new Panel();
 			panel.BackColor = Color.Black;
 			panel.Size = new Size(100, 213);
-			DataGridView dgv = new DataGridView();
+			AMTDataGridView dgv = new AMTDataGridView();
+			dgv.DoubleBuffer = true;
 			dgv.Size = panel.Size;
 			dgv.Columns.Add("Site", "Site");
 			dgv.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
