@@ -32,6 +32,15 @@ namespace appCore.UI
 		
 		private bool SuppressAutoSelection { get; set; }
 		
+		public int TotalCellCount {
+			get {
+				var rowCount = Rows.Count;
+				var colCount = Rows[0].Cells.Count;
+				
+				return rowCount * colCount;
+			}
+		}
+		
 		public AMTDataGridView() {
 			SuppressAutoSelection = true;
 			this.VerticalScrollBar.VisibleChanged += VerticalScrollBar_VisibleChanged;
@@ -77,6 +86,33 @@ namespace appCore.UI
 				// ...or it gets cleared straight after the DataSource is set
 				ClearSelectionAndResetSuppression();
 			}
+		}
+
+		protected override void OnMouseDown(MouseEventArgs e) {
+			if(e.Button == MouseButtons.Right) {
+				ContextMenu contextMenu = new ContextMenu();
+				
+				MenuItem menuItem = new MenuItem("Copy");
+				menuItem.Click += delegate { OnKeyDown(new KeyEventArgs(Keys.Control | Keys.C)); };
+				menuItem.Enabled = SelectedCells.Count > 0;
+				contextMenu.MenuItems.Add(menuItem);
+				
+				menuItem = new MenuItem("-");
+				contextMenu.MenuItems.Add(menuItem);
+				
+				menuItem = new MenuItem("Select All");
+				menuItem.Enabled = SelectedCells.Count < TotalCellCount;
+				contextMenu.MenuItems.Add(menuItem);
+				menuItem.Click += delegate { SelectAll(); };
+				
+				menuItem = new MenuItem("Unselect All");
+				menuItem.Enabled = SelectedCells.Count > 0;
+				contextMenu.MenuItems.Add(menuItem);
+				menuItem.Click += delegate { ClearSelection(); };
+				
+				contextMenu.Show(this, new System.Drawing.Point(e.X, e.Y));
+			}
+			base.OnMouseDown(e);
 		}
 
 		protected override void OnSelectionChanged(EventArgs e)
