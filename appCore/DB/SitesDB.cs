@@ -33,7 +33,18 @@ namespace appCore.DB
 		}
 
 		public static void Remove(Site site) {
-			SitesCache.RemoveAt(site.DbIndex);
+			if(site.DbIndex > -1)
+				SitesCache.RemoveAt(site.DbIndex);
+		}
+		
+		public static void Remove(string siteId) {
+			int index = GetSiteIndex(siteId);
+			if(index > -1)
+				SitesCache.RemoveAt(index);
+		}
+		
+		public static void Clear() {
+			SitesCache.Clear();
 		}
 		
 		public static int GetSiteIndex(string siteID) {
@@ -133,7 +144,8 @@ namespace appCore.DB
 		
 		public static List<Site> getSites(List<string> sitesToFind, bool ignoreCache = false)
 		{
-			List<string> findSites = sitesToFind;
+			List<string> findSites = new List<string>();
+			findSites.AddRange(sitesToFind);
 			List<string> foundSites = new List<string>();
 			List<Site> sites = new List<Site>();
 			List<Site> totalFoundSites = new List<Site>();
