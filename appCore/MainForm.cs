@@ -154,8 +154,23 @@ namespace appCore
 				if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "Caramelos") {
 					Button butt = new Button();
 					butt.Name = "butt";
+					butt.Text = "Clear SitesDB";
 					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
 					butt.Click += delegate {
+						DB.SitesDB.List.Clear();
+						InputBoxDialog ib = new InputBoxDialog();
+						ib.FormPrompt = "Site to remove?\n\n(Leave blank and click ok to clear whole DB";
+//						ib.FormCaption = title;
+//						ib.DefaultValue = defaultValue;
+						DialogResult ans = ib.ShowDialog();
+						if(ans != DialogResult.Cancel) {
+							string input = ib.InputResponse;
+//						string input = Microsoft.VisualBasic.Interaction.InputBox("Site to remove?\n\n(Leave blank and click ok to clear whole DB");
+							if(string.IsNullOrEmpty(input))
+								SitesDB.Clear();
+							else
+								SitesDB.Remove(input);
+						}
 //						if(OutageUI != null)
 //							OutageUI.Dispose();
 //						tabControl1.SelectTab(6);
@@ -172,8 +187,8 @@ namespace appCore
 //						catch { }
 						
 //						System.Data.DataTable dt = jSon.ToDataTable();
-						SiteFinder.Site site = SitesDB.getSite("864");
-						site.requestOIData("Cramer");
+//						SiteFinder.Site site = SitesDB.getSite("864");
+//						site.requestOIData("Cramer");
 						
 //						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
 //						var sites = SitesDB.getSites(input.Split(',').ToList());

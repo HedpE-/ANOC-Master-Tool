@@ -1317,6 +1317,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\AMTDataGridView.cs" />
+    <Compile Include="UI\AMTInputBox.cs" />
     <Compile Include="UI\AMTMenuStrip.cs">
       <SubType>Component</SubType>
     </Compile>
