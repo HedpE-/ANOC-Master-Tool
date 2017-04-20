@@ -46,6 +46,17 @@ namespace appCore.Toolbox
             return AdjustSize(document);
         }
 
+//        /// <summary>
+//        /// Gets a SvgDocument for manipulation using the path provided.
+//        /// </summary>
+//        /// <param name="svg">The path of the Bitmap image.</param>
+//        /// <returns>Returns the SVG Document.</returns>
+//        public static SvgDocument GetSvgDocumentFromSvg(string svg)
+//        {
+//            var document = SvgDocument.FromSvg(svg);
+//            return AdjustSize(document);
+//        }
+
         /// <summary>
         /// Makes sure that the image does not exceed the maximum size, while preserving aspect ratio.
         /// </summary>
