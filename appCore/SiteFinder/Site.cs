@@ -1070,6 +1070,20 @@ namespace appCore.SiteFinder
 			public string TxMedium { get; private set; }
 			public string TxLastMileRef { get; private set; }
 			public List<string> OnwardSites { get; private set; }
+			List<Site> onwardSitesObjects = null;
+			public List<Site> OnwardSitesObjects {
+				get {
+					if(onwardSitesObjects == null) {
+						onwardSitesObjects = new List<Site>();
+						if(OnwardSites.Count > 0)
+							onwardSitesObjects.AddRange(DB.SitesDB.getSites(OnwardSites));
+					}
+					return onwardSitesObjects;
+				}
+				private set {
+					onwardSitesObjects = value;
+				}
+			}
 			public string EvenflowStatus { get; private set; }
 			
 			public CramerDetails(DataRow details) {
