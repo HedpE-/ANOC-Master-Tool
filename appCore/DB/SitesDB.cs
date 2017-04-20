@@ -104,18 +104,19 @@ namespace appCore.DB
 			}
 			
 			if(foundSite == null) {
+				List<Site> sites = null;
 				try {
 					var engine = new FileHelperEngine<Site>();
 					engine.BeforeReadRecord += (eng, e) => {
-						if(!Sites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+						if(!e.RecordLine.Contains(JVCO))
 							e.SkipThisRecord = true;
 					};
 					engine.AfterReadRecord +=  (eng, e) => {
-						if(!Sites.Contains(e.Record.Id))
+						if(JVCO != e.Record.JVCO_Id)
 							e.SkipThisRecord = true;
 						else {
 							e.Record.SiteDataTimestamp = DateTime.Now;
-							foundSites.Add(e.Record.Id);
+//							foundSite = e.Record;
 						}
 					};
 					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
@@ -124,7 +125,7 @@ namespace appCore.DB
 					string f = e.Message;
 				}
 				
-				return res.Count > 0 ? res[0] : new Site(JVCO);
+				return sites.Count > 0 ? sites[0] : new Site(JVCO);
 			}
 			
 			return foundSite;
@@ -132,13 +133,13 @@ namespace appCore.DB
 		
 		public static List<Site> getSites(List<string> sitesToFind, bool ignoreCache = false)
 		{
-			List<string> Sites = sitesToFind;
+			List<string> findSites = sitesToFind;
 			List<string> foundSites = new List<string>();
 			List<Site> sites = new List<Site>();
 			List<Site> totalFoundSites = new List<Site>();
 			
 			if(!ignoreCache) {
-				foreach(string site in Sites) {
+				foreach(string site in findSites) {
 					Site foundSite = SitesCache.Find(s => s.Id == site);
 					if(foundSite != null) {
 						foundSites.Add(site);
@@ -146,19 +147,19 @@ namespace appCore.DB
 					}
 				}
 				foreach(string site in foundSites)
-					Sites.Remove(site);
+					findSites.Remove(site);
 				foundSites = new List<string>();
 			}
 			
-			if(Sites.Count > 0) {
+			if(findSites.Count > 0) {
 				try {
 					var engine = new FileHelperEngine<Site>();
 					engine.BeforeReadRecord += (eng, e) => {
-						if(!Sites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+						if(!findSites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
 							e.SkipThisRecord = true;
 					};
 					engine.AfterReadRecord +=  (eng, e) => {
-						if(!Sites.Contains(e.Record.Id))
+						if(!findSites.Contains(e.Record.Id))
 							e.SkipThisRecord = true;
 						else {
 							e.Record.SiteDataTimestamp = DateTime.Now;
