@@ -22,6 +22,7 @@ namespace appCore.UI
 			set {
 				alwaysVisibleVScrollBar =
 					VerticalScrollBar.Visible = value;
+				Invalidate();
 			}
 		}
 		
