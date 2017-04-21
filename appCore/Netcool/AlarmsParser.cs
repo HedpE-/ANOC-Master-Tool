@@ -30,14 +30,26 @@ namespace appCore.Netcool
 //			st.Start();
 			while(netcoolAlarms.Contains("\n-ProbableCause"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\n-ProbableCause", StringComparison.Ordinal), 1);
+			while(netcoolAlarms.Contains("\n-EventType"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\n-EventType", StringComparison.Ordinal), 1);
+			while(netcoolAlarms.Contains("\nOther"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nOther", StringComparison.Ordinal), 1);
+			while(netcoolAlarms.Contains("\nLook"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nLook", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.Contains("\t-ProbableCause"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\t-ProbableCause", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.Contains("\n*** FMX Info Begin ***"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\n*** FMX Info Begin ***", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.Contains("*** FMX Info Begin ***\n"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("*** FMX Info Begin ***\n", StringComparison.Ordinal) + "*** FMX Info Begin ***".Length, 1);
-			while(netcoolAlarms.Contains("\nhas generated"))
-				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nhas generated", StringComparison.Ordinal), 1);
+			while(netcoolAlarms.Contains("\nhas"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nhas", StringComparison.Ordinal), 1);
+			while(netcoolAlarms.Contains("ExternalAlarm\n"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("ExternalAlarm\n", StringComparison.Ordinal) + "ExternalAlarm".Length, 1);
+			while(netcoolAlarms.Contains("PacketFrequencySyncRef=1 \n"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("PacketFrequencySyncRef=1 \n", StringComparison.Ordinal) + "PacketFrequencySyncRef=1 ".Length, 1);
+			while(netcoolAlarms.Contains("PacketFrequencySyncRef=2 \n"))
+				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("PacketFrequencySyncRef=2 \n", StringComparison.Ordinal) + "PacketFrequencySyncRef=2 ".Length, 1);
 			while(netcoolAlarms.EndsWith("\n"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.Length - 1);
 			
@@ -51,7 +63,13 @@ namespace appCore.Netcool
 				if(string.IsNullOrWhiteSpace(line))
 					continue;
 				Alarm al = null;
-				try { al = new Alarm(line.Split('\t'), headers); } catch { continue; }
+				try {
+					al = new Alarm(line.Split('\t'), headers);
+				}
+				catch {
+					continue;
+				}
+				
 				AlarmsList.Add(al);
 				if(outage) {
 					if(al.Bearer == "4G" && !al.COOS && al.OnM)
