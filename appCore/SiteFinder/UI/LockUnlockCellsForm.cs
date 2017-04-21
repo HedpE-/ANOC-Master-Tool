@@ -740,7 +740,6 @@ namespace appCore.SiteFinder.UI
 		void FetchCellsState(IEnumerable<string> sites) {
 			List<OiCell> list = new List<OiCell>();
 			
-			
 			string resp = OiConnection.requestApiOutput("cells-html", sites);
 			DataTable dt = null;
 			for(int c = 2;c <= 4;c++) {
