@@ -458,11 +458,8 @@ namespace appCore
 					int SumFw = rng[0] * 2 + rng[1] * 3 + rng[2] * 4 + rng[3] * 5 + rng[4] * 6 + rng[5] * 7 + rng[6] * 8 + rng[7] * 9 + rng[8] * 10 + rng[9] * 11 + rng[10] * 12 + rng[11] * 13;
 					int SumBw = rng[11] * 2 + rng[10] * 3 + rng[9] * 4 + rng[8] * 5 + rng[7] * 6 + rng[6] * 7 + rng[5] * 8 + rng[4] * 9 + rng[3] * 10 + rng[2] * 11 + rng[1] * 12 + rng[0] * 13;
 					string hx = (SumFw * SumBw).ToString("X");
-					if (hx.Length < 5) {
-						for (int c = 1; c <= 5 - hx.Length; c++) {
-							textBox14.Text += "0";
-						}
-					}
+					while(hx.Length < 5)
+						hx = "0" + hx;
 					textBox14.Text += hx + " " + comboBox1.Text;
 				}
 				else {
