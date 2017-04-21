@@ -80,13 +80,13 @@ namespace appCore.SiteFinder.UI
 				string[] mode = value.Split('/');
 				MainMenu.siteFinder_Toggle(false, false);
 				MainMenu.MainMenu.DropDownItems.Clear();
-				pictureBox1.Left = dataGridView1.Left + ((dataGridView1.Width - pictureBox1.Width) / 2);
-				listView2.Width = dataGridView1.Width;
-				int filterCheckBoxesStartPosition = dataGridView1.Left + ((dataGridView1.Width - (checkBox1.Width + checkBox2.Width + checkBox3.Width)) / 2);
+				pictureBox1.Left = amtDataGridView1.Left + ((amtDataGridView1.Width - pictureBox1.Width) / 2);
+				amtDataGridView2.Width = amtDataGridView1.Width;
+				int filterCheckBoxesStartPosition = amtDataGridView1.Left + ((amtDataGridView1.Width - (checkBox1.Width + checkBox2.Width + checkBox3.Width)) / 2);
 				checkBox1.Left = filterCheckBoxesStartPosition;
 				checkBox2.Left = filterCheckBoxesStartPosition + checkBox1.Width;
 				checkBox3.Left = filterCheckBoxesStartPosition + checkBox1.Width + checkBox2.Width;
-				checkBox6.Left = dataGridView1.Right - checkBox6.Width;
+				checkBox6.Left = amtDataGridView1.Right - checkBox6.Width;
 				checkBox7.Left = checkBox6.Left - checkBox7.Width;
 				if(mode[0] == "single" || mode[0] == "multi") {
 					if(!value.Contains("readonly")) {
@@ -143,26 +143,26 @@ namespace appCore.SiteFinder.UI
 //						bulkSiteSearchMenuItem.Enabled =
 //							lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 						label11.Visible =
-							listView2.Visible = false;
-						dataGridView1.Top = listView2.Top;
-						label12.Top = dataGridView1.Top - label12.Height;
+							amtDataGridView2.Visible = false;
+						amtDataGridView1.Top = amtDataGridView2.Top;
+						label12.Top = amtDataGridView1.Top - label12.Height;
 						textBox1.ReadOnly = value.Contains("readonly");
 						break;
 					case "multi":
-						dataGridView1.Top = listView2.Bottom + 23;
+						amtDataGridView1.Top = amtDataGridView2.Bottom + 23;
 						label11.Visible =
-							listView2.Visible = true;
-						listView2.Items.Clear();
+							amtDataGridView2.Visible = true;
+						amtDataGridView2.DataSource = null;
 //						if(!value.Contains("readonly"))
 //							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 //						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
 						textBox1.ReadOnly = value.Contains("readonly");
 						break;
 					case "outage":
-						dataGridView1.Top = listView2.Bottom + 23;
+						amtDataGridView1.Top = amtDataGridView2.Bottom + 23;
 						label11.Visible =
-							listView2.Visible = true;
-						listView2.Items.Clear();
+							amtDataGridView2.Visible = true;
+						amtDataGridView2.DataSource = null;
 						label12.Top = 352;
 						textBox1.ReadOnly = true;
 						break;
@@ -172,12 +172,12 @@ namespace appCore.SiteFinder.UI
 					overview.Name = "OverviewButton";
 					overview.Text = "Back to map overview";
 					overview.Width = 130;
-					overview.Location = new Point(listView2.Right - overview.Width, listView2.Top - overview.Height - 3);
+					overview.Location = new Point(amtDataGridView2.Right - overview.Width, amtDataGridView2.Top - overview.Height - 3);
 					overview.Click += delegate {
 						try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
 						try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 						
-						listView2.SelectedIndices.Clear();
+						amtDataGridView2.ClearSelection();
 					};
 					Controls.Add(overview);
 				}
@@ -189,9 +189,9 @@ namespace appCore.SiteFinder.UI
 					checkBox2.Top =
 					checkBox3.Top =
 					checkBox6.Top =
-					checkBox7.Top = dataGridView1.Top - checkBox1.Height + 1;
-				label12.Top = dataGridView1.Top - label12.Height;
-				dataGridView1.Height = myMap.Bottom - dataGridView1.Top;
+					checkBox7.Top = amtDataGridView1.Top - checkBox1.Height + 1;
+				label12.Top = amtDataGridView1.Top - label12.Height;
+				amtDataGridView1.Height = myMap.Bottom - amtDataGridView1.Top;
 				_siteDetails_UIMode = value;
 			}
 		}
@@ -327,7 +327,7 @@ namespace appCore.SiteFinder.UI
 			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 			                           	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			                           	
-			                           	initializeListviews();
+//			                           	initializeListviews();
 			                           	
 			                           	selectedSiteDetailsPopulate();
 			                           });
@@ -341,7 +341,7 @@ namespace appCore.SiteFinder.UI
 			// TODO: Multi select sites and show only their markers
 			// TODO: Show cells for selected sites
 			Action action = new Action(delegate {
-			                           	initializeListviews();
+//			                           	initializeListviews();
 			                           	if(siteDetails_UIMode.Contains("outage")) {
 			                           		
 			                           		try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
@@ -375,7 +375,7 @@ namespace appCore.SiteFinder.UI
 			                           		if(currentOutage.AffectedSites.Count > 1) {
 			                           			searchResultsPopulate();
 			                           			myMap.Overlays.Add(markersOverlay);
-			                           			listView2.Focus();
+			                           			amtDataGridView2.Focus();
 			                           			myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 			                           		}
 			                           		else {
@@ -394,16 +394,17 @@ namespace appCore.SiteFinder.UI
 			load.ShowAsync(null, action,true,this);
 		}
 		
-		void initializeListviews() {
-			listView2.View = View.Details;
-			listView2.Columns.Add("Site");
-			listView2.Columns.Add("JVCO ID");
-			listView2.Columns.Add("Site Host");
-			listView2.Columns.Add("Post Code");
-			listView2.Columns.Add("Priority");
-			listView2.Columns.Add("POC");
-			listView2.Columns.Add("CCT");
-		}
+//		void initializeListviews() {
+//			listView2.View = View.Details;
+//			listView2.Columns.Add("Site");
+//			listView2.Columns.Add("JVCO ID");
+//			listView2.Columns.Add("Site Host");
+//			listView2.Columns.Add("Post Code");
+//			listView2.Columns.Add("Priority");
+//			listView2.Columns.Add("POC");
+//			listView2.Columns.Add("TX Type");
+//			listView2.Columns.Add("CCT");
+//		}
 		
 		GMapControl drawGMap(string mapName, bool multi) {
 			// TODO: implement weather layer if possible with GMaps
@@ -423,8 +424,8 @@ namespace appCore.SiteFinder.UI
 			
 			GMapControl map = new GMapControl();
 			map.Name = mapName;
-			map.Location = new Point(dataGridView1.Right + 5, amtTextBox3.Bottom + 5 + amtTextBox3.Height + 5);
-			map.Size = new Size(button1.Right - map.Left, dataGridView1.Bottom - map.Top);
+			map.Location = new Point(amtDataGridView1.Right + 5, amtTextBox3.Bottom + 5 + amtTextBox3.Height + 5);
+			map.Size = new Size(button1.Right - map.Left, amtDataGridView1.Bottom - map.Top);
 			map.MapProvider = GoogleHybridMapProvider.Instance;
 			
 			map.Manager.Mode = AccessMode.ServerOnly; //get tiles from server only
@@ -536,13 +537,13 @@ namespace appCore.SiteFinder.UI
 			if(cb != null)
 				cb.Text = "Site ID";
 			
-			dataGridView1.DataSource = null;
-			dataGridView1.Columns.Clear();
+			amtDataGridView1.DataSource = null;
+			amtDataGridView1.Columns.Clear();
 			
-			dataGridView1.DataSource = GetCellsDV();
+			amtDataGridView1.DataSource = GetCellsDV();
 			int c = 0;
 			int[] columnWidths = { 35, 80, 50, 56, 70, 65, 55, 46, 45, 50 };
-			foreach(DataGridViewColumn dgvc in dataGridView1.Columns) {
+			foreach(DataGridViewColumn dgvc in amtDataGridView1.Columns) {
 				dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 				dgvc.Width = columnWidths[c++];
 				if(dgvc.Name == "Tech" || dgvc.Name == "COOS" || dgvc.Name == "Locked")
@@ -594,9 +595,9 @@ namespace appCore.SiteFinder.UI
 			chkColumn.TrueValue = true;
 			chkColumn.Width = 50;
 			chkColumn.ToolTipText = "Cells Included in Outage\n\nSelect/Unselect all";
-			dataGridView1.Columns.Insert(0, chkColumn);
+			amtDataGridView1.Columns.Insert(0, chkColumn);
 			
-			Rectangle rect = dataGridView1.GetCellDisplayRectangle(0, -1, true);
+			Rectangle rect = amtDataGridView1.GetCellDisplayRectangle(0, -1, true);
 			
 			CheckBox checkboxHeader = new CheckBox();
 			checkboxHeader.BackColor = Color.Transparent;
@@ -605,7 +606,7 @@ namespace appCore.SiteFinder.UI
 			checkboxHeader.Location = new Point(rect.X + 2 + ((rect.Width - checkboxHeader.Width) / 2),
 			                                    rect.Y + 1 + ((rect.Height - checkboxHeader.Height) / 2));
 			checkboxHeader.CheckedChanged += datagridViewCheckBoxHeaderCell_OnCheckBoxClicked;
-			dataGridView1.Controls.Add(checkboxHeader);
+			amtDataGridView1.Controls.Add(checkboxHeader);
 			
 			return chkColumn;
 		}
@@ -614,7 +615,7 @@ namespace appCore.SiteFinder.UI
 		{
 			CheckBox cb = sender as CheckBox;
 
-			foreach(DataGridViewRow dgvr in dataGridView1.Rows) {
+			foreach(DataGridViewRow dgvr in amtDataGridView1.Rows) {
 				DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
 				
 				cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
@@ -636,16 +637,16 @@ namespace appCore.SiteFinder.UI
 		void GMapSiteMarkerClick(object sender, MouseEventArgs e) {
 			if(e.Button == MouseButtons.Left) {
 				GMarkerGoogle marker = (GMarkerGoogle)sender;
-				listView2.ItemSelectionChanged -= ListView2ItemSelectionChanged;
+				amtDataGridView2.SelectionChanged -= AmtDataGridView1SelectionChanged;
 				int markerIndex = -1;
-				foreach (ListViewItem item in listView2.Items) {
-					if(item.SubItems[0].Text == marker.Tag.ToString())
+				foreach (DataGridViewRow item in amtDataGridView2.Rows) {
+					if(item.Cells["Site"].Value.ToString() == marker.Tag.ToString())
 						markerIndex = item.Index;
 					item.Selected = false;
 				}
-				listView2.ItemSelectionChanged += ListView2ItemSelectionChanged;
+				amtDataGridView2.SelectionChanged += AmtDataGridView1SelectionChanged;
 				if(markerIndex > -1)
-					listView2.Items[markerIndex].Selected = true;
+					amtDataGridView2.Rows[markerIndex].Selected = true;
 			}
 		}
 		
@@ -654,7 +655,7 @@ namespace appCore.SiteFinder.UI
 			bool show2G = checkBox1.Checked;
 			bool show3G = checkBox2.Checked;
 			bool show4G = checkBox3.Checked;
-			DataView dv = dataGridView1.DataSource as DataView;
+			DataView dv = amtDataGridView1.DataSource as DataView;
 			if(dv != null) {
 				dv.RowFilter = null;
 				string rowFilter = string.Empty;
@@ -693,7 +694,7 @@ namespace appCore.SiteFinder.UI
 				}
 				dv.RowFilter = rowFilter;
 				dv.Sort = "Tech Asc";
-				dataGridView1.DataSource = dv;
+				amtDataGridView1.DataSource = dv;
 			}
 		}
 
@@ -739,7 +740,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
-			switch(dataGridView1.Columns[e.ColumnIndex].Name) {
+			switch(amtDataGridView1.Columns[e.ColumnIndex].Name) {
 				case "Locked": case "COOS":
 					e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
 					break;
@@ -759,15 +760,15 @@ namespace appCore.SiteFinder.UI
 							prefixDescription = tempStr.Split(strTofind, StringSplitOptions.None)[1];
 						}
 						
-						dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText = cellPrefix;
+						amtDataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText = cellPrefix;
 						if(!string.IsNullOrEmpty(prefixDescription))
-							dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText += Environment.NewLine + prefixDescription;
+							amtDataGridView1.Rows[e.RowIndex].Cells["Cell Name"].ToolTipText += Environment.NewLine + prefixDescription;
 					}
 					break;
 				case "CheckBoxes":
-					if(currentOutage.AffectedCells.FindIndex(s => s.Name == dataGridView1.Rows[e.RowIndex].Cells["Cell Name"].Value.ToString()) > -1) {
+					if(currentOutage.AffectedCells.FindIndex(s => s.Name == amtDataGridView1.Rows[e.RowIndex].Cells["Cell Name"].Value.ToString()) > -1) {
 						e.CellStyle.BackColor = Color.OrangeRed;
-						DataGridViewCheckBoxCell cell = dataGridView1[e.ColumnIndex, e.RowIndex] as DataGridViewCheckBoxCell;
+						DataGridViewCheckBoxCell cell = amtDataGridView1[e.ColumnIndex, e.RowIndex] as DataGridViewCheckBoxCell;
 						cell.Value = cell.TrueValue;
 					}
 					break;
@@ -890,6 +891,16 @@ namespace appCore.SiteFinder.UI
 			if(currentOutage != null)
 				foundSites = currentOutage.AffectedSites;
 			
+			DataTable dt = null;
+			string response = OI.OiConnection.requestApiOutput("labels-html", new string[] { "15", "11807", "11808" });
+			if(!string.IsNullOrEmpty(response)) {
+				string str = response.Substring(response.IndexOf("Cramer POC List"));
+				if(!str.Substring(24).StartsWith("<p style")) {
+					str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+					dt = Toolbox.Tools.ConvertHtmlTableToDT(str, "table_cramer");
+				}
+			}
+			
 			foreach (Site site in foundSites) {
 				string dataToRequest = "CellsState";
 				if(string.IsNullOrEmpty(site.PowerCompany))
@@ -897,16 +908,63 @@ namespace appCore.SiteFinder.UI
 				if(site.CramerData == null)
 					dataToRequest += "Cramer";
 				site.requestOIData(dataToRequest);
+				site.CramerData = new Site.CramerDetails(dt.Rows.Cast<DataRow>().First(r => r[0].ToString() == site.Id));
+			}
+			
+			var sitesList = new List<dynamic>();
+			foreach (Site site in foundSites) {
+				string poc = string.Empty;
+				if(site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
+					poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
 				
-				string poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
-				listView2.Items.Add(new ListViewItem(new[]{ site.Id, site.JVCO_Id, site.Host, site.PostCode, site.Priority, poc, site.CramerData.TxLastMileRef }));
+				sitesList.Add(new {
+				              	Site = site.Id,
+				              	JVCOID = site.JVCO_Id,
+				              	Host = site.Host,
+				              	PostCode = site.PostCode,
+				              	Priority = site.Priority,
+				              	POC = poc,
+				              	TXType = site.CramerData.TxMedium,
+				              	CCT = site.CramerData.TxLastMileRef,
+				              	CRQ = ""
+				              });
 				
 				markersOverlay.Markers.Add(site.MapMarker);
 			}
 			
-			foreach (ColumnHeader col in listView2.Columns)
-				col.Width = -2;
-			listView2.ResumeLayout();
+			amtDataGridView2.DataSource = sitesList;
+			foreach(DataGridViewColumn col in amtDataGridView2.Columns) {
+				switch(col.Name) {
+					case "Site":
+						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						col.Width = 40;
+						break;
+					case "JVCOID":
+						col.HeaderText = "JVCO ID";
+						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						col.Width = 65;
+						break;
+					case "Host":
+						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						col.Width = 35;
+						break;
+					case "PostCode":
+						col.HeaderText = "Post Code";
+						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						col.Width = 65;
+						break;
+					case "Priority":
+						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+						col.Width = 50;
+						break;
+					case "TXType":
+						col.HeaderText = "TX Type";
+						break;
+					case "CRQ":
+						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+						break;
+				}
+			}
 			
 			label11.Text = label11.Text.Split('(')[0] + '(' + foundSites.Count + ')';
 		}
@@ -1009,8 +1067,8 @@ namespace appCore.SiteFinder.UI
 			                           		if(!siteDetails_UIMode.Contains("outage"))
 			                           			siteDetails_UIMode = "multi";
 			                           		searchResultsPopulate();
-			                           		listView2.Items[0].Focused = true;
-			                           		listView2.Items[0].Selected = true;
+			                           		amtDataGridView2.Rows[0].Selected = true;
+//			                           		listView2.Items[0].Selected = true;
 			                           		myMap.Overlays.Add(markersOverlay);
 			                           		myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 			                           	}
@@ -1025,16 +1083,15 @@ namespace appCore.SiteFinder.UI
 			LoadingPanel load = new LoadingPanel();
 			load.ShowAsync(null, action,true,this);
 		}
-
-		void ListView2ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-		{
+		
+		void AmtDataGridView1SelectionChanged(object sender, EventArgs e) {
 			try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
 			try { selectedSiteOverlay.Clear(); } catch (Exception) { }
 			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			
-			if(listView2.SelectedItems.Count > 0) {
-				currentSite = foundSites[listView2.SelectedItems[0].Index];
+			if(amtDataGridView2.SelectedRows.Count > 0) {
+				currentSite = foundSites[amtDataGridView2.SelectedRows[0].Index];
 				
 				selectedSiteDetailsPopulate();
 				

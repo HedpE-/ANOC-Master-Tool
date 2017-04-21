@@ -40,7 +40,6 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label10;
 		private appCore.UI.AMTTextBox textBox10;
 		private System.Windows.Forms.Label label11;
-		private System.Windows.Forms.ListView listView2;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label16;
 		private appCore.UI.AMTTextBox amtTextBox2;
@@ -53,7 +52,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.CheckBox checkBox4;
 		private System.Windows.Forms.CheckBox checkBox5;
-		private appCore.UI.AMTDataGridView dataGridView1;
+		private appCore.UI.AMTDataGridView amtDataGridView1;
 		private System.Windows.Forms.CheckBox checkBox6;
 		private System.Windows.Forms.CheckBox checkBox7;
 		private System.Windows.Forms.Label label15;
@@ -63,6 +62,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Label label19;
 		private appCore.UI.AMTTextBox amtTextBox6;
+		private appCore.UI.AMTDataGridView amtDataGridView2;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -112,7 +112,6 @@ namespace appCore.SiteFinder.UI
 			this.label10 = new System.Windows.Forms.Label();
 			this.textBox10 = new appCore.UI.AMTTextBox();
 			this.label11 = new System.Windows.Forms.Label();
-			this.listView2 = new System.Windows.Forms.ListView();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.amtTextBox2 = new appCore.UI.AMTTextBox();
@@ -125,7 +124,7 @@ namespace appCore.SiteFinder.UI
 			this.button1 = new System.Windows.Forms.Button();
 			this.checkBox4 = new System.Windows.Forms.CheckBox();
 			this.checkBox5 = new System.Windows.Forms.CheckBox();
-			this.dataGridView1 = new appCore.UI.AMTDataGridView();
+			this.amtDataGridView1 = new appCore.UI.AMTDataGridView();
 			this.checkBox6 = new System.Windows.Forms.CheckBox();
 			this.checkBox7 = new System.Windows.Forms.CheckBox();
 			this.label15 = new System.Windows.Forms.Label();
@@ -135,8 +134,10 @@ namespace appCore.SiteFinder.UI
 			this.button2 = new System.Windows.Forms.Button();
 			this.label19 = new System.Windows.Forms.Label();
 			this.amtTextBox6 = new appCore.UI.AMTTextBox();
+			this.amtDataGridView2 = new appCore.UI.AMTDataGridView();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// textBox4
@@ -194,16 +195,9 @@ namespace appCore.SiteFinder.UI
 			this.textBox1.MaxLength = 6;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(53, 20);
+			this.textBox1.Size = new System.Drawing.Size(70, 20);
 			this.textBox1.TabIndex = 79;
 			this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
-			// 
-			// label2
-			// 
-			label2.Location = new System.Drawing.Point(5, 30);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(76, 21);
-			label2.Text = "Site ID";
 			// 
 			// label1
 			// 
@@ -213,6 +207,14 @@ namespace appCore.SiteFinder.UI
 			this.label1.TabIndex = 87;
 			this.label1.Text = "JVCO ID";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(5, 30);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(76, 21);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "Site ID";
 			// 
 			// textBox3
 			// 
@@ -350,7 +352,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(146, 30);
+			this.label9.Location = new System.Drawing.Point(163, 30);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(38, 20);
 			this.label9.TabIndex = 110;
@@ -359,10 +361,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox9
 			// 
-			this.textBox9.Location = new System.Drawing.Point(190, 30);
+			this.textBox9.Location = new System.Drawing.Point(207, 30);
 			this.textBox9.Name = "textBox9";
 			this.textBox9.ReadOnly = true;
-			this.textBox9.Size = new System.Drawing.Size(62, 20);
+			this.textBox9.Size = new System.Drawing.Size(51, 20);
 			this.textBox9.TabIndex = 109;
 			// 
 			// label10
@@ -393,21 +395,6 @@ namespace appCore.SiteFinder.UI
 			this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.label11.Visible = false;
 			// 
-			// listView2
-			// 
-			this.listView2.AutoArrange = false;
-			this.listView2.FullRowSelect = true;
-			this.listView2.GridLines = true;
-			this.listView2.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listView2.Location = new System.Drawing.Point(5, 272);
-			this.listView2.Name = "listView2";
-			this.listView2.Size = new System.Drawing.Size(572, 102);
-			this.listView2.TabIndex = 115;
-			this.listView2.UseCompatibleStateImageBehavior = false;
-			this.listView2.View = System.Windows.Forms.View.Details;
-			this.listView2.Visible = false;
-			this.listView2.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ListView2ItemSelectionChanged);
-			// 
 			// label12
 			// 
 			this.label12.BackColor = System.Drawing.SystemColors.Control;
@@ -420,7 +407,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label16
 			// 
-			this.label16.Location = new System.Drawing.Point(766, 28);
+			this.label16.Location = new System.Drawing.Point(766, 30);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(319, 20);
 			this.label16.TabIndex = 137;
@@ -521,22 +508,22 @@ namespace appCore.SiteFinder.UI
 			this.checkBox5.UseVisualStyleBackColor = true;
 			this.checkBox5.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PaknetVodapageCheckBoxesMouseUp);
 			// 
-			// dataGridView1
+			// amtDataGridView1
 			// 
-			this.dataGridView1.AllowUserToAddRows = false;
-			this.dataGridView1.AllowUserToDeleteRows = false;
-			this.dataGridView1.AllowUserToResizeColumns = false;
-			this.dataGridView1.AllowUserToResizeRows = false;
-			this.dataGridView1.AlwaysVisibleVScrollBar = true;
-			this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-			this.dataGridView1.DoubleBuffer = true;
-			this.dataGridView1.Location = new System.Drawing.Point(5, 272);
-			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.RowHeadersVisible = false;
-			this.dataGridView1.Size = new System.Drawing.Size(572, 488);
-			this.dataGridView1.TabIndex = 148;
-			this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+			this.amtDataGridView1.AllowUserToAddRows = false;
+			this.amtDataGridView1.AllowUserToDeleteRows = false;
+			this.amtDataGridView1.AllowUserToResizeColumns = false;
+			this.amtDataGridView1.AllowUserToResizeRows = false;
+			this.amtDataGridView1.AlwaysVisibleVScrollBar = true;
+			this.amtDataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+			this.amtDataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+			this.amtDataGridView1.DoubleBuffer = true;
+			this.amtDataGridView1.Location = new System.Drawing.Point(5, 272);
+			this.amtDataGridView1.Name = "amtDataGridView1";
+			this.amtDataGridView1.RowHeadersVisible = false;
+			this.amtDataGridView1.Size = new System.Drawing.Size(572, 488);
+			this.amtDataGridView1.TabIndex = 148;
+			this.amtDataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
 			// 
 			// checkBox6
 			// 
@@ -572,7 +559,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label15
 			// 
-			this.label15.Location = new System.Drawing.Point(258, 29);
+			this.label15.Location = new System.Drawing.Point(271, 30);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(38, 20);
 			this.label15.TabIndex = 154;
@@ -581,10 +568,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox4
 			// 
-			this.amtTextBox4.Location = new System.Drawing.Point(302, 30);
+			this.amtTextBox4.Location = new System.Drawing.Point(315, 30);
 			this.amtTextBox4.Name = "amtTextBox4";
 			this.amtTextBox4.ReadOnly = true;
-			this.amtTextBox4.Size = new System.Drawing.Size(65, 20);
+			this.amtTextBox4.Size = new System.Drawing.Size(52, 20);
 			this.amtTextBox4.TabIndex = 153;
 			// 
 			// label17
@@ -626,17 +613,37 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox6
 			// 
-			this.amtTextBox6.Location = new System.Drawing.Point(421, 31);
+			this.amtTextBox6.Location = new System.Drawing.Point(421, 30);
 			this.amtTextBox6.Name = "amtTextBox6";
 			this.amtTextBox6.ReadOnly = true;
 			this.amtTextBox6.Size = new System.Drawing.Size(156, 20);
 			this.amtTextBox6.TabIndex = 158;
+			// 
+			// amtDataGridView2
+			// 
+			this.amtDataGridView2.AllowUserToAddRows = false;
+			this.amtDataGridView2.AllowUserToDeleteRows = false;
+			this.amtDataGridView2.AllowUserToResizeColumns = false;
+			this.amtDataGridView2.AllowUserToResizeRows = false;
+			this.amtDataGridView2.AlwaysVisibleVScrollBar = false;
+			this.amtDataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+			this.amtDataGridView2.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+			this.amtDataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+			this.amtDataGridView2.DoubleBuffer = true;
+			this.amtDataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+			this.amtDataGridView2.Location = new System.Drawing.Point(5, 272);
+			this.amtDataGridView2.Name = "amtDataGridView2";
+			this.amtDataGridView2.RowHeadersWidth = 15;
+			this.amtDataGridView2.Size = new System.Drawing.Size(572, 102);
+			this.amtDataGridView2.TabIndex = 160;
+			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView1SelectionChanged);
 			// 
 			// siteDetails
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1091, 766);
+			this.Controls.Add(this.amtDataGridView2);
 			this.Controls.Add(this.label19);
 			this.Controls.Add(this.amtTextBox6);
 			this.Controls.Add(this.button2);
@@ -644,8 +651,7 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.amtTextBox5);
 			this.Controls.Add(this.label15);
 			this.Controls.Add(this.amtTextBox4);
-			this.Controls.Add(this.listView2);
-			this.Controls.Add(this.dataGridView1);
+			this.Controls.Add(this.amtDataGridView1);
 			this.Controls.Add(this.checkBox6);
 			this.Controls.Add(this.checkBox7);
 			this.Controls.Add(this.checkBox5);
@@ -691,7 +697,8 @@ namespace appCore.SiteFinder.UI
 			this.Name = "siteDetails";
 			this.Text = "Site Details";
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
