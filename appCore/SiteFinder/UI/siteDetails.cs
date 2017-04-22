@@ -898,7 +898,7 @@ namespace appCore.SiteFinder.UI
 			var sitesList = new List<dynamic>();
 			foreach (Site site in foundSites) {
 				if(powerList != null) {
-					AccessInformation filteredAccessInfo = powerList.Find(a => a.CI_NAME == site.Id);
+					AccessInformation filteredAccessInfo = powerList.FirstOrDefault(a => a.CI_NAME == site.Id);
 					if(filteredAccessInfo != null)
 						site.PowerCompany = filteredAccessInfo.POWER.Replace("<br>",";");
 				}
@@ -917,7 +917,7 @@ namespace appCore.SiteFinder.UI
 					site.CellsStateTimestamp = DateTime.Now;
 				}
 				
-				DataRow row = cramerDataList.Rows.Cast<DataRow>().First(r => r[0].ToString() == site.Id);
+				DataRow row = cramerDataList.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == site.Id);
 				if(row != null) {
 					site.CramerData = new Site.CramerDetails(row);
 					site.CramerDataTimestamp = DateTime.Now;
@@ -925,18 +925,19 @@ namespace appCore.SiteFinder.UI
 				
 				if(crqList != null) {
 					List<Change> filteredChanges = crqList.FindAll(c => c.Site == site.Id);
-					if(filteredChanges.Count > 0) {
-						site.Changes = filteredChanges;
-						site.ChangesTimestamp = DateTime.Now;
-					}
+//					if(filteredChanges.Count > 0) {
+					site.Changes = filteredChanges;
+					site.ChangesTimestamp = DateTime.Now;
+//					}
 				}
 				
 				// start populating
 				
 				string poc = string.Empty;
-				if(site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
-					poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
-				
+				if(site.CramerData != null) {
+					if(site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
+						poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
+				}
 				
 				sitesList.Add(new {
 				              	Site = site.Id,
@@ -945,8 +946,8 @@ namespace appCore.SiteFinder.UI
 				              	PostCode = site.PostCode,
 				              	Priority = site.Priority,
 				              	POC = poc,
-				              	TXType = site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", ""),
-				              	CCT = site.CramerData.TxLastMileRef,
+				              	TXType = site.CramerData != null ? site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", "") : string.Empty,
+				              	CCT = site.CramerData != null ? site.CramerData.TxLastMileRef : string.Empty,
 				              	CRQ = CheckOngoingCRQ(site)
 				              });
 				

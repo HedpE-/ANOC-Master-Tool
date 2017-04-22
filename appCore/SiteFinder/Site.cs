@@ -807,7 +807,8 @@ namespace appCore.SiteFinder
 				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
 				foreach(JObject jObj in jSon.data) {
 					AccessInformation item = jObj.ToObject<AccessInformation>();
-					powerList.Add(item);
+					if(!powerList.Contains(item))
+						powerList.Add(item);
 				}
 			}
 			catch { }
