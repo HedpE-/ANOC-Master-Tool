@@ -521,6 +521,7 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView1.Location = new System.Drawing.Point(5, 272);
 			this.amtDataGridView1.Name = "amtDataGridView1";
 			this.amtDataGridView1.RowHeadersVisible = false;
+			this.amtDataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 			this.amtDataGridView1.Size = new System.Drawing.Size(572, 488);
 			this.amtDataGridView1.TabIndex = 148;
 			this.amtDataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
@@ -634,9 +635,10 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView2.Location = new System.Drawing.Point(5, 272);
 			this.amtDataGridView2.Name = "amtDataGridView2";
 			this.amtDataGridView2.RowHeadersWidth = 15;
+			this.amtDataGridView2.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 			this.amtDataGridView2.Size = new System.Drawing.Size(572, 102);
 			this.amtDataGridView2.TabIndex = 160;
-			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView1SelectionChanged);
+			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView2SelectionChanged);
 			// 
 			// siteDetails
 			// 
