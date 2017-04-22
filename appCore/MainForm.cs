@@ -704,12 +704,21 @@ namespace appCore
 			if(ans == DialogResult.Yes) {
 				UserFolder.ClearTempFolder();
 				
-				var fc = Application.OpenForms;
-				if(fc.Count > 0) {
-					for(int c = 0;c < fc.Count;c++) {
-						if(fc[c] != this) {
-							fc[c].Invoke(new MethodInvoker(fc[c].Close));
-							fc[c--].Dispose();
+				var openForms = Application.OpenForms.Cast<Form>().ToList();
+				if(openForms.Count > 0) {
+					for(int c = 0;c < openForms.Count;c++) {
+						Form form = openForms[c];
+						if(form != this) {
+							if(form.InvokeRequired) {
+								form.Invoke(new MethodInvoker(delegate {
+								                              	form.Close();
+								                              	form.Dispose();
+								                              }));
+							}
+							else {
+								form.Close();
+								form.Dispose();
+							}
 						}
 					}
 				}
