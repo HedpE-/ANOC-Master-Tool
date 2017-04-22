@@ -436,7 +436,6 @@ namespace appCore.SiteFinder
 		/// Populate with data pulled from OI
 		/// </summary>
 		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK", "Cramer"</param>
-		/// <param name="forceUpdateLockedState"></param>
 		public void requestOIData(string dataToRequest) {
 			if(Exists) {
 				bool connected = !OiConnection.LoggedOn ? OiConnection.InitiateOiConnection() : true;
@@ -639,6 +638,26 @@ namespace appCore.SiteFinder
 //			return dt;
 //		}
 		
+		public static List<Change> BulkFetchCRQs(IEnumerable<string> sites) {
+			List<Change> list = new List<Change>();
+			string response = OiConnection.requestApiOutput("changes", sites);
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data) {
+					Change item = jObj.ToObject<Change>();
+					// remove HTML tags from Status
+					while(item.Status.Contains(">")) {
+						int startIndex = item.Status.IndexOf("<");
+						int endIndex = item.Status.IndexOf(">");
+						item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+					}
+					list.Add(item);
+				}
+			}
+			catch { return null; }
+			return list;
+		}
+		
 		List<Alarm> FetchActiveAlarms() {
 			AlarmsTimestamp = DateTime.Now;
 			List<Alarm> list = new List<Alarm>();
@@ -754,7 +773,16 @@ namespace appCore.SiteFinder
 		}
 		
 		public static DataTable BulkFetchCramerData(IEnumerable<string> sites) {
-			return null;
+			DataTable cramerDataList = null;
+			string response = OiConnection.requestApiOutput("labels-html", sites);
+			if(!string.IsNullOrEmpty(response)) {
+				string str = response.Substring(response.IndexOf("Cramer POC List"));
+				if(!str.Substring(24).StartsWith("<p style")) {
+					str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+					cramerDataList = Tools.ConvertHtmlTableToDT(str, "table_cramer");
+				}
+			}
+			return cramerDataList;
 		}
 		
 		string getPowerCompany() {
@@ -772,8 +800,19 @@ namespace appCore.SiteFinder
 			return string.Empty;
 		}
 		
-		public static List<dynamic> BulkFetchPowerCompany(IEnumerable<string> sites) {
-			return null;
+		public static List<AccessInformation> BulkFetchPowerCompany(IEnumerable<string> sites) {
+			List<AccessInformation> powerList = new List<AccessInformation>();
+			string response = OiConnection.requestApiOutput("access", sites);
+			try {
+				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+				foreach(JObject jObj in jSon.data) {
+					AccessInformation item = jObj.ToObject<AccessInformation>();
+					powerList.Add(item);
+				}
+			}
+			catch { }
+			
+			return powerList;
 		}
 		
 		void getOiLockedCellsPage() {
@@ -848,7 +887,45 @@ namespace appCore.SiteFinder
 		}
 		
 		public static List<OiCell> BulkFetchOiCellsState(IEnumerable<string> sites) {
-			return null;
+			List<OiCell> list = new List<OiCell>();
+			
+			string resp = OiConnection.requestApiOutput("cells-html", sites);
+			DataTable dt = null;
+			for(int c = 2;c <= 4;c++) {
+				string tableName = "table_checkbox_cells " + c + "G";
+				if(resp.Contains("id=" + '"' + tableName + '"')) {
+					DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
+					if(tempDT.Rows.Count > 0) {
+						if(dt == null)
+							dt = tempDT;
+						else {
+							foreach(DataRow row in tempDT.Rows)
+								dt.Rows.Add(row.ItemArray);
+						}
+					}
+				}
+			}
+			
+			foreach(DataRow row in dt.Rows) {
+				OiCell cell = new OiCell();
+				cell.SITE = row[0].ToString();
+				cell.BEARER = row[1].ToString();
+				cell.CELL_NAME = row[2].ToString();
+				cell.CELL_ID = row[3].ToString();
+				cell.LAC_TAC = row[4].ToString();
+				cell.BSC_RNC_ID = row[5].ToString();
+				cell.ENODEB_ID = row[6].ToString();
+				cell.WBTS_BCF = row[7].ToString();
+				cell.VENDOR = row[8].ToString();
+				cell.NOC = row[9].ToString();
+				cell.COOS = row[10].ToString();
+				string[] attr = row[11].ToString().Split('/');
+				cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
+				cell.LOCKED = attr[0];
+				list.Add(cell);
+			}
+			
+			return list;
 		}
 		
 		public void updateCOOS() {
@@ -1028,6 +1105,12 @@ namespace appCore.SiteFinder
 							OnwardSites[c] = Convert.ToInt16(OnwardSites[c]).ToString();
 					OnwardSites = OnwardSites.OrderBy(c => int.Parse(c)).ToList();
 				}
+				Thread thread = new Thread(() => {
+				                           	var t = OnwardSitesObjects;
+				                           });
+				thread.Name = "Site " + details[0] + " CramerDetails_GetOnwardSites";
+				thread.SetApartmentState(ApartmentState.STA);
+				thread.Start();
 			}
 		}
 	}
