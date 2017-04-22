@@ -652,6 +652,10 @@ namespace appCore.SiteFinder
 			return list;
 		}
 		
+		public static List<Alarm> BulkFetchActiveAlarms(IEnumerable<string> sites) {
+			return null;
+		}
+		
 //		DataTable FetchActiveAlarms(FileSystemInfo table_alarms) {
 //			DataTable dt = new DataTable();
 //			string response = OiConnection.requestPhpOutput("alarms", Id);
@@ -705,6 +709,10 @@ namespace appCore.SiteFinder
 			return list;
 		}
 		
+		public static List<BookIn> BulkFetchBookIns(IEnumerable<string> sites) {
+			return null;
+		}
+		
 		Availability FetchAvailability() {
 			AvailabilityTimestamp = DateTime.Now;
 			string response = OiConnection.requestApiOutput("availability", Id);
@@ -726,6 +734,10 @@ namespace appCore.SiteFinder
 			return dt;
 		}
 		
+		public static DataTable BulkFetchAvailability(IEnumerable<string> sites) {
+			return null;
+		}
+		
 		CramerDetails FetchCramerData(FileSystemInfo table_ca) {
 			CramerDataTimestamp = DateTime.Now;
 			DataTable dt = new DataTable();
@@ -741,6 +753,10 @@ namespace appCore.SiteFinder
 			return new CramerDetails(dt.Rows[0]);
 		}
 		
+		public static DataTable BulkFetchCramerData(IEnumerable<string> sites) {
+			return null;
+		}
+		
 		string getPowerCompany() {
 			string response = OiConnection.requestApiOutput("access", Id);
 			try {
@@ -752,26 +768,12 @@ namespace appCore.SiteFinder
 				}
 			}
 			catch { }
-//			if(!string.IsNullOrEmpty(indexPhp)) {
-//				if(indexPhp.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
-//					HtmlDocument doc = new HtmlDocument();
-//					doc.Load(new StringReader(indexPhp));
-//
-//					int powerCompanyColumn = 0;
-//					HtmlNode accessTableNode = doc.DocumentNode.SelectNodes("//div[@id='div_access']").Descendants("table").First();
-//					IEnumerable<HtmlNode> ATNdescendants = accessTableNode.Descendants("th");
-//					for(powerCompanyColumn = 0;powerCompanyColumn < ATNdescendants.Count();powerCompanyColumn++) {
-//						if(ATNdescendants.ElementAt(powerCompanyColumn).Name == "th" && ATNdescendants.ElementAt(powerCompanyColumn).InnerText.Contains("Power Company"))
-//							break;
-//					}
-//					string[] strTofind = { "<br>" };
-//
-//					string t = accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
-//					return accessTableNode.Descendants("td").ElementAt(powerCompanyColumn).InnerHtml.Replace("<br>",";");
-//				}
-//			}
 			
 			return string.Empty;
+		}
+		
+		public static List<dynamic> BulkFetchPowerCompany(IEnumerable<string> sites) {
+			return null;
 		}
 		
 		void getOiLockedCellsPage() {
@@ -795,19 +797,6 @@ namespace appCore.SiteFinder
 			CellsStateTimestamp = DateTime.Now;
 			if(Exists && Cells.Count > 0) {
 				List<OiCell> list = new List<OiCell>();
-				
-//				List<Thread> threads = new List<Thread>();
-//				int finishedThreadsCount = 0;
-//				Thread thread;
-//				thread = new Thread(() => {
-//				                    	string resp = OiConnection.requestApiOutput("cells", Id, 2);
-//
-//				                    	try {
-//				                    		var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-//				                    		foreach(JObject jObj in jSon.data)
-//				                    			list.Add(jObj.ToObject<OiCell>());
-//				                    	}
-//				                    	catch { }
 				
 				string resp = OiConnection.requestApiOutput("cells-html", Id);
 				DataTable dt = null;
@@ -841,54 +830,10 @@ namespace appCore.SiteFinder
 					cell.COOS = row[10].ToString();
 					string[] attr = row[11].ToString().Split('/');
 					cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
-//				                    		cell.LOCK = Convert.ToInt16(row[12]);
+//				    cell.LOCK = Convert.ToInt16(row[12]);
 					cell.LOCKED = attr[0];
 					list.Add(cell);
 				}
-				
-//				                    	finishedThreadsCount++;
-//				                    });
-//				thread.Name = "getOiCellsState_2G";
-				////				threads.Add(thread);
-//				thread.SetApartmentState(ApartmentState.STA);
-//				thread.Start();
-				
-//				thread = new Thread(() => {
-//				                    	string resp = OiConnection.requestApiOutput("cells", Id, 3);
-//
-//				                    	try {
-//				                    		var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-//				                    		foreach(JObject jObj in jSon.data)
-//				                    			list.Add(jObj.ToObject<OiCell>());
-//				                    	}
-//				                    	catch { }
-//
-//				                    	finishedThreadsCount++;
-//				                    });
-//				thread.Name = "getOiCellsState_3G";
-//				threads.Add(thread);
-//
-//				thread = new Thread(() => {
-//				                    	string resp = OiConnection.requestApiOutput("cells", Id, 4);
-//
-//				                    	try {
-//				                    		var jSon = JsonConvert.DeserializeObject<RootObject>(resp);
-//				                    		foreach(JObject jObj in jSon.data)
-//				                    			list.Add(jObj.ToObject<OiCell>());
-//				                    	}
-//				                    	catch { }
-//
-//				                    	finishedThreadsCount++;
-//				                    });
-//				thread.Name = "getOiCellsState_4G";
-//				threads.Add(thread);
-				
-//				foreach(Thread th in threads) {
-//					th.SetApartmentState(ApartmentState.STA);
-//					th.Start();
-//				}
-				
-//				while(finishedThreadsCount < 1) { }
 				
 				foreach (Cell cell in Cells) {
 					OiCell oiCell = list.Find(s => s.CELL_NAME == cell.Name);
@@ -899,29 +844,11 @@ namespace appCore.SiteFinder
 						cell.CoosFlagTimestamp = DateTime.Now;
 					}
 				}
-				
-//				if(string.IsNullOrEmpty(indexPhp))
-//					indexPhp = OiConnection.requestPhpOutput("index", Id, string.Empty);
-				
-//				if(!string.IsNullOrEmpty(indexPhp) && indexPhp.Contains(@"<div class=""div_boxes"" id=""div_access""")) {
-//					HtmlDocument doc = new HtmlDocument();
-//					doc.Load(new StringReader(indexPhp));
-//
-//					HtmlNode div_cells = doc.DocumentNode.SelectNodes("//div[@id='div_cells']").First();
-//
-//					foreach (Cell cell in Cells) {
-//						HtmlNode checkBoxNode = div_cells.Descendants().ToList().Find(x => x.Id.Contains(cell.Name));
-//						if(checkBoxNode != null) {
-//							if(checkBoxNode.ParentNode.InnerHtml.Contains("checked"))
-//								cell.Locked = checkBoxNode.Attributes.ToList().Find(x => x.Name == "checked").Value == "true";
-//							else
-//								cell.Locked = false;
-//						}
-//					}
-//					// Content of a locked cell (unlocked cell doesn't have 'checked' attribute)
-//					// ><td><input type='checkbox' name='G00151' id='checkboxG00151' disabled='disabled' checked='true'></td>
-//				}
 			}
+		}
+		
+		public static List<OiCell> BulkFetchOiCellsState(IEnumerable<string> sites) {
+			return null;
 		}
 		
 		public void updateCOOS() {

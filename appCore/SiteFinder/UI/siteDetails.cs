@@ -891,31 +891,68 @@ namespace appCore.SiteFinder.UI
 			if(currentOutage != null)
 				foundSites = currentOutage.AffectedSites;
 			
-			DataTable dt = null;
-			string response = OI.OiConnection.requestApiOutput("labels-html", new string[] { "15", "11807", "11808" });
-			if(!string.IsNullOrEmpty(response)) {
-				string str = response.Substring(response.IndexOf("Cramer POC List"));
-				if(!str.Substring(24).StartsWith("<p style")) {
-					str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
-					dt = Toolbox.Tools.ConvertHtmlTableToDT(str, "table_cramer");
+			List<string> fetchCellDetailsList = new List<string>();
+			List<string> fetchCramerDataList = new List<string>();
+			List<string> fetchCrqList = new List<string>();
+			List<string> fetchPowerList = new List<string>();
+			foreach(Site site in foundSites) {
+				fetchCellDetailsList.Add(site.Id);
+				if(site.CramerData == null)
+					fetchCramerDataList.Add(site.Id);
+				if(siteDetails_UIMode.Contains("outage") && ((DateTime.Now - site.ChangesTimestamp) > new TimeSpan(0, 30, 0)))
+					fetchCrqList.Add(site.Id);
+				if(string.IsNullOrEmpty(site.PowerCompany))
+					fetchPowerList.Add(site.Id);
+			}
+			
+			DataTable cramerDataList = null;
+			if(fetchCramerDataList.Count > 0) {
+				string response = OI.OiConnection.requestApiOutput("labels-html", fetchCramerDataList);
+				if(!string.IsNullOrEmpty(response)) {
+					string str = response.Substring(response.IndexOf("Cramer POC List"));
+					if(!str.Substring(24).StartsWith("<p style")) {
+						str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+						cramerDataList = Toolbox.Tools.ConvertHtmlTableToDT(str, "table_cramer");
+					}
 				}
 			}
 			
-			foreach (Site site in foundSites) {
-				string dataToRequest = "CellsState";
-				if(string.IsNullOrEmpty(site.PowerCompany))
-					dataToRequest += "PWR";
-				if(site.CramerData == null)
-					dataToRequest += "Cramer";
-				site.requestOIData(dataToRequest);
-				site.CramerData = new Site.CramerDetails(dt.Rows.Cast<DataRow>().First(r => r[0].ToString() == site.Id));
-			}
+			List<OiCell> cellDetailsList = new List<OiCell>();
+			if(fetchCellDetailsList.Count > 0)
+				cellDetailsList = FetchCellsState(fetchCellDetailsList);
 			
 			var sitesList = new List<dynamic>();
 			foreach (Site site in foundSites) {
+				string dataToRequest = "CellsState";
+				if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+					dataToRequest += "CRQ";
+				if(string.IsNullOrEmpty(site.PowerCompany))
+					dataToRequest += "PWR";
+				site.requestOIData(dataToRequest);
+				
+				DataRow row = cramerDataList.Rows.Cast<DataRow>().First(r => r[0].ToString() == site.Id);
+				site.CramerData = new Site.CramerDetails(row);
+				
+				int siteIndex = foundSites.FindIndex(s => s.Id == site.Id);
+				if(siteIndex > -1) {
+					foreach (Cell cell in foundSites[siteIndex].Cells) {
+						OiCell oiCell = cellDetailsList.Find(s => s.CELL_NAME == cell.Name);
+						if(oiCell != null) {
+							cell.Locked = !string.IsNullOrEmpty(oiCell.LOCKED);
+							cell.LockedFlagTimestamp = DateTime.Now;
+							cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
+							cell.CoosFlagTimestamp = DateTime.Now;
+						}
+					}
+					foundSites[siteIndex].CellsStateTimestamp = DateTime.Now;
+				}
+				
+				// start populating
+				
 				string poc = string.Empty;
 				if(site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
 					poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
+				
 				
 				sitesList.Add(new {
 				              	Site = site.Id,
@@ -926,7 +963,7 @@ namespace appCore.SiteFinder.UI
 				              	POC = poc,
 				              	TXType = site.CramerData.TxMedium,
 				              	CCT = site.CramerData.TxLastMileRef,
-				              	CRQ = ""
+				              	CRQ = CheckOngoingCRQs(site)
 				              });
 				
 				markersOverlay.Markers.Add(site.MapMarker);
@@ -967,6 +1004,69 @@ namespace appCore.SiteFinder.UI
 			}
 			
 			label11.Text = label11.Text.Split('(')[0] + '(' + foundSites.Count + ')';
+		}
+		
+		List<OiCell> FetchCellsState(IEnumerable<string> sites) {
+			List<OiCell> list = new List<OiCell>();
+			
+			string resp = OI.OiConnection.requestApiOutput("cells-html", sites);
+			DataTable dt = null;
+			for(int c = 2;c <= 4;c++) {
+				string tableName = "table_checkbox_cells " + c + "G";
+				if(resp.Contains("id=" + '"' + tableName + '"')) {
+					DataTable tempDT = Toolbox.Tools.ConvertHtmlTableToDT(resp, tableName);
+					if(tempDT.Rows.Count > 0) {
+						if(dt == null)
+							dt = tempDT;
+						else {
+							foreach(DataRow row in tempDT.Rows)
+								dt.Rows.Add(row.ItemArray);
+						}
+					}
+				}
+			}
+			
+			foreach(DataRow row in dt.Rows) {
+				OiCell cell = new OiCell();
+				cell.SITE = row[0].ToString();
+				cell.BEARER = row[1].ToString();
+				cell.CELL_NAME = row[2].ToString();
+				cell.CELL_ID = row[3].ToString();
+				cell.LAC_TAC = row[4].ToString();
+				cell.BSC_RNC_ID = row[5].ToString();
+				cell.ENODEB_ID = row[6].ToString();
+				cell.WBTS_BCF = row[7].ToString();
+				cell.VENDOR = row[8].ToString();
+				cell.NOC = row[9].ToString();
+				cell.COOS = row[10].ToString();
+				string[] attr = row[11].ToString().Split('/');
+				cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
+				cell.LOCKED = attr[0];
+				list.Add(cell);
+			}
+			
+			return list;
+		}
+		
+		string CheckOngoingCRQs(Site site) {
+			string OngoingCRQsStr = string.Empty;
+			if(site.Changes != null) {
+				List<Change> OngoingCRQs = new List<Change>();
+				foreach(Change crq in site.Changes) {
+					if((crq.Status == "Scheduled" || crq.Status == "Implementation In Progress")) {
+						if((Convert.ToDateTime(crq.Scheduled_Start) <= DateTime.Now && Convert.ToDateTime(crq.Scheduled_End) > DateTime.Now))
+							OngoingCRQs.Add(crq);
+					}
+				}
+				if(OngoingCRQs.Count > 0) {
+					foreach (Change crq in OngoingCRQs) {
+						OngoingCRQsStr += crq.Change_Ref + " - " + crq.Summary + " - " + crq.Project + " - " + crq.Status + " - " + crq.Scheduled_Start + " - " + crq.Scheduled_End;
+						if(crq != OngoingCRQs.Last())
+							OngoingCRQsStr += Environment.NewLine;
+					}
+				}
+			}
+			return OngoingCRQsStr;
 		}
 
 		void bulkSearchForm_buttonClick(object sender, EventArgs e)
