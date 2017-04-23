@@ -30,7 +30,6 @@ namespace appCore.Settings.UI
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Button button5;
 		
@@ -62,8 +61,8 @@ namespace appCore.Settings.UI
 			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.toggleSwitch1 = new JCS.ToggleSwitch();
 			this.button5 = new System.Windows.Forms.Button();
-			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
@@ -159,8 +158,8 @@ namespace appCore.Settings.UI
 			// tabPage1
 			// 
 			this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage1.Controls.Add(this.toggleSwitch1);
 			this.tabPage1.Controls.Add(this.button5);
-			this.tabPage1.Controls.Add(this.comboBox1);
 			this.tabPage1.Controls.Add(this.label8);
 			this.tabPage1.Controls.Add(this.label7);
 			this.tabPage1.Controls.Add(this.label6);
@@ -177,6 +176,18 @@ namespace appCore.Settings.UI
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			// 
+			// toggleSwitch1
+			// 
+			this.toggleSwitch1.Location = new System.Drawing.Point(106, 61);
+			this.toggleSwitch1.Name = "toggleSwitch1";
+			this.toggleSwitch1.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toggleSwitch1.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toggleSwitch1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.toggleSwitch1.Size = new System.Drawing.Size(50, 19);
+			this.toggleSwitch1.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
+			this.toggleSwitch1.TabIndex = 12;
+			this.toggleSwitch1.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitch1CheckedChanged);
+			// 
 			// button5
 			// 
 			this.button5.Location = new System.Drawing.Point(383, 63);
@@ -186,18 +197,6 @@ namespace appCore.Settings.UI
 			this.button5.Text = "Reload DB Files";
 			this.button5.UseVisualStyleBackColor = true;
 			this.button5.Click += new System.EventHandler(this.Button5Click);
-			// 
-			// comboBox1
-			// 
-			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Items.AddRange(new object[] {
-			"Enabled",
-			"Disabled"});
-			this.comboBox1.Location = new System.Drawing.Point(68, 61);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(118, 21);
-			this.comboBox1.TabIndex = 10;
-			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1SelectedIndexChanged);
 			// 
 			// label8
 			// 
@@ -257,7 +256,7 @@ namespace appCore.Settings.UI
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(506, 291);
+			this.tabPage2.Size = new System.Drawing.Size(488, 291);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "About";
 			// 
@@ -516,6 +515,7 @@ namespace appCore.Settings.UI
 			// 
 			// dataGridView1
 			// 
+			this.dataGridView1.AlwaysVisibleVScrollBar = false;
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
 			this.Username,
@@ -607,5 +607,6 @@ namespace appCore.Settings.UI
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private appCore.UI.AMTTextBox textBox5;
+        private JCS.ToggleSwitch toggleSwitch1;
     }
 }

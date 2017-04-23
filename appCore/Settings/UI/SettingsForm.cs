@@ -53,7 +53,8 @@ namespace appCore.Settings.UI
 			}
 			else label6.Text = SettingsFile.OIUsername;
 
-			comboBox1.Text = siteFinder_mainswitch ? "Enabled" : "Disabled";
+//			comboBox1.Text = siteFinder_mainswitch ? "Enabled" : "Disabled";
+			toggleSwitch1.Checked = siteFinder_mainswitch;
 			
 			//            tabControl1.Controls.Add(userAdminTab);
 //			this.Load += new System.EventHandler(this.SettingsForm_Load);
@@ -118,11 +119,15 @@ namespace appCore.Settings.UI
 			load.ShowAsync(null, action, false, this);
 		}
 
-		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
-		{
-			ComboBox cb = (ComboBox)sender;
-			if (!string.IsNullOrEmpty(cb.Text))
-				siteFinder_newSwitch = cb.Text == "Enabled";
+//		void ComboBox1SelectedIndexChanged(object sender, EventArgs e)
+//		{
+//			ComboBox cb = (ComboBox)sender;
+//			if (!string.IsNullOrEmpty(cb.Text))
+//				siteFinder_newSwitch = cb.Text == "Enabled";
+//		}
+		
+		void ToggleSwitch1CheckedChanged(object sender, EventArgs e) {
+			siteFinder_newSwitch = ((JCS.ToggleSwitch)sender).Checked;
 		}
 
 		void Button5Click(object sender, EventArgs e)
