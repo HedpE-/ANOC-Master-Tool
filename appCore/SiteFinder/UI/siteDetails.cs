@@ -20,8 +20,6 @@ using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using appCore.UI;
 using appCore.Templates.Types;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using appCore.OI.JSON;
 
 namespace appCore.SiteFinder.UI
@@ -35,13 +33,10 @@ namespace appCore.SiteFinder.UI
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
 		GMapOverlay onwardSitesOverlay = new GMapOverlay("onwardSites");
-//		List<GMapMarker> markersList = new List<GMapMarker>();
 		public Site currentSite;
 		public Outage currentOutage;
 		
 		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
-//		string[] sites; // for outages site list
-//		byte listView2_EventCount = 1;
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
@@ -99,9 +94,9 @@ namespace appCore.SiteFinder.UI
 						label2.Visible = false;
 						
 						ComboBox comboBox1 = new ComboBox();
-						comboBox1.BackColor = SystemColors.Control;
+//						comboBox1.BackColor = SystemColors.Control;
 						comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-						comboBox1.FlatStyle = FlatStyle.Popup;
+						comboBox1.FlatStyle = FlatStyle.Standard;
 						comboBox1.Items.AddRange(new object[] {
 						                         	"Site ID",
 						                         	"JVCO ID"});
@@ -868,10 +863,6 @@ namespace appCore.SiteFinder.UI
 			if(fetchCramerDataList.Count > 0) {
 				Thread thread = new Thread(() => {
 				                           	cramerDataList = SiteFinder.Site.BulkFetchCramerData(fetchCramerDataList);
-//				                           	if(cramerDataList != null) {
-//				                           		List<string> onwardSites = new List<string>();
-//				                           		DB.SitesDB.getSites(onwardSites);
-//				                           	}
 				                           	finishedThreadsCount++;
 				                           });
 				thread.Name = "siteFinder_BulkFetchCramerData";
