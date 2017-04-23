@@ -754,7 +754,25 @@ namespace appCore.SiteFinder
 		}
 		
 		public static DataTable BulkFetchAvailability(IEnumerable<string> sites) {
-			return null;
+			string resp = OiConnection.requestApiOutput("availability", sites);
+			DataTable dt = null;
+			
+			try {
+				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
+				dt = jSon.ToDataTable();
+			}
+			catch { }
+			
+			if(dt == null) {
+				resp = OiConnection.requestPhpOutput("ca", sites);
+				
+				try {
+					dt = Tools.ConvertHtmlTableToDT(resp, "table_ca");
+				}
+				catch { }
+			}
+			
+			return dt;
 		}
 		
 		CramerDetails FetchCramerData(FileSystemInfo table_ca) {
