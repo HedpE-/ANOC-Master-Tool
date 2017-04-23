@@ -1367,6 +1367,19 @@
     <Compile Include="UI\SplashForm.Designer.cs">
       <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ToggleSwitch\GraphicsExtensionMethods.cs" />
+    <Compile Include="UI\ToggleSwitch\ImageHelper.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchAndroidRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchBrushedMetalRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchCarbonRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchFancyRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchIOS5Renderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchIphoneRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchMetroRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchModernRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchOSXRenderer.cs" />
+    <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchRendererBase.cs" />
+    <Compile Include="UI\ToggleSwitch\ToggleSwitch.cs" />
     <Compile Include="UI\ToolsMenu.cs" />
     <Compile Include="UI\trayIcon.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
@@ -1579,6 +1592,8 @@
     <Folder Include="OssScripts\UI" />
     <Folder Include="Remedy\UI" />
     <Folder Include="Toolbox\Transitions" />
+    <Folder Include="UI\ToggleSwitch" />
+    <Folder Include="UI\ToggleSwitch\Renderers" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />

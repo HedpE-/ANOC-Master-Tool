@@ -341,12 +341,32 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
+		///   Looks up a localized resource of type System.Byte[].
+		/// </summary>
+		internal static byte[] Settings_hover_SVG {
+			get {
+				object obj = ResourceManager.GetObject("Settings_hover_SVG", resourceCulture);
+				return ((byte[])(obj));
+			}
+		}
+		
+		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Bitmap.
 		/// </summary>
 		internal static System.Drawing.Bitmap Settings_normal {
 			get {
 				object obj = ResourceManager.GetObject("Settings_normal", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		/// <summary>
+		///   Looks up a localized resource of type System.Byte[].
+		/// </summary>
+		internal static byte[] Settings_normal_SVG {
+			get {
+				object obj = ResourceManager.GetObject("Settings_normal_SVG", resourceCulture);
+				return ((byte[])(obj));
 			}
 		}
 		

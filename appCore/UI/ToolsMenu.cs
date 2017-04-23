@@ -32,7 +32,7 @@ namespace appCore.UI
 			PictureBox pic = (PictureBox)sender;
 			switch(pic.Name) {
 				case "pictureBox1":
-					pic.Image = Toolbox.SVGParser.GetBitmapFromSVG(@"C:\Users\goncarj3\Desktop\ANOC-Master-Tool\cogwheel-outline.svg", new Size(40, 40));
+					pic.Image = Toolbox.SVGParser.GetBitmapFromSvgFile(@"C:\Users\goncarj3\Desktop\ANOC-Master-Tool\cogwheel-outline.svg", new Size(40, 40));
 					break;
 				case "pictureBox2":
 					pic.Image = Resources.globe;
@@ -119,7 +119,7 @@ namespace appCore.UI
 			pictureBox1.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
 			pictureBox1.BackColor = Color.Transparent;
 //			pictureBox1.Image = Resources.Settings_normal;
-			pictureBox1.Image = Toolbox.SVGParser.GetBitmapFromSVG(@"C:\Users\goncarj3\Desktop\ANOC-Master-Tool\cogwheel-outline.svg", new Size(40, 40));
+			pictureBox1.Image = Toolbox.SVGParser.GetBitmapFromSvgFile(@"C:\Users\goncarj3\Desktop\ANOC-Master-Tool\cogwheel-outline.svg", new Size(40, 40));
 			pictureBox1.Location = new Point(6, 95);
 			pictureBox1.Name = "pictureBox1";
 			pictureBox1.Size = new Size(40, 40);

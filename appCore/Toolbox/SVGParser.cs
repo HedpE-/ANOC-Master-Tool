@@ -26,7 +26,7 @@ namespace appCore.Toolbox
         /// </summary>
         /// <param name="filePath">The full path of the SVG image.</param>
         /// <returns>Returns the converted Bitmap image.</returns>
-        public static Bitmap GetBitmapFromSVG(string filePath, Size size)
+        public static Bitmap GetBitmapFromSvgFile(string filePath, Size size)
         {
         	MaximumSize = size;
             SvgDocument document = GetSvgDocument(filePath);
@@ -34,6 +34,20 @@ namespace appCore.Toolbox
             Bitmap bmp = document.Draw();
             return bmp;
         }
+
+//        /// <summary>
+//        /// Converts an SVG file to a Bitmap image.
+//        /// </summary>
+//        /// <param name="Svg">SVG image contents.</param>
+//        /// <returns>Returns the converted Bitmap image.</returns>
+//        public static Bitmap GetBitmapFromSVG(string Svg, Size size)
+//        {
+//        	MaximumSize = size;
+//            SvgDocument document = GetSvgDocumentFromSvg(Svg);
+//         
+//            Bitmap bmp = document.Draw();
+//            return bmp;
+//        }
 
         /// <summary>
         /// Gets a SvgDocument for manipulation using the path provided.
