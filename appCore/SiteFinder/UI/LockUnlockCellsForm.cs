@@ -729,8 +729,29 @@ namespace appCore.SiteFinder.UI
 				}
 				
 				if(noCellsStateSites.Count > 0) {
-					FetchAvailability(noCellsStateSites);
-					FetchCellsState(noCellsStateSites);
+					List<Thread> threads = new List<Thread>();
+					int finishedThreadsCount = 0;
+					
+					Thread thread = new Thread(() => {
+					                           	FetchAvailability(noCellsStateSites);;
+					                           	finishedThreadsCount++;
+					                           });
+					thread.Name = "LockUnlockCellsForm_FetchAvailability";
+					threads.Add(thread);
+					
+					thread = new Thread(() => {
+					                    	FetchCellsState(noCellsStateSites);
+					                    	finishedThreadsCount++;
+					                    });
+					thread.Name = "LockUnlockCellsForm_FetchCellsState";
+					threads.Add(thread);
+					
+					foreach(Thread th in threads) {
+						th.SetApartmentState(ApartmentState.STA);
+						th.Start();
+					}
+					
+					while(finishedThreadsCount < threads.Count) { }
 				}
 				
 				lb.SetSelected(0, true);
@@ -738,43 +759,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void FetchCellsState(IEnumerable<string> sites) {
-			List<OiCell> list = new List<OiCell>();
-			
-			string resp = OiConnection.requestApiOutput("cells-html", sites);
-			DataTable dt = null;
-			for(int c = 2;c <= 4;c++) {
-				string tableName = "table_checkbox_cells " + c + "G";
-				if(resp.Contains("id=" + '"' + tableName + '"')) {
-					DataTable tempDT = Toolbox.Tools.ConvertHtmlTableToDT(resp, tableName);
-					if(tempDT.Rows.Count > 0) {
-						if(dt == null)
-							dt = tempDT;
-						else {
-							foreach(DataRow row in tempDT.Rows)
-								dt.Rows.Add(row.ItemArray);
-						}
-					}
-				}
-			}
-			
-			foreach(DataRow row in dt.Rows) {
-				OiCell cell = new OiCell();
-				cell.SITE = row[0].ToString();
-				cell.BEARER = row[1].ToString();
-				cell.CELL_NAME = row[2].ToString();
-				cell.CELL_ID = row[3].ToString();
-				cell.LAC_TAC = row[4].ToString();
-				cell.BSC_RNC_ID = row[5].ToString();
-				cell.ENODEB_ID = row[6].ToString();
-				cell.WBTS_BCF = row[7].ToString();
-				cell.VENDOR = row[8].ToString();
-				cell.NOC = row[9].ToString();
-				cell.COOS = row[10].ToString();
-				string[] attr = row[11].ToString().Split('/');
-				cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
-				cell.LOCKED = attr[0];
-				list.Add(cell);
-			}
+			List<OiCell> list = SiteFinder.Site.BulkFetchOiCellsState(sites);
 			
 			foreach(string siteStr in sites) {
 				int siteIndex = cellsLockedSites.FindIndex(s => s.Id == siteStr);
@@ -794,23 +779,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void FetchAvailability(IEnumerable<string> sites) {
-			string resp = OiConnection.requestApiOutput("availability", sites);
-			DataTable dt = null;
-			
-			try {
-				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
-				dt = jSon.ToDataTable();
-			}
-			catch { }
-			
-			if(dt == null) {
-				resp = OiConnection.requestPhpOutput("ca", sites);
-				
-				try {
-					dt = Toolbox.Tools.ConvertHtmlTableToDT(resp, "table_ca");
-				}
-				catch { }
-			}
+			DataTable dt = SiteFinder.Site.BulkFetchAvailability(sites);
 			
 			if(dt != null) {
 				foreach(var site in cellsLockedSites) {
