@@ -1451,14 +1451,20 @@ namespace appCore.SiteFinder.UI
 				if(UiMode != "Cells Locked") {
 					comboBox1.Enabled = radioButton1.Checked && checkedCount > 0;
 					amtRichTextBox1.Enabled = radioButton2.Checked && checkedCount > 0;
+					string tech = dataGridView1.Rows[e.RowIndex].Cells["Tech"].Value.ToString();
+					string vendor = dataGridView1.Rows[e.RowIndex].Cells["Vendor"].Value.ToString();
 					
-					switch(dataGridView1.Rows[e.RowIndex].Cells["Tech"].Value.ToString()) {
+					switch(tech) {
 						case "2G":
 							cb = checkBox1;
 							checkCount = gsmCheckedCount;
 							maxCount = gsmCellsCount;
 							checkBox2.Enabled = gsmCheckedCount == 0 && umtsCellsCount > 0;
 							checkBox3.Enabled = gsmCheckedCount == 0 && lteCellsCount > 0;
+//							if(vendor == "NSN") {
+//								if(!amtRichTextBox1.Text.Contains("#SL"))
+//									amtRichTextBox1.Text = "#SL " + amtRichTextBox1.Text;
+//							}
 							break;
 						case "3G":
 							cb = checkBox2;
@@ -1466,6 +1472,10 @@ namespace appCore.SiteFinder.UI
 							maxCount = umtsCellsCount;
 							checkBox1.Enabled = umtsCheckedCount == 0 && gsmCellsCount > 0;
 							checkBox3.Enabled = umtsCheckedCount == 0 && lteCellsCount > 0;
+//							if(dataGridView1.Rows[e.RowIndex].Cells["Vendor"].Value.ToString() == "Huawei") {
+//								if(!amtRichTextBox1.Text.Contains("#SL"))
+//									amtRichTextBox1.Text = "#SL " + amtRichTextBox1.Text;
+//							}
 							break;
 						case "4G":
 							cb = checkBox3;
@@ -1474,6 +1484,16 @@ namespace appCore.SiteFinder.UI
 							checkBox1.Enabled = lteCheckedCount == 0 && gsmCellsCount > 0;
 							checkBox2.Enabled = lteCheckedCount == 0 && umtsCellsCount > 0;
 							break;
+					}
+					if(checkedCount > 0) {
+						if((vendor == "NSN" && tech == "2G") || (vendor == "Huawei" && (tech == "3G" || tech == "4G"))) {
+							if(!amtRichTextBox1.Text.Contains("#SL"))
+								amtRichTextBox1.Text = "#SL " + amtRichTextBox1.Text;
+						}
+					}
+					else {
+						if(amtRichTextBox1.Text.StartsWith("#SL "))
+							amtRichTextBox1.Text = amtRichTextBox1.Text.Replace("#SL ", string.Empty);
 					}
 					label5.Text = "Selected:\n\n2G: " + gsmCheckedCount + "\n3G: " + umtsCheckedCount + "\n4G: " + lteCheckedCount + "\n\nTotal: " + checkedCount;
 				}

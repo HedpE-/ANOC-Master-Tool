@@ -115,7 +115,7 @@ namespace appCore.OssScripts.UI
 						if(cb != null) {
 							if(cb.Checked) {
 								AMTTextBox tb = (AMTTextBox)BtsDChannelsGroupBox.Controls["BtsTextBox" + cb.Name.Substring("BtsCheckBox".Length)];
-								LockScriptTextBox.Text += "ZEQS:BTS=" + tb.Text + ":L:FHO,30;\r\n";
+								LockScriptTextBox.Text += "ZEQS:BTS=" + tb.Text + ":L:FHO,60;\r\n";
 								UnlockScriptTextBox.Text += "ZEQS:BTS=" + tb.Text + ":U;\r\n";
 							}
 						}

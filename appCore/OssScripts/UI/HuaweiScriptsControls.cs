@@ -194,7 +194,7 @@ namespace appCore.OssScripts.UI
 								if (!Char.IsDigit(ch)) break;
 								cell += ch;
 							}
-							LockScriptTextBox.Text += "BLK UCELL:CELLID=" + cell + ",PRIORITY=HIGH;\r\n";
+							LockScriptTextBox.Text += "BLK UCELL:CELLID=" + cell + ",PRIORITY=NORMAL,TIMER=60;\r\n";
 							UnlockScriptTextBox.Text += "UBL UCELL:CELLID=" + cell + ";\r\n";
 						}
 					}
@@ -209,7 +209,7 @@ namespace appCore.OssScripts.UI
 								cell += ch;
 							}
 
-							LockScriptTextBox.Text += "BLK CELL:LOCALCELLID=" + cell + ",CELLADMINSTATE=CELL_HIGH_BLOCK;\r\n";
+							LockScriptTextBox.Text += "BLK CELL:LOCALCELLID=" + cell + ",CELLADMINSTATE=CELL_MIDDLE_BLOCK,CELLMIDBLKTIMER=1;\r\n";
 							UnlockScriptTextBox.Text += "UBL CELL:LOCALCELLID=" + cell + ";\r\n";
 						}
 					}
