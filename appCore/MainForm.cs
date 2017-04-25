@@ -99,9 +99,9 @@ namespace appCore
 				tabPage1.Controls.Add(otherUserLabel);
 			}
 			
-			ToolsMenu toolsMenu = new ToolsMenu();
-			toolsMenu.Location = new Point(tabPage1.Right - toolsMenu.Width, 0);
-			tabPage1.Controls.Add(toolsMenu);
+//			ToolsMenu toolsMenu = new ToolsMenu();
+//			toolsMenu.Location = new Point(tabPage1.Right - toolsMenu.Width, 0);
+//			tabPage1.Controls.Add(toolsMenu);
 			
 			string img = SettingsFile.BackgroundImage;
 			

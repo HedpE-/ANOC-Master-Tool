@@ -142,7 +142,9 @@
     <Compile Include="GeoAPIs\OpenWeatherAPI\Sys.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Weather.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Wind.cs" />
+    <Compile Include="GeoAPIs\UI\WeatherPanel.cs" />
     <Compile Include="GeoAPIs\UkCities.cs" />
+    <Compile Include="GeoAPIs\WeatherItem.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1535,6 +1537,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GeoAPIs\GMap.NET" />
+    <Folder Include="GeoAPIs\UI" />
     <Folder Include="GeoAPIs\OpenWeatherAPI" />
     <Folder Include="Netcool\UI" />
     <Folder Include="GeoAPIs" />

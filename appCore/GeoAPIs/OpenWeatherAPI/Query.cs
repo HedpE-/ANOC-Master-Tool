@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace OpenWeatherAPI
 {
-	public class Query
+	public class Query : appCore.GeoAPIs.WeatherItem
 	{
 		private bool validRequest;
 		private Coord coord;

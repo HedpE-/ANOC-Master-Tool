@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
@@ -31,6 +32,8 @@ namespace appCore.Settings
 		public static readonly DirectoryInfo DBFilesDefaultLocation = new DirectoryInfo(GlobalProperties.ShareRootDir.FullName + @"\ANOC Master Tool");
 		
 		public static string OfficePath = string.Empty;
+		
+		public static List<OpenWeatherAPI.Query> WeatherCollection = new List<OpenWeatherAPI.Query>();
 		
 		static FileVersionInfo _assemblyFileVersionInfo;
 		public static FileVersionInfo AssemblyFileVersionInfo {

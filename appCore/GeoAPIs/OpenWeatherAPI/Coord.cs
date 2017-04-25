@@ -19,5 +19,9 @@ namespace OpenWeatherAPI
             lon = double.Parse(coordData.SelectToken("lon").ToString());
             lat = double.Parse(coordData.SelectToken("lat").ToString());
         }
+        
+        public Coord()
+        {
+        }
     }
 }

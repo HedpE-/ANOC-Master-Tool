@@ -20,14 +20,18 @@ namespace OpenWeatherAPI
 		public int id { get; set; }
 		public string name { get; set; }
 		public string country { get; set; }
-		public Coord coord;
+		public Coord coord { get; set; }
 
-//        public City(JToken coordData)
-//        {
-//        	id = int.Parse(coordData.SelectToken("id").ToString());
-//            name = coordData.SelectToken("name").ToString();
-//            country = coordData.SelectToken("country").ToString();
-//            coord = new Coord(coordData.SelectToken("coord"));
-//        }
+        public City(JToken coordData)
+        {
+        	id = int.Parse(coordData.SelectToken("id").ToString());
+            name = coordData.SelectToken("name").ToString();
+            country = coordData.SelectToken("country").ToString();
+            coord = new Coord(coordData.SelectToken("coord"));
+        }
+        
+        public City()
+        {
+        }
 	}
 }

@@ -166,22 +166,12 @@ namespace appCore.DB
 		public static void PopulateDatabases() {
 			all_sites = new FileInfo(all_sites.FullName);
 			all_cells = new FileInfo(all_cells.FullName);
-//			bool finishedThread = false;
-//			Thread thread = new Thread(() => {
 			shiftsFile = new ShiftsFile(DateTime.Now.Year);
-			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-			st.Start();
+//			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+//			st.Start();
 			Cities = new appCore.GeoAPIs.UkCities();
-			st.Stop();
-			var t = st.Elapsed;
-//
-//			                           	finishedThread = true;
-//			                           });
-//			thread.Name = "PopulateDatabases_shiftsFile";
-//			thread.SetApartmentState(ApartmentState.STA);
-//			thread.Start();
-			
-//			while(!finishedThread) { }
+//			st.Stop();
+//			var t = st.Elapsed;
 		}
 	}
 }

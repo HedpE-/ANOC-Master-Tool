@@ -378,22 +378,25 @@ namespace appCore.SiteFinder
 			}
 			private set { }
 		}
-		[FieldHidden]
-		Query currentWeather;
+		
 		public Query CurrentWeather {
 			get {
-				if(currentWeather == null) {
-					OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-//					currentWeather = openWeatherAPI.query(Coordinates.Latitude, Coordinates.Longitude);
-					currentWeather = openWeatherAPI.query(Town + ",UK");
-					CurrentWeatherTimestamp = DateTime.Now;
+				Query currentWeather = Settings.GlobalProperties.WeatherCollection.Find(w => w.Name.ToUpper() == Town);
+				if(currentWeather != null) {
+					if(DateTime.Now - currentWeather.LastUpdateTimestamp > new TimeSpan(2, 0, 0))
+						Settings.GlobalProperties.WeatherCollection.RemoveAt(Settings.GlobalProperties.WeatherCollection.IndexOf(currentWeather));
+					else
+						return currentWeather;
 				}
+				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+				currentWeather = openWeatherAPI.query(Town + ",UK");
+				currentWeather.LastUpdateTimestamp = DateTime.Now;
+				Settings.GlobalProperties.WeatherCollection.Add(currentWeather);
 				return currentWeather;
 			}
-			private set { }
 		}
-		[FieldHidden]
-		public DateTime CurrentWeatherTimestamp;
+//		[FieldHidden]
+//		public DateTime CurrentWeatherTimestamp;
 		
 		[FieldHidden]
 		public List<Cell> Cells = new List<Cell>();
