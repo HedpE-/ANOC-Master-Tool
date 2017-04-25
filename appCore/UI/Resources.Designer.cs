@@ -188,15 +188,15 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha1 17/04/2017 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha2 25/04/2017 #######
 		///
-		///- Fixed &quot;Generate Template&quot; not becoming active on Failed CRQs
-		///- Tweaked the way the tool searches sites on DB to make it work faster especially on bulk searches and outages
-		///- New Lock/Unlock cells and Cells Locked features on Site Finder
-		///- Updated SiteLopedia address on AMT Browser
-		///- Tweaked the Shifts Calendar for better functionality
-		///- Almost all Tables tweaked to be able to multi select cell by cell and copy any value with CTRL+C
-		///- Tables co [rest of string was truncated]&quot;;.
+		///- Fixed &quot;Sites per tech&quot; showing all sites on all techs
+		///- Added a new tab on the Notes window for the SMS Book In instructions
+		///- Site Finder Now supports searching site by JVCO ID
+		///- Fixed onward sites identification on Site Finder
+		///- Site Finder bulk search and outage follow up interfaces now include POC and CCT columns on the sites list
+		///- Fixed some alarms not parsing
+		///- Fixed crash while closing app if Log Browser, Site Finder or AMT Browser are [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

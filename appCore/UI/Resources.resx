@@ -15961,7 +15961,20 @@ ZJ - LTE2100 Micro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.1alpha1 17/04/2017 #######
+    <value>####### ANOC Master Tool 7.1alpha2 25/04/2017 #######
+
+- Fixed "Sites per tech" showing all sites on all techs
+- Added a new tab on the Notes window for the SMS Book In instructions
+- Site Finder Now supports searching site by JVCO ID
+- Fixed onward sites identification on Site Finder
+- Site Finder bulk search and outage follow up interfaces now include POC and CCT columns on the sites list
+- Fixed some alarms not parsing
+- Fixed crash while closing app if Log Browser, Site Finder or AMT Browser are open
+- Changes on Settings panel
+- Update NSN 2G &amp; Huawei block commands to do handover with wait time 1 min as per new process.
+- Add #SL tag on LockUnlock cells window
+
+####### ANOC Master Tool 7.1alpha1 17/04/2017 #######
 
 - Fixed "Generate Template" not becoming active on Failed CRQs
 - Tweaked the way the tool searches sites on DB to make it work faster especially on bulk searches and outages
