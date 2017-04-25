@@ -25,6 +25,7 @@ using HtmlAgilityPack;
 using FileHelpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenWeatherAPI;
 
 namespace appCore.SiteFinder
 {
@@ -377,6 +378,22 @@ namespace appCore.SiteFinder
 			}
 			private set { }
 		}
+		[FieldHidden]
+		Query currentWeather;
+		public Query CurrentWeather {
+			get {
+				if(currentWeather == null) {
+					OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+//					currentWeather = openWeatherAPI.query(Coordinates.Latitude, Coordinates.Longitude);
+					currentWeather = openWeatherAPI.query(Town + ",UK");
+					CurrentWeatherTimestamp = DateTime.Now;
+				}
+				return currentWeather;
+			}
+			private set { }
+		}
+		[FieldHidden]
+		public DateTime CurrentWeatherTimestamp;
 		
 		[FieldHidden]
 		public List<Cell> Cells = new List<Cell>();

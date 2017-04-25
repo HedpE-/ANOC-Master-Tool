@@ -442,6 +442,9 @@ namespace appCore.SiteFinder.UI
 					else
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
+				
+//				FlexibleMessageBox.Show(string.Format("The temperature in {0}, {1} is currently {2} °C", currentSite.CurrentWeather.Name, currentSite.CurrentWeather.Sys.Country, currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent));
+
 			}
 			else {
 				foreach(Control ctr in Controls) {

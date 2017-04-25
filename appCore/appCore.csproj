@@ -130,7 +130,19 @@
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="DB\SitesDB.cs" />
-    <Compile Include="GMap.NET\GmapMarkerWithLabel.cs" />
+    <Compile Include="GeoAPIs\GMap.NET\GmapMarkerWithLabel.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\City.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Clouds.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Coord.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Main.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\OpenWeatherAPI.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Query.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Rain.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Snow.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Sys.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Weather.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Wind.cs" />
+    <Compile Include="GeoAPIs\UkCities.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1431,12 +1443,12 @@
     <Compile Include="Web\UI\BrowserView.Designer.cs">
       <DependentUpon>BrowserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="GMap.NET\Interfaces\IPosition.cs" />
-    <Compile Include="GMap.NET\Interfaces\IPositionTime.cs" />
-    <Compile Include="GMap.NET\Interfaces\ITime.cs" />
+    <Compile Include="GeoAPIs\GMap.NET\Interfaces\IPosition.cs" />
+    <Compile Include="GeoAPIs\GMap.NET\Interfaces\IPositionTime.cs" />
+    <Compile Include="GeoAPIs\GMap.NET\Interfaces\ITime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GMap.NET\Types\LLPoint.cs" />
-    <Compile Include="GMap.NET\Types\Point.cs" />
+    <Compile Include="GeoAPIs\GMap.NET\Types\LLPoint.cs" />
+    <Compile Include="GeoAPIs\GMap.NET\Types\Point.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Logs\UI\LogBrowser.resx">
@@ -1511,18 +1523,21 @@
     <EmbeddedResource Include="Assemblies\GMap.NET.Core.dll" />
     <EmbeddedResource Include="Assemblies\GMap.NET.WindowsForms.dll" />
     <EmbeddedResource Include="Assemblies\FileHelpers.dll" />
-    <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Assemblies\GeoUk.dll" />
     <EmbeddedResource Include="Assemblies\Svg2.3.0.dll" />
-    <None Include="GMap.NET\GMap.Net.README.md" />
+    <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
+    <None Include="GeoAPIs\GMap.NET\GMap.Net.README.md" />
+    <None Include="GeoAPIs\OpenWeatherAPI\FodyWeavers.xml" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
     <None Include="Toolbox\EWS\Docs\README.htm" />
     <None Include="Toolbox\EWS\Docs\Redist.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GMap.NET" />
+    <Folder Include="GeoAPIs\GMap.NET" />
+    <Folder Include="GeoAPIs\OpenWeatherAPI" />
     <Folder Include="Netcool\UI" />
+    <Folder Include="GeoAPIs" />
     <Folder Include="OI" />
     <Folder Include="OI\JSON" />
     <Folder Include="Toolbox\EPPlus" />
