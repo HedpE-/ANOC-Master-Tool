@@ -377,6 +377,7 @@ namespace appCore.SiteFinder.UI
 			map.KeyDown += GMapKeyDown;
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
+			map.Paint += (sender, e) => panel1.Invalidate();
 			
 			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
 			
@@ -448,7 +449,7 @@ namespace appCore.SiteFinder.UI
 				
 //				FlexibleMessageBox.Show(string.Format("The temperature in {0}, {1} is currently {2} °C", currentSite.CurrentWeather.Name, currentSite.CurrentWeather.Sys.Country, currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent));
 				panel1.BackColor = Color.FromArgb(25, Color.Black);
-				pictureBox2.Image = Bitmap.FromFile(@"D:\Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
+				pictureBox2.Image = Bitmap.FromFile(@"E:\Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
 //				pictureBox1.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
 				label14.Text = currentSite.CurrentWeather.Name;
 				label14.BackColor = Color.Transparent;

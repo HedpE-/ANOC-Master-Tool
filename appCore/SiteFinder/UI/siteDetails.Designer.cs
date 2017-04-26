@@ -63,7 +63,7 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label19;
 		private appCore.UI.AMTTextBox amtTextBox6;
 		private appCore.UI.AMTDataGridView amtDataGridView2;
-		private System.Windows.Forms.Panel panel1;
+		private appCore.GeoAPIs.UI.WeatherPanel panel1;
 		private System.Windows.Forms.Label label20;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.PictureBox pictureBox2;
@@ -139,7 +139,7 @@ namespace appCore.SiteFinder.UI
 			this.label19 = new System.Windows.Forms.Label();
 			this.amtTextBox6 = new appCore.UI.AMTTextBox();
 			this.amtDataGridView2 = new appCore.UI.AMTDataGridView();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.panel1 = new appCore.GeoAPIs.UI.WeatherPanel();
 			this.label20 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
