@@ -62,21 +62,21 @@ namespace appCore.GeoAPIs.UI
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, Color.Black)), this.ClientRectangle);
 		}
 		
-		private Point previousLocation;
-		
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			previousLocation = e.Location;
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-//			if (activeControl == null || activeControl != sender)
-//				return;
-
-			var location = Parent.Location;
-			location.Offset(e.Location.X - previousLocation.X, e.Location.Y - previousLocation.Y);
-			Parent.Location = location;
-		}
+//		private Point previousLocation;
+//		
+//		protected override void OnMouseDown(MouseEventArgs e)
+//		{
+//			previousLocation = e.Location;
+//		}
+//
+//		protected override void OnMouseMove(MouseEventArgs e)
+//		{
+////			if (activeControl == null || activeControl != sender)
+////				return;
+//
+//			var location = Parent.Location;
+//			location.Offset(e.Location.X - previousLocation.X, e.Location.Y - previousLocation.Y);
+//			Parent.Location = location;
+//		}
 	}
 }

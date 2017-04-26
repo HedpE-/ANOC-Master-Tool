@@ -98,24 +98,5 @@ namespace appCore.UI
 			m_tsdd.Dispose();
 			m_hostPanel.Dispose();
 		}
-		
-//		private Control activeControl;
-		private Point previousLocation;
-		
-//		protected override void OnMouseDown(MouseEventArgs e)
-//		{
-//			var activeControl = sender as Control;
-//			previousLocation = e.Location;
-//		}
-//
-//		protected override void OnMouseMove(MouseEventArgs e)
-//		{
-////			if (activeControl == null || activeControl != sender)
-////				return;
-//
-//			var location = m_tsdd.Location;
-//			location.Offset(e.Location.X - previousLocation.X, e.Location.Y - previousLocation.Y);
-//			m_tsdd.Location = location;
-//		}
 	}
 }

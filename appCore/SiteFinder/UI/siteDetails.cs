@@ -447,7 +447,7 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-				try {					
+				try {
 					// Resolve PEN root path
 					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
 					if(pen != null)
@@ -462,6 +462,34 @@ namespace appCore.SiteFinder.UI
 					label21.Text = "Max: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
 					
 					var loc = new Point(myMap.Top, myMap.Right - panel1.Width);
+					
+					
+					Panel hostPanel = new Panel();
+					hostPanel.Padding = Padding.Empty;
+					hostPanel.Margin = Padding.Empty;
+					hostPanel.TabStop = false;
+					hostPanel.BorderStyle = BorderStyle.None;
+					hostPanel.BackColor = Color.Transparent;
+
+					ToolStripDropDown m_tsdd = new ToolStripDropDown();
+					m_tsdd.CausesValidation = false;
+
+					m_tsdd.Padding = Padding.Empty;
+					m_tsdd.Margin = Padding.Empty;
+					m_tsdd.Opacity = 0.9;
+
+					panel1.CausesValidation = false;
+//					pane.Resize += MControlResize;
+
+					hostPanel.Controls.Add(panel1);
+
+					m_tsdd.Padding = Padding.Empty;
+					m_tsdd.Margin = Padding.Empty;
+
+					m_tsdd.MinimumSize = m_tsdd.MaximumSize = m_tsdd.Size = panel1.Size;
+
+					m_tsdd.Items.Add(new ToolStripControlHost(hostPanel));
+					
 					
 					panel1.BackColor = Color.Black;
 					panel1.Location = Point.Empty;
