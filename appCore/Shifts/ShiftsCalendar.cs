@@ -221,7 +221,7 @@ namespace appCore.Shifts
 			
 			wholeShiftsPanel = new WholeShiftsPanel(shiftsChosenDate, sameShiftRows, shift);
 			popup = new PopupHelper(wholeShiftsPanel);
-			popup.Show(this);
+			popup.Show(this, Cursor.Position);
 		}
 		
 		void shiftsPanel_swapShiftsClick(object sender, EventArgs e)

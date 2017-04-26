@@ -511,7 +511,7 @@ namespace appCore.SiteFinder.UI
 							                              	pb7, pb7Label
 							                              });
 							PopupHelper popup = new PopupHelper(legendPanel);
-							popup.Show(this);
+							popup.Show(this, Cursor.Position);
 						};
 						Label offAirLabel = new Label();
 						offAirLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;

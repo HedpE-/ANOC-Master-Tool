@@ -447,14 +447,31 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-//				FlexibleMessageBox.Show(string.Format("The temperature in {0}, {1} is currently {2} °C", currentSite.CurrentWeather.Name, currentSite.CurrentWeather.Sys.Country, currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent));
-				panel1.BackColor = Color.FromArgb(25, Color.Black);
-				pictureBox2.Image = Bitmap.FromFile(@"E:\Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-//				pictureBox1.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-				label14.Text = currentSite.CurrentWeather.Name;
-				label14.BackColor = Color.Transparent;
-				label20.Text = Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent, MidpointRounding.AwayFromZero) + "°C";
-				label20.BackColor = Color.Transparent;
+				try {					
+					// Resolve PEN root path
+					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
+					if(pen != null)
+						pictureBox2.Image = Image.FromFile(pen.Name + @"Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
+					else
+						pictureBox2.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
+					
+					label14.Text = currentSite.CurrentWeather.Name;
+					label14.BackColor = Color.Transparent;
+					label20.Text = Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C";
+					label20.BackColor = Color.Transparent;
+					label21.Text = "Max: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
+					
+					var loc = new Point(myMap.Top, myMap.Right - panel1.Width);
+					
+					panel1.BackColor = Color.Black;
+					panel1.Location = Point.Empty;
+					PopupHelper weather = new PopupHelper(panel1);
+					weather.AutoClose = false;
+					weather.Show(this, loc);
+				}
+				catch(Exception e) {
+					var m = e.Message;
+				}
 			}
 			else {
 				foreach(Control ctr in Controls) {
@@ -1048,7 +1065,7 @@ namespace appCore.SiteFinder.UI
 			                        	dgv
 			                        });
 			PopupHelper popup = new PopupHelper(panel);
-			popup.Show(this);
+			popup.Show(this, Cursor.Position);
 		}
 
 		void siteFinder(object sender, KeyPressEventArgs e)

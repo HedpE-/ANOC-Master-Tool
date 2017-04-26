@@ -21,6 +21,15 @@ namespace appCore.UI
 		readonly ToolStripDropDown m_tsdd;
 		readonly Panel m_hostPanel; // workarround - some controls don't display correctly if they are hosted directly in ToolStripControlHost
 
+		public bool AutoClose {
+			get {
+				return m_tsdd.AutoClose;
+			}
+			set {
+				m_tsdd.AutoClose = value;
+			}
+		}
+		
 		public PopupHelper(Control pControl)
 		{
 			m_hostPanel = new Panel();
@@ -66,13 +75,14 @@ namespace appCore.UI
 		/// Display the popup and keep the focus
 		/// </summary>
 		/// <param name="pParentControl"></param>
-		public void Show(Control pParentControl)
+		/// <param name="location"></param>
+		public void Show(Control pParentControl, Point location)
 		{
 			if (pParentControl == null) return;
 
 			// position the popup window
-			var loc = Cursor.Position;
-			m_tsdd.Show(loc);
+			var loc = location != Point.Empty ? location : Cursor.Position;
+			m_tsdd.Show(location);
 			m_control.Focus();
 		}
 
@@ -88,5 +98,24 @@ namespace appCore.UI
 			m_tsdd.Dispose();
 			m_hostPanel.Dispose();
 		}
+		
+//		private Control activeControl;
+		private Point previousLocation;
+		
+//		protected override void OnMouseDown(MouseEventArgs e)
+//		{
+//			var activeControl = sender as Control;
+//			previousLocation = e.Location;
+//		}
+//
+//		protected override void OnMouseMove(MouseEventArgs e)
+//		{
+////			if (activeControl == null || activeControl != sender)
+////				return;
+//
+//			var location = m_tsdd.Location;
+//			location.Offset(e.Location.X - previousLocation.X, e.Location.Y - previousLocation.Y);
+//			m_tsdd.Location = location;
+//		}
 	}
 }
