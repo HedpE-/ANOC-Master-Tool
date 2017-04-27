@@ -54,6 +54,31 @@ public static class StringExtensions
 		return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
 	}
 	
+	public static String CapitalizeWords (this string str) {
+		char[] array = str.ToCharArray();
+		// Handle the first letter in the string.
+		if (array.Length >= 1)
+		{
+			if (char.IsLower(array[0]))
+			{
+				array[0] = char.ToUpper(array[0]);
+			}
+		}
+		// Scan through the letters, checking for spaces.
+		// ... Uppercase the lowercase letters following spaces.
+		for (int i = 1; i < array.Length; i++)
+		{
+			if (array[i - 1] == ' ')
+			{
+				if (char.IsLower(array[i]))
+				{
+					array[i] = char.ToUpper(array[i]);
+				}
+			}
+		}
+		return new string(array);
+	}
+	
 	public static String EncryptText(this string str) {
 		if(!string.IsNullOrEmpty(str)) {
 			string text = string.Empty;
