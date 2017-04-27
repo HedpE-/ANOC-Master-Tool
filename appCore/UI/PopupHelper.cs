@@ -29,6 +29,17 @@ namespace appCore.UI
 				m_tsdd.AutoClose = value;
 			}
 		}
+
+		double opacity = 0.9;
+		public double Opacity {
+			get {
+				return opacity;
+			}
+			set {
+				opacity = value;
+				m_tsdd.Opacity = opacity;
+			}
+		}
 		
 		public PopupHelper(Control pControl)
 		{
@@ -44,7 +55,7 @@ namespace appCore.UI
 
 			m_tsdd.Padding = Padding.Empty;
 			m_tsdd.Margin = Padding.Empty;
-			m_tsdd.Opacity = 0.9;
+			m_tsdd.Opacity = Opacity;
 
 			m_control = pControl;
 			m_control.CausesValidation = false;
@@ -78,7 +89,8 @@ namespace appCore.UI
 		/// <param name="location"></param>
 		public void Show(Control pParentControl, Point location)
 		{
-			if (pParentControl == null) return;
+			if(pParentControl == null)
+				return;
 
 			// position the popup window
 			var loc = location != Point.Empty ? location : Cursor.Position;
