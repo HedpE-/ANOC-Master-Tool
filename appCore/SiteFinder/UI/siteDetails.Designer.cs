@@ -63,11 +63,6 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label19;
 		private appCore.UI.AMTTextBox amtTextBox6;
 		private appCore.UI.AMTDataGridView amtDataGridView2;
-		private appCore.GeoAPIs.UI.WeatherPanel panel1;
-		private System.Windows.Forms.Label label20;
-		private System.Windows.Forms.Label label14;
-		private System.Windows.Forms.PictureBox pictureBox2;
-		private System.Windows.Forms.Label label21;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -140,16 +135,9 @@ namespace appCore.SiteFinder.UI
 			this.label19 = new System.Windows.Forms.Label();
 			this.amtTextBox6 = new appCore.UI.AMTTextBox();
 			this.amtDataGridView2 = new appCore.UI.AMTDataGridView();
-			this.panel1 = new appCore.GeoAPIs.UI.WeatherPanel();
-			this.label21 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
-			this.label14 = new System.Windows.Forms.Label();
-			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).BeginInit();
-			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// textBox4
@@ -652,66 +640,11 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView2.TabIndex = 160;
 			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView2SelectionChanged);
 			// 
-			// panel1
-			// 
-			this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.panel1.Controls.Add(this.label21);
-			this.panel1.Controls.Add(this.label20);
-			this.panel1.Controls.Add(this.label14);
-			this.panel1.Controls.Add(this.pictureBox2);
-			this.panel1.Location = new System.Drawing.Point(837, 166);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(248, 178);
-			this.panel1.TabIndex = 161;
-			// 
-			// label21
-			// 
-			this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label21.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label21.Location = new System.Drawing.Point(109, 113);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(136, 23);
-			this.label21.TabIndex = 3;
-			this.label21.Text = "label21";
-			this.label21.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-			// 
-			// label20
-			// 
-			this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label20.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label20.Location = new System.Drawing.Point(109, 89);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(136, 23);
-			this.label20.TabIndex = 2;
-			this.label20.Text = "label20";
-			this.label20.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-			// 
-			// label14
-			// 
-			this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label14.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.label14.Location = new System.Drawing.Point(3, 3);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(242, 31);
-			this.label14.TabIndex = 1;
-			this.label14.Text = "label14";
-			this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			// 
-			// pictureBox2
-			// 
-			this.pictureBox2.Location = new System.Drawing.Point(3, 36);
-			this.pictureBox2.Name = "pictureBox2";
-			this.pictureBox2.Size = new System.Drawing.Size(100, 100);
-			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBox2.TabIndex = 0;
-			this.pictureBox2.TabStop = false;
-			// 
 			// siteDetails
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1091, 766);
-			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.amtDataGridView2);
 			this.Controls.Add(this.label19);
 			this.Controls.Add(this.amtTextBox6);
@@ -768,8 +701,6 @@ namespace appCore.SiteFinder.UI
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).EndInit();
-			this.panel1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

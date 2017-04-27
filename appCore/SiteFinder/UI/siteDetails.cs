@@ -30,6 +30,7 @@ namespace appCore.SiteFinder.UI
 	public partial class siteDetails : Form
 	{
 		GMapControl myMap;
+		GeoAPIs.UI.WeatherPanel weatherPanel;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
 		GMapOverlay onwardSitesOverlay = new GMapOverlay("onwardSites");
@@ -377,9 +378,9 @@ namespace appCore.SiteFinder.UI
 			map.KeyDown += GMapKeyDown;
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
-			map.Paint += (sender, e) => panel1.Invalidate();
+//			map.Paint += (sender, e) => panel1.Invalidate();
 			
-			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
+//			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
 			
 			return map;
 		}
@@ -449,53 +450,34 @@ namespace appCore.SiteFinder.UI
 				
 				try {
 					// Resolve PEN root path
-					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
-					if(pen != null)
-						pictureBox2.Image = Image.FromFile(pen.Name + @"Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-					else
-						pictureBox2.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-					
-					label14.Text = currentSite.CurrentWeather.Name;
-					label14.BackColor = Color.Transparent;
-					label20.Text = Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C";
-					label20.BackColor = Color.Transparent;
-					label21.Text = "Max: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
-					
-					var loc = new Point(myMap.Top, myMap.Right - panel1.Width);
-					
-					
-					Panel hostPanel = new Panel();
-					hostPanel.Padding = Padding.Empty;
-					hostPanel.Margin = Padding.Empty;
-					hostPanel.TabStop = false;
-					hostPanel.BorderStyle = BorderStyle.None;
-					hostPanel.BackColor = Color.Transparent;
-
-					ToolStripDropDown m_tsdd = new ToolStripDropDown();
-					m_tsdd.CausesValidation = false;
-
-					m_tsdd.Padding = Padding.Empty;
-					m_tsdd.Margin = Padding.Empty;
-					m_tsdd.Opacity = 0.9;
-
-					panel1.CausesValidation = false;
-//					pane.Resize += MControlResize;
-
-					hostPanel.Controls.Add(panel1);
-
-					m_tsdd.Padding = Padding.Empty;
-					m_tsdd.Margin = Padding.Empty;
-
-					m_tsdd.MinimumSize = m_tsdd.MaximumSize = m_tsdd.Size = panel1.Size;
-
-					m_tsdd.Items.Add(new ToolStripControlHost(hostPanel));
-					
-					
-					panel1.BackColor = Color.Black;
-					panel1.Location = Point.Empty;
-					PopupHelper weather = new PopupHelper(panel1);
-					weather.AutoClose = false;
-					weather.Show(this, loc);
+//					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
+//					if(pen != null)
+//						pictureBox2.Image = Image.FromFile(pen.Name + @"Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
+//					else
+//						pictureBox2.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
+//					
+//					pictureBox2.BackColor = Color.Transparent;
+//					label14.Text = currentSite.CurrentWeather.Name;
+//					label14.BackColor = Color.Transparent;
+//					label20.Text = Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C";
+//					label20.BackColor = Color.Transparent;
+//					label21.Text = "Max: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
+//					label21.BackColor = Color.Transparent;
+//					label22.Text = currentSite.CurrentWeather.Weathers.FirstOrDefault().Main.CapitalizeWords();
+//					label22.BackColor = Color.Transparent;
+//					label23.Text = currentSite.CurrentWeather.Weathers.FirstOrDefault().Description.CapitalizeWords();
+//					label23.BackColor = Color.Transparent;
+//					panel1.Location = Point.Empty;
+//					panel1.CornersToRound = AMTRoundCornersPanel.Corners.BottomLeft; // | AMTRoundCornersPanel.Corners.BottomRight;
+//					panel1.BordersToDraw = AMTRoundCornersPanel.Borders.None;
+//					panel1.DoubleBufferActive = true;
+//					weatherPanel.AutoClose = false;
+					if(weatherPanel != null)
+						weatherPanel.Dispose();
+					weatherPanel = new appCore.GeoAPIs.UI.WeatherPanel(currentSite.CurrentWeather);
+					weatherPanel.Location = new Point(myMap.Right - weatherPanel.Width, myMap.Top);
+//					weatherPanel.Opacity = 0.8;
+					Controls.Add(weatherPanel);
 				}
 				catch(Exception e) {
 					var m = e.Message;
@@ -966,10 +948,12 @@ namespace appCore.SiteFinder.UI
 					site.CellsStateTimestamp = DateTime.Now;
 				}
 				
-				DataRow row = cramerDataList.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == site.Id);
-				if(row != null) {
-					site.CramerData = new Site.CramerDetails(row);
-					site.CramerDataTimestamp = DateTime.Now;
+				if(cramerDataList != null) {
+					DataRow row = cramerDataList.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == site.Id);
+					if(row != null) {
+						site.CramerData = new Site.CramerDetails(row);
+						site.CramerDataTimestamp = DateTime.Now;
+					}
 				}
 				
 				if(crqList != null) {
