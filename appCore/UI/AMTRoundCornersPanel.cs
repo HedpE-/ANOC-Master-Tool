@@ -39,7 +39,7 @@ namespace appCore.UI
 			All = TopLeft | TopRight | BottomLeft | BottomRight
 		}
 
-		static int _edge = 25;
+		int _edge = 25;
 		[Browsable(true)]
 		public int CornerSize {
 			get { return _edge; }
@@ -49,14 +49,14 @@ namespace appCore.UI
 			}
 		}
 		
-		static int edgeTopLeft;
-		static int edgeTopRight;
-		static int edgeBottomLeft;
-		static int edgeBottomRight;
+		int edgeTopLeft;
+		int edgeTopRight;
+		int edgeBottomLeft;
+		int edgeBottomRight;
 		
 		[Browsable(true), DefaultValue("All"), Description("Direction panel collapses. 0-none, 1-up, 2-right, 3-down, 4-left, 5-all")]
 		[ListBindable(true), Editor(typeof(ComboBox), typeof(System.Drawing.Design.UITypeEditor))]
-		static Corners _roundCorners = Corners.All;
+		Corners _roundCorners = Corners.All;
 //		[Browsable(true)]
 //		[EditorAttribute(typeof(System.ComponentModel.Design.CollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
 		public virtual Corners CornersToRound {
@@ -69,7 +69,7 @@ namespace appCore.UI
 			}
 		}
 
-		static Borders _drawBorders = Borders.Top | Borders.Right | Borders.Bottom | Borders.Left;
+		Borders _drawBorders = Borders.Top | Borders.Right | Borders.Bottom | Borders.Left;
 		[Browsable(true)]
 		public virtual Borders BordersToDraw {
 			get {
@@ -81,7 +81,7 @@ namespace appCore.UI
 			}
 		}
 
-		static float _penWidth = 2f;
+		float _penWidth = 2f;
 		[Browsable(true)]
 		public float BorderWidth {
 			get { return _penWidth; }
@@ -92,7 +92,7 @@ namespace appCore.UI
 			}
 		}
 
-		static Color _borderColor = Color.White;
+		Color _borderColor = Color.White;
 		[Browsable(true)]
 		public Color BorderColor {
 			get { return _borderColor; }
@@ -103,7 +103,7 @@ namespace appCore.UI
 			}
 		}
 
-		Pen pen = new Pen(_borderColor, _penWidth);
+		Pen pen;
 
 		public bool DoubleBufferActive {
 			get { return DoubleBuffered; }
@@ -117,6 +117,7 @@ namespace appCore.UI
 		
 		public AMTRoundCornersPanel()
 		{
+			pen = new Pen(_borderColor, _penWidth);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
