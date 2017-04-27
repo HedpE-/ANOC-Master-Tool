@@ -448,7 +448,7 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-				try {
+//				try {
 					// Resolve PEN root path
 //					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
 //					if(pen != null)
@@ -476,12 +476,12 @@ namespace appCore.SiteFinder.UI
 						weatherPanel.Dispose();
 					weatherPanel = new appCore.GeoAPIs.UI.WeatherPanel(currentSite.CurrentWeather);
 					weatherPanel.Location = new Point(myMap.Right - weatherPanel.Width, myMap.Top);
-//					weatherPanel.Opacity = 0.8;
+					weatherPanel.Visible = true;
 					Controls.Add(weatherPanel);
-				}
-				catch(Exception e) {
-					var m = e.Message;
-				}
+//				}
+//				catch(Exception e) {
+//					var m = e.Message;
+//				}
 			}
 			else {
 				foreach(Control ctr in Controls) {

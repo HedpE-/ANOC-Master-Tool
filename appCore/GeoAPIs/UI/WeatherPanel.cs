@@ -19,15 +19,27 @@ namespace appCore.GeoAPIs.UI
 	/// </summary>
 	public class WeatherPanel : Panel // appCore.UI.AMTRoundCornersPanel
 	{
-		Label town = new Label();
-		Label currentTemperature = new Label();
-		Label maxMinTemperature = new Label();
-		Label weatherCondition = new Label();
-		Label weatherDescription = new Label();
-		PictureBox weatherPicture = new PictureBox();
+		appCore.UI.AMTTransparentLabel town = new appCore.UI.AMTTransparentLabel();
+		appCore.UI.AMTTransparentLabel currentTemperature = new appCore.UI.AMTTransparentLabel();
+		appCore.UI.AMTTransparentLabel maxMinTemperature = new appCore.UI.AMTTransparentLabel();
+		appCore.UI.AMTTransparentLabel weatherCondition = new appCore.UI.AMTTransparentLabel();
+		appCore.UI.AMTTransparentLabel weatherDescription = new appCore.UI.AMTTransparentLabel();
+//		appCore.UI.AMTTransparentPictureBox weatherPicture = new appCore.UI.AMTTransparentPictureBox();
 		
-		private int opacity = 50;
-		[System.ComponentModel.DefaultValue(50)]
+		Rectangle weatherPictureRectangle = new Rectangle(3, 36, 90, 90);
+		
+		Image weatherPicture;
+		Image WeatherPicture {
+			get { return weatherPicture; }
+			set {
+				weatherPicture = value;
+//				DrawWeatherPicture();
+				this.Invalidate();
+			}
+		}
+		
+		private int opacity = 75;
+		[System.ComponentModel.DefaultValue(75)]
 		public int Opacity
 		{
 			get
@@ -39,6 +51,27 @@ namespace appCore.GeoAPIs.UI
 				if (value < 0 || value > 100)
 					throw new ArgumentException("value must be between 0 and 100");
 				this.opacity = value;
+				this.Invalidate();
+			}
+		}
+		
+		public WeatherPanel()
+		{
+			SetStyle(ControlStyles.Opaque, true);
+			InitializeComponent();
+			// Resolve PEN root path
+			System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
+			if(pen != null)
+				weatherPicture = Image.FromFile(pen.Name + @"Weather\01d.png");
+			else {
+				using(System.Net.WebClient wc = new System.Net.WebClient()) {
+					System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
+					proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+					wc.Proxy = proxy;
+					byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/01d.png");
+					System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
+					weatherPicture = Image.FromStream(ms);
+				}
 			}
 		}
 		
@@ -46,27 +79,32 @@ namespace appCore.GeoAPIs.UI
 		{
 			SetStyle(ControlStyles.Opaque, true);
 			InitializeComponent();
-			BackColor = Color.Black;
-			Opacity = 75;
 			
 			// Resolve PEN root path
 			System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
 			if(pen != null)
-				weatherPicture.Image = Image.FromFile(pen.Name + @"Weather\" + weatherQuery.Weathers[0].Icon + ".png");
-			else
-				weatherPicture.Load("http://openweathermap.org/img/w/" + weatherQuery.Weathers[0].Icon + ".png");
+				weatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherQuery.Weathers[0].Icon + ".png");
+			else {
+				using(System.Net.WebClient wc = new System.Net.WebClient()) {
+					System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
+					proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+					wc.Proxy = proxy;
+					byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherQuery.Weathers[0].Icon + ".png");
+					System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
+					weatherPicture = Image.FromStream(ms);
+				}
+			}
 			
-			weatherPicture.BackColor = Color.FromArgb(opacity * 255 / 100, BackColor);
 			town.Text = weatherQuery.Name;
-			town.BackColor = Color.FromArgb(opacity * 255 / 100, BackColor);
+//			town.BackColor = Color.FromArgb(0, 0, 0, 0);
 			currentTemperature.Text = Math.Round(weatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C";
-			currentTemperature.BackColor = Color.FromArgb(opacity * 255 / 100, BackColor);
+//			currentTemperature.BackColor = Color.FromArgb(0, 0, 0, 0);
 			maxMinTemperature.Text = "Max: " + Math.Round(weatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(weatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
-			maxMinTemperature.BackColor = Color.FromArgb(opacity * 255 / 100, BackColor);
+//			maxMinTemperature.BackColor = Color.FromArgb(0, 0, 0, 0);
 			weatherCondition.Text = weatherQuery.Weathers.FirstOrDefault().Main.CapitalizeWords();
-			weatherCondition.BackColor = Color.FromArgb(opacity * 255 / 100, BackColor);
+//			weatherCondition.BackColor = Color.FromArgb(0, 0, 0, 0);
 			weatherDescription.Text = weatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords();
-			weatherDescription.BackColor = Color.FromArgb(opacity * 255 / 100, BackColor);
+//			weatherDescription.BackColor = Color.FromArgb(0, 0, 0, 0);
 		}
 		
 //		protected void TickHandler(object sender, EventArgs e)
@@ -85,25 +123,21 @@ namespace appCore.GeoAPIs.UI
 				return cp;
 			}
 		}
-//
-//		protected void InvalidateEx()
-//		{
-//			if (Parent == null)
-//			{
-//				return;
-//			}
-//
-//			Rectangle rc = new Rectangle(this.Location, this.Size);
-//
-//			Parent.Invalidate(rc, true);
-//		}
-//
-//		protected override void OnPaintBackground(PaintEventArgs pevent)
-//		{
-//
-//		}
-//
-//		private Random r = new Random();
+		
+		void DrawWeatherPicture(PaintEventArgs e) {
+//			g.FillRectangle(new SolidBrush( Color.FromArgb( 0, Color.Black ) ), weatherPictureRectangle );
+
+			Point[] points = new Point[3];
+
+			points[0] = new Point( 0, 0 );
+			points[1] = new Point( 0, weatherPictureRectangle.Height );
+//			points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Height);
+			points[2] = new Point( weatherPictureRectangle.Width, 0 );
+
+//			Brush brush = new SolidBrush( Color.DarkGreen );
+
+			e.Graphics.DrawImage(weatherPicture, points);
+		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
@@ -113,6 +147,8 @@ namespace appCore.GeoAPIs.UI
 				e.Graphics.FillRectangle(brush, ClientRectangle);
 			}
 			base.OnPaint(e);
+			if(weatherPicture != null)
+				DrawWeatherPicture(e);
 		}
 		
 //		private Point previousLocation;
@@ -134,19 +170,13 @@ namespace appCore.GeoAPIs.UI
 		
 		void InitializeComponent() {
 			// 
-			// weatherPicture
-			// 
-			weatherPicture.Location = new Point(3, 36);
-			weatherPicture.Name = "weatherPicture";
-			weatherPicture.Size = new Size(90, 90);
-			weatherPicture.SizeMode = PictureBoxSizeMode.Zoom;
-			// 
 			// town
 			// 
 			town.Font = new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			town.ForeColor = Color.White;
 			town.Location = new Point(3, 3);
 			town.Name = "town";
+			town.Text = "Town";
 			town.Size = new Size(242, 31);
 			town.TextAlign = ContentAlignment.TopCenter;
 			// 
@@ -156,6 +186,7 @@ namespace appCore.GeoAPIs.UI
 			currentTemperature.ForeColor = Color.White;
 			currentTemperature.Location = new Point(99, 36);
 			currentTemperature.Name = "currentTemperature";
+			currentTemperature.Text = "CurrentTemperature";
 			currentTemperature.Size = new Size(146, 25);
 			// 
 			// maxMinTemperature
@@ -164,24 +195,27 @@ namespace appCore.GeoAPIs.UI
 			maxMinTemperature.ForeColor = Color.White;
 			maxMinTemperature.Location = new Point(99, 63);
 			maxMinTemperature.Name = "maxMinTemperature";
+			maxMinTemperature.Text = "MaxMinTemperature";
 			maxMinTemperature.Size = new Size(146, 15);
 			// 
 			// weatherCondition
 			// 
 			weatherCondition.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			weatherCondition.ForeColor = Color.White;
-			weatherCondition.ImageAlign = ContentAlignment.BottomLeft;
+			weatherCondition.TextAlign = ContentAlignment.BottomLeft;
 			weatherCondition.Location = new Point(99, 85);
 			weatherCondition.Name = "weatherCondition";
+			weatherCondition.Text = "WeatherCondition";
 			weatherCondition.Size = new Size(146, 20);
 			// 
 			// weatherDescription
 			// 
 			weatherDescription.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 			weatherDescription.ForeColor = Color.White;
-			weatherDescription.ImageAlign = ContentAlignment.BottomLeft;
+			weatherDescription.TextAlign = ContentAlignment.BottomLeft;
 			weatherDescription.Location = new Point(99, 108);
-			weatherDescription.Name = "label23";
+			weatherDescription.Name = "weatherDescription";
+			weatherDescription.Text = "WeatherDescription";
 			weatherDescription.Size = new Size(146, 18);
 			
 			Controls.AddRange(new Control[]{
@@ -189,11 +223,11 @@ namespace appCore.GeoAPIs.UI
 			                  	currentTemperature,
 			                  	maxMinTemperature,
 			                  	weatherCondition,
-			                  	weatherDescription,
-			                  	weatherPicture
+			                  	weatherDescription
 			                  });
 			Name = "WeatherPanel";
 			Size = new Size(248, 178);
+			BackColor = Color.Black;
 		}
 	}
 }

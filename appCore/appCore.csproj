@@ -1343,6 +1343,8 @@
     </Compile>
     <Compile Include="UI\AMTTextBox.cs" />
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
+    <Compile Include="UI\AMTTransparentLabel.cs" />
+    <Compile Include="UI\AMTTransparentPictureBox.cs" />
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\AMTLargeTextForm.cs">
       <SubType>Form</SubType>
@@ -1395,6 +1397,7 @@
     <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchRendererBase.cs" />
     <Compile Include="UI\ToggleSwitch\ToggleSwitch.cs" />
     <Compile Include="UI\ToolsMenu.cs" />
+    <Compile Include="UI\TranspControl.cs" />
     <Compile Include="UI\trayIcon.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
