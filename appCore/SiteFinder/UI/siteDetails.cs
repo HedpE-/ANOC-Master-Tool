@@ -378,7 +378,9 @@ namespace appCore.SiteFinder.UI
 			map.KeyDown += GMapKeyDown;
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
-//			map.Paint += (sender, e) => panel1.Invalidate();
+			map.Paint += (sender, e) => {
+				weatherPanel1.Refresh();
+			};
 			
 //			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
 			
@@ -449,13 +451,13 @@ namespace appCore.SiteFinder.UI
 				}
 				
 //				try {
-					// Resolve PEN root path
+				// Resolve PEN root path
 //					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
 //					if(pen != null)
 //						pictureBox2.Image = Image.FromFile(pen.Name + @"Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
 //					else
 //						pictureBox2.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-//					
+//
 //					pictureBox2.BackColor = Color.Transparent;
 //					label14.Text = currentSite.CurrentWeather.Name;
 //					label14.BackColor = Color.Transparent;
@@ -472,12 +474,13 @@ namespace appCore.SiteFinder.UI
 //					panel1.BordersToDraw = AMTRoundCornersPanel.Borders.None;
 //					panel1.DoubleBufferActive = true;
 //					weatherPanel.AutoClose = false;
-					if(weatherPanel != null)
-						weatherPanel.Dispose();
-					weatherPanel = new appCore.GeoAPIs.UI.WeatherPanel(currentSite.CurrentWeather);
-					weatherPanel.Location = new Point(myMap.Right - weatherPanel.Width, myMap.Top);
-					weatherPanel.Visible = true;
-					Controls.Add(weatherPanel);
+				if(weatherPanel1 != null)
+					weatherPanel1.Dispose();
+				weatherPanel1 = new appCore.GeoAPIs.UI.WeatherPanel(currentSite.CurrentWeather);
+				weatherPanel1.BringToFront();
+				weatherPanel1.Location = new Point(myMap.Right - weatherPanel1.Width, myMap.Top);
+				weatherPanel1.Visible = true;
+//				Controls.Add(weatherPanel1);
 //				}
 //				catch(Exception e) {
 //					var m = e.Message;
@@ -503,6 +506,8 @@ namespace appCore.SiteFinder.UI
 				myMap.SetPositionByKeywords("UK");
 				myMap.Zoom = 6;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
+				if(weatherPanel1 != null)
+					weatherPanel1.Dispose();
 			}
 			Control cb = Controls["comboBox1"];
 			if(cb != null)

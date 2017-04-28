@@ -1532,7 +1532,6 @@
     <EmbeddedResource Include="Assemblies\Svg2.3.0.dll" />
     <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
     <None Include="GeoAPIs\GMap.NET\GMap.Net.README.md" />
-    <None Include="GeoAPIs\OpenWeatherAPI\FodyWeavers.xml" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
     <None Include="Toolbox\EWS\Docs\README.htm" />

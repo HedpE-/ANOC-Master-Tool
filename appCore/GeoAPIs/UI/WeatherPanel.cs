@@ -24,7 +24,6 @@ namespace appCore.GeoAPIs.UI
 		appCore.UI.AMTTransparentLabel maxMinTemperature = new appCore.UI.AMTTransparentLabel();
 		appCore.UI.AMTTransparentLabel weatherCondition = new appCore.UI.AMTTransparentLabel();
 		appCore.UI.AMTTransparentLabel weatherDescription = new appCore.UI.AMTTransparentLabel();
-//		appCore.UI.AMTTransparentPictureBox weatherPicture = new appCore.UI.AMTTransparentPictureBox();
 		
 		Rectangle weatherPictureRectangle = new Rectangle(3, 36, 90, 90);
 		
@@ -129,10 +128,10 @@ namespace appCore.GeoAPIs.UI
 
 			Point[] points = new Point[3];
 
-			points[0] = new Point( 0, 0 );
-			points[1] = new Point( 0, weatherPictureRectangle.Height );
+			points[0] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Y );
+			points[1] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Height );
 //			points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Height);
-			points[2] = new Point( weatherPictureRectangle.Width, 0 );
+			points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Y );
 
 //			Brush brush = new SolidBrush( Color.DarkGreen );
 
@@ -141,7 +140,6 @@ namespace appCore.GeoAPIs.UI
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-//			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, Color.Black)), this.ClientRectangle);
 			using (var brush = new SolidBrush(Color.FromArgb(opacity * 255 / 100, BackColor)))
 			{
 				e.Graphics.FillRectangle(brush, ClientRectangle);

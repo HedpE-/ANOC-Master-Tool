@@ -645,10 +645,10 @@ namespace appCore.SiteFinder.UI
 			// weatherPanel1
 			// 
 			this.weatherPanel1.BackColor = System.Drawing.Color.Black;
-			this.weatherPanel1.Location = new System.Drawing.Point(700, 196);
+			this.weatherPanel1.Location = new System.Drawing.Point(837, 166);
 			this.weatherPanel1.Name = "weatherPanel1";
 			this.weatherPanel1.Size = new System.Drawing.Size(248, 178);
-			this.weatherPanel1.TabIndex = 161;
+			this.weatherPanel1.TabIndex = 0;
 			// 
 			// siteDetails
 			// 
