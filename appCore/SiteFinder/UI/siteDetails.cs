@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -36,6 +37,19 @@ namespace appCore.SiteFinder.UI
 		GMapOverlay onwardSitesOverlay = new GMapOverlay("onwardSites");
 		public Site currentSite;
 		public Outage currentOutage;
+		OpenWeatherAPI.Query currentWeatherQuery;
+		
+		Rectangle weatherPictureRectangle = new Rectangle(3, 36, 90, 90);
+		
+		Image weatherPicture;
+		Image WeatherPicture {
+			get { return weatherPicture; }
+			set {
+				weatherPicture = value;
+				
+				this.Refresh();
+			}
+		}
 		
 		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
 		
@@ -378,9 +392,7 @@ namespace appCore.SiteFinder.UI
 			map.KeyDown += GMapKeyDown;
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
-			map.Paint += (sender, e) => {
-				weatherPanel1.Refresh();
-			};
+			map.Paint += MyMapOnPaint;
 			
 //			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
 			
@@ -474,13 +486,18 @@ namespace appCore.SiteFinder.UI
 //					panel1.BordersToDraw = AMTRoundCornersPanel.Borders.None;
 //					panel1.DoubleBufferActive = true;
 //					weatherPanel.AutoClose = false;
-				if(weatherPanel1 != null)
+				if(weatherPanel1 != null) {
 					weatherPanel1.Dispose();
+					weatherPanel1 = null;
+				}
 				weatherPanel1 = new appCore.GeoAPIs.UI.WeatherPanel(currentSite.CurrentWeather);
 				weatherPanel1.BringToFront();
 				weatherPanel1.Location = new Point(myMap.Right - weatherPanel1.Width, myMap.Top);
 				weatherPanel1.Visible = true;
 //				Controls.Add(weatherPanel1);
+				GeoAPIs.UI.Weather2 w = new appCore.GeoAPIs.UI.Weather2();
+				w.BackColor = Color.Black;
+				w.Show();
 //				}
 //				catch(Exception e) {
 //					var m = e.Message;
@@ -506,8 +523,10 @@ namespace appCore.SiteFinder.UI
 				myMap.SetPositionByKeywords("UK");
 				myMap.Zoom = 6;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
-				if(weatherPanel1 != null)
+				if(weatherPanel1 != null) {
 					weatherPanel1.Dispose();
+					weatherPanel1 = null;
+				}
 			}
 			Control cb = Controls["comboBox1"];
 			if(cb != null)
@@ -1363,6 +1382,107 @@ namespace appCore.SiteFinder.UI
 			lockedCellsPageToolStripMenuItem.Name = "lockedCellsPageToolStripMenuItem";
 			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
 			lockedCellsPageToolStripMenuItem.Click += OpenLockedCells;
+		}
+
+		void MyMapOnPaint(object sender, PaintEventArgs e)
+		{
+//			Size = new Size(248, 178);
+			Rectangle widgetLocation = new Rectangle(myMap.Right - 250, myMap.Top, 250, 180);
+//			using (var brush = new SolidBrush(Color.FromArgb(75 * 255 / 100, BackColor)))
+//			{
+//				e.Graphics.FillRectangle(brush, widgetLocation);
+//			}
+//			base.OnPaint(e);
+			Bitmap weatherSnap = GetBitmap(widgetLocation);
+//			Size = new Size(shiftsBodySnap.Width, shiftsBodySnap.Height);
+			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			e.Graphics.DrawImageUnscaled(weatherSnap, widgetLocation);
+//			if(weatherPicture != null)
+//				DrawWeatherPicture(e);
+		}
+		
+		Bitmap GetBitmap(Rectangle widgetLocation) {
+			Bitmap bm = new Bitmap(Width, Height);
+			
+			using (Graphics g = Graphics.FromImage(bm)) {
+				g.SmoothingMode = SmoothingMode.AntiAlias;
+				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				g.PixelOffsetMode = PixelOffsetMode.HighQuality;    // Set format of string.
+				g.FillRectangle(new SolidBrush(Color.FromArgb(75 * 255 / 100, BackColor)), widgetLocation);
+				
+				StringFormat drawStringFormat = new StringFormat();
+				drawStringFormat.Alignment = StringAlignment.Center;
+				drawStringFormat.LineAlignment = StringAlignment.Far;
+				using (Pen pen = new Pen(Color.Black, 1)) {
+					// 
+					// Town
+					// 
+					g.DrawString(
+						currentWeatherQuery != null ? currentWeatherQuery.Name : "Town",
+						new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold),
+						Brushes.White,
+						new Rectangle(new Point(0, 3), new Size(Width, 30)),
+						drawStringFormat
+					);
+					// 
+					// CurrentTemperature
+					// 
+					drawStringFormat.LineAlignment = StringAlignment.Near;
+					g.DrawString(
+						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
+						new Font("Microsoft Sans Serif", 15.75F, FontStyle.Regular),
+						Brushes.White,
+						new Rectangle(new Point(100, 35), new Size(Width - 100, 30)),
+						drawStringFormat
+					);
+					// 
+					// MaxMinTemperature
+					// 
+					drawStringFormat.LineAlignment = StringAlignment.Near;
+					g.DrawString(
+						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxMinTemperature",
+						new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular),
+						Brushes.White,
+						new Rectangle(new Point(100, 65), new Size(Width - 100, 15)),
+						drawStringFormat
+					);
+					// 
+					// WeatherCondition
+					// 
+					drawStringFormat.LineAlignment = StringAlignment.Near;
+					g.DrawString(
+						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Main.CapitalizeWords() : "WeatherCondition",
+						new Font("Microsoft Sans Serif", 12F, FontStyle.Bold),
+						Brushes.White,
+						new Rectangle(new Point(100, 85), new Size(Width - 100, 20)),
+						drawStringFormat
+					);
+					// 
+					// WeatherDescription
+					// 
+					drawStringFormat.LineAlignment = StringAlignment.Near;
+					g.DrawString(
+						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords() : "WeatherDescription",
+						new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular),
+						Brushes.White,
+						new Rectangle(new Point(100, 110), new Size(Width - 100, 18)),
+						drawStringFormat
+					);
+
+					if(WeatherPicture != null) {
+						Point[] points = new Point[3];
+
+						points[0] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Y );
+						points[1] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Height );
+						points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Y );
+
+						g.DrawImage(weatherPicture, points);
+					}
+				}
+				if(Settings.CurrentUser.UserName == "GONCARJ3")
+					bm.Save(Settings.UserFolder.FullName + @"\weatherSnap.png");
+			}
+			return bm;
 		}
 //
 //		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
