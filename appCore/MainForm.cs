@@ -380,7 +380,6 @@ namespace appCore
 			LoadingPanel loading = new LoadingPanel();
 			loading.Show(action, parent);
 			MainFormActivate(null,null);
-			
 		}
 		
 		public static void UpdateTicketCountLabel(bool ignoreLabelVisibility = false) {
