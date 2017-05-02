@@ -174,7 +174,7 @@ namespace appCore.Logs.UI
 			this.Controls.Add(this.listBox2);
 			this.Controls.Add(this.listBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MaximizeBox = false;
 			this.Name = "LogBrowser";
 			this.Text = "Log Browser";

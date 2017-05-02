@@ -963,7 +963,7 @@ namespace appCore.Templates.Types
 				form.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 				form.AutoScaleMode = AutoScaleMode.Font;
 				form.ClientSize = new System.Drawing.Size(228, 137);
-				form.Icon = appCore.UI.Resources.MB_0001_vodafone3;
+				form.Icon = appCore.UI.Resources.app_icon;
 //				form.MaximizeBox = false;
 				form.ControlBox = false;
 				form.FormBorderStyle = FormBorderStyle.FixedSingle;

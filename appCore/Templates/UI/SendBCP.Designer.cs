@@ -282,7 +282,7 @@ namespace appCore.Templates.UI
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.Name = "SendBCP";
 			this.Text = "Send BCP Email";
 			this.groupBox1.ResumeLayout(false);

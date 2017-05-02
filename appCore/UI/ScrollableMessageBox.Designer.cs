@@ -79,7 +79,7 @@ namespace appCore.UI
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.txtMessage);
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-        	this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+        	this.Icon = global::appCore.UI.Resources.app_icon;
         	this.MaximizeBox = false;
         	this.MaximumSize = new System.Drawing.Size(926, 776);
         	this.MinimizeBox = false;

@@ -286,7 +286,7 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.radioButton1);
 			this.Controls.Add(this.radioButton2);
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MinimumSize = new System.Drawing.Size(1164, 442);
 			this.Name = "LockUnlockCellsForm";
 			this.Text = "LockUnlockCellsForm";

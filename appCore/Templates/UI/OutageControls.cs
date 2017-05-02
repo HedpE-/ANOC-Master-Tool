@@ -535,7 +535,7 @@ namespace appCore.Templates.UI
 				form.AutoScaleDimensions = new SizeF(6F, 13F);
 				form.AutoScaleMode = AutoScaleMode.Font;
 				form.ClientSize = new Size(228, 137);
-				form.Icon = Resources.MB_0001_vodafone3;
+				form.Icon = Resources.app_icon;
 				form.MaximizeBox = false;
 				form.FormBorderStyle = FormBorderStyle.FixedSingle;
 				form.Controls.Add(IncludeListForm_label);

@@ -38,6 +38,7 @@ namespace OpenWeatherAPI
 		public int ID { get { return id; } }
 		public string Name { get { return name; } }
 		public int Cod { get { return cod; } }
+		public string Town { get; private set; }
 
 		public Query(string apiKey, string queryStr)
 		{
@@ -66,6 +67,7 @@ namespace OpenWeatherAPI
 			{
 				validRequest = false;
 			}
+			Town = queryStr;
 		}
 
 		public Query(string apiKey, double latitude, double longitude)

@@ -65,7 +65,7 @@ namespace appCore.UI
 			}
 			set {
 				_roundCorners = value;
-				Invalidate();
+				Refresh();
 			}
 		}
 
@@ -77,7 +77,7 @@ namespace appCore.UI
 			}
 			set {
 				_drawBorders = value;
-				Invalidate();
+				Refresh();
 			}
 		}
 
@@ -88,7 +88,7 @@ namespace appCore.UI
 			set {
 				_penWidth = value;
 				pen = new Pen(_borderColor, _penWidth);
-				Invalidate();
+				Refresh();
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace appCore.UI
 			set {
 				_borderColor = value;
 				pen = new Pen(_borderColor, _penWidth);
-				Invalidate();
+				Refresh();
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace appCore.UI
 			get { return DoubleBuffered; }
 			set {
 				DoubleBuffered = value;
-				Invalidate();
+				Refresh();
 			}
 		}
 		

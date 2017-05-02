@@ -347,7 +347,7 @@ namespace appCore.Templates.UI
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.numericUpDown1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MaximizeBox = false;
 			this.Name = "TasksForm";
 			this.Text = "Task Notes Generator";

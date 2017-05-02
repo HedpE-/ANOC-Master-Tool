@@ -621,7 +621,7 @@ namespace appCore
 			this.ClientSize = new System.Drawing.Size(533, 682);
 			this.Controls.Add(this.tabControl1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
 			this.Text = "ANOC Master Tool";

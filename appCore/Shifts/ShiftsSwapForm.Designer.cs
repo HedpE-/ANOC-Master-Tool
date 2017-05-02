@@ -173,7 +173,7 @@ namespace appCore.Shifts
 			this.Controls.Add(this.comboBox2);
 			this.Controls.Add(this.comboBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.Name = "ShiftsSwapForm";
 			this.ResumeLayout(false);
 

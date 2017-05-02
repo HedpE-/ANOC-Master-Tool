@@ -89,7 +89,7 @@ namespace appCore.UI
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.pictureBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SplashForm";

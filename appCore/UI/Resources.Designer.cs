@@ -258,7 +258,7 @@ namespace appCore.UI {
 		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
 		/// </summary>
-		internal static System.Drawing.Icon MB_0001_vodafone3 {
+		internal static System.Drawing.Icon app_icon {
 			get {
 				object obj = ResourceManager.GetObject("MB_0001_vodafone3", resourceCulture);
 				return ((System.Drawing.Icon)(obj));

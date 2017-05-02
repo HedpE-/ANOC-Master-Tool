@@ -78,7 +78,7 @@ namespace appCore.Logs.UI
 			this.ClientSize = new System.Drawing.Size(524, 733);
 			this.Controls.Add(this.dataGridView1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MaximizeBox = false;
 			this.Name = "LogEditor";
 			this.Text = "LogEditor";

@@ -137,7 +137,7 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.checkBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.Name = "OiSiteTablesForm";
 			this.Text = "OiSiteTablesForm";
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

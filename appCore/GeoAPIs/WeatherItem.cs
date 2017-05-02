@@ -16,9 +16,5 @@ namespace appCore.GeoAPIs
 	public class WeatherItem
 	{
 		public DateTime LastUpdateTimestamp { get; set; }
-		
-		public WeatherItem()
-		{
-		}
 	}
 }

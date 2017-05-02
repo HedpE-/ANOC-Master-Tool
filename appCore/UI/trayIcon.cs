@@ -69,7 +69,7 @@ namespace appCore.UI
 
 		public TrayIcon(NotifyIcon tray) {
 			InternalNotifyIcon = tray;
-			InternalNotifyIcon.Icon = Resources.MB_0001_vodafone3;
+			InternalNotifyIcon.Icon = Resources.app_icon;
 			InternalNotifyIcon.Text = "ANOC Master Tool";
 			InternalNotifyIcon.Visible = true;
 			

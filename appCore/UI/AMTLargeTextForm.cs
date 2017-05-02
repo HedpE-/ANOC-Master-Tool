@@ -97,7 +97,7 @@ namespace appCore.UI
 			Controls.Add(button2);
 			Controls.Add(button1);
 			Controls.Add(richTextBox1);
-			Icon = Resources.MB_0001_vodafone3;
+			Icon = Resources.app_icon;
 			MaximizeBox = false;
 			MinimizeBox = false;
 			MinimumSize = new Size(200, 200);

@@ -142,7 +142,7 @@
     <Compile Include="GeoAPIs\OpenWeatherAPI\Sys.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Weather.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Wind.cs" />
-    <Compile Include="GeoAPIs\UI\Weather2.cs" />
+    <Compile Include="GeoAPIs\UI\WeatherForm.cs" />
     <Compile Include="GeoAPIs\UI\WeatherPanel.cs" />
     <Compile Include="GeoAPIs\UkCities.cs" />
     <Compile Include="GeoAPIs\WeatherItem.cs" />

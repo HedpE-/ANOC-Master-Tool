@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using appCore.UI;
 using OpenWeatherAPI;
 
 namespace appCore.GeoAPIs.UI
@@ -18,15 +19,9 @@ namespace appCore.GeoAPIs.UI
 	/// <summary>
 	/// Description of WeatherPanel.
 	/// </summary>
-	public class WeatherPanel : Panel // appCore.UI.AMTRoundCornersPanel
+	public class WeatherPanel : AMTRoundCornersPanel
 	{
-		appCore.UI.AMTTransparentLabel town = new appCore.UI.AMTTransparentLabel();
-		appCore.UI.AMTTransparentLabel currentTemperature = new appCore.UI.AMTTransparentLabel();
-		appCore.UI.AMTTransparentLabel maxMinTemperature = new appCore.UI.AMTTransparentLabel();
-		appCore.UI.AMTTransparentLabel weatherCondition = new appCore.UI.AMTTransparentLabel();
-		appCore.UI.AMTTransparentLabel weatherDescription = new appCore.UI.AMTTransparentLabel();
-		
-		Rectangle weatherPictureRectangle = new Rectangle(3, 36, 90, 90);
+		Rectangle weatherPictureRectangle = new Rectangle(0, 35, 100, 100);
 		
 		Image weatherPicture;
 		Image WeatherPicture {
@@ -81,6 +76,7 @@ namespace appCore.GeoAPIs.UI
 		{
 			SetStyle(ControlStyles.Opaque, true);
 			InitializeComponent();
+						
 			currentWeatherQuery = weatherQuery;
 			
 			// Resolve PEN root path
@@ -97,23 +93,7 @@ namespace appCore.GeoAPIs.UI
 					WeatherPicture = Image.FromStream(ms);
 				}
 			}
-			
-//			town.Text = weatherQuery.Name;
-			////			town.BackColor = Color.FromArgb(0, 0, 0, 0);
-//			currentTemperature.Text = Math.Round(weatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C";
-			////			currentTemperature.BackColor = Color.FromArgb(0, 0, 0, 0);
-//			maxMinTemperature.Text = "Max: " + Math.Round(weatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(weatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
-			////			maxMinTemperature.BackColor = Color.FromArgb(0, 0, 0, 0);
-//			weatherCondition.Text = weatherQuery.Weathers.FirstOrDefault().Main.CapitalizeWords();
-			////			weatherCondition.BackColor = Color.FromArgb(0, 0, 0, 0);
-//			weatherDescription.Text = weatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords();
-			////			weatherDescription.BackColor = Color.FromArgb(0, 0, 0, 0);
 		}
-		
-//		protected void TickHandler(object sender, EventArgs e)
-//		{
-//			this.InvalidateEx();
-//		}
 
 		protected override CreateParams CreateParams
 		{
@@ -127,18 +107,14 @@ namespace appCore.GeoAPIs.UI
 		}
 		
 		void DrawWeatherPicture(PaintEventArgs e) {
-//			g.FillRectangle(new SolidBrush( Color.FromArgb( 0, Color.Black ) ), weatherPictureRectangle );
-
-			Point[] points = new Point[3];
+			Point[] points = new Point[4];
 
 			points[0] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Y );
 			points[1] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Height );
-//			points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Height);
-			points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Y );
+			points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Height);
+			points[3] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Y );
 
-//			Brush brush = new SolidBrush( Color.DarkGreen );
-
-			e.Graphics.DrawImage(WeatherPicture, points);
+			e.Graphics.DrawImageUnscaled(WeatherPicture, points[0]);
 		}
 		
 		protected override void OnLayout(LayoutEventArgs e)
@@ -154,11 +130,8 @@ namespace appCore.GeoAPIs.UI
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			Bitmap weatherSnap = GetBitmap();
-//			Size = new Size(shiftsBodySnap.Width, shiftsBodySnap.Height);
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			e.Graphics.DrawImageUnscaled(weatherSnap, Point.Empty);
-//			if(weatherPicture != null)
-//				DrawWeatherPicture(e);
 			BringToFront();
 		}
 		
@@ -171,18 +144,22 @@ namespace appCore.GeoAPIs.UI
 				g.PixelOffsetMode = PixelOffsetMode.HighQuality;    // Set format of string.
 				g.FillRectangle(new SolidBrush(Color.FromArgb(Opacity * 255 / 100, BackColor)), ClientRectangle);
 				
-				StringFormat drawStringFormat = new StringFormat();
-				drawStringFormat.Alignment = StringAlignment.Center;
-				drawStringFormat.LineAlignment = StringAlignment.Far;
 				using (Pen pen = new Pen(Color.Black, 1)) {
+					StringFormat drawStringFormat = new StringFormat();
+					drawStringFormat.Alignment = StringAlignment.Center;
+					drawStringFormat.LineAlignment = StringAlignment.Far;
+					FontFamily font = FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri") ??
+						FontFamily.Families.FirstOrDefault(f => f.Name == "Microsoft Sans Serif");
 					// 
 					// Town
 					// 
+					var rect = new Rectangle(Point.Empty, new Size(Width, 30));
+					g.FillRectangle(new SolidBrush(Color.FromArgb(Opacity * 255 / 100, Color.DarkRed)), rect);
 					g.DrawString(
 						currentWeatherQuery != null ? currentWeatherQuery.Name : "Town",
-						new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold),
+						new Font(font, currentWeatherQuery.Name.Length > 20 ? 13F : 15.75F, FontStyle.Bold),
 						Brushes.White,
-						new Rectangle(new Point(0, 3), new Size(Width, 30)),
+						rect,
 						drawStringFormat
 					);
 					// 
@@ -192,9 +169,9 @@ namespace appCore.GeoAPIs.UI
 					drawStringFormat.LineAlignment = StringAlignment.Far;
 					g.DrawString(
 						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
-						new Font("Microsoft Sans Serif", 15.75F, FontStyle.Regular),
+						new Font(font, 15.75F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 35), new Size(Width - 100, 30)),
+						new Rectangle(new Point(100, 35), new Size(Width - 100, 25)),
 						drawStringFormat
 					);
 					// 
@@ -203,20 +180,9 @@ namespace appCore.GeoAPIs.UI
 					drawStringFormat.LineAlignment = StringAlignment.Far;
 					g.DrawString(
 						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxMinTemperature",
-						new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular),
+						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 65), new Size(Width - 100, 15)),
-						drawStringFormat
-					);
-					// 
-					// WeatherCondition
-					// 
-					drawStringFormat.LineAlignment = StringAlignment.Near;
-					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Main.CapitalizeWords() : "WeatherCondition",
-						new Font("Microsoft Sans Serif", 12F, FontStyle.Bold),
-						Brushes.White,
-						new Rectangle(new Point(100, 85), new Size(Width - 100, 20)),
+						new Rectangle(new Point(100, 65), new Size(Width - 100, 10)),
 						drawStringFormat
 					);
 					// 
@@ -224,24 +190,18 @@ namespace appCore.GeoAPIs.UI
 					// 
 					g.DrawString(
 						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords() : "WeatherDescription",
-						new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular),
+						new Font(font, 12F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 110), new Size(Width - 100, 18)),
+						new Rectangle(new Point(100, 85), new Size(Width - 100, 18)),
 						drawStringFormat
 					);
+					currentWeatherQuery.
 
-					if(WeatherPicture != null) {
-						Point[] points = new Point[3];
-
-						points[0] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Y );
-						points[1] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Height );
-						points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Y );
-
-						g.DrawImage(WeatherPicture, points);
-					}
+					if(WeatherPicture != null)
+						g.DrawImage(WeatherPicture, weatherPictureRectangle);
 				}
-				if(Settings.CurrentUser.UserName == "GONCARJ3")
-					bm.Save(Settings.UserFolder.FullName + @"\weatherSnap.png");
+//				if(Settings.CurrentUser.UserName == "GONCARJ3")
+//					bm.Save(Settings.UserFolder.FullName + @"\weatherSnap.png");
 			}
 			return bm;
 		}

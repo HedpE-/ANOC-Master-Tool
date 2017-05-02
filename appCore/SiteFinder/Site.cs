@@ -381,7 +381,7 @@ namespace appCore.SiteFinder
 		
 		public Query CurrentWeather {
 			get {
-				Query currentWeather = Settings.GlobalProperties.WeatherCollection.Find(w => w.Name.ToUpper() == Town);
+				Query currentWeather = Settings.GlobalProperties.WeatherCollection.Find(w => w.Town.ToUpper() == Town);
 				if(currentWeather != null) {
 					if(DateTime.Now - currentWeather.LastUpdateTimestamp > new TimeSpan(2, 0, 0))
 						Settings.GlobalProperties.WeatherCollection.RemoveAt(Settings.GlobalProperties.WeatherCollection.IndexOf(currentWeather));

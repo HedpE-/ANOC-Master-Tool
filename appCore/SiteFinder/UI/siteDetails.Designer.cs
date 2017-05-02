@@ -63,7 +63,6 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label19;
 		private appCore.UI.AMTTextBox amtTextBox6;
 		private appCore.UI.AMTDataGridView amtDataGridView2;
-		private appCore.GeoAPIs.UI.WeatherPanel weatherPanel1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -136,7 +135,6 @@ namespace appCore.SiteFinder.UI
 			this.label19 = new System.Windows.Forms.Label();
 			this.amtTextBox6 = new appCore.UI.AMTTextBox();
 			this.amtDataGridView2 = new appCore.UI.AMTDataGridView();
-			this.weatherPanel1 = new appCore.GeoAPIs.UI.WeatherPanel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).BeginInit();
@@ -642,20 +640,11 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView2.TabIndex = 160;
 			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView2SelectionChanged);
 			// 
-			// weatherPanel1
-			// 
-			this.weatherPanel1.BackColor = System.Drawing.Color.Black;
-			this.weatherPanel1.Location = new System.Drawing.Point(837, 154);
-			this.weatherPanel1.Name = "weatherPanel1";
-			this.weatherPanel1.Size = new System.Drawing.Size(248, 178);
-			this.weatherPanel1.TabIndex = 161;
-			// 
 			// siteDetails
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1091, 766);
-			this.Controls.Add(this.weatherPanel1);
 			this.Controls.Add(this.amtDataGridView2);
 			this.Controls.Add(this.label19);
 			this.Controls.Add(this.amtTextBox6);
@@ -705,10 +694,11 @@ namespace appCore.SiteFinder.UI
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label12);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MaximizeBox = false;
 			this.Name = "siteDetails";
 			this.Text = "Site Details";
+			this.Move += new System.EventHandler(this.siteDetails_Move);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).EndInit();

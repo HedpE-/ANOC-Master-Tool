@@ -231,7 +231,7 @@ namespace appCore.UI
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(546, 558);
 			this.Controls.Add(this.tabControl1);
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.MinimumSize = new System.Drawing.Size(500, 585);
 			this.Name = "NotesForm";
 			this.Text = "Notes";

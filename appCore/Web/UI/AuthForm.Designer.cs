@@ -128,7 +128,7 @@ namespace appCore.Web.UI
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Icon = global::appCore.UI.Resources.MB_0001_vodafone3;
+			this.Icon = global::appCore.UI.Resources.app_icon;
 			this.Name = "AuthForm";
 			this.Text = "AuthForm";
 			this.ResumeLayout(false);

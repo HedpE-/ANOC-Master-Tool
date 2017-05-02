@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -31,27 +30,18 @@ namespace appCore.SiteFinder.UI
 	public partial class siteDetails : Form
 	{
 		GMapControl myMap;
-		GeoAPIs.UI.WeatherPanel weatherPanel;
 		GMapOverlay markersOverlay = new GMapOverlay("markers");
 		GMapOverlay selectedSiteOverlay = new GMapOverlay("selectedSite");
 		GMapOverlay onwardSitesOverlay = new GMapOverlay("onwardSites");
+		
+		GeoAPIs.UI.WeatherForm weatherForm;
+		bool updatingChildPosition = false;
+		Point weatherFormOffset = Point.Empty;
+		
 		public Site currentSite;
+		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
 		public Outage currentOutage;
 		OpenWeatherAPI.Query currentWeatherQuery;
-		
-		Rectangle weatherPictureRectangle = new Rectangle(3, 36, 90, 90);
-		
-		Image weatherPicture;
-		Image WeatherPicture {
-			get { return weatherPicture; }
-			set {
-				weatherPicture = value;
-				
-				this.Refresh();
-			}
-		}
-		
-		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
@@ -392,7 +382,6 @@ namespace appCore.SiteFinder.UI
 			map.KeyDown += GMapKeyDown;
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
-			map.Paint += MyMapOnPaint;
 			
 //			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
 			
@@ -400,6 +389,12 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void selectedSiteDetailsPopulate() {
+			if(weatherForm != null) {
+				weatherForm.Close();
+				weatherForm.Dispose();
+				weatherForm = null;
+			}
+			
 			if(currentSite.Exists) {
 				textBox1.Text = currentSite.Id;
 				textBox2.Text = currentSite.PowerCompany;
@@ -462,46 +457,17 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-//				try {
-				// Resolve PEN root path
-//					System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
-//					if(pen != null)
-//						pictureBox2.Image = Image.FromFile(pen.Name + @"Weather\" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-//					else
-//						pictureBox2.Load("http://openweathermap.org/img/w/" + currentSite.CurrentWeather.Weathers[0].Icon + ".png");
-//
-//					pictureBox2.BackColor = Color.Transparent;
-//					label14.Text = currentSite.CurrentWeather.Name;
-//					label14.BackColor = Color.Transparent;
-//					label20.Text = Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C";
-//					label20.BackColor = Color.Transparent;
-//					label21.Text = "Max: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentSite.CurrentWeather.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C";
-//					label21.BackColor = Color.Transparent;
-//					label22.Text = currentSite.CurrentWeather.Weathers.FirstOrDefault().Main.CapitalizeWords();
-//					label22.BackColor = Color.Transparent;
-//					label23.Text = currentSite.CurrentWeather.Weathers.FirstOrDefault().Description.CapitalizeWords();
-//					label23.BackColor = Color.Transparent;
-//					panel1.Location = Point.Empty;
-//					panel1.CornersToRound = AMTRoundCornersPanel.Corners.BottomLeft; // | AMTRoundCornersPanel.Corners.BottomRight;
-//					panel1.BordersToDraw = AMTRoundCornersPanel.Borders.None;
-//					panel1.DoubleBufferActive = true;
-//					weatherPanel.AutoClose = false;
-				if(weatherPanel1 != null) {
-					weatherPanel1.Dispose();
-					weatherPanel1 = null;
-				}
-				weatherPanel1 = new appCore.GeoAPIs.UI.WeatherPanel(currentSite.CurrentWeather);
-				weatherPanel1.BringToFront();
-				weatherPanel1.Location = new Point(myMap.Right - weatherPanel1.Width, myMap.Top);
-				weatherPanel1.Visible = true;
-//				Controls.Add(weatherPanel1);
-				GeoAPIs.UI.Weather2 w = new appCore.GeoAPIs.UI.Weather2();
-				w.BackColor = Color.Black;
-				w.Show();
-//				}
-//				catch(Exception e) {
-//					var m = e.Message;
-//				}
+				weatherForm = new appCore.GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
+				weatherForm.StartPosition = FormStartPosition.Manual;
+				weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
+				weatherForm.BackColor = Color.Black;
+				weatherForm.WeatherPanelOpacity = 60;
+				weatherForm.Owner = this;
+				weatherForm.Show();
+				
+				weatherFormOffset = new Point(
+					weatherForm.Location.X - Location.X,
+					weatherForm.Location.Y - Location.Y);
 			}
 			else {
 				foreach(Control ctr in Controls) {
@@ -523,10 +489,6 @@ namespace appCore.SiteFinder.UI
 				myMap.SetPositionByKeywords("UK");
 				myMap.Zoom = 6;
 				lockUnlockCellsToolStripMenuItem.Enabled = false;
-				if(weatherPanel1 != null) {
-					weatherPanel1.Dispose();
-					weatherPanel1 = null;
-				}
 			}
 			Control cb = Controls["comboBox1"];
 			if(cb != null)
@@ -848,7 +810,7 @@ namespace appCore.SiteFinder.UI
 			                           		form.AutoScaleDimensions = new SizeF(6F, 13F);
 			                           		form.AutoScaleMode = AutoScaleMode.Font;
 			                           		form.ClientSize = new Size(182, 337);
-			                           		form.Icon = Resources.MB_0001_vodafone3;
+			                           		form.Icon = Resources.app_icon;
 			                           		form.MaximizeBox = false;
 			                           		form.FormBorderStyle = FormBorderStyle.FixedSingle;
 			                           		form.Controls.Add(titleLabel);
@@ -1383,107 +1345,6 @@ namespace appCore.SiteFinder.UI
 			lockedCellsPageToolStripMenuItem.Text = "Locked Cells Page...";
 			lockedCellsPageToolStripMenuItem.Click += OpenLockedCells;
 		}
-
-		void MyMapOnPaint(object sender, PaintEventArgs e)
-		{
-//			Size = new Size(248, 178);
-			Rectangle widgetLocation = new Rectangle(myMap.Right - 250, myMap.Top, 250, 180);
-//			using (var brush = new SolidBrush(Color.FromArgb(75 * 255 / 100, BackColor)))
-//			{
-//				e.Graphics.FillRectangle(brush, widgetLocation);
-//			}
-//			base.OnPaint(e);
-			Bitmap weatherSnap = GetBitmap(widgetLocation);
-//			Size = new Size(shiftsBodySnap.Width, shiftsBodySnap.Height);
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			e.Graphics.DrawImageUnscaled(weatherSnap, widgetLocation);
-//			if(weatherPicture != null)
-//				DrawWeatherPicture(e);
-		}
-		
-		Bitmap GetBitmap(Rectangle widgetLocation) {
-			Bitmap bm = new Bitmap(Width, Height);
-			
-			using (Graphics g = Graphics.FromImage(bm)) {
-				g.SmoothingMode = SmoothingMode.AntiAlias;
-				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				g.PixelOffsetMode = PixelOffsetMode.HighQuality;    // Set format of string.
-				g.FillRectangle(new SolidBrush(Color.FromArgb(75 * 255 / 100, BackColor)), widgetLocation);
-				
-				StringFormat drawStringFormat = new StringFormat();
-				drawStringFormat.Alignment = StringAlignment.Center;
-				drawStringFormat.LineAlignment = StringAlignment.Far;
-				using (Pen pen = new Pen(Color.Black, 1)) {
-					// 
-					// Town
-					// 
-					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Name : "Town",
-						new Font("Microsoft Sans Serif", 15.75F, FontStyle.Bold),
-						Brushes.White,
-						new Rectangle(new Point(0, 3), new Size(Width, 30)),
-						drawStringFormat
-					);
-					// 
-					// CurrentTemperature
-					// 
-					drawStringFormat.LineAlignment = StringAlignment.Near;
-					g.DrawString(
-						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
-						new Font("Microsoft Sans Serif", 15.75F, FontStyle.Regular),
-						Brushes.White,
-						new Rectangle(new Point(100, 35), new Size(Width - 100, 30)),
-						drawStringFormat
-					);
-					// 
-					// MaxMinTemperature
-					// 
-					drawStringFormat.LineAlignment = StringAlignment.Near;
-					g.DrawString(
-						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxMinTemperature",
-						new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular),
-						Brushes.White,
-						new Rectangle(new Point(100, 65), new Size(Width - 100, 15)),
-						drawStringFormat
-					);
-					// 
-					// WeatherCondition
-					// 
-					drawStringFormat.LineAlignment = StringAlignment.Near;
-					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Main.CapitalizeWords() : "WeatherCondition",
-						new Font("Microsoft Sans Serif", 12F, FontStyle.Bold),
-						Brushes.White,
-						new Rectangle(new Point(100, 85), new Size(Width - 100, 20)),
-						drawStringFormat
-					);
-					// 
-					// WeatherDescription
-					// 
-					drawStringFormat.LineAlignment = StringAlignment.Near;
-					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords() : "WeatherDescription",
-						new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular),
-						Brushes.White,
-						new Rectangle(new Point(100, 110), new Size(Width - 100, 18)),
-						drawStringFormat
-					);
-
-					if(WeatherPicture != null) {
-						Point[] points = new Point[3];
-
-						points[0] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Y );
-						points[1] = new Point( weatherPictureRectangle.X, weatherPictureRectangle.Height );
-						points[2] = new Point( weatherPictureRectangle.Width, weatherPictureRectangle.Y );
-
-						g.DrawImage(weatherPicture, points);
-					}
-				}
-				if(Settings.CurrentUser.UserName == "GONCARJ3")
-					bm.Save(Settings.UserFolder.FullName + @"\weatherSnap.png");
-			}
-			return bm;
-		}
 //
 //		void SiteDetailsFormClosing(object sender, FormClosingEventArgs e)
 //		{
@@ -1507,5 +1368,37 @@ namespace appCore.SiteFinder.UI
 //				}
 //			}
 //		}
+//		private Form child = null;
+
+//		void child_Move(object sender, EventArgs e)
+//		{
+//			// Child form is moved, store it's new offset
+//			UpdateChildFormOffset();
+//		}
+//
+//		void UpdateChildFormOffset()
+//		{
+//			if (!updatingChildPosition)
+//			{
+//				this.childFormOffset = new Point(
+//					weatherForm.Location.X - this.Location.X,
+//					weatherForm.Location.Y - this.Location.Y);
+//
+//			}
+//		}
+
+		void siteDetails_Move(object sender, EventArgs e)
+		{
+			if(weatherForm != null) {
+				// Updating child position
+				this.updatingChildPosition = true;
+
+				weatherForm.Location = new Point(
+					this.Location.X + weatherFormOffset.X,
+					this.Location.Y + weatherFormOffset.Y);
+
+				this.updatingChildPosition = false;
+			}
+		}
 	}
 }
