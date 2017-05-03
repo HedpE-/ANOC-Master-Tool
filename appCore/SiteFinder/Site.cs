@@ -1113,13 +1113,14 @@ namespace appCore.SiteFinder
 			public string TxMedium { get; private set; }
 			public string TxLastMileRef { get; private set; }
 			public List<string> OnwardSites { get; private set; }
-			List<Site> onwardSitesObjects = null;
+			List<Site> onwardSitesObjects;
 			public List<Site> OnwardSitesObjects {
 				get {
 					if(onwardSitesObjects == null) {
-						onwardSitesObjects = new List<Site>();
+						List<Site> temp = null;
 						if(OnwardSites.Count > 0)
-							onwardSitesObjects.AddRange(DB.SitesDB.getSites(OnwardSites));
+							temp = DB.SitesDB.getSites(OnwardSites);
+						onwardSitesObjects = temp ?? new List<Site>();
 					}
 					return onwardSitesObjects;
 				}
