@@ -389,11 +389,10 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void selectedSiteDetailsPopulate() {
-			if(weatherForm != null) {
-				weatherForm.Close();
-				weatherForm.Dispose();
-				weatherForm = null;
-			}
+			toggleSwitch1.Enabled =
+				toggleSwitch1.Checked =
+				toggleSwitch2.Enabled =
+				toggleSwitch2.Checked = false;
 			
 			if(currentSite.Exists) {
 				textBox1.Text = currentSite.Id;
@@ -418,11 +417,10 @@ namespace appCore.SiteFinder.UI
 				amtTextBox6.Text = currentSite.CramerData != null ? currentSite.CramerData.TxLastMileRef : string.Empty;
 				lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
 				
-//				if(currentSite.CramerData == null && currentSite.CramerDataTimestamp < Settings.GlobalProperties.ApplicationStartTime)
-//					currentSite.requestOIData("Cramer");
 				if(currentSite.CramerData != null) {
 					if(currentSite.CramerData.OnwardSitesCount > 0) {
-						foreach(Site site in currentSite.CramerData.OnwardSitesObjects) {
+						List<Site> sitesObj = currentSite.CramerData.OnwardSitesObjects;
+						foreach(Site site in sitesObj) {
 							GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue);
 							tempMarker.Tag = site.MapMarker.Tag;
 							tempMarker.ToolTip = new GMap.NET.WindowsForms.ToolTips.GMapBaloonToolTip(tempMarker);
@@ -436,17 +434,19 @@ namespace appCore.SiteFinder.UI
 							
 							onwardSitesOverlay.Markers.Add(tempMarker);
 						}
+						var t = onwardSitesOverlay.Markers.Count;
 						myMap.Overlays.Add(onwardSitesOverlay);
+						toggleSwitch2.Enabled =
+							toggleSwitch2.Checked = true;
 					}
 				}
 				selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
 				myMap.Overlays.Add(selectedSiteOverlay);
 				if(!siteDetails_UIMode.Contains("single")) {
-					var t = onwardSitesOverlay.Markers.Count;
 					if(myMap.Overlays.Contains(onwardSitesOverlay))
 						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
 					else {
-						myMap.Position = markersOverlay.Markers.First(m => m.Tag.ToString() == textBox1.Text).Position;
+						myMap.Position = markersOverlay.Markers.FirstOrDefault(m => m.Tag.ToString() == textBox1.Text).Position;
 						myMap.Zoom = 14;
 					}
 				}
@@ -457,17 +457,8 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-				weatherForm = new appCore.GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
-				weatherForm.StartPosition = FormStartPosition.Manual;
-				weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
-				weatherForm.BackColor = Color.Black;
-				weatherForm.WeatherPanelOpacity = 60;
-				weatherForm.Owner = this;
-				weatherForm.Show();
-				
-				weatherFormOffset = new Point(
-					weatherForm.Location.X - Location.X,
-					weatherForm.Location.Y - Location.Y);
+				toggleSwitch1.Enabled =
+					toggleSwitch1.Checked = true;
 			}
 			else {
 				foreach(Control ctr in Controls) {
@@ -1398,6 +1389,49 @@ namespace appCore.SiteFinder.UI
 					this.Location.Y + weatherFormOffset.Y);
 
 				this.updatingChildPosition = false;
+			}
+		}
+		
+		void ToggleSwitchesCheckedChanged(object sender, EventArgs e) {
+			JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
+			switch(ts.Name) {
+				case "toggleSwitch1":
+					if(!ts.Checked) {
+						if(weatherForm != null) {
+							weatherForm.Close();
+							weatherForm.Dispose();
+							weatherForm = null;
+						}
+					}
+					else {
+						weatherForm = new appCore.GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
+						weatherForm.BackColor = Color.Black;
+						weatherForm.WeatherPanelOpacity = 60;
+						weatherForm.Owner = this;
+						weatherForm.StartPosition = FormStartPosition.Manual;
+						weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
+						weatherForm.Show();
+//
+						weatherFormOffset = new Point(
+							weatherForm.Location.X - Location.X,
+							weatherForm.Location.Y - Location.Y);
+					}
+					break;
+				case "toggleSwitch2":
+					if(ts.Checked) {
+						if(myMap.Overlays.Contains(onwardSitesOverlay))
+							onwardSitesOverlay.IsVisibile = true;
+					}
+					else {
+						if(myMap.Overlays.Contains(onwardSitesOverlay))
+							onwardSitesOverlay.IsVisibile = false;
+					}
+//					var t = myMap.Overlays.Contains(onwardSitesOverlay);
+//					var t2 = myMap.Overlays.Count;
+//					var t3 = myMap.Overlays.Select(o => o.Id);
+//					var t4 = onwardSitesOverlay.IsVisibile;
+//					var t5 = onwardSitesOverlay.Markers.Count;
+					break;
 			}
 		}
 	}

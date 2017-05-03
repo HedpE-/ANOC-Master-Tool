@@ -63,6 +63,10 @@ namespace appCore.SiteFinder.UI
 		private System.Windows.Forms.Label label19;
 		private appCore.UI.AMTTextBox amtTextBox6;
 		private appCore.UI.AMTDataGridView amtDataGridView2;
+		private System.Windows.Forms.Label label14;
+		private JCS.ToggleSwitch toggleSwitch1;
+		private JCS.ToggleSwitch toggleSwitch2;
+		private System.Windows.Forms.Label label20;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -135,6 +139,10 @@ namespace appCore.SiteFinder.UI
 			this.label19 = new System.Windows.Forms.Label();
 			this.amtTextBox6 = new appCore.UI.AMTTextBox();
 			this.amtDataGridView2 = new appCore.UI.AMTDataGridView();
+			this.label14 = new System.Windows.Forms.Label();
+			this.toggleSwitch1 = new JCS.ToggleSwitch();
+			this.toggleSwitch2 = new JCS.ToggleSwitch();
+			this.label20 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView2)).BeginInit();
@@ -640,11 +648,59 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView2.TabIndex = 160;
 			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView2SelectionChanged);
 			// 
+			// label14
+			// 
+			this.label14.Location = new System.Drawing.Point(979, 130);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(50, 20);
+			this.label14.TabIndex = 161;
+			this.label14.Text = "Weather";
+			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// toggleSwitch1
+			// 
+			this.toggleSwitch1.Enabled = false;
+			this.toggleSwitch1.Location = new System.Drawing.Point(1035, 132);
+			this.toggleSwitch1.Name = "toggleSwitch1";
+			this.toggleSwitch1.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toggleSwitch1.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toggleSwitch1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.toggleSwitch1.Size = new System.Drawing.Size(50, 18);
+			this.toggleSwitch1.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
+			this.toggleSwitch1.TabIndex = 162;
+			this.toggleSwitch1.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitchesCheckedChanged);
+			// 
+			// toggleSwitch2
+			// 
+			this.toggleSwitch2.Enabled = false;
+			this.toggleSwitch2.Location = new System.Drawing.Point(923, 132);
+			this.toggleSwitch2.Name = "toggleSwitch2";
+			this.toggleSwitch2.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toggleSwitch2.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toggleSwitch2.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.toggleSwitch2.Size = new System.Drawing.Size(50, 18);
+			this.toggleSwitch2.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
+			this.toggleSwitch2.TabIndex = 164;
+			this.toggleSwitch2.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitchesCheckedChanged);
+			// 
+			// label20
+			// 
+			this.label20.Location = new System.Drawing.Point(845, 130);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(72, 20);
+			this.label20.TabIndex = 163;
+			this.label20.Text = "Onward Sites";
+			this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// siteDetails
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1091, 766);
+			this.Controls.Add(this.toggleSwitch2);
+			this.Controls.Add(this.label20);
+			this.Controls.Add(this.toggleSwitch1);
+			this.Controls.Add(this.label14);
 			this.Controls.Add(this.amtDataGridView2);
 			this.Controls.Add(this.label19);
 			this.Controls.Add(this.amtTextBox6);

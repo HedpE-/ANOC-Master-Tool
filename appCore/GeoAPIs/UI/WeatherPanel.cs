@@ -19,7 +19,7 @@ namespace appCore.GeoAPIs.UI
 	/// <summary>
 	/// Description of WeatherPanel.
 	/// </summary>
-	public class WeatherPanel : AMTRoundCornersPanel
+	public class WeatherPanel : Panel
 	{
 		Rectangle weatherPictureRectangle = new Rectangle(0, 35, 100, 100);
 		
@@ -132,6 +132,8 @@ namespace appCore.GeoAPIs.UI
 			Bitmap weatherSnap = GetBitmap();
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			e.Graphics.DrawImageUnscaled(weatherSnap, Point.Empty);
+//			if(Settings.CurrentUser.UserName == "GONCARJ3")
+//				weatherSnap.Save(Settings.UserFolder.FullName + @"\weatherSnap.png");
 			BringToFront();
 		}
 		
@@ -147,7 +149,7 @@ namespace appCore.GeoAPIs.UI
 				using (Pen pen = new Pen(Color.Black, 1)) {
 					StringFormat drawStringFormat = new StringFormat();
 					drawStringFormat.Alignment = StringAlignment.Center;
-					drawStringFormat.LineAlignment = StringAlignment.Far;
+					drawStringFormat.LineAlignment = StringAlignment.Center;
 					FontFamily font = FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri") ??
 						FontFamily.Families.FirstOrDefault(f => f.Name == "Microsoft Sans Serif");
 					// 
@@ -166,23 +168,33 @@ namespace appCore.GeoAPIs.UI
 					// CurrentTemperature
 					// 
 					drawStringFormat.Alignment = StringAlignment.Near;
-					drawStringFormat.LineAlignment = StringAlignment.Far;
 					g.DrawString(
 						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
 						new Font(font, 15.75F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 35), new Size(Width - 100, 25)),
+						new Rectangle(new Point(100, 35), new Size(75, 25)),
 						drawStringFormat
 					);
 					// 
-					// MaxMinTemperature
+					// MaxTemperature
+					// 
+					drawStringFormat.LineAlignment = StringAlignment.Near;
+					g.DrawString(
+						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxTemperature",
+						new Font(font, 8F, FontStyle.Regular),
+						Brushes.White,
+						new Rectangle(new Point(175, 35), new Size(Width - 175, 12)),
+						drawStringFormat
+					);
+					// 
+					// MinTemperature
 					// 
 					drawStringFormat.LineAlignment = StringAlignment.Far;
 					g.DrawString(
-						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" + " Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxMinTemperature",
+						currentWeatherQuery != null ? "Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MinTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 65), new Size(Width - 100, 10)),
+						new Rectangle(new Point(175, 48), new Size(Width - 175, 12)),
 						drawStringFormat
 					);
 					// 
@@ -192,10 +204,19 @@ namespace appCore.GeoAPIs.UI
 						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords() : "WeatherDescription",
 						new Font(font, 12F, FontStyle.Regular),
 						Brushes.White,
+						new Rectangle(new Point(100, 65), new Size(Width - 100, 18)),
+						drawStringFormat
+					);
+					// 
+					// WindSpeed
+					// 
+					g.DrawString(
+						currentWeatherQuery != null ? currentWeatherQuery.Wind.SpeedMetersPerSecond + " m/s" : "WindSpeed",
+						new Font(font, 12F, FontStyle.Regular),
+						Brushes.White,
 						new Rectangle(new Point(100, 85), new Size(Width - 100, 18)),
 						drawStringFormat
 					);
-					currentWeatherQuery.
 
 					if(WeatherPicture != null)
 						g.DrawImage(WeatherPicture, weatherPictureRectangle);

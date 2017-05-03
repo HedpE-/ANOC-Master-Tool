@@ -52,11 +52,14 @@ namespace appCore.GeoAPIs.UI
 			
 			weatherPanel = new WeatherPanel(weather);
 			weatherPanel.Location = Point.Empty;
-			weatherPanel.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.BottomLeft;
-			weatherPanel.CornerSize = 25;
-			weatherPanel.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
+//			weatherPanel.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.BottomLeft;
+//			weatherPanel.CornerSize = 25;
+//			weatherPanel.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
 			
 			Controls.Add(weatherPanel);
+			
+//			Bounds = weatherPanel.Bounds;
+//			Region = weatherPanel.Region;
 			
 			ControlBox = false;
 //			ShowInTaskbar = false;
