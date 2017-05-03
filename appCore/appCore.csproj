@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>appCore</RootNamespace>
     <AssemblyName>appCore</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <NoWin32Manifest>False</NoWin32Manifest>
     <SignAssembly>False</SignAssembly>
@@ -22,6 +22,7 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>False</RunCodeAnalysis>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -142,8 +143,12 @@
     <Compile Include="GeoAPIs\OpenWeatherAPI\Sys.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Weather.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Wind.cs" />
-    <Compile Include="GeoAPIs\UI\WeatherForm.cs" />
-    <Compile Include="GeoAPIs\UI\WeatherPanel.cs" />
+    <Compile Include="GeoAPIs\UI\WeatherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GeoAPIs\UI\WeatherPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GeoAPIs\UkCities.cs" />
     <Compile Include="GeoAPIs\WeatherItem.cs" />
     <Compile Include="MainForm.cs">
@@ -160,11 +165,15 @@
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="SiteFinder\Cell.cs" />
     <Compile Include="SiteFinder\Site.cs" />
-    <Compile Include="SiteFinder\UI\LockUnlockCellsForm.cs" />
+    <Compile Include="SiteFinder\UI\LockUnlockCellsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SiteFinder\UI\LockUnlockCellsForm.Designer.cs">
       <DependentUpon>LockUnlockCellsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs" />
+    <Compile Include="SiteFinder\UI\OiSiteTablesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
     </Compile>
@@ -1235,11 +1244,19 @@
     </Compile>
     <Compile Include="Netcool\Alarm.cs" />
     <Compile Include="Netcool\AlarmsParser.cs" />
-    <Compile Include="OssScripts\UI\EricssonScriptsControls.cs" />
-    <Compile Include="OssScripts\UI\HuaweiScriptsControls.cs" />
-    <Compile Include="OssScripts\UI\NokiaScriptsControls.cs" />
+    <Compile Include="OssScripts\UI\EricssonScriptsControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OssScripts\UI\HuaweiScriptsControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OssScripts\UI\NokiaScriptsControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Permissions\permCheck.cs" />
-    <Compile Include="Remedy\UI\RemedyWebBrowser.cs" />
+    <Compile Include="Remedy\UI\RemedyWebBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Settings\GlobalProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />
     <Compile Include="Settings\UI\SettingsForm.cs">
@@ -1250,11 +1267,15 @@
     </Compile>
     <Compile Include="Settings\CurrentUser.cs" />
     <Compile Include="Settings\UserFolder.cs" />
-    <Compile Include="Shifts\ShiftsSwapForm.cs" />
+    <Compile Include="Shifts\ShiftsSwapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Shifts\ShiftsSwapForm.Designer.cs">
       <DependentUpon>ShiftsSwapForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shifts\ShiftsCalendar.cs" />
+    <Compile Include="Shifts\ShiftsCalendar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Shifts\WholeShiftsPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1331,8 +1352,12 @@
     <Compile Include="UI\AMTBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\AMTDataGridView.cs" />
-    <Compile Include="UI\AMTInputBox.cs" />
+    <Compile Include="UI\AMTDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\AMTInputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\AMTMenuStrip.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1342,22 +1367,32 @@
     <Compile Include="UI\AMTRoundCornersPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\AMTTextBox.cs" />
+    <Compile Include="UI\AMTTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\AMTToolStripSystemRenderer.cs" />
-    <Compile Include="UI\AMTTransparentLabel.cs" />
-    <Compile Include="UI\AMTTransparentPictureBox.cs" />
+    <Compile Include="UI\AMTTransparentLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\AMTTransparentPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\AMTLargeTextForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\GlassPanel2.cs" />
+    <Compile Include="UI\GlassPanel2.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\Loading.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Loading.Designer.cs">
       <DependentUpon>Loading.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\LoadingPanel.cs" />
+    <Compile Include="UI\LoadingPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\NotesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1365,13 +1400,16 @@
       <DependentUpon>NotesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\PopupHelper.cs" />
-    <Compile Include="UI\ProgressSpinner.cs" />
+    <Compile Include="UI\ProgressSpinner.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\ProgressSpinner.Designer.cs">
       <DependentUpon>ProgressSpinner.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="UI\ScrollableMessageBox.cs">
       <SubType>Form</SubType>
@@ -1397,9 +1435,15 @@
     <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchModernRenderer.cs" />
     <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchOSXRenderer.cs" />
     <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchRendererBase.cs" />
-    <Compile Include="UI\ToggleSwitch\ToggleSwitch.cs" />
-    <Compile Include="UI\ToolsMenu.cs" />
-    <Compile Include="UI\TranspControl.cs" />
+    <Compile Include="UI\ToggleSwitch\ToggleSwitch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\ToolsMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TranspControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\trayIcon.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
@@ -1539,84 +1583,7 @@
     <None Include="Toolbox\EWS\Docs\README.htm" />
     <None Include="Toolbox\EWS\Docs\Redist.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GeoAPIs\GMap.NET" />
-    <Folder Include="GeoAPIs\UI" />
-    <Folder Include="GeoAPIs\OpenWeatherAPI" />
-    <Folder Include="Netcool\UI" />
-    <Folder Include="GeoAPIs" />
-    <Folder Include="OI" />
-    <Folder Include="OI\JSON" />
-    <Folder Include="Toolbox\EPPlus" />
-    <Folder Include="Toolbox\EPPlus\ConditionalFormatting" />
-    <Folder Include="Toolbox\EPPlus\ConditionalFormatting\Contracts" />
-    <Folder Include="Toolbox\EPPlus\ConditionalFormatting\Rules" />
-    <Folder Include="Toolbox\EPPlus\DataValidation" />
-    <Folder Include="Toolbox\EPPlus\DataValidation\Contracts" />
-    <Folder Include="Toolbox\EPPlus\DataValidation\Formulas" />
-    <Folder Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts" />
-    <Folder Include="Toolbox\EPPlus\Drawing" />
-    <Folder Include="Toolbox\EPPlus\Drawing\Chart" />
-    <Folder Include="Toolbox\EPPlus\Drawing\Vml" />
-    <Folder Include="Toolbox\EPPlus\Style" />
-    <Folder Include="Toolbox\EPPlus\Style\Dxf" />
-    <Folder Include="Toolbox\EPPlus\Style\XmlAccess" />
-    <Folder Include="Toolbox\EPPlus\Table" />
-    <Folder Include="Toolbox\EPPlus\Table\PivotTable" />
-    <Folder Include="Toolbox\EPPlus\Utils" />
-    <Folder Include="Toolbox\EPPlus\VBA" />
-    <Folder Include="Toolbox\EWS" />
-    <Folder Include="Toolbox\EWS\Attributes" />
-    <Folder Include="Toolbox\EWS\Autodiscover" />
-    <Folder Include="Toolbox\EWS\Autodiscover\ConfigurationSettings" />
-    <Folder Include="Toolbox\EWS\Autodiscover\ConfigurationSettings\Outlook" />
-    <Folder Include="Toolbox\EWS\Autodiscover\Requests" />
-    <Folder Include="Toolbox\EWS\Autodiscover\Responses" />
-    <Folder Include="Toolbox\EWS\ComplexProperties" />
-    <Folder Include="Toolbox\EWS\ComplexProperties\Availability" />
-    <Folder Include="Toolbox\EWS\ComplexProperties\PeopleInsights" />
-    <Folder Include="Toolbox\EWS\ComplexProperties\Recurrence" />
-    <Folder Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns" />
-    <Folder Include="Toolbox\EWS\ComplexProperties\Recurrence\Ranges" />
-    <Folder Include="Toolbox\EWS\ComplexProperties\TimeZones" />
-    <Folder Include="Toolbox\EWS\Core" />
-    <Folder Include="Toolbox\EWS\Core\Requests" />
-    <Folder Include="Toolbox\EWS\Core\Responses" />
-    <Folder Include="Toolbox\EWS\Core\ServiceObjects" />
-    <Folder Include="Toolbox\EWS\Core\ServiceObjects\Folders" />
-    <Folder Include="Toolbox\EWS\Core\ServiceObjects\Items" />
-    <Folder Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects" />
-    <Folder Include="Toolbox\EWS\Core\ServiceObjects\Schemas" />
-    <Folder Include="Toolbox\EWS\Credentials" />
-    <Folder Include="Toolbox\EWS\Dns" />
-    <Folder Include="Toolbox\EWS\Docs" />
-    <Folder Include="Toolbox\EWS\Elc" />
-    <Folder Include="Toolbox\EWS\Enumerations" />
-    <Folder Include="Toolbox\EWS\Exceptions" />
-    <Folder Include="Toolbox\EWS\Groups" />
-    <Folder Include="Toolbox\EWS\Groups\ComplexProperties" />
-    <Folder Include="Toolbox\EWS\Groups\Requests" />
-    <Folder Include="Toolbox\EWS\Groups\Responses" />
-    <Folder Include="Toolbox\EWS\Interfaces" />
-    <Folder Include="Toolbox\EWS\MailboxSearch" />
-    <Folder Include="Toolbox\EWS\Misc" />
-    <Folder Include="Toolbox\EWS\Misc\Availability" />
-    <Folder Include="Toolbox\EWS\Misc\IdConversion" />
-    <Folder Include="Toolbox\EWS\Notifications" />
-    <Folder Include="Toolbox\EWS\PropertyDefinitions" />
-    <Folder Include="Toolbox\EWS\Search" />
-    <Folder Include="Toolbox\EWS\Search\Filters" />
-    <Folder Include="Toolbox\EWS\Security" />
-    <Folder Include="Toolbox\EWS\Sync" />
-    <Folder Include="Toolbox\EWS\UnifiedMessaging" />
-    <Folder Include="Remedy" />
-    <Folder Include="OssScripts" />
-    <Folder Include="OssScripts\UI" />
-    <Folder Include="Remedy\UI" />
-    <Folder Include="Toolbox\Transitions" />
-    <Folder Include="UI\ToggleSwitch" />
-    <Folder Include="UI\ToggleSwitch\Renderers" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />
   <Import Project="..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets')" />
