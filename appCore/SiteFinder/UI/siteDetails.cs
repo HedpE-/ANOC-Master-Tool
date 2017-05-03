@@ -388,13 +388,14 @@ namespace appCore.SiteFinder.UI
 			return map;
 		}
 		
-		void selectedSiteDetailsPopulate() {
-			toggleSwitch1.Enabled =
-				toggleSwitch1.Checked =
-				toggleSwitch2.Enabled =
-				toggleSwitch2.Checked = false;
-			
-			if(currentSite.Exists) {
+		void selectedSiteDetailsPopulate()
+        {
+            toggleSwitch1.Checked = false;
+            toggleSwitch1.Enabled = false;
+            toggleSwitch2.Checked = false;
+            toggleSwitch2.Enabled = false;
+
+            if (currentSite.Exists) {
 				textBox1.Text = currentSite.Id;
 				textBox2.Text = currentSite.PowerCompany;
 				textBox3.Text = currentSite.JVCO_Id;
@@ -436,8 +437,8 @@ namespace appCore.SiteFinder.UI
 						}
 						var t = onwardSitesOverlay.Markers.Count;
 						myMap.Overlays.Add(onwardSitesOverlay);
-						toggleSwitch2.Enabled =
-							toggleSwitch2.Checked = true;
+						toggleSwitch2.Enabled = true;
+                        toggleSwitch2.Checked = true;
 					}
 				}
 				selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
@@ -457,8 +458,8 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-				toggleSwitch1.Enabled =
-					toggleSwitch1.Checked = true;
+				toggleSwitch1.Enabled = true;
+                toggleSwitch1.Checked = true;
 			}
 			else {
 				foreach(Control ctr in Controls) {
