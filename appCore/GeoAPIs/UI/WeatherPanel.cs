@@ -172,7 +172,7 @@ namespace appCore.GeoAPIs.UI
 						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
 						new Font(font, 15.75F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 35), new Size(75, 25)),
+						new Rectangle(new Point(100, 35), new Size(60, 25)),
 						drawStringFormat
 					);
 					// 
@@ -183,7 +183,7 @@ namespace appCore.GeoAPIs.UI
 						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(175, 35), new Size(Width - 175, 12)),
+						new Rectangle(new Point(160, 35), new Size(Width - 160, 12)),
 						drawStringFormat
 					);
 					// 
@@ -194,7 +194,7 @@ namespace appCore.GeoAPIs.UI
 						currentWeatherQuery != null ? "Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MinTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(175, 48), new Size(Width - 175, 12)),
+						new Rectangle(new Point(160, 48), new Size(Width - 160, 12)),
 						drawStringFormat
 					);
 					// 
