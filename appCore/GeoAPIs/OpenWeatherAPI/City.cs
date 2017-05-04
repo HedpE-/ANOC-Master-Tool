@@ -22,16 +22,12 @@ namespace OpenWeatherAPI
 		public string country { get; set; }
 		public Coord coord { get; set; }
 
-        public City(JToken coordData)
+        public City(JObject cityData)
         {
-        	id = int.Parse(coordData.SelectToken("id").ToString());
-            name = coordData.SelectToken("name").ToString();
-            country = coordData.SelectToken("country").ToString();
-            coord = new Coord(coordData.SelectToken("coord"));
-        }
-        
-        public City()
-        {
+        	id = int.Parse(cityData.SelectToken("id").ToString());
+            name = cityData.SelectToken("name").ToString();
+            country = cityData.SelectToken("country").ToString();
+            coord = new Coord(cityData.SelectToken("coord"));
         }
 	}
 }

@@ -31,17 +31,14 @@ namespace appCore.GeoAPIs
 			{
 				while (reader.Read())
 				{
-					var t = reader.Value != null ? reader.Value.ToString() : string.Empty;
-					var t2 = reader.ArrayPool;
-					var t3 = reader.Value;
-					var t4 = reader.TokenType;
 					if (reader.TokenType == JsonToken.StartObject)
 					{
 						// Load each object from the stream and do something with it
 						JObject obj = JObject.Load(reader);
-						var jSon = obj.ToObject<City>();
-						if(jSon.country == "GB")
-							Add(jSon);
+                        City city = new City(obj);
+                        
+						if(city.country == "GB")
+							Add(city);
 					}
 				}
 			}

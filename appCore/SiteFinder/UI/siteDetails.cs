@@ -201,17 +201,6 @@ namespace appCore.SiteFinder.UI
 			currentSite = site;
 			
 			parentControl = parent;
-//			switch(parent.GetType().ToString()) {
-//				case "appCore.Templates.UI.TroubleshootControls":
-//					currentSite = ((TroubleshootControls)parentControl).currentSite;
-//					break;
-//				case "appCore.Templates.UI.FailedCRQControls":
-//					currentSite = ((FailedCRQControls)parentControl).currentSite;
-//					break;
-//				case "appCore.Templates.UI.UpdateControls":
-//					currentSite = ((UpdateControls)parentControl).currentSite;
-//					break;
-//			}
 			InitializeComponent();
 			this.Name =
 				this.Text = "Site " + site.Id + " Details";
@@ -236,7 +225,6 @@ namespace appCore.SiteFinder.UI
 			
 			parentControl = parent;
 			currentOutage = outage;
-			// TODO: request Cramer Data on opening
 			Controls.Add(MainMenu);
 			MainMenu.InitializeTroubleshootMenu(true);
 			MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
@@ -285,8 +273,6 @@ namespace appCore.SiteFinder.UI
 			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 			                           	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			                           	
-//			                           	initializeListviews();
-			                           	
 			                           	selectedSiteDetailsPopulate();
 			                           });
 			
@@ -297,9 +283,7 @@ namespace appCore.SiteFinder.UI
 		void populateBulkForm(object sender, EventArgs e)
 		{
 			// TODO: Multi select sites and show only their markers
-			// TODO: Show cells for selected sites
 			Action action = new Action(delegate {
-//			                           	initializeListviews();
 			                           	if(siteDetails_UIMode.Contains("outage")) {
 			                           		try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
 			                           		try { markersOverlay.Clear(); } catch (Exception) { }
@@ -329,18 +313,6 @@ namespace appCore.SiteFinder.UI
 			LoadingPanel load = new LoadingPanel();
 			load.ShowAsync(null, action,true,this);
 		}
-		
-//		void initializeListviews() {
-//			listView2.View = View.Details;
-//			listView2.Columns.Add("Site");
-//			listView2.Columns.Add("JVCO ID");
-//			listView2.Columns.Add("Site Host");
-//			listView2.Columns.Add("Post Code");
-//			listView2.Columns.Add("Priority");
-//			listView2.Columns.Add("POC");
-//			listView2.Columns.Add("TX Type");
-//			listView2.Columns.Add("CCT");
-//		}
 		
 		GMapControl drawGMap(string mapName, bool multi) {
 			// TODO: implement weather layer if possible with GMaps
@@ -382,8 +354,6 @@ namespace appCore.SiteFinder.UI
 			map.KeyDown += GMapKeyDown;
 			if(multi)
 				map.OnMarkerClick += GMapSiteMarkerClick;
-			
-//			panel1.Location = new Point(map.Right - panel1.Width, map.Top);
 			
 			return map;
 		}

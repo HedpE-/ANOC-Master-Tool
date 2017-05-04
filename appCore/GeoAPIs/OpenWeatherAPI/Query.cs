@@ -40,7 +40,7 @@ namespace OpenWeatherAPI
 		public int Cod { get { return cod; } }
 		public string Town { get; private set; }
 
-		public Query(JObject jsonData, string queryStr)
+		public Query(JObject jsonData, string cityStr)
 		{
 			if(jsonData.SelectToken("cod").ToString() == "200")
 			{
@@ -66,10 +66,10 @@ namespace OpenWeatherAPI
 			{
 				validRequest = false;
 			}
-			Town = queryStr;
+			Town = cityStr;
 		}
 
-		public Query(JObject jsonData, double latitude, double longitude)
+		public Query(JObject jsonData)
 		{
 			if(jsonData.SelectToken("cod").ToString() == "200")
 			{

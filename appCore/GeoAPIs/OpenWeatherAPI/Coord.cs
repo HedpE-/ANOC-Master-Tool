@@ -9,7 +9,7 @@ namespace OpenWeatherAPI
 {
     public class Coord
     {
-        private double lon, lat;
+        double lon, lat;
         
         public double Longitude { get { return lon; } }
         public double Latitude { get { return lat; } }
@@ -18,10 +18,6 @@ namespace OpenWeatherAPI
         {
             lon = double.Parse(coordData.SelectToken("lon").ToString());
             lat = double.Parse(coordData.SelectToken("lat").ToString());
-        }
-        
-        public Coord()
-        {
         }
     }
 }
