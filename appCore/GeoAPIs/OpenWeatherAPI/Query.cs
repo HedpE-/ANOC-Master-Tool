@@ -40,9 +40,8 @@ namespace OpenWeatherAPI
 		public int Cod { get { return cod; } }
 		public string Town { get; private set; }
 
-		public Query(string apiKey, string queryStr)
+		public Query(JObject jsonData, string queryStr)
 		{
-			JObject jsonData = JObject.Parse(new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/weather?appid={0}&q={1}", apiKey, queryStr)));
 			if(jsonData.SelectToken("cod").ToString() == "200")
 			{
 				validRequest = true;
@@ -70,9 +69,8 @@ namespace OpenWeatherAPI
 			Town = queryStr;
 		}
 
-		public Query(string apiKey, double latitude, double longitude)
+		public Query(JObject jsonData, double latitude, double longitude)
 		{
-			JObject jsonData = JObject.Parse(new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/weather?appid={0}&lat={1}&lon={2}", apiKey, latitude, longitude)));
 			if(jsonData.SelectToken("cod").ToString() == "200")
 			{
 				validRequest = true;

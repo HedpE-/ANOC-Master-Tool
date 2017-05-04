@@ -415,16 +415,16 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label16
 			// 
-			this.label16.Location = new System.Drawing.Point(766, 30);
+			this.label16.Location = new System.Drawing.Point(851, 30);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(319, 20);
+			this.label16.Size = new System.Drawing.Size(339, 20);
 			this.label16.TabIndex = 137;
 			this.label16.Text = "Key Information";
 			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// amtTextBox2
 			// 
-			this.amtTextBox2.Location = new System.Drawing.Point(642, 82);
+			this.amtTextBox2.Location = new System.Drawing.Point(727, 82);
 			this.amtTextBox2.Name = "amtTextBox2";
 			this.amtTextBox2.ReadOnly = true;
 			this.amtTextBox2.Size = new System.Drawing.Size(118, 20);
@@ -432,7 +432,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(584, 106);
+			this.label8.Location = new System.Drawing.Point(669, 106);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(52, 20);
 			this.label8.TabIndex = 134;
@@ -441,7 +441,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox3
 			// 
-			this.amtTextBox3.Location = new System.Drawing.Point(642, 107);
+			this.amtTextBox3.Location = new System.Drawing.Point(727, 107);
 			this.amtTextBox3.Name = "amtTextBox3";
 			this.amtTextBox3.ReadOnly = true;
 			this.amtTextBox3.Size = new System.Drawing.Size(118, 20);
@@ -449,7 +449,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label13
 			// 
-			this.label13.Location = new System.Drawing.Point(584, 81);
+			this.label13.Location = new System.Drawing.Point(669, 81);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(52, 20);
 			this.label13.TabIndex = 131;
@@ -458,7 +458,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox7
 			// 
-			this.amtTextBox7.Location = new System.Drawing.Point(642, 57);
+			this.amtTextBox7.Location = new System.Drawing.Point(727, 57);
 			this.amtTextBox7.Name = "amtTextBox7";
 			this.amtTextBox7.ReadOnly = true;
 			this.amtTextBox7.Size = new System.Drawing.Size(118, 20);
@@ -466,7 +466,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label18
 			// 
-			this.label18.Location = new System.Drawing.Point(584, 57);
+			this.label18.Location = new System.Drawing.Point(669, 57);
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(42, 20);
 			this.label18.TabIndex = 139;
@@ -476,10 +476,10 @@ namespace appCore.SiteFinder.UI
 			// richTextBox1
 			// 
 			this.richTextBox1.DetectUrls = false;
-			this.richTextBox1.Location = new System.Drawing.Point(766, 57);
+			this.richTextBox1.Location = new System.Drawing.Point(851, 57);
 			this.richTextBox1.Name = "richTextBox1";
 			this.richTextBox1.ReadOnly = true;
-			this.richTextBox1.Size = new System.Drawing.Size(319, 70);
+			this.richTextBox1.Size = new System.Drawing.Size(339, 70);
 			this.richTextBox1.TabIndex = 144;
 			this.richTextBox1.Text = "";
 			this.richTextBox1.TextChanged += new System.EventHandler(this.TextBoxesTextChanged_LargeTextButtons);
@@ -487,7 +487,7 @@ namespace appCore.SiteFinder.UI
 			// button1
 			// 
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(1061, 32);
+			this.button1.Location = new System.Drawing.Point(1166, 32);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(24, 20);
 			this.button1.TabIndex = 145;
@@ -497,7 +497,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// checkBox4
 			// 
-			this.checkBox4.Location = new System.Drawing.Point(613, 28);
+			this.checkBox4.Location = new System.Drawing.Point(698, 28);
 			this.checkBox4.Name = "checkBox4";
 			this.checkBox4.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.checkBox4.Size = new System.Drawing.Size(69, 24);
@@ -508,7 +508,7 @@ namespace appCore.SiteFinder.UI
 			// 
 			// checkBox5
 			// 
-			this.checkBox5.Location = new System.Drawing.Point(688, 28);
+			this.checkBox5.Location = new System.Drawing.Point(773, 28);
 			this.checkBox5.Name = "checkBox5";
 			this.checkBox5.Size = new System.Drawing.Size(81, 24);
 			this.checkBox5.TabIndex = 147;
@@ -530,7 +530,7 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView1.Name = "amtDataGridView1";
 			this.amtDataGridView1.RowHeadersVisible = false;
 			this.amtDataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-			this.amtDataGridView1.Size = new System.Drawing.Size(572, 488);
+			this.amtDataGridView1.Size = new System.Drawing.Size(657, 593);
 			this.amtDataGridView1.TabIndex = 148;
 			this.amtDataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
 			// 
@@ -541,7 +541,7 @@ namespace appCore.SiteFinder.UI
 			this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.checkBox6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.checkBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.checkBox6.Location = new System.Drawing.Point(523, 255);
+			this.checkBox6.Location = new System.Drawing.Point(624, 255);
 			this.checkBox6.Name = "checkBox6";
 			this.checkBox6.Size = new System.Drawing.Size(38, 18);
 			this.checkBox6.TabIndex = 150;
@@ -557,7 +557,7 @@ namespace appCore.SiteFinder.UI
 			this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.checkBox7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.checkBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.checkBox7.Location = new System.Drawing.Point(485, 255);
+			this.checkBox7.Location = new System.Drawing.Point(586, 255);
 			this.checkBox7.Name = "checkBox7";
 			this.checkBox7.Size = new System.Drawing.Size(38, 18);
 			this.checkBox7.TabIndex = 149;
@@ -644,23 +644,23 @@ namespace appCore.SiteFinder.UI
 			this.amtDataGridView2.Name = "amtDataGridView2";
 			this.amtDataGridView2.RowHeadersWidth = 15;
 			this.amtDataGridView2.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-			this.amtDataGridView2.Size = new System.Drawing.Size(572, 102);
+			this.amtDataGridView2.Size = new System.Drawing.Size(657, 200);
 			this.amtDataGridView2.TabIndex = 160;
 			this.amtDataGridView2.SelectionChanged += new System.EventHandler(this.AmtDataGridView2SelectionChanged);
 			// 
 			// label14
 			// 
-			this.label14.Location = new System.Drawing.Point(979, 130);
+			this.label14.Location = new System.Drawing.Point(1055, 132);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(50, 20);
+			this.label14.Size = new System.Drawing.Size(79, 20);
 			this.label14.TabIndex = 161;
-			this.label14.Text = "Weather";
+			this.label14.Text = "Show Weather";
 			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// toggleSwitch1
 			// 
 			this.toggleSwitch1.Enabled = false;
-			this.toggleSwitch1.Location = new System.Drawing.Point(1035, 132);
+			this.toggleSwitch1.Location = new System.Drawing.Point(1140, 134);
 			this.toggleSwitch1.Name = "toggleSwitch1";
 			this.toggleSwitch1.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.toggleSwitch1.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -673,7 +673,7 @@ namespace appCore.SiteFinder.UI
 			// toggleSwitch2
 			// 
 			this.toggleSwitch2.Enabled = false;
-			this.toggleSwitch2.Location = new System.Drawing.Point(923, 132);
+			this.toggleSwitch2.Location = new System.Drawing.Point(999, 134);
 			this.toggleSwitch2.Name = "toggleSwitch2";
 			this.toggleSwitch2.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.toggleSwitch2.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -685,18 +685,18 @@ namespace appCore.SiteFinder.UI
 			// 
 			// label20
 			// 
-			this.label20.Location = new System.Drawing.Point(845, 130);
+			this.label20.Location = new System.Drawing.Point(891, 132);
 			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(72, 20);
+			this.label20.Size = new System.Drawing.Size(102, 20);
 			this.label20.TabIndex = 163;
-			this.label20.Text = "Onward Sites";
+			this.label20.Text = "Show Onward Sites";
 			this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// siteDetails
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1091, 766);
+			this.ClientSize = new System.Drawing.Size(1194, 871);
 			this.Controls.Add(this.toggleSwitch2);
 			this.Controls.Add(this.label20);
 			this.Controls.Add(this.toggleSwitch1);
@@ -754,6 +754,7 @@ namespace appCore.SiteFinder.UI
 			this.MaximizeBox = false;
 			this.Name = "siteDetails";
 			this.Text = "Site Details";
+			this.Load += new System.EventHandler(this.SiteDetailsLoad);
 			this.Move += new System.EventHandler(this.siteDetails_Move);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).EndInit();

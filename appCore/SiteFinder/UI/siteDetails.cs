@@ -1435,5 +1435,9 @@ namespace appCore.SiteFinder.UI
 					break;
 			}
 		}
+		void SiteDetailsLoad(object sender, EventArgs e)
+		{
+	
+		}
 	}
 }
