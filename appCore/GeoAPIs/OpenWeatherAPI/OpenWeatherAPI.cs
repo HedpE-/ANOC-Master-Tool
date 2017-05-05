@@ -43,10 +43,13 @@ namespace OpenWeatherAPI
         public List<Query> query(IEnumerable<string> cities)
         {
             string cityIds = string.Empty;
+            List<string> citiesNotFound = new List<string>();
             foreach(string city in cities) {
-                var foundCity = appCore.DB.Databases.Cities.FirstOrDefault(c => c.name.ToUpper() == city);
-                if (foundCity != null)
+            	var foundCity = appCore.DB.Databases.Cities.FirstOrDefault(c => c.name.ToUpper() == city.ToUpper());
+                if(foundCity != null)
                     cityIds += foundCity.id + ",";
+                else
+                	citiesNotFound.Add(city);
             }
             if (cityIds.EndsWith(","))
                 cityIds = cityIds.Substring(0, cityIds.Length - 2);

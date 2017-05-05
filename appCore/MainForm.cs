@@ -157,56 +157,23 @@ namespace appCore
 					butt.Text = "Clear SitesDB";
 					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
 					butt.Click += delegate {
-						DB.SitesDB.List.Clear();
-						InputBoxDialog ib = new InputBoxDialog();
-						ib.FormPrompt = "Site to remove?\n\n(Leave blank and click ok to clear whole DB";
-//						ib.FormCaption = title;
-//						ib.DefaultValue = defaultValue;
-						DialogResult ans = ib.ShowDialog();
-						if(ans != DialogResult.Cancel) {
-							string input = ib.InputResponse;
-//						string input = Microsoft.VisualBasic.Interaction.InputBox("Site to remove?\n\n(Leave blank and click ok to clear whole DB");
-							if(string.IsNullOrEmpty(input))
-								SitesDB.Clear();
-							else
-								SitesDB.Remove(input);
-						}
-//						if(OutageUI != null)
-//							OutageUI.Dispose();
-//						tabControl1.SelectTab(6);
-//						OutageUI = new OutageControls();
-//						tabPage17.Controls.Add(OutageUI);
-//						string input = Microsoft.VisualBasic.Interaction.InputBox("sites");
-//						string resp = OI.OiConnection.requestApiOutput("availability", input.Split(','));
-//
-//						Availability jSon = null;
-//						try {
-//							jSon = JsonConvert.DeserializeObject<Availability>(resp);
-//						AvailabilityTimestamp = DateTime.Now;
+				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+				var cities = openWeatherAPI.query(new []{ "dudley", "london", "BURTON IN KENDAL" });
+//						SitesDB.List.Clear();
+//						InputBoxDialog ib = new InputBoxDialog();
+//						ib.FormPrompt = "Site to remove?\n\n(Leave blank and click ok to clear whole DB";
+//						DialogResult ans = ib.ShowDialog();
+//						if(ans != DialogResult.Cancel) {
+//							string input = ib.InputResponse;
+////						string input = Microsoft.VisualBasic.Interaction.InputBox("Site to remove?\n\n(Leave blank and click ok to clear whole DB");
+//							if(string.IsNullOrEmpty(input))
+//								SitesDB.Clear();
+//							else
+//								SitesDB.Remove(input);
 //						}
-//						catch { }
-						
-//						System.Data.DataTable dt = jSon.ToDataTable();
-//						SiteFinder.Site site = SitesDB.getSite("864");
-//						site.requestOIData("Cramer");
-						
-//						var sites = SiteFinder.Finder.getSites(input.Split(',').ToList());
-//						var sites = SitesDB.getSites(input.Split(',').ToList());
-//						foreach(var site in sites) {
-//							var drs = dt.Rows.Cast<System.Data.DataRow>().Where(s => s["Site"].ToString() == site.Id);
-//							if(drs.Any()) {
-//								site.Availability = dt.Clone();
-//								foreach(var row in drs)
-//									site.Availability.Rows.Add(row.ItemArray);
-//							}
-//						}
-//						updateCOOS();
 						
 //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
 //						wb.Show();
-						
-//						ShiftsSwapForm ss = new ShiftsSwapForm();
-//						ss.Show();
 					};
 					Button butt3 = new Button();
 					butt3.Name = "butt3";

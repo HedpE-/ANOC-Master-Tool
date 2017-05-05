@@ -92,5 +92,16 @@ namespace appCore.GeoAPIs.UI
 			if(weatherPanel != null)
 				weatherPanel.Refresh();
 		}
+		
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			if(e.CloseReason == CloseReason.UserClosing) {
+				JCS.ToggleSwitch ts = Owner.Controls["toggleSwitch1"] as JCS.ToggleSwitch;
+				if(ts.Checked) {
+					ts.Checked = false;
+					e.Cancel = true;
+				}				
+			}
+		}
 	}
 }

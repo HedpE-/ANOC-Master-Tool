@@ -405,7 +405,6 @@ namespace appCore.SiteFinder.UI
 							
 							onwardSitesOverlay.Markers.Add(tempMarker);
 						}
-						var t = onwardSitesOverlay.Markers.Count;
 						myMap.Overlays.Add(onwardSitesOverlay);
 						toggleSwitch2.Enabled = true;
                         toggleSwitch2.Checked = true;
@@ -1061,7 +1060,7 @@ namespace appCore.SiteFinder.UI
 				                                      	if(siteDetails_UIMode.Contains("multi"))
 				                                      		siteDetails_UIMode = "single";
 				                                      	selectedSiteDetailsPopulate();
-				                                      	MainMenu.siteFinder_Toggle(currentSite.Exists);
+//				                                      	MainMenu.siteFinder_Toggle(currentSite.Exists);
 				                                      });
 				
 				LoadingPanel load = new LoadingPanel();
@@ -1271,12 +1270,12 @@ namespace appCore.SiteFinder.UI
 				return;
 			}
 			
-			var thread = new System.Threading.Thread(() => {
+			var thread = new Thread(() => {
 			                                         	LockUnlockCellsForm lucf = new LockUnlockCellsForm();
 			                                         	lucf.ShowDialog();
 			                                         });
 			thread.Name = "Cells Locked";
-			thread.SetApartmentState(System.Threading.ApartmentState.STA);
+			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
 		}
 

@@ -1009,6 +1009,10 @@ namespace appCore.SiteFinder
 			try { county = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
 			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
 		}
+		
+		public override string ToString() {
+			return Exists ? Id : string.Empty;
+		}
 
 		void OnTimerElapsed_UpdateSiteData(Site newData) {
 			SITE = newData.SITE;
