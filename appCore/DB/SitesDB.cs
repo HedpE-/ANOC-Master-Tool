@@ -142,7 +142,7 @@ namespace appCore.DB
 			return foundSite;
 		}
 		
-		public static List<Site> getSites(List<string> sitesToFind, bool ignoreCache = false)
+		public static List<Site> getSites(IEnumerable<string> sitesToFind, bool ignoreCache = false)
 		{
 			List<string> findSites = new List<string>();
 			findSites.AddRange(sitesToFind);

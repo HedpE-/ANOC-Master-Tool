@@ -157,15 +157,27 @@ namespace appCore
 					butt.Text = "Clear SitesDB";
 					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
 					butt.Click += delegate {
-				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-				var cities = openWeatherAPI.query(new []{ "dudley", "london", "BURTON IN KENDAL" });
+						OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+						var sites = SitesDB.getSites(new []{ "15", "3792", "4467", "1190", "46788" });
+						double maxLongitude = sites.Max(s => s.Coordinates.Longitude);
+						double minLongitude = sites.Min(s => s.Coordinates.Longitude);
+						double maxLatitude = sites.Max(s => s.Coordinates.Latitude);
+						double minLatitude = sites.Min(s => s.Coordinates.Latitude);
+						
+						
+						
+						bbox bounding box [lon-left,lat-bottom,lon-right,lat-top,zoom]
+						
+						http://api.openweathermap.org/data/2.5/box/city?bbox=12,32,15,37,10
+						
+						var cities = openWeatherAPI.query(new []{ "dudley", "london", "BURTON IN KENDAL" });
 //						SitesDB.List.Clear();
 //						InputBoxDialog ib = new InputBoxDialog();
 //						ib.FormPrompt = "Site to remove?\n\n(Leave blank and click ok to clear whole DB";
 //						DialogResult ans = ib.ShowDialog();
 //						if(ans != DialogResult.Cancel) {
 //							string input = ib.InputResponse;
-////						string input = Microsoft.VisualBasic.Interaction.InputBox("Site to remove?\n\n(Leave blank and click ok to clear whole DB");
+						////						string input = Microsoft.VisualBasic.Interaction.InputBox("Site to remove?\n\n(Leave blank and click ok to clear whole DB");
 //							if(string.IsNullOrEmpty(input))
 //								SitesDB.Clear();
 //							else

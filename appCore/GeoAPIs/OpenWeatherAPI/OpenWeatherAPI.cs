@@ -65,5 +65,32 @@ namespace OpenWeatherAPI
 
             return null;
         }
+
+        //Returns null if invalid request
+        public List<Query> query(double minLongitude, double maxLongitude, double minLatitude, double maxLatitude)
+        {
+            string cityIds = string.Empty;
+            List<string> citiesNotFound = new List<string>();
+            foreach(string city in cities) {
+            	var foundCity = appCore.DB.Databases.Cities.FirstOrDefault(c => c.name.ToUpper() == city.ToUpper());
+                if(foundCity != null)
+                    cityIds += foundCity.id + ",";
+                else
+                	citiesNotFound.Add(city);
+            }
+            if (cityIds.EndsWith(","))
+                cityIds = cityIds.Substring(0, cityIds.Length - 2);
+
+            if (!string.IsNullOrEmpty(cityIds))
+            {
+                JObject jsonData = JObject.Parse(new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/group?appid={0}&id={1}", openWeatherAPIKey, cityIds)));
+                List<Query> bulkQuery = new List<Query>();
+                //foreach(Query(jsonData);
+
+                return bulkQuery;
+            }
+
+            return null;
+        }
     }
 }
