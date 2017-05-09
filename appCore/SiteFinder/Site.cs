@@ -389,7 +389,7 @@ namespace appCore.SiteFinder
 						return currentWeather;
 				}
 				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-				currentWeather = openWeatherAPI.query(Town + ",UK");
+				currentWeather = openWeatherAPI.queryCityName(Town + ",UK");
 				currentWeather.LastUpdateTimestamp = DateTime.Now;
 				Settings.GlobalProperties.WeatherCollection.Add(currentWeather);
 				return currentWeather;
