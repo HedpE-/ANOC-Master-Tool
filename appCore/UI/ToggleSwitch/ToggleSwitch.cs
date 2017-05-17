@@ -224,9 +224,12 @@ namespace JCS
                         _animationTarget = 0;
                         BeginAnimation(false);
                     }
+                    _checked = value;
                 }
             }
         }
+        
+        public bool CheckedStateBeforeDisabling { get; private set; }
 
         [Bindable(true)]
         [DefaultValue(true)]
@@ -1053,6 +1056,8 @@ namespace JCS
 
         protected override void OnEnabledChanged(EventArgs e)
         {
+            if (!Enabled)
+                CheckedStateBeforeDisabling = Checked;
             base.OnEnabledChanged(e);
             Refresh();
         }

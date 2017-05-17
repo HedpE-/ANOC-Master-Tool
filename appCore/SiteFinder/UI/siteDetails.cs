@@ -360,9 +360,7 @@ namespace appCore.SiteFinder.UI
 		
 		void selectedSiteDetailsPopulate()
         {
-            toggleSwitch1.Checked = false;
             toggleSwitch1.Enabled = false;
-            toggleSwitch2.Checked = false;
             toggleSwitch2.Enabled = false;
 
             if (currentSite.Exists) {
@@ -407,7 +405,6 @@ namespace appCore.SiteFinder.UI
 						}
 						myMap.Overlays.Add(onwardSitesOverlay);
 						toggleSwitch2.Enabled = true;
-                        toggleSwitch2.Checked = true;
 					}
 				}
 				selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
@@ -421,18 +418,17 @@ namespace appCore.SiteFinder.UI
 					}
 				}
 				else {
-					if(myMap.Overlays.Contains(onwardSitesOverlay))
+					if(myMap.Overlays.Contains(onwardSitesOverlay) && toggleSwitch2.Checked)
 						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
 					else
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
-				
-				toggleSwitch1.Enabled = true;
-                toggleSwitch1.Checked = true;
+                
+                toggleSwitch1.Enabled = currentSite.CurrentWeather != null;
 			}
 			else {
 				foreach(Control ctr in Controls) {
-					if(ctr.Name != "textBox1" && ctr.Name != "comboBox1" && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
+					if(ctr.Name != "textBox1" && ctr.Name != "comboBox1" && !ctr.Name.StartsWith("toggleSwitch") && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
 						if(ctr.Name != "dataGridView1") {
 							TextBoxBase tb = ctr as TextBoxBase;
 							if(tb != null)
@@ -472,9 +468,19 @@ namespace appCore.SiteFinder.UI
 			
 			MainMenu.siteFinder_Toggle(currentSite.Exists);
 			pictureBox1.UpdateCells(currentSite.Cells);
-		}
-		
-		DataView GetCellsDV() {
+        }
+
+        private void toggleSwitches_EnabledChanged(object sender, EventArgs e)
+        {
+            JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
+
+            if(ts.Enabled)
+                ts.Checked = ts.Name == "toggleSwitch1" ? ts.Enabled : ts.CheckedStateBeforeDisabling;
+            else
+                ts.Checked = false;
+        }
+
+        DataView GetCellsDV() {
 			DataTable table = new DataTable();
 			table.TableName = "Cells";
 			table.Columns.Add("Tech");
@@ -1408,5 +1414,5 @@ namespace appCore.SiteFinder.UI
 		{
 	
 		}
-	}
+    }
 }
