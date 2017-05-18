@@ -269,18 +269,18 @@ namespace appCore.SiteFinder.UI
 		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
 			switch(DataType) {
 				case "INCs":
-					if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
-						if(e.Value.ToString() != "Closed" && e.Value.ToString() != "Resolved")
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Status" || dataGridView1.Columns[e.ColumnIndex].Name == "Incident Ref") {
+						if(dataGridView1.Rows[e.RowIndex].Cells["Status"].Value.ToString() != "Closed" && dataGridView1.Rows[e.RowIndex].Cells["Status"].Value.ToString() != "Resolved")
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 						else {
-							if(e.Value.ToString() == "Resolved")
+							if(dataGridView1.Rows[e.RowIndex].Cells["Status"].Value.ToString() == "Resolved")
 								e.CellStyle.BackColor = System.Drawing.Color.Yellow;
 						}
 					}
 					break;
 				case "CRQs":
-					if(dataGridView1.Columns[e.ColumnIndex].Name == "Status") {
-						if(e.Value.ToString() == "Scheduled" || e.Value.ToString() == "Implementation In Progress") {
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Status" || dataGridView1.Columns[e.ColumnIndex].Name == "Change Ref") {
+						if(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() == "Scheduled" || dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() == "Implementation In Progress") {
 							if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled Start"].Value) <= DateTime.Now &&
 							   Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Scheduled End"].Value) > DateTime.Now)
 								e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
@@ -288,7 +288,7 @@ namespace appCore.SiteFinder.UI
 								e.CellStyle.BackColor = System.Drawing.Color.Yellow;
 						}
 						else {
-							if(e.Value.ToString() != "Closed")
+							if(dataGridView1.Rows[e.RowIndex].Cells["Status"].Value.ToString() != "Closed")
 								e.CellStyle.BackColor = System.Drawing.Color.Red;
 						}
 					}
@@ -300,8 +300,8 @@ namespace appCore.SiteFinder.UI
 //					}
 					break;
 				case "BookIns":
-					if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived") {
-						if(Convert.ToDateTime(e.Value) <= DateTime.Now &&
+					if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived" || dataGridView1.Columns[e.ColumnIndex].Name == "Visit") {
+						if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) <= DateTime.Now &&
 						   dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value == null)
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 					}
