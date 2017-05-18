@@ -30,6 +30,15 @@ namespace OpenWeatherAPI
 			return newQuery.ValidRequest ? newQuery : null;
         }
 
+		//Returns null if invalid request
+		public Query queryCityId(int cityId)
+		{
+			JObject jsonData = JObject.Parse(new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/weather?appid={0}&id={1}", openWeatherAPIKey, cityId)));
+			Query newQuery = new Query(jsonData);
+			
+			return newQuery.ValidRequest ? newQuery : null;
+        }
+
         //Returns null if invalid request
         public Query queryZipCode(string postCode)
         {
