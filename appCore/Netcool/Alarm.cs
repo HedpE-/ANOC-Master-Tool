@@ -8,7 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 using appCore.SiteFinder;
 using FileHelpers;
 
@@ -419,59 +419,83 @@ namespace appCore.Netcool
 		{
 			toParse = toParse.Trim(' ');
 			
-			if ( toParse.Contains("CELL LOGICAL") )
-			{
+			if(toParse.Contains("CELL LOGICAL")) {
 				toParse = toParse.Replace("P1", string.Empty);
 				toParse = toParse.Replace("P3", string.Empty);
 				toParse = toParse.Replace("RBS", string.Empty);
-				toParse = toParse.Replace("NODEB", string.Empty);
-				toParse = toParse.Replace("ENODEB", string.Empty);
+//				toParse = toParse.Replace("NODEB", string.Empty);
+//				toParse = toParse.Replace("ENODEB", string.Empty);
 				toParse = toParse.Replace("SITE", string.Empty);
 				toParse = toParse.Replace(":", string.Empty);
-				int Pos = toParse.IndexOf("(", StringComparison.Ordinal);
+				toParse = toParse.Trim();
+				int channelsStartPos = toParse.IndexOf("(", StringComparison.Ordinal) + 1;
+				int channelsEndPos = toParse.Substring(channelsStartPos).Contains("END") ? toParse.IndexOf("END", StringComparison.Ordinal) : toParse.IndexOf(")", StringComparison.Ordinal);
+				/*
+				P3 RBS SITE: CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION: CELL =  G10901X (BCCH SDCCH TCH)
+P3 RBS SITE: CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION: CELL =  G12611 (TCH FR 1)
+P1 RBS SITE: CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION: CELL =  G78007Y (CBCH END -ProbableCause(OSS)=SUBSCRIBER)
+				*/
 				
-				if (Pos != -1)
-				{
-					string channelType = string.Empty;
-					int a = 0;
-					foreach (char ch in toParse)
-					{
-						if(ch == '(')
-							a++;
-						if(ch != '(')
-							if (a == 0)
-								continue;
-						channelType += ch.ToString();
-						if(ch == ')')
-							break;
-					}
-					if ( channelType == "(TCH FR 1)" )
-					{
+				var channels = toParse.Substring(channelsStartPos, channelsEndPos - channelsStartPos)
+					.Replace("FR", string.Empty)
+					.RemoveDigits()
+					.Trim()
+					.Split(' ');
+				
+				if(channels.Length > 0) {
+					if(!channels.Contains("BCCH")) {
 						int onPos = toParse.IndexOf("CELL = ", StringComparison.Ordinal);
-						if (onPos != -1)
-						{
+						if(onPos != -1) {
 							string cell = string.Empty;
 							foreach (char ch in toParse.Substring(onPos + 6, toParse.IndexOf(" (", StringComparison.Ordinal) - (onPos + 6)))
-							{
 								if ( ch != ' ' ) cell += ch;
-							}
-							channelType += Environment.NewLine + "TCH Cell Degraded (" + cell + ")";
-						}
+							toParse += Environment.NewLine + string.Join("/", channels) + " Cell Degraded (" + cell + ")";
+						}						
 					}
-					if ( toParse.Contains("on") )
-					{
-						int onPos = toParse.IndexOf("on", StringComparison.Ordinal);
-						
-						if (onPos != -1)
-						{
-							toParse = toParse.Remove(onPos, toParse.Length - onPos);
-						}
-					}
-					toParse = toParse + channelType;
-					toParse = toParse.TrimStart(' ');
-					toParse = toParse.TrimEnd(' ');
 					return toParse;
 				}
+				
+//				if(channelsStartPos != -1)
+//				{
+//					string channelType = string.Empty;
+//					int a = 0;
+//					foreach (char ch in toParse)
+//					{
+//						if(ch == '(')
+//							a++;
+//						if(ch != '(')
+//							if (a == 0)
+//								continue;
+//						channelType += ch.ToString();
+//						if(ch == ')')
+//							break;
+//					}
+//					if ( !channelType.StartsWith("(BCCH") )
+//					{
+//						int onPos = toParse.IndexOf("CELL = ", StringComparison.Ordinal);
+//						if (onPos != -1)
+//						{
+//							string cell = string.Empty;
+//							foreach (char ch in toParse.Substring(onPos + 6, toParse.IndexOf(" (", StringComparison.Ordinal) - (onPos + 6)))
+//							{
+//								if ( ch != ' ' ) cell += ch;
+//							}
+//							channelType += Environment.NewLine + "TCH Cell Degraded (" + cell + ")";
+//						}
+//					}
+//					if ( toParse.Contains("on") )
+//					{
+//						int onPos = toParse.IndexOf("on", StringComparison.Ordinal);
+//						
+//						if (onPos != -1)
+//						{
+//							toParse = toParse.Remove(onPos, toParse.Length - onPos);
+//						}
+//					}
+//					toParse = toParse.TrimStart(' ');
+//					toParse = toParse.TrimEnd(' ');
+//					return toParse;
+//				}
 			}
 			
 			if ( toParse.Contains("RADIO X-CEIVER ADMINISTRATION MANAGED OBJECT FAULT") )
@@ -479,8 +503,8 @@ namespace appCore.Netcool
 				toParse = toParse.Replace("P1", string.Empty);
 				toParse = toParse.Replace("P3", string.Empty);
 				toParse = toParse.Replace("RBS", string.Empty);
-				toParse = toParse.Replace("NODEB", string.Empty);
-				toParse = toParse.Replace("ENODEB", string.Empty);
+//				toParse = toParse.Replace("NODEB", string.Empty);
+//				toParse = toParse.Replace("ENODEB", string.Empty);
 				toParse = toParse.Replace("SITE", string.Empty);
 				toParse = toParse.Replace(":", string.Empty);
 				int Pos = toParse.IndexOf("MO = ", StringComparison.Ordinal);
