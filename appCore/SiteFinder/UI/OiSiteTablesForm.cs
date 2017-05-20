@@ -292,16 +292,10 @@ namespace appCore.SiteFinder.UI
 								e.CellStyle.BackColor = System.Drawing.Color.Red;
 						}
 					}
-//					else {
-//						if(dataGridView1.Columns[e.ColumnIndex].Name == "Programme") {
-//							if(dataGridView1.Rows[e.RowIndex].Height > 10)
-//								dataGridView1.Rows[e.RowIndex].Height = 10;
-//						}
-//					}
 					break;
 				case "BookIns":
 					if(dataGridView1.Columns[e.ColumnIndex].Name == "Arrived" || dataGridView1.Columns[e.ColumnIndex].Name == "Visit") {
-						if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) <= DateTime.Now &&
+						if(Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells["Arrived"].Value) <= DateTime.Now &&
 						   dataGridView1.Rows[e.RowIndex].Cells["Departed Site"].Value == null)
 							e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
 					}
