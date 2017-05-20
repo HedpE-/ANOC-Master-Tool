@@ -107,7 +107,7 @@ namespace appCore.SiteFinder.UI
 						                         	"JVCO ID"});
 						comboBox1.Location = new Point(5, 30);
 						comboBox1.Name = "comboBox1";
-						comboBox1.Size = new Size(76, 21);
+						comboBox1.Size = new Size(textBox1.Left - (10 + comboBox1.Left), 21);
 						comboBox1.SelectedIndexChanged += (sender, e) => {
 							switch(comboBox1.SelectedIndex) {
 								case 0:
@@ -121,7 +121,7 @@ namespace appCore.SiteFinder.UI
 						comboBox1.Text = "Site ID";
 						Controls.Add(comboBox1);
 					}
-					if(value.Contains("readonly")) {
+					else {
 						ComboBox cb = Controls["comboBox1"] as ComboBox;
 						if(cb != null)
 							Controls.Remove(cb);
@@ -359,11 +359,11 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void selectedSiteDetailsPopulate()
-        {
-            toggleSwitch1.Enabled = false;
-            toggleSwitch2.Enabled = false;
+		{
+			toggleSwitch1.Enabled = false;
+			toggleSwitch2.Enabled = false;
 
-            if (currentSite.Exists) {
+			if (currentSite.Exists) {
 				textBox1.Text = currentSite.Id;
 				textBox2.Text = currentSite.PowerCompany;
 				textBox3.Text = currentSite.JVCO_Id;
@@ -404,6 +404,7 @@ namespace appCore.SiteFinder.UI
 							onwardSitesOverlay.Markers.Add(tempMarker);
 						}
 						myMap.Overlays.Add(onwardSitesOverlay);
+						onwardSitesOverlay.IsVisibile = false;
 						toggleSwitch2.Enabled = true;
 					}
 				}
@@ -423,8 +424,8 @@ namespace appCore.SiteFinder.UI
 					else
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
-                
-                toggleSwitch1.Enabled = currentSite.CurrentWeather != null;
+				
+				toggleSwitch1.Enabled = currentSite.CurrentWeather != null;
 			}
 			else {
 				foreach(Control ctr in Controls) {
@@ -468,19 +469,19 @@ namespace appCore.SiteFinder.UI
 			
 			MainMenu.siteFinder_Toggle(currentSite.Exists);
 			pictureBox1.UpdateCells(currentSite.Cells);
-        }
+		}
 
-        private void toggleSwitches_EnabledChanged(object sender, EventArgs e)
-        {
-            JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
+		private void toggleSwitches_EnabledChanged(object sender, EventArgs e)
+		{
+			JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
 
-            if(ts.Enabled)
-                ts.Checked = ts.Name == "toggleSwitch1" ? ts.Enabled : ts.CheckedStateBeforeDisabling;
-            else
-                ts.Checked = false;
-        }
+			if(ts.Enabled)
+				ts.Checked = ts.Name == "toggleSwitch1" ? ts.Enabled : ts.CheckedStateBeforeDisabling;
+			else
+				ts.Checked = false;
+		}
 
-        DataView GetCellsDV() {
+		DataView GetCellsDV() {
 			DataTable table = new DataTable();
 			table.TableName = "Cells";
 			table.Columns.Add("Tech");
@@ -967,8 +968,8 @@ namespace appCore.SiteFinder.UI
 						break;
 					case "TXType":
 						col.HeaderText = "TX Type";
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-						col.Width = 55;
+//						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+//						col.Width = 55;
 						break;
 					case "CRQ":
 						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -1277,9 +1278,9 @@ namespace appCore.SiteFinder.UI
 			}
 			
 			var thread = new Thread(() => {
-			                                         	LockUnlockCellsForm lucf = new LockUnlockCellsForm();
-			                                         	lucf.ShowDialog();
-			                                         });
+			                        	LockUnlockCellsForm lucf = new LockUnlockCellsForm();
+			                        	lucf.ShowDialog();
+			                        });
 			thread.Name = "Cells Locked";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
@@ -1412,7 +1413,7 @@ namespace appCore.SiteFinder.UI
 		}
 		void SiteDetailsLoad(object sender, EventArgs e)
 		{
-	
+			
 		}
-    }
+	}
 }

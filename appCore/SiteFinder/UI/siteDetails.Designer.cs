@@ -152,10 +152,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBox4.DetectUrls = false;
-			this.textBox4.Location = new System.Drawing.Point(87, 81);
+			this.textBox4.Location = new System.Drawing.Point(96, 81);
 			this.textBox4.Name = "textBox4";
 			this.textBox4.ReadOnly = true;
-			this.textBox4.Size = new System.Drawing.Size(336, 46);
+			this.textBox4.Size = new System.Drawing.Size(327, 46);
 			this.textBox4.TabIndex = 85;
 			this.textBox4.Text = "";
 			this.textBox4.TextChanged += new System.EventHandler(this.TextBoxesTextChanged_LargeTextButtons);
@@ -182,10 +182,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox2
 			// 
-			this.textBox2.Location = new System.Drawing.Point(87, 132);
+			this.textBox2.Location = new System.Drawing.Point(96, 132);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.ReadOnly = true;
-			this.textBox2.Size = new System.Drawing.Size(366, 20);
+			this.textBox2.Size = new System.Drawing.Size(357, 20);
 			this.textBox2.TabIndex = 82;
 			// 
 			// label4
@@ -199,11 +199,11 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(87, 30);
+			this.textBox1.Location = new System.Drawing.Point(96, 30);
 			this.textBox1.MaxLength = 6;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(85, 20);
+			this.textBox1.Size = new System.Drawing.Size(76, 20);
 			this.textBox1.TabIndex = 79;
 			this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
 			// 
@@ -226,10 +226,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox3
 			// 
-			this.textBox3.Location = new System.Drawing.Point(87, 55);
+			this.textBox3.Location = new System.Drawing.Point(96, 55);
 			this.textBox3.Name = "textBox3";
 			this.textBox3.ReadOnly = true;
-			this.textBox3.Size = new System.Drawing.Size(85, 20);
+			this.textBox3.Size = new System.Drawing.Size(76, 20);
 			this.textBox3.TabIndex = 86;
 			this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
 			// 
@@ -244,10 +244,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox5
 			// 
-			this.textBox5.Location = new System.Drawing.Point(506, 55);
+			this.textBox5.Location = new System.Drawing.Point(508, 55);
 			this.textBox5.Name = "textBox5";
 			this.textBox5.ReadOnly = true;
-			this.textBox5.Size = new System.Drawing.Size(156, 20);
+			this.textBox5.Size = new System.Drawing.Size(154, 20);
 			this.textBox5.TabIndex = 89;
 			// 
 			// label7
@@ -261,10 +261,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox8
 			// 
-			this.textBox8.Location = new System.Drawing.Point(506, 107);
+			this.textBox8.Location = new System.Drawing.Point(508, 107);
 			this.textBox8.Name = "textBox8";
 			this.textBox8.ReadOnly = true;
-			this.textBox8.Size = new System.Drawing.Size(43, 20);
+			this.textBox8.Size = new System.Drawing.Size(44, 20);
 			this.textBox8.TabIndex = 91;
 			// 
 			// checkBox1
@@ -326,15 +326,15 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox6
 			// 
-			this.textBox6.Location = new System.Drawing.Point(506, 82);
+			this.textBox6.Location = new System.Drawing.Point(508, 82);
 			this.textBox6.Name = "textBox6";
 			this.textBox6.ReadOnly = true;
-			this.textBox6.Size = new System.Drawing.Size(156, 20);
+			this.textBox6.Size = new System.Drawing.Size(154, 20);
 			this.textBox6.TabIndex = 93;
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(549, 107);
+			this.label5.Location = new System.Drawing.Point(555, 107);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(50, 20);
 			this.label5.TabIndex = 96;
@@ -343,10 +343,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox7
 			// 
-			this.textBox7.Location = new System.Drawing.Point(600, 107);
+			this.textBox7.Location = new System.Drawing.Point(611, 107);
 			this.textBox7.Name = "textBox7";
 			this.textBox7.ReadOnly = true;
-			this.textBox7.Size = new System.Drawing.Size(62, 20);
+			this.textBox7.Size = new System.Drawing.Size(51, 20);
 			this.textBox7.TabIndex = 95;
 			// 
 			// pictureBox1
@@ -386,10 +386,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// textBox10
 			// 
-			this.textBox10.Location = new System.Drawing.Point(506, 132);
+			this.textBox10.Location = new System.Drawing.Point(508, 132);
 			this.textBox10.Name = "textBox10";
 			this.textBox10.ReadOnly = true;
-			this.textBox10.Size = new System.Drawing.Size(156, 20);
+			this.textBox10.Size = new System.Drawing.Size(154, 20);
 			this.textBox10.TabIndex = 113;
 			// 
 			// label11
@@ -577,10 +577,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox4
 			// 
-			this.amtTextBox4.Location = new System.Drawing.Point(403, 54);
+			this.amtTextBox4.Location = new System.Drawing.Point(409, 54);
 			this.amtTextBox4.Name = "amtTextBox4";
 			this.amtTextBox4.ReadOnly = true;
-			this.amtTextBox4.Size = new System.Drawing.Size(50, 20);
+			this.amtTextBox4.Size = new System.Drawing.Size(44, 20);
 			this.amtTextBox4.TabIndex = 153;
 			// 
 			// label17
@@ -622,10 +622,10 @@ namespace appCore.SiteFinder.UI
 			// 
 			// amtTextBox6
 			// 
-			this.amtTextBox6.Location = new System.Drawing.Point(506, 30);
+			this.amtTextBox6.Location = new System.Drawing.Point(508, 30);
 			this.amtTextBox6.Name = "amtTextBox6";
 			this.amtTextBox6.ReadOnly = true;
-			this.amtTextBox6.Size = new System.Drawing.Size(156, 20);
+			this.amtTextBox6.Size = new System.Drawing.Size(154, 20);
 			this.amtTextBox6.TabIndex = 158;
 			// 
 			// amtDataGridView2
