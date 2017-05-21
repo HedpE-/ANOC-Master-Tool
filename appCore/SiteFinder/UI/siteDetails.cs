@@ -456,22 +456,38 @@ namespace appCore.SiteFinder.UI
 			amtDataGridView1.Columns.Clear();
 			
 			amtDataGridView1.DataSource = GetCellsDV();
+			
+			int cellNameColWidth = 129 - SystemInformation.VerticalScrollBarWidth;
 			int c = 0;
-			int[] columnWidths = { 35, 80, 50, 56, 70, 65, 55, 46, 45, 50 };
+			int[] columnWidths = { 45, /*129,*/ 55, 65, 70, 70, 65, 55, 50, 50 };
 			foreach(DataGridViewColumn dgvc in amtDataGridView1.Columns) {
-				dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-				dgvc.Width = columnWidths[c++];
+				if(dgvc.Name != "Cell Name") {
+//					dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+					dgvc.Width = columnWidths[c++];
+				}
+				else
+					continue;
+				
 				if(dgvc.Name == "Tech" || dgvc.Name == "COOS" || dgvc.Name == "Locked")
 					dgvc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 			}
-			if(siteDetails_UIMode.Contains("outage"))
+			
+			
+			if(siteDetails_UIMode.Contains("outage")) {
 				addCheckBoxColumn();
+				cellNameColWidth = cellNameColWidth - amtDataGridView1.Columns["CheckBoxes"].Width + 50;
+			}
+			
+//			amtDataGridView1.Columns["Cell Name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+			amtDataGridView1.Columns["Cell Name"].Width = cellNameColWidth;
+			
+			var t = amtDataGridView1.Columns.Cast<DataGridViewColumn>().Select(col => col.Width).ToArray();
 			
 			MainMenu.siteFinder_Toggle(currentSite.Exists);
 			pictureBox1.UpdateCells(currentSite.Cells);
 		}
 
-		private void toggleSwitches_EnabledChanged(object sender, EventArgs e)
+		void toggleSwitches_EnabledChanged(object sender, EventArgs e)
 		{
 			JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
 
