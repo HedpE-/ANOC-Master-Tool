@@ -159,10 +159,14 @@ namespace appCore
 					butt.Click += delegate {
                         OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
                         var sites = SitesDB.getSites(new[] { "15", "3792", "4467", "1190", "46788" });
+                        // horizontal
                         double maxLongitude = sites.Max(s => s.Coordinates.Longitude);
                         double minLongitude = sites.Min(s => s.Coordinates.Longitude);
+                        
+                        // vertical
                         double maxLatitude = sites.Max(s => s.Coordinates.Latitude);
                         double minLatitude = sites.Min(s => s.Coordinates.Latitude);
+                        
                         var t = openWeatherAPI.queryZipCode(sites[0].PostCode);
 						var cities = openWeatherAPI.query(minLongitude, maxLongitude, minLatitude, maxLatitude);
 //						SitesDB.List.Clear();
