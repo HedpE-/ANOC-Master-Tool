@@ -62,8 +62,9 @@ namespace appCore.Templates.UI
 						label5.Text = "Fault Reference";
 						label5.Visible = true;
 						label6.Visible = false;
-						label7.Visible = false;
-						if(!checkBox1.Checked) dateTimePicker1.Visible = false;
+						comboBox1.Visible = false;
+						if(!checkBox1.Checked)
+							dateTimePicker1.Visible = false;
 						dateTimePicker1.Format = DateTimePickerFormat.Custom;
 						dateTimePicker1.CustomFormat = "HH:mm";
 						dateTimePicker1.Location = new System.Drawing.Point(387, 114);
@@ -89,7 +90,7 @@ namespace appCore.Templates.UI
 						if(_currentTask == "BT")
 							textBox5.Text = relatedINC;
 						label6.Visible = false;
-						label7.Visible = false;
+						comboBox1.Visible = false;
 						checkBox1.Visible = false;
 						dateTimePicker1.Visible = false;
 						numericUpDown1.Visible = false;
@@ -111,7 +112,7 @@ namespace appCore.Templates.UI
 						label4.Text = "TEF Reference";
 						label5.Visible = false;
 						label6.Visible = false;
-						label7.Visible = false;
+						comboBox1.Visible = false;
 						checkBox1.Visible = false;
 						dateTimePicker1.Visible = false;
 						numericUpDown1.Visible = false;
@@ -134,7 +135,8 @@ namespace appCore.Templates.UI
 						label5.Visible = true;
 						label6.Text = "Monitor duration";
 						label6.Visible = true;
-						label7.Visible = true;
+						comboBox1.Visible = true;
+						comboBox1.SelectedIndex = 0;
 						checkBox1.Visible = false;
 						dateTimePicker1.Visible = true;
 						dateTimePicker1.Location = textBox5.Location;
@@ -234,7 +236,9 @@ namespace appCore.Templates.UI
 					taskString = "Site " + textBox1.Text + " - TEF site " + textBox3.Text + " - Ref. " + textBox4.Text;
 					break;
 				case "Monitoring":
-					DateTime monitorEndTime = DateTime.ParseExact(dateTimePicker1.Text, "dd/MM/yyyy H:mm", System.Globalization.CultureInfo.InvariantCulture).AddHours(Convert.ToDouble(numericUpDown1.Text));
+//					double monitorHours = comboBox1.Text == "Hours" ? Convert.ToDouble(numericUpDown1.Text) : Convert.ToDouble(numericUpDown1.Text * 24);
+					DateTime monitorEndTime = DateTime.ParseExact(dateTimePicker1.Text, "dd/MM/yyyy H:mm", System.Globalization.CultureInfo.InvariantCulture)
+						.AddHours(comboBox1.Text == "Hours" ? Convert.ToDouble(numericUpDown1.Text) : Convert.ToDouble(Convert.ToInt16(numericUpDown1.Text) * 24));
 					taskString = "Monitor until " + monitorEndTime + " - Site " + textBox1.Text;
 					if(!string.IsNullOrEmpty(textBox4.Text))
 						taskString += " - " + textBox4.Text;
