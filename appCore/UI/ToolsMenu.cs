@@ -8,7 +8,10 @@
  */
 using System;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
+using Svg;
 
 namespace appCore.UI
 {
@@ -118,8 +121,8 @@ namespace appCore.UI
 			// 
 			pictureBox1.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
 			pictureBox1.BackColor = Color.Transparent;
-//			pictureBox1.Image = Resources.Settings_normal;
-			pictureBox1.Image = Toolbox.SVGParser.GetBitmapFromSvgFile(@"C:\Users\goncarj3\Desktop\ANOC-Master-Tool\cogwheel-outline.svg", new Size(40, 40));
+			pictureBox1.Image = Resources.Settings_normal;
+//			pictureBox1.Image = Toolbox.SVGParser.GetBitmapFromSvgFile(@"C:\Users\goncarj3\Desktop\ANOC-Master-Tool\cogwheel-outline.svg", new Size(40, 40));
 			pictureBox1.Location = new Point(6, 95);
 			pictureBox1.Name = "pictureBox1";
 			pictureBox1.Size = new Size(40, 40);

@@ -229,7 +229,11 @@ namespace JCS
             }
         }
         
-        public bool CheckedStateBeforeDisabling { get; private set; }
+        bool _checkedStateBeforeDisabling = true;
+        public bool CheckedStateBeforeDisabling {
+        	get { return _checkedStateBeforeDisabling; }
+        	private set { _checkedStateBeforeDisabling = value; }
+        }
 
         [Bindable(true)]
         [DefaultValue(true)]
@@ -1056,7 +1060,7 @@ namespace JCS
 
         protected override void OnEnabledChanged(EventArgs e)
         {
-            if (!Enabled)
+            if(!Enabled)
                 CheckedStateBeforeDisabling = Checked;
             base.OnEnabledChanged(e);
             Refresh();
