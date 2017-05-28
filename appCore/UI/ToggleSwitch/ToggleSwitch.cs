@@ -232,7 +232,9 @@ namespace JCS
         bool _checkedStateBeforeDisabling = true;
         public bool CheckedStateBeforeDisabling {
         	get { return _checkedStateBeforeDisabling; }
-        	private set { _checkedStateBeforeDisabling = value; }
+        	private set {
+        		_checkedStateBeforeDisabling = value;
+        	}
         }
 
         [Bindable(true)]

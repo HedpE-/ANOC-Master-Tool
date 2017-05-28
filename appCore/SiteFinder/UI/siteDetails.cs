@@ -411,7 +411,7 @@ namespace appCore.SiteFinder.UI
 				selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
 				myMap.Overlays.Add(selectedSiteOverlay);
 				if(!siteDetails_UIMode.Contains("single")) {
-					if(myMap.Overlays.Contains(onwardSitesOverlay))
+					if(onwardSitesOverlay.IsVisibile)
 						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
 					else {
 						myMap.Position = markersOverlay.Markers.FirstOrDefault(m => m.Tag.ToString() == textBox1.Text).Position;
@@ -419,7 +419,7 @@ namespace appCore.SiteFinder.UI
 					}
 				}
 				else {
-					if(myMap.Overlays.Contains(onwardSitesOverlay) && toggleSwitch2.Checked)
+					if(onwardSitesOverlay.IsVisibile && onwardSitesOverlay.Markers.Count > 0)
 						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
 					else
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
@@ -491,10 +491,7 @@ namespace appCore.SiteFinder.UI
 		{
 			JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
 
-			if(ts.Enabled)
-				ts.Checked = ts.Name == "toggleSwitch1" ? ts.Enabled : ts.CheckedStateBeforeDisabling;
-			else
-				ts.Checked = false;
+			ts.Checked = ts.Enabled;
 		}
 
 		DataView GetCellsDV() {
@@ -1397,17 +1394,19 @@ namespace appCore.SiteFinder.UI
 						}
 					}
 					else {
-						weatherForm = new appCore.GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
-						weatherForm.BackColor = Color.Black;
-						weatherForm.WeatherPanelOpacity = 60;
-						weatherForm.Owner = this;
-						weatherForm.StartPosition = FormStartPosition.Manual;
-						weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
-						weatherForm.Show();
+						if(currentSite != null) {
+							weatherForm = new appCore.GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
+							weatherForm.BackColor = Color.Black;
+							weatherForm.WeatherPanelOpacity = 60;
+							weatherForm.Owner = this;
+							weatherForm.StartPosition = FormStartPosition.Manual;
+							weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
+							weatherForm.Show();
 //
-						weatherFormOffset = new Point(
-							weatherForm.Location.X - Location.X,
-							weatherForm.Location.Y - Location.Y);
+							weatherFormOffset = new Point(
+								weatherForm.Location.X - Location.X,
+								weatherForm.Location.Y - Location.Y);
+						}
 					}
 					break;
 				case "toggleSwitch2":
@@ -1419,11 +1418,6 @@ namespace appCore.SiteFinder.UI
 						if(myMap.Overlays.Contains(onwardSitesOverlay))
 							onwardSitesOverlay.IsVisibile = false;
 					}
-//					var t = myMap.Overlays.Contains(onwardSitesOverlay);
-//					var t2 = myMap.Overlays.Count;
-//					var t3 = myMap.Overlays.Select(o => o.Id);
-//					var t4 = onwardSitesOverlay.IsVisibile;
-//					var t5 = onwardSitesOverlay.Markers.Count;
 					break;
 			}
 		}
