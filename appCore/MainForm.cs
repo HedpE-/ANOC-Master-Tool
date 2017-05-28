@@ -103,15 +103,6 @@ namespace appCore
 //			toolsMenu.Location = new Point(tabPage1.Right - toolsMenu.Width, 0);
 //			tabPage1.Controls.Add(toolsMenu);
 			
-			string img = SettingsFile.BackgroundImage;
-			
-			if(img != "Default") {
-				if(File.Exists(img))
-					tabPage1.BackgroundImage = Image.FromFile(img);
-				else
-					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
-			}
-			
 			panel1.Controls.Add(SiteDetailsPictureBox);
 			// 
 			// SiteDetailsPictureBox
@@ -141,6 +132,15 @@ namespace appCore
 			TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
 			TicketCountLabel.MouseClick += TicketCountLabelMouseClick;
 			
+			string img = SettingsFile.BackgroundImage;
+			
+			if(img != "Default") {
+				if(File.Exists(img))
+					tabPage1.BackgroundImage = Image.FromFile(img);
+				else
+					trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
+			}
+			
 			// HACK: Developer specific action
 			if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "Caramelos" || CurrentUser.UserName == "SANTOSS2") {
 				Button butt2 = new Button();
@@ -157,17 +157,17 @@ namespace appCore
 					butt.Text = "Clear SitesDB";
 					butt.Location = new Point(5, butt2.Top - butt.Height - 5);
 					butt.Click += delegate {
-                        OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-                        var sites = SitesDB.getSites(new[] { "15", "3792", "4467", "1190", "46788" });
-                        // horizontal
-                        double maxLongitude = sites.Max(s => s.Coordinates.Longitude);
-                        double minLongitude = sites.Min(s => s.Coordinates.Longitude);
-                        
-                        // vertical
-                        double maxLatitude = sites.Max(s => s.Coordinates.Latitude);
-                        double minLatitude = sites.Min(s => s.Coordinates.Latitude);
-                        
-                        var t = openWeatherAPI.queryZipCode(sites[0].PostCode);
+						OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+						var sites = SitesDB.getSites(new[] { "15", "3792", "4467", "1190", "46788" });
+						// horizontal
+						double maxLongitude = sites.Max(s => s.Coordinates.Longitude);
+						double minLongitude = sites.Min(s => s.Coordinates.Longitude);
+						
+						// vertical
+						double maxLatitude = sites.Max(s => s.Coordinates.Latitude);
+						double minLatitude = sites.Min(s => s.Coordinates.Latitude);
+						
+						var t = openWeatherAPI.queryZipCode(sites[0].PostCode);
 						var cities = openWeatherAPI.query(minLongitude, maxLongitude, minLatitude, maxLatitude);
 //						SitesDB.List.Clear();
 //						InputBoxDialog ib = new InputBoxDialog();
@@ -367,25 +367,58 @@ namespace appCore
 		void TicketCountLabelMouseClick(object sender, MouseEventArgs e) {
 			if(shiftsCalendar.isVisible)
 				shiftsCalendar.toggleShiftsPanel();
-			switch(e.Button) {
-				case MouseButtons.Left:
-					if(logFiles.LogFile.Exists) {
-						if(string.IsNullOrEmpty(TicketCountLabel.Text)) {
-							logFiles.CheckLogFileIntegrity();
-							UpdateTicketCountLabel(true);
-						}
-						else
-							TicketCountLabel.Text = string.Empty;
-					}
-					else {
-						TicketCountLabel.Text = string.IsNullOrEmpty(TicketCountLabel.Text) ? 0.ToString() : string.Empty;
-					}
-					break;
-				case MouseButtons.Right:
-					TicketCountLabel.ForeColor = TicketCountLabel.ForeColor == Color.Black ? Color.White : Color.Black;
-					break;
+//			switch(e.Button) {
+//				case MouseButtons.Left:
+			if(logFiles.LogFile.Exists) {
+				if(string.IsNullOrEmpty(TicketCountLabel.Text)) {
+					logFiles.CheckLogFileIntegrity();
+					UpdateTicketCountLabel(true);
+				}
+				else
+					TicketCountLabel.Text = string.Empty;
 			}
+			else {
+				TicketCountLabel.Text = string.IsNullOrEmpty(TicketCountLabel.Text) ? 0.ToString() : string.Empty;
+			}
+//					break;
+//				case MouseButtons.Right:
+//					TicketCountLabel.ForeColor = TicketCountLabel.ForeColor == Color.Black ? Color.White : Color.Black;
+//					break;
+//			}
 			
+		}
+		
+		void TabPage1BackgroundImageChanged(object sender, EventArgs e)
+		{
+//			if(!string.IsNullOrEmpty(TicketCountLabel.Text)) {
+				string text = TicketCountLabel.Text;
+				TicketCountLabel.Text = string.Empty;
+				
+				Bitmap bmp = new Bitmap(1, 1);
+				Bitmap orig = new Bitmap(TicketCountLabel.ClientRectangle.Width, TicketCountLabel.ClientRectangle.Height);
+				using(Graphics g = Graphics.FromImage(orig)) {
+					
+				}
+//				tabPage1.DrawToBitmap(orig, new Rectangle(tabPage1.PointToClient(TicketCountLabel.Location), TicketCountLabel.ClientRectangle.Size));
+				TicketCountLabel.DrawToBitmap(orig, TicketCountLabel.ClientRectangle);
+				if(CurrentUser.UserName == "GONCARJ3")
+					orig.Save(UserFolder.FullName + @"\orig.png");
+				
+				using (Graphics g = Graphics.FromImage(bmp))
+				{
+					// updated: the Interpolation mode needs to be set to
+					// HighQualityBilinear or HighQualityBicubic or this method
+					// doesn't work at all.  With either setting, the results are
+					// slightly different from the averaging method.
+					g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+					g.DrawImage(orig, new Rectangle(0, 0, 1, 1));
+				}
+				Color pixel = bmp.GetPixel(0, 0);
+				// pixel will contain average values for entire orig Bitmap
+				TicketCountLabel.ForeColor = Tools.ContrastColor(Color.FromArgb(255, pixel.R, pixel.G, pixel.B));
+				
+				TicketCountLabel.Text = text;
+//			}
 		}
 		
 		void toolTipDeploy() {

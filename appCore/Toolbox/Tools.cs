@@ -56,7 +56,7 @@ namespace appCore.Toolbox
 			return convertByteArrayToHex(hash);
 		}
 		
-		public static string convertByteArrayToHex(byte[] hash) {
+		static string convertByteArrayToHex(byte[] hash) {
 			// step 2, convert byte array to hex string
 
 			StringBuilder sb = new StringBuilder();
@@ -64,6 +64,18 @@ namespace appCore.Toolbox
 				sb.Append(hash[i].ToString("X2"));
 			}
 			return sb.ToString();
+		}
+		
+		public static System.Drawing.Color ContrastColor(System.Drawing.Color color)
+		{
+			int d = 0;
+
+			// Counting the perceptive luminance - human eye favors green color...
+			double a = 1 - ( 0.299 * color.R + 0.587 * color.G + 0.114 * color.B)/255;
+
+			d = a < 0.5 ? 0 : 255; // dark colors - white font
+
+			return  System.Drawing.Color.FromArgb(d, d, d);
 		}
 
 		public static void CreateMailItem(string sendTo, string sendCC, string mailSubject, string mailBody, bool HTML)

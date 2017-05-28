@@ -170,6 +170,7 @@ namespace appCore
 			this.tabPage1.Size = new System.Drawing.Size(525, 656);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Start";
+			this.tabPage1.BackgroundImageChanged += new System.EventHandler(this.TabPage1BackgroundImageChanged);
 			this.tabPage1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabPage1MouseClick);
 			// 
 			// panel1
