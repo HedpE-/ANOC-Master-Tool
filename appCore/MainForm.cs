@@ -399,10 +399,9 @@ namespace appCore
 				using(Graphics g = Graphics.FromImage(orig)) {
 					
 				}
-//				tabPage1.DrawToBitmap(orig, new Rectangle(tabPage1.PointToClient(TicketCountLabel.Location), TicketCountLabel.ClientRectangle.Size));
 				TicketCountLabel.DrawToBitmap(orig, TicketCountLabel.ClientRectangle);
-				if(CurrentUser.UserName == "GONCARJ3")
-					orig.Save(UserFolder.FullName + @"\orig.png");
+//				if(CurrentUser.UserName == "GONCARJ3")
+//					orig.Save(UserFolder.FullName + @"\orig.png");
 				
 				using (Graphics g = Graphics.FromImage(bmp))
 				{
