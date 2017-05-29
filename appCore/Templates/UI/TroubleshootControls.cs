@@ -210,9 +210,9 @@ namespace appCore.Templates.UI
 			SiteOwnerComboBox.Text = currentTemplate.SiteOwner;
 			TefSiteTextBox.Text = currentTemplate.TefSiteId;
 			CCTRefTextBox.Text = currentTemplate.CCTReference;
-			RelatedINC_CRQTextBox.Text = currentTemplate.RelatedINC_CRQ;
+			RelatedINC_CRQTextBox.Text = currentTemplate.RelatedINC_CRQ != "None" ? currentTemplate.RelatedINC_CRQ : string.Empty;
 			ActiveAlarmsTextBox.Text = currentTemplate.ActiveAlarms;
-			AlarmHistoryTextBox.Text = currentTemplate.AlarmHistory;
+			AlarmHistoryTextBox.Text = currentTemplate.AlarmHistory != "None related" ? currentTemplate.AlarmHistory : string.Empty;
 			TroubleshootTextBox.Text = currentTemplate.TroubleShoot;
 			PowerCompanyTextBox.Text = currentSite.PowerCompany;
 			RegionTextBox.Text = currentSite.Region;
