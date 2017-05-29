@@ -96,5 +96,7 @@ namespace OpenWeatherAPI
 				validRequest = false;
 			}
 		}
+
+		public Query() { }
 	}
 }
