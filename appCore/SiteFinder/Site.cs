@@ -381,24 +381,31 @@ namespace appCore.SiteFinder
 		
 		public Query CurrentWeather {
 			get {
-				int townId = -1;
-				City tempTown = DB.Databases.Cities.FirstOrDefault(c => c.name.ToUpper() == Town.ToUpper());
-				if(tempTown != null)
-					townId = tempTown.id;
+//				int townId = -1;
+//				City tempTown = DB.Databases.Cities.FirstOrDefault(c => c.name.ToUpper() == Town.ToUpper());
+//				if(tempTown != null)
+//					townId = tempTown.id;
 				
-				Query currentWeather = Settings.GlobalProperties.WeatherCollection.Find(w => w.Name.ToUpper() == Town);
-				if(currentWeather != null) {
-					if(DateTime.Now - currentWeather.LastUpdateTimestamp > new TimeSpan(2, 0, 0))
-						Settings.GlobalProperties.WeatherCollection.RemoveAt(Settings.GlobalProperties.WeatherCollection.IndexOf(currentWeather));
-					else
-						return currentWeather;
+				Query currentWeather = DB.WeatherCollection.RetrieveExistingWeatherData(Town);
+				if(currentWeather == null) {
+					OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+					currentWeather = openWeatherAPI.queryCityName(Town + ",UK");
+					currentWeather.LastUpdateTimestamp = DateTime.Now;
+					DB.WeatherCollection.AddWeatherData(currentWeather);
 				}
-				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-				currentWeather = openWeatherAPI.queryCityName(Town + ",UK");
-//				currentWeather = openWeatherAPI.queryLongitudeLatitude(Coordinates.Latitude, Coordinates.Longitude, Town);
-//				currentWeather = openWeatherAPI.queryCityId(townId);
-				currentWeather.LastUpdateTimestamp = DateTime.Now;
-				Settings.GlobalProperties.WeatherCollection.Add(currentWeather);
+//				currentWeather = Settings.GlobalProperties.WeatherCollection.Find(w => w.Name.ToUpper() == Town);
+//				if(currentWeather != null) {
+//					if(DateTime.Now - currentWeather.LastUpdateTimestamp > new TimeSpan(2, 0, 0))
+//						Settings.GlobalProperties.WeatherCollection.RemoveAt(Settings.GlobalProperties.WeatherCollection.IndexOf(currentWeather));
+//					else
+//						return currentWeather;
+//				}
+//				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+//				currentWeather = openWeatherAPI.queryCityName(Town + ",UK");
+				////				currentWeather = openWeatherAPI.queryLongitudeLatitude(Coordinates.Latitude, Coordinates.Longitude, Town);
+				////				currentWeather = openWeatherAPI.queryCityId(townId);
+//				currentWeather.LastUpdateTimestamp = DateTime.Now;
+//				Settings.GlobalProperties.WeatherCollection.Add(currentWeather);
 				return currentWeather;
 			}
 		}

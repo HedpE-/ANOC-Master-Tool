@@ -74,6 +74,8 @@ namespace appCore.DB
 				
 				RemoteDbAutoUpdateTimer.Enabled = true;
 			}
+			
+			WeatherCollection.Initialize(GlobalProperties.ShareRootDir.FullName + @"\ANOC Master Tool\WeatherDB.json");
 		}
 		
 		static void RemoteDbAutoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e) {

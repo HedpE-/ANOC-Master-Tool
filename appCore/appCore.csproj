@@ -131,6 +131,7 @@
     <Compile Include="DB\Databases.cs" />
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="DB\SitesDB.cs" />
+    <Compile Include="DB\WeatherCollection.cs" />
     <Compile Include="GeoAPIs\GMap.NET\GmapMarkerWithLabel.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\City.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Clouds.cs" />
