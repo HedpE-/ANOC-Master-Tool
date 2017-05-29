@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace OpenWeatherAPI
@@ -25,7 +26,7 @@ namespace OpenWeatherAPI
 		private int cod;
 
 		public bool ValidRequest { get { return validRequest; } }
-		public Coord Coord { get { return coord; } }
+		public Coord Coord { get { return Coord; } }
 		public List<Weather> Weathers { get { return weathers; } }
 		public string Base { get { return baseStr; } }
 		public Main Main { get { return main; } }
@@ -37,7 +38,7 @@ namespace OpenWeatherAPI
 		public Sys Sys { get { return sys; } }
 		public int ID { get { return id; } }
 		public string Name { get { return name; } }
-		public int Cod { get { return cod; } }
+		public int Cod { get { return Cod; } }
 		public string Town { get; private set; }
 
 		public Query(JObject jsonData, string cityStr)
@@ -97,6 +98,9 @@ namespace OpenWeatherAPI
 			}
 		}
 
-		public Query() { }
+		[JsonConstructor]
+		public Query()
+		{
+		}
 	}
 }

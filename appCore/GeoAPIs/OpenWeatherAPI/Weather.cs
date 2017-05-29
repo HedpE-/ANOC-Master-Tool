@@ -24,7 +24,5 @@ namespace OpenWeatherAPI
             description = weatherData.SelectToken("description").ToString();
             icon = weatherData.SelectToken("icon").ToString();
         }
-
-        public Weather() { }
     }
 }
