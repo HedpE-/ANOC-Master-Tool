@@ -178,6 +178,7 @@
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Toolbox\FlatenJsonConverter.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
     <Compile Include="Toolbox\NumericComparer.cs" />
     <Compile Include="Toolbox\NumericListComparer.cs" />
