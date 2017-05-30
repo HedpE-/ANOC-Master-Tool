@@ -158,6 +158,29 @@ namespace appCore.UI
 				menuItem.Click += delegate { SelectedText = string.Empty; };
 				menuItem.Enabled = SelectionLength > 0;
 				contextMenu.MenuItems.Add(menuItem);
+				
+				contextMenu.MenuItems.Add("-");
+				
+				menuItem = new MenuItem("Trim empty spaces on all lines");
+				menuItem.Click += delegate {
+					string[] lines = Lines;
+					for(int c = 0;c < lines.Length;c++)
+						lines[c] = lines[c].Trim();
+					Text = string.Join(Environment.NewLine, lines);
+				};
+				menuItem.Enabled = Text.Length > 0;
+				contextMenu.MenuItems.Add(menuItem);
+				
+				menuItem = new MenuItem("Trim empty spaces on current line");
+				menuItem.Click += delegate {
+					int index = SelectionStart;
+					int line = GetLineFromCharIndex(index);
+					string[] lines = Lines;
+					lines[line] = lines[line].Trim();
+					Text = string.Join(Environment.NewLine, lines);
+				};
+				menuItem.Enabled = SelectionLength < 1;
+				contextMenu.MenuItems.Add(menuItem);
 
 				ContextMenu = contextMenu;
 			}
