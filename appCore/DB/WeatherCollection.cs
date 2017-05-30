@@ -36,7 +36,7 @@ namespace appCore.DB
 			list.Add(json);
 			
 			using (StreamWriter sw = DbFile.CreateText())
-				sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented));
+				sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented, new Toolbox.FlattenJsonConverter()));
 		}
 		
 		public static Query RetrieveExistingWeatherData(string Town) {
@@ -49,7 +49,7 @@ namespace appCore.DB
 					list.RemoveAt(list.IndexOf(weatherData));
 					
 					using (StreamWriter sw = DbFile.CreateText())
-						sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented));
+						sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented, new Toolbox.FlattenJsonConverter()));
 					
 					weatherData = null;
 				}

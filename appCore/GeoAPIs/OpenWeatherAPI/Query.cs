@@ -25,20 +25,20 @@ namespace OpenWeatherAPI
 		private string name;
 		private int cod;
 
-		public bool ValidRequest { get { return validRequest; } }
-		public Coord Coord { get { return Coord; } }
-		public List<Weather> Weathers { get { return weathers; } }
-		public string Base { get { return baseStr; } }
-		public Main Main { get { return main; } }
-		public double Visibility { get { return visibility; } }
-		public Wind Wind { get { return wind; } }
-		public Rain Rain { get { return rain; } }
-		public Snow Snow { get { return snow; } }
-		public Clouds Clouds { get { return clouds; } }
-		public Sys Sys { get { return sys; } }
-		public int ID { get { return id; } }
-		public string Name { get { return name; } }
-		public int Cod { get { return Cod; } }
+		public bool ValidRequest { get { return validRequest; } private set { validRequest = value; } }
+		public Coord Coord { get { return coord; } private set { coord = value; } }
+		public List<Weather> Weathers { get { return weathers; } private set { weathers = value; } }
+		public string Base { get { return baseStr; } private set { baseStr = value; } }
+		public Main Main { get { return main; } private set { main = value; } }
+		public double Visibility { get { return visibility; } private set { visibility = value; } }
+		public Wind Wind { get { return wind; } private set { wind = value; } }
+		public Rain Rain { get { return rain; } private set { rain = value; } }
+		public Snow Snow { get { return snow; } private set { snow = value; } }
+		public Clouds Clouds { get { return clouds; } private set { clouds = value; } }
+		public Sys Sys { get { return sys; } private set { sys = value; } }
+		public int ID { get { return id; } private set { id = value; } }
+		public string Name { get { return name; } private set { name = value; } }
+		public int Cod { get { return cod; } private set { cod = value; } }
 		public string Town { get; private set; }
 
 		public Query(JObject jsonData, string cityStr)
@@ -98,9 +98,7 @@ namespace OpenWeatherAPI
 			}
 		}
 
-		[JsonConstructor]
-		public Query()
-		{
-		}
+//		[JsonConstructor]
+		public Query() { }
 	}
 }
