@@ -143,8 +143,7 @@ namespace appCore.Templates.UI
 			                                   		currentOutage = alarms.GenerateOutage();
 			                                   	}
 			                                   	catch(Exception ex) {
-			                                   		var m = ex.Message;
-			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
+			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\n\nError message:\n" + ex.Message);
 			                                   		parsingError = true;
 			                                   	}
 			                                   });

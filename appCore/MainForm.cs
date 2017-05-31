@@ -549,8 +549,8 @@ namespace appCore
 			                                   	try {
 			                                   		netcool = new Netcool.AlarmsParser(alarms);
 			                                   	}
-			                                   	catch {
-			                                   		trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
+			                                   	catch(Exception ex) {
+			                                   		trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\n\nError message:\n" + ex.Message);
 			                                   		parsingError = true;
 			                                   	}
 			                                   });

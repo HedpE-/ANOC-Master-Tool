@@ -63,6 +63,8 @@ namespace appCore.Netcool
 				if(string.IsNullOrWhiteSpace(line))
 					continue;
 				Alarm al = null;
+				if(headers == null)
+					throw new Exception("Netcool column headers not found.");
 				try {
 					al = new Alarm(line.Split('\t'), headers);
 				}
@@ -93,7 +95,7 @@ namespace appCore.Netcool
 				lteSitesOnM = lteSitesOnM.Distinct().ToList();
 			
 			if(AlarmsList.Count == 0)
-				throw new Exception("No alarms");
+				throw new Exception("No COOS alarms");
 //			st.Stop();
 //			var t = st.Elapsed;
 		}
