@@ -180,8 +180,10 @@
     </Compile>
     <Compile Include="Toolbox\FlatenJsonConverter.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
+    <Compile Include="Toolbox\JsonExtensions.cs" />
     <Compile Include="Toolbox\NumericComparer.cs" />
     <Compile Include="Toolbox\NumericListComparer.cs" />
+    <Compile Include="Toolbox\QueryFactory.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\CF Implementation.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingAverageGroup.cs" />

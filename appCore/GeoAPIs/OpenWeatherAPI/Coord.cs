@@ -16,7 +16,12 @@ namespace OpenWeatherAPI
 
         public Coord(JToken coordData)
         {
+//        	try {
             lon = double.Parse(coordData.SelectToken("lon").ToString());
+//        	}
+//        	catch (Exception e) {
+//        		lon = double.Parse(coordData.SelectToken("coord.lon").ToString());
+//        	}
             lat = double.Parse(coordData.SelectToken("lat").ToString());
         }
     }

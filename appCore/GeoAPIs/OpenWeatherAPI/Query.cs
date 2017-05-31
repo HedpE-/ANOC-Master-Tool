@@ -10,7 +10,7 @@ namespace OpenWeatherAPI
 {
 	public class Query : appCore.GeoAPIs.WeatherItem
 	{
-		private bool validRequest;
+		private bool validrequest;
 		private Coord coord;
 		private List<Weather> weathers = new List<Weather>();
 		private string baseStr;
@@ -25,7 +25,7 @@ namespace OpenWeatherAPI
 		private string name;
 		private int cod;
 
-		public bool ValidRequest { get { return validRequest; } private set { validRequest = value; } }
+		public bool ValidRequest { get { return validrequest; } private set { validrequest = value; } }
 		public Coord Coord { get { return coord; } private set { coord = value; } }
 		public List<Weather> Weathers { get { return weathers; } private set { weathers = value; } }
 		public string Base { get { return baseStr; } private set { baseStr = value; } }
@@ -45,7 +45,7 @@ namespace OpenWeatherAPI
 		{
 			if(jsonData.SelectToken("cod").ToString() == "200")
 			{
-				validRequest = true;
+				validrequest = true;
 				coord = new Coord(jsonData.SelectToken("coord"));
 				foreach (JToken weather in jsonData.SelectToken("weather"))
 					weathers.Add(new Weather(weather));
@@ -65,19 +65,24 @@ namespace OpenWeatherAPI
 				cod = int.Parse(jsonData.SelectToken("cod").ToString());
 			} else
 			{
-				validRequest = false;
+				validrequest = false;
 			}
 			Town = cityStr;
 		}
 
 		public Query(JObject jsonData)
 		{
-			if(jsonData.SelectToken("cod").ToString() == "200")
+//			if(jsonData.SelectToken("cod").ToString() == "200")
+			if(jsonData.GetValue("cod", StringComparison.OrdinalIgnoreCase).Value<string>() == "200")
 			{
-				validRequest = true;
+				validrequest = true;
+//				JToken token = jsonData.Descendants().FirstOrDefault(t => String.Equals(t.Path, "coord", StringComparison.OrdinalIgnoreCase));
+//				JToken token = jsonData.SelectToken("coord", false, false);
 				coord = new Coord(jsonData.SelectToken("coord"));
+//				token = jsonData.Descendants().FirstOrDefault(t => String.Equals(t.Path, "weather", StringComparison.OrdinalIgnoreCase));
 				foreach (JToken weather in jsonData.SelectToken("weather"))
 					weathers.Add(new Weather(weather));
+//				token = jsonData.Descendants().FirstOrDefault(t => String.Equals(t.Path, "weather", StringComparison.OrdinalIgnoreCase));
 				baseStr = jsonData.SelectToken("base").ToString();
 				main = new Main(jsonData.SelectToken("main"));
 				if(jsonData.SelectToken("visibility") != null)
@@ -94,7 +99,7 @@ namespace OpenWeatherAPI
 				cod = int.Parse(jsonData.SelectToken("cod").ToString());
 			} else
 			{
-				validRequest = false;
+				validrequest = false;
 			}
 		}
 
