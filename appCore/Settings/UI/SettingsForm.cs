@@ -52,16 +52,18 @@ namespace appCore.Settings.UI
 					Button4Click(null, null);
 			}
 			else label6.Text = SettingsFile.OIUsername;
-
-//			comboBox1.Text = siteFinder_mainswitch ? "Enabled" : "Disabled";
+            
 			toggleSwitch1.Checked = siteFinder_mainswitch;
-			
-			//            tabControl1.Controls.Add(userAdminTab);
-//			this.Load += new System.EventHandler(this.SettingsForm_Load);
-//			this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-//			this.button6.Click += new System.EventHandler(this.button6_Click);
-//			this.button7.Click += new System.EventHandler(this.button7_Click);
-		}
+
+            label7.Text += Databases.all_sites.LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+            label16.Text += Databases.all_cells.LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+
+            //            tabControl1.Controls.Add(userAdminTab);
+            //			this.Load += new System.EventHandler(this.SettingsForm_Load);
+            //			this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            //			this.button6.Click += new System.EventHandler(this.button6_Click);
+            //			this.button7.Click += new System.EventHandler(this.button7_Click);
+        }
 
 		void Button1Click(object sender, EventArgs e)
 		{
@@ -135,7 +137,12 @@ namespace appCore.Settings.UI
 			Action action = new Action(delegate
 			                           {
 			                           	UserFolder.UpdateLocalDBFilesCopy();
-			                           });
+                                        this.Invoke((MethodInvoker)delegate
+                                        {
+                                            label7.Text = "Current all_sites file last updated on: " + Databases.all_sites.LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+                                            label16.Text = "Current all_cells file last updated on: " + Databases.all_cells.LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+                                        });
+                                       });
 //			Toolbox.Tools.darkenBackgroundForm(action, true, this);
 			LoadingPanel load = new LoadingPanel();
 			load.ShowAsync(action, null, true, this);
