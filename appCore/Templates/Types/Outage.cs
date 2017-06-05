@@ -50,10 +50,6 @@ namespace appCore.Templates.Types
 						list.Add(tempSite);
 					}
 					list = list.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToList();
-//					for(int c = 0;c < list.Count;c++) {
-//						while(list[c].StartsWith("0"))
-//							list[c] = list[c].Substring(1);
-//					}
 					affectedSites = DB.SitesDB.getSites(list);
 				}
 				
@@ -89,9 +85,33 @@ namespace appCore.Templates.Types
 				return affectedCells;
 			}
 			private set { affectedCells = value; }
-		}
-		
-		public List<string> VfSites = new List<string>();
+        }
+        List<string> affectedLocations = new List<string>();
+        public List<string> AffectedLocations
+        {
+            get
+            {
+                if (affectedLocations.Count == 0)
+                {
+                    foreach (string loc in VfLocations)
+                    {
+                        if (!affectedLocations.Contains(loc, StringComparison.OrdinalIgnoreCase))
+                            affectedLocations.Add(loc);
+                    }
+                    foreach (string loc in TefLocations)
+                    {
+                        if (!affectedLocations.Contains(loc, StringComparison.OrdinalIgnoreCase))
+                            affectedLocations.Add(loc);
+                    }
+                    affectedLocations = affectedLocations.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToList();
+                }
+
+                return affectedLocations;
+            }
+            private set { affectedLocations = value; }
+        }
+
+        public List<string> VfSites = new List<string>();
 		public List<string> VfGsmCells = new List<string>();
 		public List<string> VfUmtsCells = new List<string>();
 		public List<string> VfLteCells = new List<string>();
@@ -108,14 +128,199 @@ namespace appCore.Templates.Types
 		DateTime TefUmtsTime = new DateTime(2500,1,1);
 		DateTime TefLteTime = new DateTime(2500,1,1);
 		
-		public List<string> VfGsmAffectedSites { get; private set; }
-		public List<string> VfUmtsAffectedSites { get; private set; }
-		public List<string> VfLteAffectedSites { get; private set; }
-		public List<string> TefGsmAffectedSites { get; private set; }
-		public List<string> TefUmtsAffectedSites { get; private set; }
-		public List<string> TefLteAffectedSites { get; private set; }
-		
-		public int GsmCells {
+		List<string> VfGsmAffectedSites { get; set; }
+        List<string> VfUmtsAffectedSites { get; set; }
+        List<string> VfLteAffectedSites { get; set; }
+
+        List<string> _VfGsmOnlyAffectedSites;
+        public List<string> VfGsmOnlyAffectedSites
+        {
+            get
+            {
+                if (_VfGsmOnlyAffectedSites == null)
+                {
+                    var t = VfGsmAffectedSites.Except(VfUmtsAffectedSites).ToList();
+                    _VfGsmOnlyAffectedSites = t.Except(VfLteAffectedSites).ToList();
+                }
+                return _VfGsmOnlyAffectedSites;
+            }
+        }
+        List<string> _VfGsmUmtsAffectedSites;
+        public List<string> VfGsmUmtsAffectedSites
+        {
+            get
+            {
+                if(_VfGsmUmtsAffectedSites == null)
+                {
+                    var t = VfGsmAffectedSites.Intersect(VfUmtsAffectedSites).ToList();
+                    _VfGsmUmtsAffectedSites = t.Except(VfLteAffectedSites).ToList();
+                }
+                return _VfGsmUmtsAffectedSites;
+            }
+        }
+        List<string> _VfGsmLteAffectedSites;
+        public List<string> VfGsmLteAffectedSites
+        {
+            get
+            {
+                if (_VfGsmLteAffectedSites == null)
+                {
+                    var t = VfGsmAffectedSites.Intersect(VfLteAffectedSites).ToList();
+                    _VfGsmLteAffectedSites = t.Except(VfUmtsAffectedSites).ToList();
+                }
+                return _VfGsmLteAffectedSites;
+            }
+        }
+        List<string> _VfGsmUmtsLteAffectedSites;
+        public List<string> VfGsmUmtsLteAffectedSites
+        {
+            get
+            {
+                if (_VfGsmUmtsLteAffectedSites == null)
+                {
+                    var t = VfGsmAffectedSites.Intersect(VfUmtsAffectedSites).ToList();
+                    _VfGsmUmtsLteAffectedSites = t.Intersect(VfLteAffectedSites).ToList();
+                }
+                return _VfGsmUmtsLteAffectedSites;
+            }
+        }
+        List<string> _VfUmtsOnlyAffectedSites;
+        public List<string> VfUmtsOnlyAffectedSites
+        {
+            get
+            {
+                if (_VfUmtsOnlyAffectedSites == null)
+                {
+                    var t = VfUmtsAffectedSites.Except(VfGsmAffectedSites).ToList();
+                    _VfUmtsOnlyAffectedSites = t.Except(VfLteAffectedSites).ToList();
+                }
+                return _VfUmtsOnlyAffectedSites;
+            }
+        }
+        List<string> _VfUmtsLteAffectedSites;
+        public List<string> VfUmtsLteAffectedSites
+        {
+            get
+            {
+                if (_VfUmtsLteAffectedSites == null)
+                {
+                    var t = VfUmtsAffectedSites.Intersect(VfLteAffectedSites).ToList();
+                    _VfUmtsLteAffectedSites = t.Except(VfGsmAffectedSites).ToList();
+                }
+                return _VfUmtsLteAffectedSites;
+            }
+        }
+        List<string> _VfLteOnlyAffectedSites;
+        public List<string> VfLteOnlyAffectedSites
+        {
+            get
+            {
+                if (_VfLteOnlyAffectedSites == null)
+                {
+                    var t = VfLteAffectedSites.Except(VfGsmAffectedSites).ToList();
+                    _VfLteOnlyAffectedSites = t.Except(VfUmtsAffectedSites).ToList();
+                }
+                return _VfLteOnlyAffectedSites;
+            }
+        }
+
+        public List<string> TefGsmAffectedSites { get; private set; }
+        public List<string> TefUmtsAffectedSites { get; private set; }
+        public List<string> TefLteAffectedSites { get; private set; }
+
+        List<string> _TefGsmOnlyAffectedSites;
+        public List<string> TefGsmOnlyAffectedSites
+        {
+            get
+            {
+                if (_TefGsmOnlyAffectedSites == null)
+                {
+                    var t = TefGsmAffectedSites.Except(TefUmtsAffectedSites).ToList();
+                    _TefGsmOnlyAffectedSites = t.Except(TefLteAffectedSites).ToList();
+                }
+                return _TefGsmOnlyAffectedSites;
+            }
+        }
+        List<string> _TefGsmUmtsAffectedSites;
+        public List<string> TefGsmUmtsAffectedSites
+        {
+            get
+            {
+                if (_TefGsmUmtsAffectedSites == null)
+                {
+                    var t = TefGsmAffectedSites.Intersect(TefUmtsAffectedSites).ToList();
+                    _TefGsmUmtsAffectedSites = t.Except(TefLteAffectedSites).ToList();
+                }
+                return _TefGsmUmtsAffectedSites;
+            }
+        }
+        List<string> _TefGsmLteAffectedSites;
+        public List<string> TefGsmLteAffectedSites
+        {
+            get
+            {
+                if (_TefGsmLteAffectedSites == null)
+                {
+                    var t = TefGsmAffectedSites.Intersect(TefLteAffectedSites).ToList();
+                    _TefGsmLteAffectedSites = t.Except(TefUmtsAffectedSites).ToList();
+                }
+                return _TefGsmLteAffectedSites;
+            }
+        }
+        List<string> _TefGsmUmtsLteAffectedSites;
+        public List<string> TefGsmUmtsLteAffectedSites
+        {
+            get
+            {
+                if (_TefGsmUmtsLteAffectedSites == null)
+                {
+                    var t = TefGsmAffectedSites.Intersect(TefUmtsAffectedSites).ToList();
+                    _TefGsmUmtsLteAffectedSites = t.Intersect(TefLteAffectedSites).ToList();
+                }
+                return _TefGsmUmtsLteAffectedSites;
+            }
+        }
+        List<string> _TefUmtsOnlyAffectedSites;
+        public List<string> TefUmtsOnlyAffectedSites
+        {
+            get
+            {
+                if (_TefUmtsOnlyAffectedSites == null)
+                {
+                    var t = TefUmtsAffectedSites.Except(TefGsmAffectedSites).ToList();
+                    _TefUmtsOnlyAffectedSites = t.Except(TefLteAffectedSites).ToList();
+                }
+                return _TefUmtsOnlyAffectedSites;
+            }
+        }
+        List<string> _TefUmtsLteAffectedSites;
+        public List<string> TefUmtsLteAffectedSites
+        {
+            get
+            {
+                if (_TefUmtsLteAffectedSites == null)
+                {
+                    var t = TefUmtsAffectedSites.Intersect(TefLteAffectedSites).ToList();
+                    _TefUmtsLteAffectedSites = t.Except(TefGsmAffectedSites).ToList();
+                }
+                return _TefUmtsLteAffectedSites;
+            }
+        }
+        List<string> _TefLteOnlyAffectedSites;
+        public List<string> TefLteOnlyAffectedSites
+        {
+            get
+            {
+                if (_TefLteOnlyAffectedSites == null)
+                {
+                    var t = TefLteAffectedSites.Except(TefGsmAffectedSites).ToList();
+                    _TefLteOnlyAffectedSites = t.Except(TefUmtsAffectedSites).ToList();
+                }
+                return _TefLteOnlyAffectedSites;
+            }
+        }
+
+        public int GsmCells {
 			get {
 				return !string.IsNullOrEmpty(VfOutage) ? VfGsmCells.Count : TefGsmCells.Count;
 			}
@@ -459,6 +664,45 @@ namespace appCore.Templates.Types
 						}
 						VfOutage += ")";
 					}
+                    //foreach(string site in VfGsmAffectedSites)
+                    //{
+                    //    List<string> affectedTechs = new List<string>();
+                    //    if(VfUmtsAffectedSites != null)
+                    //    {
+                    //        if (VfUmtsAffectedSites.Contains(site))
+                    //            affectedTechs.Add("3G");
+                    //    }
+                    //    if(VfLteAffectedSites != null)
+                    //    {
+                    //        if (VfLteAffectedSites.Contains(site))
+                    //            affectedTechs.Add("4G");
+                    //    }
+
+                    //    if(affectedTechs.Count > 0)
+                    //    {
+                    //        if (affectedTechs.Count == 2)
+                    //        {
+                    //            if (VfGsmUmtsLteAffectedSites == null)
+                    //                VfGsmUmtsLteAffectedSites = new List<string>();
+                    //            VfGsmUmtsLteAffectedSites.Add(site);
+                    //        }
+                    //        else
+                    //        {
+                    //            if (affectedTechs[0] == "3G")
+                    //            {
+                    //                if (VfGsmUmtsAffectedSites == null)
+                    //                    VfGsmUmtsAffectedSites = new List<string>();
+                    //                VfGsmUmtsAffectedSites.Add(site);
+                    //            }
+                    //            else
+                    //            {
+                    //                if (VfGsmLteAffectedSites == null)
+                    //                    VfGsmLteAffectedSites = new List<string>();
+                    //                VfGsmLteAffectedSites.Add(site);
+                    //            }
+                    //        }
+                    //    }
+                    //}
 				}
 				else
 					VfOutage += Environment.NewLine + string.Join(Environment.NewLine, VfSites);
@@ -541,10 +785,49 @@ namespace appCore.Templates.Types
 								TefOutage += "UP";
 						}
 						TefOutage += ")";
-					}
-				}
+                    }
+                    //foreach (string site in TefGsmAffectedSites)
+                    //{
+                    //    List<string> affectedTechs = new List<string>();
+                    //    if (TefUmtsAffectedSites != null)
+                    //    {
+                    //        if (TefUmtsAffectedSites.Contains(site))
+                    //            affectedTechs.Add("3G");
+                    //    }
+                    //    if (TefLteAffectedSites != null)
+                    //    {
+                    //        if (TefLteAffectedSites.Contains(site))
+                    //            affectedTechs.Add(site);
+                    //    }
+
+                    //    if (affectedTechs.Count > 0)
+                    //    {
+                    //        if (affectedTechs.Count == 2)
+                    //        {
+                    //            if (TefGsmUmtsLteAffectedSites == null)
+                    //                TefGsmUmtsLteAffectedSites = new List<string>();
+                    //            TefGsmUmtsLteAffectedSites.Add(site);
+                    //        }
+                    //        else
+                    //        {
+                    //            if (affectedTechs[0] == "3G")
+                    //            {
+                    //                if (TefGsmUmtsAffectedSites == null)
+                    //                    TefGsmUmtsAffectedSites = new List<string>();
+                    //                TefGsmUmtsAffectedSites.Add(site);
+                    //            }
+                    //            else
+                    //            {
+                    //                if (TefGsmLteAffectedSites == null)
+                    //                    TefGsmLteAffectedSites = new List<string>();
+                    //                TefGsmLteAffectedSites.Add(site);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                }
 				else
-					VfOutage += Environment.NewLine + string.Join(Environment.NewLine, TefSites);
+					TefOutage += Environment.NewLine + string.Join(Environment.NewLine, TefSites);
 				
 				if ( TefGsmCells.Count > 0 )
 					TefOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TefGsmCells.Count + ") Event Time - " + TefGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefGsmCells);
@@ -668,47 +951,8 @@ namespace appCore.Templates.Types
 						}
 					}
 				}
-				var tempSites = VfSites;
-				for(int c = 0;c < tempSites.Count;c++)
-					tempSites[c] = Convert.ToInt32(tempSites[c].Split(' ')[0].Replace("RBS",string.Empty)).ToString();
-				List<Site> sites = DB.SitesDB.getSites(tempSites);
-				foreach(Site site in sites) {
-					List<Cell> cells = site.Cells.Filter(Cell.Filters.VF_2G);
-					if(cells.Count > 0) {
-						if(VfGsmAffectedSites == null)
-							VfGsmAffectedSites = new List<string>();
-						foreach(Cell cell in cells) {
-							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
-								VfGsmAffectedSites.Add(site.FullId);
-								break;
-							}
-						}
-					}
-					cells = site.Cells.Filter(Cell.Filters.VF_3G);
-					if(cells.Count > 0) {
-						if(VfUmtsAffectedSites == null)
-							VfUmtsAffectedSites = new List<string>();
-						foreach(Cell cell in cells) {
-							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
-								VfUmtsAffectedSites.Add(site.FullId);
-								break;
-							}
-						}
-					}
-					cells = site.Cells.Filter(Cell.Filters.VF_4G);
-					if(cells.Count > 0) {
-						if(VfLteAffectedSites == null)
-							VfLteAffectedSites = new List<string>();
-						foreach(Cell cell in cells) {
-							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
-								VfLteAffectedSites.Add(site.FullId);
-								break;
-							}
-						}
-					}
-				}
-				
-				try {
+
+                try {
 					if(log[VfGsmCellsIndex].Contains("2G Cells"))
 						VfGsmTime = Convert.ToDateTime(log[VfGsmCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
 				} catch { }
@@ -720,16 +964,18 @@ namespace appCore.Templates.Types
 					if(log[VfLteCellsIndex].Contains("4G Cells"))
 						VfLteTime = Convert.ToDateTime(log[VfLteCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
 				} catch { }
-				
-				if(TefReportIndex == -1)
+
+                if (TefReportIndex == -1)
 					TefReportIndex = log.Length;
 				
 				for(int c = VfBulkCiIndex + 1;c < TefReportIndex;c++) {
 					VfBulkCI += log[c].Replace("\r", string.Empty).Replace("\n", string.Empty);
 					if(c < TefReportIndex - 1)
 						VfBulkCI += Environment.NewLine;
-				}
-			}
+                }
+
+                ResolveAffectedSites(log, "VF");
+            }
 			
 			if(TefReportIndex == log.Length)
 				TefReportIndex = -1;
@@ -798,47 +1044,8 @@ namespace appCore.Templates.Types
 						}
 					}
 				}
-				var tempSites = TefSites;
-				for(int c = 0;c < tempSites.Count;c++)
-					tempSites[c] = Convert.ToInt32(tempSites[c].Split(' ')[0].Replace("RBS",string.Empty)).ToString();
-				List<Site> sites = DB.SitesDB.getSites(tempSites);
-				foreach(Site site in sites) {
-					List<Cell> cells = site.Cells.Filter(Cell.Filters.TF_2G);
-					if(cells.Count > 0) {
-						if(TefGsmAffectedSites == null)
-							TefGsmAffectedSites = new List<string>();
-						foreach(Cell cell in cells) {
-							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
-								TefGsmAffectedSites.Add(site.FullId);
-								break;
-							}
-						}
-					}
-					cells = site.Cells.Filter(Cell.Filters.TF_3G);
-					if(site.Cells.Filter(Cell.Filters.TF_3G).Count > 0) {
-						if(TefUmtsAffectedSites == null)
-							TefUmtsAffectedSites = new List<string>();
-						foreach(Cell cell in cells) {
-							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
-								TefUmtsAffectedSites.Add(site.FullId);
-								break;
-							}
-						}
-					}
-					cells = site.Cells.Filter(Cell.Filters.TF_4G);
-					if(site.Cells.Filter(Cell.Filters.TF_4G).Count > 0) {
-						if(TefLteAffectedSites == null)
-							TefLteAffectedSites = new List<string>();
-						foreach(Cell cell in cells) {
-							if(string.Join(Environment.NewLine, log).Contains(cell.Name)) {
-								TefLteAffectedSites.Add(site.FullId);
-								break;
-							}
-						}
-					}
-				}
-				
-				try {
+
+                try {
 					if(log[TefGsmCellsIndex].Contains("2G Cells"))
 						TefGsmTime = Convert.ToDateTime(log[TefGsmCellsIndex].Split(strToFind, StringSplitOptions.None)[1]);
 				} catch { }
@@ -855,9 +1062,127 @@ namespace appCore.Templates.Types
 					TefBulkCI += log[c].Replace("\r", string.Empty).Replace("\n", string.Empty);
 					if(c < log.Length - 1)
 						TefBulkCI += Environment.NewLine;
-				}
-			}
+                }
+
+                ResolveAffectedSites(log, "TF");
+            }
 		}
+
+        void ResolveAffectedSites(string[] log, string @operator)
+        {
+            var tempSites = @operator == "VF" ? VfSites : TefSites;
+            for (int c = 0; c < tempSites.Count; c++)
+                tempSites[c] = Convert.ToInt32(tempSites[c].Split(' ')[0].Replace("RBS", string.Empty)).ToString();
+            List<Site> sites = DB.SitesDB.getSites(tempSites);
+            if(@operator == "VF")
+            {
+                foreach (Site site in sites)
+                {
+                    List<Cell> cells = @operator == "VF" ? site.Cells.Filter(Cell.Filters.VF_2G) : site.Cells.Filter(Cell.Filters.TF_2G);
+                    if (cells.Count > 0)
+                    {
+                        if (@operator == "VF")
+                        {
+                            if (VfGsmAffectedSites == null)
+                                VfGsmAffectedSites = new List<string>();
+                        }
+                        else
+                        {
+                            if (TefGsmAffectedSites == null)
+                                TefGsmAffectedSites = new List<string>();
+                        }
+                    }
+                    foreach (Cell cell in cells)
+                    {
+                        if (string.Join(Environment.NewLine, log).Contains(cell.Name))
+                        {
+                            VfGsmAffectedSites.Add(site.FullId);
+                            break;
+                        }
+                    }
+                    cells = site.Cells.Filter(Cell.Filters.VF_3G);
+                    if (cells.Count > 0)
+                    {
+                        if (VfUmtsAffectedSites == null)
+                            VfUmtsAffectedSites = new List<string>();
+                        foreach (Cell cell in cells)
+                        {
+                            if (string.Join(Environment.NewLine, log).Contains(cell.Name))
+                            {
+                                VfUmtsAffectedSites.Add(site.FullId);
+                                break;
+                            }
+                        }
+                    }
+                    cells = site.Cells.Filter(Cell.Filters.VF_4G);
+                    if (cells.Count > 0)
+                    {
+                        if (VfLteAffectedSites == null)
+                            VfLteAffectedSites = new List<string>();
+                        foreach (Cell cell in cells)
+                        {
+                            if (string.Join(Environment.NewLine, log).Contains(cell.Name))
+                            {
+                                VfLteAffectedSites.Add(site.FullId);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                tempSites = TefSites;
+                for (int c = 0; c < tempSites.Count; c++)
+                    tempSites[c] = Convert.ToInt32(tempSites[c].Split(' ')[0].Replace("RBS", string.Empty)).ToString();
+                sites = DB.SitesDB.getSites(tempSites);
+                foreach (Site site in sites)
+                {
+                    List<Cell> cells = site.Cells.Filter(Cell.Filters.TF_2G);
+                    if (cells.Count > 0)
+                    {
+                        if (TefGsmAffectedSites == null)
+                            TefGsmAffectedSites = new List<string>();
+                        foreach (Cell cell in cells)
+                        {
+                            if (string.Join(Environment.NewLine, log).Contains(cell.Name))
+                            {
+                                TefGsmAffectedSites.Add(site.FullId);
+                                break;
+                            }
+                        }
+                    }
+                    cells = site.Cells.Filter(Cell.Filters.TF_3G);
+                    if (site.Cells.Filter(Cell.Filters.TF_3G).Count > 0)
+                    {
+                        if (TefUmtsAffectedSites == null)
+                            TefUmtsAffectedSites = new List<string>();
+                        foreach (Cell cell in cells)
+                        {
+                            if (string.Join(Environment.NewLine, log).Contains(cell.Name))
+                            {
+                                TefUmtsAffectedSites.Add(site.FullId);
+                                break;
+                            }
+                        }
+                    }
+                    cells = site.Cells.Filter(Cell.Filters.TF_4G);
+                    if (site.Cells.Filter(Cell.Filters.TF_4G).Count > 0)
+                    {
+                        if (TefLteAffectedSites == null)
+                            TefLteAffectedSites = new List<string>();
+                        foreach (Cell cell in cells)
+                        {
+                            if (string.Join(Environment.NewLine, log).Contains(cell.Name))
+                            {
+                                TefLteAffectedSites.Add(site.FullId);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 		void showIncludeListForm() {
 			List<string[]> includeList = new List<string[]>();

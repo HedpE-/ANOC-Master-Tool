@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -295,101 +296,178 @@ namespace appCore.Templates.UI
 		void ShowSitesPerTech(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	Label gsmLabel = new Label {
-			                           		Text = "2G Affected Sites",
-			                           		TextAlign = ContentAlignment.BottomLeft,
-			                           		Width = 100,
-			                           		Location = new Point(5, 5)
-			                           	};
-			                           	Label umtsLabel = new Label {
-			                           		Text = "3G Affected Sites",
-			                           		TextAlign = ContentAlignment.BottomLeft,
-			                           		Width = 100,
-			                           		Location = new Point(gsmLabel.Right + 10, 5)
-			                           	};
-			                           	Label lteLabel = new Label {
-			                           		Text = "4G Affected Sites",
-			                           		TextAlign = ContentAlignment.BottomLeft,
-			                           		Width = 100,
-			                           		Location = new Point(umtsLabel.Right + 10, 5)
-			                           	};
-			                           	AMTRichTextBox gsmAmtRichTextBox = new AMTRichTextBox {
-			                           		ReadOnly = true,
-			                           		Size = new Size(100, 220),
-			                           		Location = new Point(5, gsmLabel.Bottom + 5)
-			                           	};
-			                           	AMTRichTextBox umtsAmtRichTextBox = new AMTRichTextBox {
-			                           		ReadOnly = true,
-			                           		Size = new Size(100, 220),
-			                           		Location = new Point(gsmAmtRichTextBox.Right + 10, umtsLabel.Bottom + 5)
-			                           	};
-			                           	AMTRichTextBox lteAmtRichTextBox = new AMTRichTextBox {
-			                           		ReadOnly = true,
-			                           		Size = new Size(100, 220),
-			                           		Location = new Point(umtsAmtRichTextBox.Right + 10, lteLabel.Bottom + 5)
-			                           	};
-			                           	CheckBox sitesFullNameCheckBox = new CheckBox {
-			                           		Text = "View Sites full ID",
-			                           		Width = 150,
-			                           		Location = new Point(5, gsmAmtRichTextBox.Bottom + 5)
-			                           	};
-			                           	sitesFullNameCheckBox.CheckedChanged += (s, a) => {
-			                           		if(sitesFullNameCheckBox.Checked) {
-			                           			if(VFReportRadioButton.Checked) {
-			                           				gsmAmtRichTextBox.Text = currentOutage.VfGsmAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.VfGsmAffectedSites) : string.Empty;
-			                           				umtsAmtRichTextBox.Text = currentOutage.VfUmtsAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.VfUmtsAffectedSites) : string.Empty;
-			                           				lteAmtRichTextBox.Text = currentOutage.VfLteAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.VfLteAffectedSites) : string.Empty;
-			                           			}
-			                           			else {
-			                           				gsmAmtRichTextBox.Text = currentOutage.TefGsmAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.TefGsmAffectedSites) : string.Empty;
-			                           				umtsAmtRichTextBox.Text = currentOutage.TefUmtsAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.TefUmtsAffectedSites) : string.Empty;
-			                           				lteAmtRichTextBox.Text = currentOutage.TefLteAffectedSites != null ? string.Join(Environment.NewLine, currentOutage.TefLteAffectedSites) : string.Empty;
-			                           			}
-			                           		}
-			                           		else {
-			                           			string[] lines = gsmAmtRichTextBox.Lines;
-			                           			for(int c = 0;c < lines.Length;c++) {
-			                           				lines[c] = lines[c].RemoveLetters();
-			                           				while(lines[c].StartsWith("0"))
-			                           					lines[c] = lines[c].Substring(1);
-			                           			}
-			                           			gsmAmtRichTextBox.Text = string.Join(Environment.NewLine, lines);
-			                           			lines = umtsAmtRichTextBox.Lines;
-			                           			for(int c = 0;c < lines.Length;c++) {
-			                           				lines[c] = lines[c].RemoveLetters();
-			                           				while(lines[c].StartsWith("0"))
-			                           					lines[c] = lines[c].Substring(1);
-			                           			}
-			                           			umtsAmtRichTextBox.Text = string.Join(Environment.NewLine, lines);
-			                           			lines = lteAmtRichTextBox.Lines;
-			                           			for(int c = 0;c < lines.Length;c++) {
-			                           				lines[c] = lines[c].RemoveLetters();
-			                           				while(lines[c].StartsWith("0"))
-			                           					lines[c] = lines[c].Substring(1);
-			                           			}
-			                           			lteAmtRichTextBox.Text = string.Join(Environment.NewLine, lines);
-			                           		}
-			                           	};
-			                           	sitesFullNameCheckBox.Checked = true;
-			                           	
-			                           	Form showSitesPerTechForm = new Form {
+			                           	Form showSitesPerTechForm = new Form
+			                           	{
 			                           		Text = (VFReportRadioButton.Checked ? "VF" : "TF") + " Affected Sites Per Tech",
 			                           		Name = "showSitesPerTechForm",
-			                           		Size = new Size(338, 312),
+			                           		Size = new Size(790, 250),
 			                           		MaximizeBox = false,
-			                           		FormBorderStyle = FormBorderStyle.FixedDialog
+			                           		FormBorderStyle = FormBorderStyle.Sizable
 			                           	};
-			                           	
+                                        showSitesPerTechForm.MaximumSize = new Size(showSitesPerTechForm.Width, int.MaxValue);
+                                        showSitesPerTechForm.MinimumSize = new Size(showSitesPerTechForm.Width, 200);
+
+                                        AMTDataGridView dataGridView = new AMTDataGridView();
+			                           	dataGridView.AllowUserToAddRows = false;
+			                           	dataGridView.AllowUserToDeleteRows = false;
+			                           	dataGridView.AllowUserToResizeColumns = false;
+                                        dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+                                        dataGridView.AlwaysVisibleVScrollBar = false;
+			                           	dataGridView.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
+			                           	dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+			                           	dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+			                           	dataGridView.BackgroundColor = SystemColors.Control;
+			                           	dataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+                                        dataGridView.CellFormatting += (s, a) =>
+                                        {
+                                                a.CellStyle.BackColor = a.RowIndex % 2 == 0 ? dataGridView.DefaultCellStyle.BackColor : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
+                                        };
+                                        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+			                           	dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+			                           	dataGridViewCellStyle1.BackColor = SystemColors.ControlDark;
+			                           	dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+			                           	dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+			                           	dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+			                           	dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+			                           	dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			                           	dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+                                        dataGridView.DefaultCellStyle.BackColor = Color.LightGray;
+                                        dataGridView.DoubleBuffer = true;
+			                           	dataGridView.EditMode = DataGridViewEditMode.EditProgrammatically;
+			                           	dataGridView.GridColor = SystemColors.ControlDarkDark;
+			                           	dataGridView.Location = Point.Empty;
+			                           	dataGridView.Name = "dataGridView";
+			                           	//DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+			                           	//dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+			                           	//dataGridViewCellStyle2.BackColor = SystemColors.Control;
+			                           	//dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+			                           	//dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+			                           	//dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+			                           	//dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+			                           	//dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+			                           	dataGridView.RowHeadersVisible = false;
+			                           	dataGridView.RowTemplate.Resizable = DataGridViewTriState.True;
+			                           	dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
+			                           	dataGridView.ShowEditingIcon = false;
+			                           	dataGridView.Size = new Size(showSitesPerTechForm.ClientRectangle.Width, 183);
+			                           	dataGridView.SelectionChanged += (s, a) => {
+			                           		int[] counts = new int[dataGridView.Columns.Count];
+			                           		foreach(DataGridViewCell cell in dataGridView.SelectedCells)
+			                           		{
+                                                if(!string.IsNullOrEmpty(cell.Value.ToString()))
+			                           			    counts[cell.ColumnIndex]++;
+			                           		}
+			                           		foreach(DataGridViewColumn col in dataGridView.Columns)
+                                            {
+                                                if (col.HeaderText.IndexOf(" (") > -1)
+                                                    col.HeaderText = col.HeaderText.Substring(0, col.HeaderText.IndexOf(" ("));
+
+			                           			col.HeaderText += " (" + counts[col.Index] + ")";
+			                           		}
+			                           	};
+
+                                        CheckBox sitesFullNameCheckBox = new CheckBox
+                                        {
+                                            Text = "View Sites full ID",
+                                            Width = 150,
+                                            Location = new Point(5, dataGridView.Bottom + 5),
+                                            Anchor = (AnchorStyles.Bottom | AnchorStyles.Left)
+                                        };
+
+                                        DataTable dt = new DataTable("Table");
+			                           	dt.Columns.AddRange(new DataColumn[] {
+			                           	                    	new DataColumn("2G Only Sites", typeof(string)),
+			                           	                    	new DataColumn("2G/3G Sites", typeof(string)),
+			                           	                    	new DataColumn("2G/4G Sites", typeof(string)),
+			                           	                    	new DataColumn("2G/3G/4G Sites", typeof(string)),
+			                           	                    	new DataColumn("3G Only Sites", typeof(string)),
+			                           	                    	new DataColumn("3G/4G Sites", typeof(string)),
+			                           	                    	new DataColumn("4G Only Sites", typeof(string))
+			                           	                    });
+
+			                           	int[] listcounts = VFReportRadioButton.Checked ?
+			                           		new[] { currentOutage.VfGsmOnlyAffectedSites.Count, currentOutage.VfGsmUmtsAffectedSites.Count, currentOutage.VfGsmLteAffectedSites.Count, currentOutage.VfGsmUmtsLteAffectedSites.Count, currentOutage.VfUmtsOnlyAffectedSites.Count, currentOutage.VfUmtsLteAffectedSites.Count, currentOutage.VfLteOnlyAffectedSites.Count } :
+			                           		new[] { currentOutage.TefGsmOnlyAffectedSites.Count, currentOutage.TefGsmUmtsAffectedSites.Count, currentOutage.TefGsmLteAffectedSites.Count, currentOutage.TefGsmUmtsLteAffectedSites.Count, currentOutage.TefUmtsOnlyAffectedSites.Count, currentOutage.TefUmtsLteAffectedSites.Count, currentOutage.TefLteOnlyAffectedSites.Count };
+
+			                           	int max = listcounts.Max();
+			                           	for (int c = 0; c < max; c++)
+			                           	{
+			                           		var newRow = dt.NewRow();
+			                           		if (listcounts[0] > c)
+			                           			newRow["2G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmOnlyAffectedSites[c] : currentOutage.TefGsmOnlyAffectedSites[c];
+                                            
+			                           		if (listcounts[1] > c)
+			                           			newRow["2G/3G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmUmtsAffectedSites[c] : currentOutage.TefGsmUmtsAffectedSites[c];
+                                            
+			                           		if (listcounts[2] > c)
+			                           			newRow["2G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmLteAffectedSites[c] : currentOutage.TefGsmLteAffectedSites[c];
+                                            
+			                           		if (listcounts[3] > c)
+			                           			newRow["2G/3G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmUmtsLteAffectedSites[c] : currentOutage.TefGsmUmtsLteAffectedSites[c];
+                                            
+			                           		if (listcounts[4] > c)
+			                           			newRow["3G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfUmtsOnlyAffectedSites[c] : currentOutage.TefUmtsOnlyAffectedSites[c];
+                                            
+			                           		if (listcounts[5] > c)
+			                           			newRow["3G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfUmtsLteAffectedSites[c] : currentOutage.TefUmtsLteAffectedSites[c];
+                                            
+			                           		if (listcounts[6] > c)
+			                           			newRow["4G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfLteOnlyAffectedSites[c] : currentOutage.TefLteOnlyAffectedSites[c];
+			                           		dt.Rows.Add(newRow);
+			                           	}
+			                           	sitesFullNameCheckBox.CheckedChanged += (s, a) => {
+                                               var x = currentOutage.VfGsmOnlyAffectedSites;
+			                           		if (sitesFullNameCheckBox.Checked)
+			                           		{
+			                           			dataGridView.DataSource = null;
+			                           			dataGridView.DataSource = dt;
+
+                                                for(int c = 0;c < dataGridView.Columns.Count;c++)
+                                                {
+                                                    dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
+                                                    dataGridView.Columns[c].HeaderText += " (0)";
+                                                }
+                                               }
+			                           		else
+			                           		{
+			                           			DataTable tempDT = new DataTable(dt.TableName);
+                                                foreach(DataColumn col in dt.Columns)
+                                                       tempDT.Columns.Add(col.ColumnName, col.DataType);
+                                                
+                                                foreach(DataRow row in dt.Rows)
+                                                {
+                                                    DataRow newRow = tempDT.NewRow();
+                                                    newRow.ItemArray = row.ItemArray;
+                                                    tempDT.Rows.Add(newRow);
+                                                }
+                                                dataGridView.DataSource = null;
+
+                                                for (int row = 0;row < tempDT.Rows.Count;row++)
+			                           			{
+			                           				for(int col = 0;col < tempDT.Rows[row].ItemArray.Length;col++)
+			                           				{
+			                           					string temp = tempDT.Rows[row][col].ToString().RemoveLetters();
+			                           					while (temp.StartsWith("0"))
+			                           						temp = temp.Substring(1);
+			                           					tempDT.Rows[row][col] = temp;
+			                           				}
+			                           			}
+
+			                           			dataGridView.DataSource = tempDT;
+
+                                                for (int c = 0; c < dataGridView.Columns.Count; c++)
+                                                {
+                                                    dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
+                                                    dataGridView.Columns[c].HeaderText += " (0)";
+                                                }
+                                            }
+			                           	};
+
 			                           	showSitesPerTechForm.Controls.AddRange(new Control[]{
-			                           	                                       	gsmLabel,
-			                           	                                       	umtsLabel,
-			                           	                                       	lteLabel,
-			                           	                                       	gsmAmtRichTextBox,
-			                           	                                       	umtsAmtRichTextBox,
-			                           	                                       	lteAmtRichTextBox,
+			                           	                                       	dataGridView,
 			                           	                                       	sitesFullNameCheckBox
 			                           	                                       });
-			                           	
+			                           	sitesFullNameCheckBox.Checked = true;
 			                           	
 			                           	showSitesPerTechForm.ShowDialog();
 			                           });
