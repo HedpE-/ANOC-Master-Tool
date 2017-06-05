@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -66,7 +67,33 @@ namespace appCore.Toolbox
 			return sb.ToString();
 		}
 		
-		public static System.Drawing.Color ContrastColor(System.Drawing.Color color)
+        public static Color GetContrastForeground(Control control)
+        {
+            Bitmap bmp = new Bitmap(1, 1);
+            Bitmap orig = new Bitmap(control.ClientRectangle.Width, control.ClientRectangle.Height);
+            //using (Graphics g = Graphics.FromImage(orig))
+            //{
+
+            //}
+            control.DrawToBitmap(orig, control.ClientRectangle);
+            //				if(CurrentUser.UserName == "GONCARJ3")
+            //					orig.Save(UserFolder.FullName + @"\orig.png");
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                // updated: the Interpolation mode needs to be set to
+                // HighQualityBilinear or HighQualityBicubic or this method
+                // doesn't work at all.  With either setting, the results are
+                // slightly different from the averaging method.
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.DrawImage(orig, new Rectangle(0, 0, 1, 1));
+            }
+            Color pixel = bmp.GetPixel(0, 0);
+            // pixel will contain average values for entire orig Bitmap
+            return Tools.ContrastColor(Color.FromArgb(255, pixel.R, pixel.G, pixel.B));
+        }
+
+		static Color ContrastColor(Color color)
 		{
 			int d = 0;
 
@@ -75,7 +102,7 @@ namespace appCore.Toolbox
 
 			d = a < 0.5 ? 0 : 255; // dark colors - white font
 
-			return  System.Drawing.Color.FromArgb(d, d, d);
+			return  Color.FromArgb(d, d, d);
 		}
 
 		public static void CreateMailItem(string sendTo, string sendCC, string mailSubject, string mailBody, bool HTML)
