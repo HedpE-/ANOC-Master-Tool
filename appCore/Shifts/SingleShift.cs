@@ -7,7 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Linq;
+using appCore.Settings;
 
 namespace appCore.Shifts
 {
@@ -30,7 +30,7 @@ namespace appCore.Shifts
 			private set;
 		}
 		
-		public string Role {
+		public CurrentUser.Roles Role {
 			get;
 			private set;
 		}
@@ -40,16 +40,16 @@ namespace appCore.Shifts
 			Shift = shift;
 			Date = date;
 			if(DB.Databases.shiftsFile.ShiftLeaders.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-				Role = "Shift Leader";
+				Role = CurrentUser.Roles.ShiftLeader;
 			else {
 				if(DB.Databases.shiftsFile.TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-					Role = "TEF";
+					Role = CurrentUser.Roles.TEF;
 				else {
 					if(DB.Databases.shiftsFile.External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-						Role = "External";
+						Role = CurrentUser.Roles.ExternalAlarms;
 					else {
 						if(DB.Databases.shiftsFile.RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-							Role = "RAN";
+							Role = CurrentUser.Roles.RAN;
 					}
 				}
 			}

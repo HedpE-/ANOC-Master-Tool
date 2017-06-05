@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Exchange.WebServices.Data;
 using appCore.UI;
+using appCore.Settings;
 
 namespace appCore.Shifts
 {
@@ -31,17 +32,17 @@ namespace appCore.Shifts
 			
 			List<string> list = null;
 			
-			switch(Settings.CurrentUser.Role) {
-				case "Shift Leader":
+			switch(CurrentUser.Role) {
+				case CurrentUser.Roles.ShiftLeader:
 					list = DB.Databases.shiftsFile.ShiftLeaders;
 					break;
-				case "TEF":
+				case CurrentUser.Roles.TEF:
 					list = DB.Databases.shiftsFile.TEF;
 					break;
-				case "External":
+				case CurrentUser.Roles.ExternalAlarms:
 					list = DB.Databases.shiftsFile.External;
 					break;
-				case "RAN":
+				case CurrentUser.Roles.RAN:
 					list = DB.Databases.shiftsFile.RAN;
 					break;
 			}

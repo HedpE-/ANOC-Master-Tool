@@ -289,20 +289,20 @@ namespace appCore.DB
 			return 0;
 		}
 		
-		public string GetRole(string name) {
+		public CurrentUser.Roles GetRole(string name) {
 			if(ShiftLeaders.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-				return "Shift Leader";
+				return CurrentUser.Roles.ShiftLeader;
 			
 			if(TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-				return "TEF";
+				return CurrentUser.Roles.TEF;
 			
 			if(External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-				return "External";
+				return CurrentUser.Roles.ExternalAlarms;
 			
 			if(RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-				return "RAN";
+				return CurrentUser.Roles.RAN;
 			
-			return string.Empty;
+			return CurrentUser.Roles.Unknown;
 		}
 		
 		public string GetClosureCode(string name) {
