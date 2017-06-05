@@ -41,7 +41,6 @@ namespace appCore.SiteFinder.UI
 		public Site currentSite;
 		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
 		public Outage currentOutage;
-		OpenWeatherAPI.Query currentWeatherQuery;
 		
 		AMTMenuStrip MainMenu = new AMTMenuStrip(1090);
 		ToolStripMenuItem bulkSiteSearchMenuItem = new ToolStripMenuItem();
@@ -884,9 +883,20 @@ namespace appCore.SiteFinder.UI
 				                           });
 				thread.Name = "siteFinder_BulkFetchCRQs";
 				threads.Add(thread);
-			}
-			
-			foreach(Thread thread in threads) {
+            }
+
+            //if (currentOutage.AffectedLocations.Count > 0)
+            //{
+            //    Thread thread = new Thread(() => {
+            //        var t = currentOutage.AffectedSites.Select(s => new[] { s.Id, s.Town });
+            //        SiteFinder.Site.BulkFetchWeather(currentOutage.AffectedSites.Select(s => s.Town));
+            //        finishedThreadsCount++;
+            //    });
+            //    thread.Name = "siteFinder_BulkFetchWeather";
+            //    threads.Add(thread);
+            //}
+
+            foreach (Thread thread in threads) {
 				thread.SetApartmentState(ApartmentState.STA);
 				thread.Start();
 			}
@@ -1395,7 +1405,7 @@ namespace appCore.SiteFinder.UI
 					}
 					else {
 						if(currentSite != null) {
-							weatherForm = new appCore.GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
+							weatherForm = new GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
 							weatherForm.BackColor = Color.Black;
 							weatherForm.WeatherPanelOpacity = 60;
 							weatherForm.Owner = this;
