@@ -100,4 +100,9 @@ public static class StringExtensions
 		}
 		return str;
 	}
+
+    public static bool Contains(this string str, string pattern, StringComparison stringComparison)
+    {
+        return str.IndexOf(pattern, stringComparison) >= 0;
+    }
 }
