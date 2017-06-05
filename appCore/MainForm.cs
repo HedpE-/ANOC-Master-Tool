@@ -214,10 +214,12 @@ namespace appCore
                 allCellsLabel.Text = "all_cells last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
                 //allCellsLabel.Size = new Size(250, 13);
                 allCellsLabel.Location = new Point(5, butt2.Top - 5 - allCellsLabel.Height);
+                allCellsLabel.Visible = true;
                 
                 allSitesLabel.Text = "all_sites last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
                 //allSitesLabel.Size = new Size(250, 13);
                 allSitesLabel.Location = new Point(5, allCellsLabel.Top - allSitesLabel.Height);
+                allSitesLabel.Visible = true;
 
                 if (CurrentUser.UserName == "GONCARJ3")
                 {

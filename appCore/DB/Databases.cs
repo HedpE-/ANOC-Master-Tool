@@ -62,21 +62,21 @@ namespace appCore.DB
 			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
 			_all_cells = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
 			
-			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == CurrentUser.Roles.ShiftLeader) && autoUpdateRemoteDbFiles) {
-				RemoteDbAutoUpdateTimer.Elapsed += RemoteDbAutoUpdateTimer_Elapsed;
-
-                Thread thread = new Thread(() =>
-                {
-                    RemoteDbAutoUpdateTimer_Elapsed(null, null);
-                })
-                {
-                    Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed"
-                };
-                thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
-				
-				RemoteDbAutoUpdateTimer.Enabled = true;
-			}
+//			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == CurrentUser.Roles.ShiftLeader) && autoUpdateRemoteDbFiles) {
+//				RemoteDbAutoUpdateTimer.Elapsed += RemoteDbAutoUpdateTimer_Elapsed;
+//
+//                Thread thread = new Thread(() =>
+//                {
+//                    RemoteDbAutoUpdateTimer_Elapsed(null, null);
+//                })
+//                {
+//                    Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed"
+//                };
+//                thread.SetApartmentState(ApartmentState.STA);
+//				thread.Start();
+//				
+//				RemoteDbAutoUpdateTimer.Enabled = true;
+//			}
 			
 			WeatherCollection.Initialize(GlobalProperties.DBFilesDefaultLocation.FullName + @"\WeatherDB.json");
 		}

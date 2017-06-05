@@ -108,15 +108,12 @@ namespace appCore
             this.label30 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.textBox14 = new appCore.UI.AMTTextBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.textBox13 = new appCore.UI.AMTTextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.button24 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.label34 = new System.Windows.Forms.Label();
-            this.textBox12 = new appCore.UI.AMTRichTextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.tabPage17 = new System.Windows.Forms.TabPage();
@@ -124,6 +121,9 @@ namespace appCore
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox14 = new appCore.UI.AMTTextBox();
+            this.textBox13 = new appCore.UI.AMTTextBox();
+            this.textBox12 = new appCore.UI.AMTRichTextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -187,6 +187,7 @@ namespace appCore
             this.allCellsLabel.TabIndex = 12;
             this.allCellsLabel.Text = "label2";
             this.allCellsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.allCellsLabel.Visible = false;
             this.allCellsLabel.ForeColorChanged += new System.EventHandler(this.allSitesCellsLabelsForeColorChanged);
             // 
             // allSitesLabel
@@ -199,6 +200,7 @@ namespace appCore
             this.allSitesLabel.TabIndex = 11;
             this.allSitesLabel.Text = "label1";
             this.allSitesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.allSitesLabel.Visible = false;
             this.allSitesLabel.ForeColorChanged += new System.EventHandler(this.allSitesCellsLabelsForeColorChanged);
             // 
             // panel1
@@ -423,8 +425,8 @@ namespace appCore
             this.tabPage3.Controls.Add(this.label30);
             this.tabPage3.Controls.Add(this.label19);
             this.tabPage3.Controls.Add(this.label20);
-            this.tabPage3.Controls.Add(this.textBox14);
             this.tabPage3.Controls.Add(this.label18);
+            this.tabPage3.Controls.Add(this.textBox14);
             this.tabPage3.Controls.Add(this.textBox13);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
@@ -484,16 +486,6 @@ namespace appCore
             this.label20.Text = "Initials";
             this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // textBox14
-            // 
-            this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox14.Location = new System.Drawing.Point(87, 59);
-            this.textBox14.MaxLength = 9;
-            this.textBox14.Name = "textBox14";
-            this.textBox14.ReadOnly = true;
-            this.textBox14.Size = new System.Drawing.Size(76, 20);
-            this.textBox14.TabIndex = 3;
-            // 
             // label18
             // 
             this.label18.Location = new System.Drawing.Point(6, 8);
@@ -502,17 +494,6 @@ namespace appCore
             this.label18.TabIndex = 19;
             this.label18.Text = "INC";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // textBox13
-            // 
-            this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox13.Location = new System.Drawing.Point(87, 7);
-            this.textBox13.MaxLength = 15;
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(111, 20);
-            this.textBox13.TabIndex = 1;
-            this.textBox13.TextChanged += new System.EventHandler(this.TextBox13TextChanged);
-            this.textBox13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox13KeyPress);
             // 
             // tabPage4
             // 
@@ -529,9 +510,9 @@ namespace appCore
             this.tabPage5.Controls.Add(this.button24);
             this.tabPage5.Controls.Add(this.button13);
             this.tabPage5.Controls.Add(this.label34);
-            this.tabPage5.Controls.Add(this.textBox12);
             this.tabPage5.Controls.Add(this.button5);
             this.tabPage5.Controls.Add(this.button6);
+            this.tabPage5.Controls.Add(this.textBox12);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Size = new System.Drawing.Size(525, 656);
@@ -568,18 +549,6 @@ namespace appCore
             this.label34.TabIndex = 29;
             this.label34.Text = "Alarms to parse";
             this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // textBox12
-            // 
-            this.textBox12.DetectUrls = false;
-            this.textBox12.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox12.Location = new System.Drawing.Point(8, 27);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(513, 597);
-            this.textBox12.TabIndex = 1;
-            this.textBox12.Text = "";
-            this.textBox12.WordWrap = false;
-            this.textBox12.TextChanged += new System.EventHandler(this.TextBox12TextChanged);
             // 
             // button5
             // 
@@ -641,6 +610,39 @@ namespace appCore
             this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 22);
             this.toolStripMenuItem2.Text = "Choose from file...";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
+            // 
+            // textBox14
+            // 
+            this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox14.Location = new System.Drawing.Point(87, 59);
+            this.textBox14.MaxLength = 9;
+            this.textBox14.Name = "textBox14";
+            this.textBox14.ReadOnly = true;
+            this.textBox14.Size = new System.Drawing.Size(76, 20);
+            this.textBox14.TabIndex = 3;
+            // 
+            // textBox13
+            // 
+            this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox13.Location = new System.Drawing.Point(87, 7);
+            this.textBox13.MaxLength = 15;
+            this.textBox13.Name = "textBox13";
+            this.textBox13.Size = new System.Drawing.Size(111, 20);
+            this.textBox13.TabIndex = 1;
+            this.textBox13.TextChanged += new System.EventHandler(this.TextBox13TextChanged);
+            this.textBox13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox13KeyPress);
+            // 
+            // textBox12
+            // 
+            this.textBox12.DetectUrls = false;
+            this.textBox12.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox12.Location = new System.Drawing.Point(8, 27);
+            this.textBox12.Name = "textBox12";
+            this.textBox12.Size = new System.Drawing.Size(513, 597);
+            this.textBox12.TabIndex = 1;
+            this.textBox12.Text = "";
+            this.textBox12.WordWrap = false;
+            this.textBox12.TextChanged += new System.EventHandler(this.TextBox12TextChanged);
             // 
             // MainForm
             // 
