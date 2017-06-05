@@ -128,7 +128,8 @@ namespace appCore.UI
 			Links.MenuItems.Add("Energy Networks", (s, e) => Process.Start("http://www.energynetworks.org/info/faqs/electricity-distribution-map.html"));
 			Links.MenuItems.Add("BT Wholesale", (s, e) => Process.Start("https://www.btwholesale.com/portalzone/portalzone/homeLogin.do"));
 			Links.MenuItems.Add("ALEX", (s, e) => Process.Start("http://oprweb/alex"));
-			Links.MenuItems.Add("Google Translate", (s, e) => Process.Start("http://translate.google.com/"));
+            Links.MenuItems.Add("ARFCN Calculator", (s, e) => Process.Start("https://www.cellmapper.net/arfcn"));
+            Links.MenuItems.Add("Google Translate", (s, e) => Process.Start("http://translate.google.com/"));
 			
 			InternalNotifyIcon.ContextMenu = new ContextMenu(new MenuItem[] {
 //			MainForm.trayIc.ContextMenu = new ContextMenu(new MenuItem[] {
