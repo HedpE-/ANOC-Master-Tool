@@ -30,10 +30,9 @@ namespace appCore.Settings
 		
 		public static readonly DirectoryInfo ShiftsDefaultLocation = new DirectoryInfo(GlobalProperties.ShareRootDir.Parent.FullName + @"\Shifts");
 		public static readonly DirectoryInfo DBFilesDefaultLocation = new DirectoryInfo(GlobalProperties.ShareRootDir.FullName + @"\ANOC Master Tool");
+        public static readonly DirectoryInfo WeatherPicturesLocation = new DirectoryInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\resources");
 		
 		public static string OfficePath = string.Empty;
-		
-		public static List<OpenWeatherAPI.Query> WeatherCollection = new List<OpenWeatherAPI.Query>();
 		
 		static FileVersionInfo _assemblyFileVersionInfo;
 		public static FileVersionInfo AssemblyFileVersionInfo {
