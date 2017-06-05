@@ -50,50 +50,62 @@ namespace appCore.GeoAPIs.UI
 			}
 		}
 		
-		Query currentWeatherQuery;
+		WeatherItem currentWeatherQuery;
 		
 		public WeatherPanel()
 		{
 			SetStyle(ControlStyles.Opaque, true);
 			InitializeComponent();
-			// Resolve PEN root path
-			System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
-			if(pen != null)
-				WeatherPicture = Image.FromFile(pen.Name + @"Weather\01d.png");
-			else {
-				using(System.Net.WebClient wc = new System.Net.WebClient()) {
-					System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
-					proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-					wc.Proxy = proxy;
-					byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/01d.png");
-					System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
-					WeatherPicture = Image.FromStream(ms);
-				}
-			}
+            if (Settings.GlobalProperties.WeatherPicturesLocation.Exists)
+                WeatherPicture = Image.FromFile(Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"01d.png");
+            else
+            {
+                // Resolve PEN root path
+                System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
+                if (pen != null)
+                    WeatherPicture = Image.FromFile(pen.Name + @"Weather\01d.png");
+                else
+                {
+                    using (System.Net.WebClient wc = new System.Net.WebClient())
+                    {
+                        System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
+                        proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+                        wc.Proxy = proxy;
+                        byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/01d.png");
+                        System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
+                        WeatherPicture = Image.FromStream(ms);
+                    }
+                }
+            }
 		}
 		
-		public WeatherPanel(Query weatherQuery)
+		public WeatherPanel(WeatherItem weatherItem)
 		{
 			SetStyle(ControlStyles.Opaque, true);
 			InitializeComponent();
 						
-			currentWeatherQuery = weatherQuery;
-			
-			// Resolve PEN root path
-			System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
-			if(pen != null)
-				WeatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherQuery.Weathers[0].Icon + ".png");
-			else {
-				using(System.Net.WebClient wc = new System.Net.WebClient()) {
-					System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
-					proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-					wc.Proxy = proxy;
-					byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherQuery.Weathers[0].Icon + ".png");
-					System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
-					WeatherPicture = Image.FromStream(ms);
-				}
-			}
-		}
+			currentWeatherQuery = weatherItem;
+
+            if (Settings.GlobalProperties.WeatherPicturesLocation.Exists)
+                WeatherPicture = Image.FromFile(Settings.GlobalProperties.WeatherPicturesLocation.FullName + "\\" + weatherItem.weather[0].icon + ".png");
+            else
+            {
+                // Resolve PEN root path
+                System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
+			    if(pen != null)
+				    WeatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherItem.weather[0].icon + ".png");
+			    else {
+				    using(System.Net.WebClient wc = new System.Net.WebClient()) {
+					    System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
+					    proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+					    wc.Proxy = proxy;
+					    byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherItem.weather[0].icon + ".png");
+					    System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
+					    WeatherPicture = Image.FromStream(ms);
+				    }
+                }
+            }
+        }
 
 		protected override CreateParams CreateParams
 		{
@@ -147,10 +159,12 @@ namespace appCore.GeoAPIs.UI
 				g.FillRectangle(new SolidBrush(Color.FromArgb(Opacity * 255 / 100, BackColor)), ClientRectangle);
 				
 				using (Pen pen = new Pen(Color.Black, 1)) {
-					StringFormat drawStringFormat = new StringFormat();
-					drawStringFormat.Alignment = StringAlignment.Center;
-					drawStringFormat.LineAlignment = StringAlignment.Center;
-					FontFamily font = FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri") ??
+                    StringFormat drawStringFormat = new StringFormat()
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    };
+                    FontFamily font = FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri") ??
 						FontFamily.Families.FirstOrDefault(f => f.Name == "Microsoft Sans Serif");
 					// 
 					// Town
@@ -158,8 +172,8 @@ namespace appCore.GeoAPIs.UI
 					var rect = new Rectangle(Point.Empty, new Size(Width, 30));
 					g.FillRectangle(new SolidBrush(Color.FromArgb(Opacity * 255 / 100, Color.DarkRed)), rect);
 					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Name : "Town",
-						new Font(font, currentWeatherQuery.Name.Length > 20 ? 13F : 15.75F, FontStyle.Bold),
+						currentWeatherQuery != null ? currentWeatherQuery. name : "Town",
+						new Font(font, currentWeatherQuery.name.Length > 20 ? 13F : 15.75F, FontStyle.Bold),
 						Brushes.White,
 						rect,
 						drawStringFormat
@@ -169,7 +183,7 @@ namespace appCore.GeoAPIs.UI
 					// 
 					drawStringFormat.Alignment = StringAlignment.Near;
 					g.DrawString(
-						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.Main.Temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
+						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.main.temperature.CelsiusCurrent, 1, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
 						new Font(font, 15.75F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(100, 35), new Size(70, 25)),
@@ -180,7 +194,7 @@ namespace appCore.GeoAPIs.UI
 					// 
 					drawStringFormat.LineAlignment = StringAlignment.Near;
 					g.DrawString(
-						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxTemperature",
+						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.main.temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(170, 35), new Size(Width - 170, 12)),
@@ -191,7 +205,7 @@ namespace appCore.GeoAPIs.UI
 					// 
 					drawStringFormat.LineAlignment = StringAlignment.Far;
 					g.DrawString(
-						currentWeatherQuery != null ? "Min: " + Math.Round(currentWeatherQuery.Main.Temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MinTemperature",
+						currentWeatherQuery != null ? "Min: " + Math.Round(currentWeatherQuery.main.temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MinTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(170, 48), new Size(Width - 170, 12)),
@@ -201,7 +215,7 @@ namespace appCore.GeoAPIs.UI
 					// WeatherDescription
 					// 
 					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Weathers.FirstOrDefault().Description.CapitalizeWords() : "WeatherDescription",
+						currentWeatherQuery != null ? currentWeatherQuery.weather.FirstOrDefault().description.CapitalizeWords() : "WeatherDescription",
 						new Font(font, 12F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(100, 65), new Size(Width - 100, 18)),
@@ -211,7 +225,7 @@ namespace appCore.GeoAPIs.UI
 					// WindSpeed
 					// 
 					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.Wind.SpeedMetersPerSecond + " m/s" : "WindSpeed",
+						currentWeatherQuery != null ? currentWeatherQuery.wind.SpeedMetersPerSecond + " m/s" : "WindSpeed",
 						new Font(font, 12F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(100, 85), new Size(Width - 100, 18)),

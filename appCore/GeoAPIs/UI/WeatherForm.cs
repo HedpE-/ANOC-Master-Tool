@@ -45,18 +45,20 @@ namespace appCore.GeoAPIs.UI
 		[DllImport("dwmapi.dll")]
 		public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMargins);
 		
-		public WeatherForm(Query weather)
+		public WeatherForm(WeatherItem weatherItem)
 		{
 			MARGINS marg = new MARGINS() { Left = -1, Right = -1, Top = -1, Bottom = -1 };
 			DwmExtendFrameIntoClientArea(this.Handle, ref marg);
-			
-			weatherPanel = new WeatherPanel(weather);
-			weatherPanel.Location = Point.Empty;
-//			weatherPanel.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.BottomLeft;
-//			weatherPanel.CornerSize = 25;
-//			weatherPanel.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
-			
-			Controls.Add(weatherPanel);
+
+            weatherPanel = new WeatherPanel(weatherItem)
+            {
+                Location = Point.Empty
+            };
+            //			weatherPanel.CornersToRound = appCore.UI.AMTRoundCornersPanel.Corners.BottomLeft;
+            //			weatherPanel.CornerSize = 25;
+            //			weatherPanel.BordersToDraw = appCore.UI.AMTRoundCornersPanel.Borders.None;
+
+            Controls.Add(weatherPanel);
 			
 //			Bounds = weatherPanel.Bounds;
 //			Region = weatherPanel.Region;
@@ -65,7 +67,7 @@ namespace appCore.GeoAPIs.UI
 //			ShowInTaskbar = false;
 			Size = weatherPanel.Size;
 			FormBorderStyle = FormBorderStyle.None;
-			Text = "Weather Conditions: " + weather.Name;
+			Text = "Weather Conditions: " + weatherItem.name;
 			Icon = global::appCore.UI.Resources.app_icon;
 		}
 		

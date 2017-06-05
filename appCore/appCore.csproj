@@ -134,24 +134,17 @@
     <Compile Include="DB\WeatherCollection.cs" />
     <Compile Include="GeoAPIs\GMap.NET\GmapMarkerWithLabel.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\City.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Clouds.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Coord.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Main.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Objects.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\OpenWeatherAPI.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Query.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Rain.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Snow.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Sys.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Weather.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Wind.cs" />
     <Compile Include="GeoAPIs\UI\WeatherForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GeoAPIs\UI\WeatherPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GeoAPIs\UkCities.cs" />
-    <Compile Include="GeoAPIs\WeatherItem.cs" />
+    <Compile Include="DB\UkCities.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,12 +171,9 @@
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Toolbox\FlatenJsonConverter.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
-    <Compile Include="Toolbox\JsonExtensions.cs" />
     <Compile Include="Toolbox\NumericComparer.cs" />
     <Compile Include="Toolbox\NumericListComparer.cs" />
-    <Compile Include="Toolbox\QueryFactory.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\CF Implementation.cs" />
     <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingAverageGroup.cs" />
@@ -1326,6 +1316,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Toolbox\coordConvert.cs" />
+    <Compile Include="Toolbox\ListExtensions.cs" />
     <Compile Include="Toolbox\StringExtensions.cs" />
     <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\StringLogicalComparer.cs" />
@@ -1365,7 +1356,9 @@
     <Compile Include="UI\AMTMenuStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\AMTPictureBox.cs" />
+    <Compile Include="UI\AMTPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\AMTRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

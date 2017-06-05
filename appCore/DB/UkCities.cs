@@ -7,14 +7,14 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using OpenWeatherAPI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace appCore.GeoAPIs
+namespace appCore.DB
 {
 	/// <summary>
 	/// Description of UkCities.
@@ -42,6 +42,16 @@ namespace appCore.GeoAPIs
 					}
 				}
 			}
-		}
-	}
+        }
+
+        public City FindCity(int cityId)
+        {
+            return this.FirstOrDefault(c => c.id == cityId);
+        }
+
+        public City FindCity(string cityName)
+        {
+            return this.FirstOrDefault(c => c.name == cityName);
+        }
+    }
 }

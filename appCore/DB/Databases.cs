@@ -56,26 +56,29 @@ namespace appCore.DB
 		
 		static System.Timers.Timer RemoteDbAutoUpdateTimer = new System.Timers.Timer((60 * 60) * 2 * 1000); // 2 hours in milliseconds
 		
-		public static GeoAPIs.UkCities Cities;
+		public static UkCities Cities;
 		
 		public static void Initialize() {
 			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
 			_all_cells = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
 			
-			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") && autoUpdateRemoteDbFiles) {
+			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == CurrentUser.Roles.ShiftLeader) && autoUpdateRemoteDbFiles) {
 				RemoteDbAutoUpdateTimer.Elapsed += RemoteDbAutoUpdateTimer_Elapsed;
-				
-				Thread thread = new Thread(() => {
-				                           	RemoteDbAutoUpdateTimer_Elapsed(null, null);
-				                           });
-				thread.Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed";
-				thread.SetApartmentState(ApartmentState.STA);
+
+                Thread thread = new Thread(() =>
+                {
+                    RemoteDbAutoUpdateTimer_Elapsed(null, null);
+                })
+                {
+                    Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed"
+                };
+                thread.SetApartmentState(ApartmentState.STA);
 				thread.Start();
 				
 				RemoteDbAutoUpdateTimer.Enabled = true;
 			}
 			
-			WeatherCollection.Initialize(GlobalProperties.ShareRootDir.FullName + @"\ANOC Master Tool\WeatherDB.json");
+			WeatherCollection.Initialize(GlobalProperties.DBFilesDefaultLocation.FullName + @"\WeatherDB.json");
 		}
 		
 		static void RemoteDbAutoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e) {
@@ -96,66 +99,82 @@ namespace appCore.DB
 			
 			List<Thread> threads = new List<Thread>();
 			int finishedThreadsCount = 0;
-			
-			Thread thread = new Thread(() => {
-//			                       	string response = OiConnection.requestPhpOutput("allsites");
-			                           	string response = OiConnection.requestApiOutput("sites");
-			                           	if(response.StartsWith("SITE,JVCO_ID,GSM900,")) {
-			                           		if(response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
-			                           			MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
-			                           		if(GlobalProperties.shareAccess || onUserFolder) {
-			                           			bool updated = false;
-			                           			if(source_allsites.Exists) {
-			                           				if(response != File.ReadAllText(source_allsites.FullName)) {
-			                           					MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
-			                           					File.WriteAllText(source_allsites.FullName, response);
-			                           					updated = true;
-			                           				}
-			                           			}
-			                           			else {
-			                           				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
-			                           				File.WriteAllText(source_allsites.FullName, response);
-			                           				updated = true;
-			                           			}
-			                           			if(updated)
-			                           				MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
-			                           		}
-			                           	}
-			                           	
-			                           	finishedThreadsCount++;
-			                           });
-			thread.Name = "UpdateSourceDBFiles_allsitesThread";
-			threads.Add(thread);
-			
-			thread = new Thread(() => {
-//			                       	string response = OiConnection.requestPhpOutput("allcells");
-			                    	string response = OiConnection.requestApiOutput("cells");
-			                    	if(response.StartsWith("SITE,JVCO_ID,CELL_ID,")) {
-			                    		if(response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
-			                    			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
-			                    		if(GlobalProperties.shareAccess || onUserFolder) {
-			                    			bool updated = false;
-			                    			if(source_allcells.Exists) {
-			                    				if(response != File.ReadAllText(source_allcells.FullName)) {
-			                    					MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
-			                    					File.WriteAllText(source_allcells.FullName, response);
-			                    					updated = true;
-			                    				}
-			                    			}
-			                    			else {
-			                    				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
-			                    				File.WriteAllText(source_allcells.FullName, response);
-			                    				updated = true;
-			                    			}
-			                    			if(updated)
-			                    				MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully " + updLocation);
-			                    		}
-			                    	}
-			                    	
-			                    	finishedThreadsCount++;
-			                    });
-			thread.Name = "UpdateSourceDBFiles_allcellsThread";
-			threads.Add(thread);
+
+            Thread thread = new Thread(() =>
+            {
+                //			                       	string response = OiConnection.requestPhpOutput("allsites");
+                string response = OiConnection.requestApiOutput("sites");
+                if (response.StartsWith("SITE,JVCO_ID,GSM900,"))
+                {
+                    if (response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
+                        MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
+                    if (GlobalProperties.shareAccess || onUserFolder)
+                    {
+                        bool updated = false;
+                        if (source_allsites.Exists)
+                        {
+                            if (response != File.ReadAllText(source_allsites.FullName))
+                            {
+                                MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
+                                File.WriteAllText(source_allsites.FullName, response);
+                                updated = true;
+                            }
+                        }
+                        else
+                        {
+                            MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
+                            File.WriteAllText(source_allsites.FullName, response);
+                            updated = true;
+                        }
+                        if (updated)
+                            MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
+                    }
+                }
+
+                finishedThreadsCount++;
+            })
+            {
+                Name = "UpdateSourceDBFiles_allsitesThread"
+            };
+            threads.Add(thread);
+
+            thread = new Thread(() =>
+            {
+                //			                       	string response = OiConnection.requestPhpOutput("allcells");
+                string response = OiConnection.requestApiOutput("cells");
+                if (response.StartsWith("SITE,JVCO_ID,CELL_ID,"))
+                {
+                    if (response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
+                        MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
+                    if (GlobalProperties.shareAccess || onUserFolder)
+                    {
+                        bool updated = false;
+                        if (source_allcells.Exists)
+                        {
+                            if (response != File.ReadAllText(source_allcells.FullName))
+                            {
+                                MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
+                                File.WriteAllText(source_allcells.FullName, response);
+                                updated = true;
+                            }
+                        }
+                        else
+                        {
+                            MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
+                            File.WriteAllText(source_allcells.FullName, response);
+                            updated = true;
+                        }
+                        if (updated)
+                            MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully " + updLocation);
+                    }
+                }
+
+                finishedThreadsCount++;
+            })
+            {
+                Name = "UpdateSourceDBFiles_allcellsThread"
+            };
+            threads.Add(thread);
 			
 			foreach(Thread th in threads) {
 				th.SetApartmentState(ApartmentState.STA);
@@ -171,7 +190,7 @@ namespace appCore.DB
 			shiftsFile = new ShiftsFile(DateTime.Now.Year);
 //			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
 //			st.Start();
-			Cities = new GeoAPIs.UkCities();
+			Cities = new UkCities();
 //			st.Stop();
 //			var t = st.Elapsed;
 		}

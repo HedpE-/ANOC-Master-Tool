@@ -12,7 +12,6 @@ using System.Linq;
 using System.Drawing;
 using System.Data;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using GMap.NET;
 using GMap.NET.WindowsForms;
@@ -378,39 +377,26 @@ namespace appCore.SiteFinder
 			}
 			private set { }
 		}
-		
-		public Query CurrentWeather {
+
+        [FieldHidden]
+        private WeatherItem currentWeather;
+		public WeatherItem CurrentWeather {
 			get {
-//				int townId = -1;
-//				City tempTown = DB.Databases.Cities.FirstOrDefault(c => c.name.ToUpper() == Town.ToUpper());
-//				if(tempTown != null)
-//					townId = tempTown.id;
-				
-				Query currentWeather = DB.WeatherCollection.RetrieveExistingWeatherData(Town);
-				if(currentWeather == null) {
-					OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-					currentWeather = openWeatherAPI.queryCityName(Town + ",UK");
-					currentWeather.LastUpdateTimestamp = DateTime.Now;
-					DB.WeatherCollection.AddWeatherData(currentWeather);
-				}
-//				currentWeather = Settings.GlobalProperties.WeatherCollection.Find(w => w.Name.ToUpper() == Town);
-//				if(currentWeather != null) {
-//					if(DateTime.Now - currentWeather.LastUpdateTimestamp > new TimeSpan(2, 0, 0))
-//						Settings.GlobalProperties.WeatherCollection.RemoveAt(Settings.GlobalProperties.WeatherCollection.IndexOf(currentWeather));
-//					else
-//						return currentWeather;
-//				}
-//				OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-//				currentWeather = openWeatherAPI.queryCityName(Town + ",UK");
-				////				currentWeather = openWeatherAPI.queryLongitudeLatitude(Coordinates.Latitude, Coordinates.Longitude, Town);
-				////				currentWeather = openWeatherAPI.queryCityId(townId);
-//				currentWeather.LastUpdateTimestamp = DateTime.Now;
-//				Settings.GlobalProperties.WeatherCollection.Add(currentWeather);
+                //if (currentWeather == null)
+                //    //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+                //    //st.Start();
+                //    currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
+                //    //st.Stop();
+                //    //var t = st.Elapsed;
+                //else
+                //{
+                //    if (DateTime.Now - currentWeather.DataTimestamp > new TimeSpan(2, 0, 0))
+                //        currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
+                //}
+
 				return currentWeather;
 			}
 		}
-//		[FieldHidden]
-//		public DateTime CurrentWeatherTimestamp;
 		
 		[FieldHidden]
 		public List<Cell> Cells = new List<Cell>();
@@ -708,6 +694,30 @@ namespace appCore.SiteFinder
 		public static List<Alarm> BulkFetchActiveAlarms(IEnumerable<string> sites) {
 			return null;
 		}
+
+        public static List<WeatherItem> BulkFetchWeather(IEnumerable<string> locations)
+        {
+            List<WeatherItem> weatherList = new List<WeatherItem>();
+            List<int> ids = new List<int>();
+            List<string> locList = locations.ToList();
+            for(int c = 0;c < locList.Count;c++)
+            {
+                var city = DB.Databases.Cities.FindCity(locList[c]);
+                if (city != null)
+                {
+                    ids.Add(city.id);
+                    locList.Remove(locList[c--]);
+                }
+            }
+            if(ids.Any())
+                weatherList.AddRange(DB.WeatherCollection.RetrieveWeatherData(ids));
+
+            if(locList.Any())
+            foreach (string location in locations)
+                weatherList.Add(DB.WeatherCollection.RetrieveWeatherData(location));
+
+            return weatherList;
+        }
 		
 //		DataTable FetchActiveAlarms(FileSystemInfo table_alarms) {
 //			DataTable dt = new DataTable();
@@ -1146,14 +1156,14 @@ namespace appCore.SiteFinder
 					onwardSitesObjects = value;
 				}
 			}
-			public string EvenflowStatus { get; private set; }
+			//public string EvenflowStatus { get; private set; }
 			
 			public CramerDetails(DataRow details) {
 				PocType = details["POC TYPE"].ToString();
 				OnwardSitesCount = Convert.ToInt16(details["EFFECTED SITE COUNT"]);
 				TxMedium = details["TX MEDIUM"].ToString();
 				TxLastMileRef = details["TX LAST MILE REF"].ToString();
-				EvenflowStatus = details["EVENFLOW STATUS"].ToString();
+                //EvenflowStatus = details["EVENFLOW STATUS"].ToString();
 				OnwardSites = new List<string>();
 				string sitesList = details["EFFECTED SITE LIST"].ToString();
 				if(!string.IsNullOrEmpty(sitesList)) {
