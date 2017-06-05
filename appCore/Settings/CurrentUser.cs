@@ -16,8 +16,16 @@ namespace appCore.Settings
 	/// Description of CurrentUser.
 	/// </summary>
 	public static class CurrentUser
-	{
-		public static bool HasOICredentials
+    {
+        public enum Roles
+        {
+            ShiftLeader,
+            TEF,
+            ExternalAlarms,
+            RAN,
+            Unknown
+        }
+        public static bool HasOICredentials
 		{
 			get;
 			private set;
@@ -48,7 +56,7 @@ namespace appCore.Settings
 			}
 			private set { }
 		}
-		public static string Role {
+		public static Roles Role {
 			get {
 				return DB.Databases.shiftsFile.GetRole(FullName[1] + " " + FullName[0]);
 			}
