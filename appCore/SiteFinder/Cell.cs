@@ -155,5 +155,10 @@ namespace appCore.SiteFinder
 			Locked,
 			Unlocked
 		};
-	}
+
+        public override string ToString()
+        {
+            return Name + "(" + BscRnc_Id + " - " + ParentSite + ")";
+        }
+    }
 }
