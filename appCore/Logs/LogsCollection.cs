@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using appCore.Templates;
 using appCore.Templates.Types;
@@ -333,16 +334,16 @@ namespace appCore.Logs
 			string searchKey = string.Empty;
 			
 			switch(n.LogType) {
-				case "Troubleshoot":
+				case TemplateTypes.Troubleshoot:
 					searchKey = n.fullLog.Substring(n.fullLog.IndexOf("INC: "), 20); //.Substring(5);
 					break;
-				case "Failed CRQ":
+				case TemplateTypes.FailedCRQ:
 					searchKey = n.fullLog.Substring(n.fullLog.IndexOf("CRQ: "), 20);
 					break;
-				case "Update":
+				case TemplateTypes.Update:
 					searchKey = n.fullLog.Substring(n.fullLog.IndexOf("INC: "), 20);
 					break;
-				case "TX Template":
+				case TemplateTypes.TX:
 					searchKey = "Site(s) ref: ";
 					break;
 			}
@@ -365,7 +366,7 @@ namespace appCore.Logs
 //				Find all INCs and compare contents
 			
 			switch(n.LogType) {
-				case "Troubleshoot": case "Failed CRQ": case "Update":
+				case TemplateTypes.Troubleshoot: case TemplateTypes.FailedCRQ: case TemplateTypes.Update:
 					T existingLog = (T)List[existingLogIndex];
 					if (n.fullLog != existingLog.fullLog) {
 						//						Toolbox.ScrollableMessageBox msgBox = new Toolbox.ScrollableMessageBox();
@@ -387,7 +388,7 @@ namespace appCore.Logs
 						else return;
 					}
 					break;
-				case "TX":
+				case TemplateTypes.TX:
 //						foreach(int index in LogIndex) {
 //							string tempLog = Logs[index].Substring(Logs[index].IndexOf("\r\n", StringComparison.Ordinal) + 2,Logs[index].Length - (Logs[index].IndexOf("\r\n", StringComparison.Ordinal) + 2));
 //							if(tempLog == ToLog)
@@ -396,8 +397,8 @@ namespace appCore.Logs
 //						ToLog += Environment.NewLine + separator;
 //						addLog(ToLog,LogType);
 					break;
-				case "BCP":
-					break;
+				//case "BCP":
+				//	break;
 			}
 		}
 
@@ -462,10 +463,10 @@ namespace appCore.Logs
 					using (StreamWriter sw = LogFile.AppendText())
 					{
 						sw.WriteLine();
-						string logtype = n.LogType;
-						if(logtype != "Failed CRQ")
-							logtype += " Template";
-						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + logtype);
+						//string logtype = EnumExtensions.GetDescription(n.LogType);
+						//if(logtype != "Failed CRQ")
+						//	logtype += " Template";
+						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + EnumExtensions.GetDescription(n.LogType));
 						sw.WriteLine(n.fullLog);
 //						if(logtype == "Troubleshoot") {
 //							TroubleShoot temp = (TroubleShoot)n;
@@ -496,10 +497,10 @@ namespace appCore.Logs
 				try {
 					using (StreamWriter sw = LogFile.CreateText())
 					{
-						string logtype = n.LogType;
-						if(logtype != "Failed CRQ")
-							logtype += " Template";
-						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + logtype);
+						//string logtype = n.LogType;
+						//if(logtype != "Failed CRQ")
+						//	logtype += " Template";
+						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + EnumExtensions.GetDescription(n.LogType));
 						sw.WriteLine(n.fullLog);
 						sw.Write(logSeparator);
 					}
@@ -657,47 +658,48 @@ namespace appCore.Logs
 			return this.List.Add(item);
 		}
 		
-		public int FilterCounts(Template.Filters filter) {
-			int count = 0;
-			switch(filter) {
-				case Template.Filters.Troubleshoot:
-					foreach(Template t in this.List) {
-						if(t.LogType == "Troubleshoot")
-							count++;
-					}
-					return count;
-				case Template.Filters.FailedCRQ:
-					foreach(Template t in this.List) {
-						if(t.LogType == "Failed CRQ")
-							count++;
-					}
-					return count;
-				case Template.Filters.TX:
-					foreach(Template t in this.List) {
-						if(t.LogType == "TX")
-							count++;
-					}
-					return count;
-				case Template.Filters.Update:
-					foreach(Template t in this.List) {
-						if(t.LogType == "Update")
-							count++;
-					}
-					return count;
-				case Template.Filters.Outage:
-					foreach(Template t in this.List) {
-						if(t.LogType == "Outage")
-							count++;
-					}
-					return count;
-				case Template.Filters.TicketCount:
-					foreach(Template t in this.List) {
-						if(t.LogType == "Troubleshoot" || t.LogType == "Failed CRQ" || t.LogType == "TX")
-							count++;
-					}
-					return count;
-			}
-			return -1;
+		public int FilterCounts(TemplateTypes filter) {
+            return this.List.Cast<Template>().Count(t => filter.HasFlag(t.LogType));
+			//int count = 0;
+			//switch(filter) {
+			//	case TemplateTypes.Troubleshoot:
+			//		foreach(Template t in this.List) {
+			//			if(t.LogType == "Troubleshoot")
+			//				count++;
+			//		}
+			//		return count;
+			//	case TemplateTypes.FailedCRQ:
+			//		foreach(Template t in this.List) {
+			//			if(t.LogType == "Failed CRQ")
+			//				count++;
+			//		}
+			//		return count;
+			//	case TemplateTypes.TX:
+			//		foreach(Template t in this.List) {
+			//			if(t.LogType == "TX")
+			//				count++;
+			//		}
+			//		return count;
+			//	case TemplateTypes.Update:
+			//		foreach(Template t in this.List) {
+			//			if(t.LogType == "Update")
+			//				count++;
+			//		}
+			//		return count;
+			//	case TemplateTypes.Outage:
+			//		foreach(Template t in this.List) {
+			//			if(t.LogType == "Outage")
+			//				count++;
+			//		}
+			//		return count;
+			//	case Template.Filters.TicketCount:
+			//		foreach(Template t in this.List) {
+			//			if(t.LogType == "Troubleshoot" || t.LogType == "Failed CRQ" || t.LogType == "TX")
+			//				count++;
+			//		}
+			//		return count;
+			//}
+			//return -1;
 		}
 		
 //		void LogOutageReport()

@@ -64,7 +64,7 @@ namespace appCore.Shifts
 				g.DrawString("Shift Leaders:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
 				previousRectBottomCoord = rectangle.Bottom;
 				
-				List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Settings.CurrentUser.Roles.ShiftLeader).ToList();
+				List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.ShiftLeader).ToList();
 				foreach(SingleShift sh in filteredList) {
 					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
 					wholeShiftString += sh.Name + '\t';
@@ -82,7 +82,7 @@ namespace appCore.Shifts
 				g.DrawString("Agents:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
 				previousRectBottomCoord = rectangle.Bottom;
 				
-				filteredList = sameShiftRows.Where(s => s.Role != Settings.CurrentUser.Roles.ShiftLeader).ToList();
+				filteredList = sameShiftRows.Where(s => s.Role != Roles.ShiftLeader).ToList();
 				for(int c = 1;c <= filteredList.Count;c++) {
 					rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
 					wholeShiftString += filteredList[c - 1].Name + '\t';

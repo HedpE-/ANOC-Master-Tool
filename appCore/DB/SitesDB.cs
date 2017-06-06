@@ -276,13 +276,13 @@ namespace appCore.DB
 			return tempCells;
 		}
 
-		public static List<Cell> getCells(List<string> sites, string bearers = "2G3G4G")
+		public static List<Cell> getCells(List<string> sites, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
 		{
 			List<Cell> foundCells = new List<Cell>();
 			try {
 				var engine = new FileHelperEngine<Cell>();
 				engine.AfterReadRecord +=  (eng, e) => {
-					if(!bearers.Contains(e.Record.Bearer))
+					if(!bearers.HasFlag(e.Record.Bearer))
 						e.SkipThisRecord = true;
 					else {
 						if(!sites.Contains(e.Record.ParentSite))
@@ -297,7 +297,7 @@ namespace appCore.DB
 			return foundCells;
 		}
 
-		public static List<Cell> getCells(string site, string bearers = "2G3G4G")
+		public static List<Cell> getCells(string site, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
 		{
 			List<string> sitesList = new List<string>();
 			sitesList.Add(site);

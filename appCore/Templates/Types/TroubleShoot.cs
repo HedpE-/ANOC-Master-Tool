@@ -71,7 +71,7 @@ namespace appCore.Templates.Types
 		}
 		
 		public Troubleshoot() {
-			LogType = "Troubleshoot";
+			LogType = TemplateTypes.Troubleshoot;
 		}
 		
 		public Troubleshoot(Control.ControlCollection controlsCollection, string relatedCases)
@@ -134,13 +134,13 @@ namespace appCore.Templates.Types
 //				Signature += CurrentUser.department == "1st Line RAN Support" ? "7" : "9";
 //			} catch (Exception) { }
 			fullLog = generateFullLog();
-			LogType = "Troubleshoot";
+			LogType = TemplateTypes.Troubleshoot;
 		}
 		
 		public Troubleshoot(Troubleshoot template) {
 			Toolbox.Tools.CopyProperties(this, template);
 			fullLog = generateFullLog();
-			LogType = "Troubleshoot";
+			LogType = TemplateTypes.Troubleshoot;
 		}
 		
 		public Troubleshoot(string[] log, DateTime date) {
@@ -148,7 +148,7 @@ namespace appCore.Templates.Types
 			string[] strTofind = { " - " };
 			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
-			LogType = "Troubleshoot";
+			LogType = TemplateTypes.Troubleshoot;
 		}
 		
 		public void LoadTST(string[] log)

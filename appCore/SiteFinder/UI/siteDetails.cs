@@ -510,7 +510,7 @@ namespace appCore.SiteFinder.UI
 			
 			foreach(Cell cell in currentSite.Cells) {
 				string ossID;
-				if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+				if(cell.Vendor == Vendors.NSN && cell.Bearer == Bearers.LTE)
 					ossID = cell.ENodeB_Id;
 				else
 					ossID = cell.WBTS_BCF;

@@ -33,16 +33,16 @@ namespace appCore.Shifts
 			List<string> list = null;
 			
 			switch(CurrentUser.Role) {
-				case CurrentUser.Roles.ShiftLeader:
+				case Roles.ShiftLeader:
 					list = DB.Databases.shiftsFile.ShiftLeaders;
 					break;
-				case CurrentUser.Roles.TEF:
+				case Roles.TEF:
 					list = DB.Databases.shiftsFile.TEF;
 					break;
-				case CurrentUser.Roles.ExternalAlarms:
+				case Roles.ExternalAlarms:
 					list = DB.Databases.shiftsFile.External;
 					break;
-				case CurrentUser.Roles.RAN:
+				case Roles.RAN:
 					list = DB.Databases.shiftsFile.RAN;
 					break;
 			}

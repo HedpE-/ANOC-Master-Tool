@@ -34,7 +34,7 @@ namespace appCore.Templates.Types
 		public string DetailedRanTroubleshoot { get { return detailedrantroubleshoot; } protected set { detailedrantroubleshoot = value; } }
 		
 		public TX() {
-			LogType = "TX";
+			LogType = TemplateTypes.TX;
 		}
 		
 		public TX(Control.ControlCollection controlsCollection)
@@ -62,13 +62,13 @@ namespace appCore.Templates.Types
 			try { PerformanceOutageDetails = controlsCollection["PerformanceOutageDetailsTextBox"].Text; } catch (Exception) { }
 			try { DetailedRanTroubleshoot = controlsCollection["DetailedRanTroubleshootTextBox"].Text; } catch (Exception) { }
 			fullLog = generateFullLog();
-			LogType = "TX";
+			LogType = TemplateTypes.TX;
 		}
 		
 		public TX(TX template) {
 			Toolbox.Tools.CopyProperties(this, template);
 			fullLog = generateFullLog();
-			LogType = "TX";
+			LogType = TemplateTypes.TX;
 		}
 		
 		public TX(string[] log, DateTime date) {
@@ -76,7 +76,7 @@ namespace appCore.Templates.Types
 			string[] strTofind = { " - " };
 			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
-			LogType = "TX";
+			LogType = TemplateTypes.TX;
 		}
 		
 		public void LoadTXT(string[] log)

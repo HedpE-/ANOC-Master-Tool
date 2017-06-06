@@ -74,7 +74,7 @@ namespace appCore.Netcool
 				
 				AlarmsList.Add(al);
 				if(outage) {
-					if(al.Bearer == "4G" && !al.COOS && al.OnM)
+					if(al.Bearer == Bearers.LTE && !al.COOS && al.OnM)
 						lteSitesOnM.Add(al.SiteId);
 				}
 				else {

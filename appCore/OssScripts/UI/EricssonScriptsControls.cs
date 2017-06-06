@@ -108,7 +108,7 @@ namespace appCore.OssScripts.UI
 				                                      	if(currentSite.Exists) {
 				                                      		filteredCells = new List<Cell>();
 				                                      		foreach(Cell cell in currentSite.Cells) {
-				                                      			if(cell.Vendor == SiteFinder.Site.Vendors.Ericsson)
+				                                      			if(cell.Vendor == Vendors.Ericsson)
 				                                      				filteredCells.Add(cell);
 				                                      		}
 				                                      		if(filteredCells.Count == 0){
@@ -196,8 +196,11 @@ namespace appCore.OssScripts.UI
 						cells = filteredCells.Filter(Cell.Filters.All_4G);
 						break;
 				}
-				foreach(Cell cell in cells)
-					CellsListView.Items.Add(new ListViewItem(new[]{cell.Bearer, cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, cell.Noc}));
+                foreach (Cell cell in cells)
+                {
+                    //string bearer = cell.Bearer.Equals(Bearers.GSM) ? "2G" : (cell.Bearer.Equals(Bearers.UMTS) ? "3G" : "4G");
+                    CellsListView.Items.Add(new ListViewItem(new[] { EnumExtensions.GetDescription(cell.Bearer), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, cell.Noc }));
+                }
 				foreach (ColumnHeader col in CellsListView.Columns)
 					col.Width = -2;
 				SelectAllButton.Enabled = SelectNoneButton.Enabled = CellsListView.Enabled = true;

@@ -147,7 +147,7 @@ namespace appCore.UI
 			edgeBottomRight = 0;
 			if ((Corners.None & CornersToRound) != Corners.None) {
 				List<Corners> selCorners = new List<Corners>();
-				foreach (Corners x in Enum.GetValues(typeof(Corners))) {
+				foreach (Corners x in System.Enum.GetValues(typeof(Corners))) {
 					if ((x & CornersToRound) == x)
 						selCorners.Add(x);
 				}

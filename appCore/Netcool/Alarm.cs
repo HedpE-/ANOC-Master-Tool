@@ -28,7 +28,7 @@ namespace appCore.Netcool
 		public string ServiceImpact { get { return serviceImpact; } private set { } }
 		[FieldOrder(3)]
 		string vendor;
-		public Site.Vendors Vendor { get { return getVendor(vendor); } private set { } }
+		public Vendors Vendor { get { return getVendor(vendor); } private set { } }
 		[FieldOrder(4)]
 		string lastOccurrence;
 		public DateTime LastOccurrence {
@@ -60,7 +60,7 @@ namespace appCore.Netcool
 				if(string.IsNullOrEmpty(element)) {
 					try {
 						switch(Vendor) {
-							case SiteFinder.Site.Vendors.Huawei:
+							case Vendors.Huawei:
 								if(Identifier.Contains("Cell Name=")) {
 									string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
 									element = temp.Substring(0, temp.IndexOf(','));
@@ -68,7 +68,7 @@ namespace appCore.Netcool
 								else
 									element = Node;
 								break;
-							case SiteFinder.Site.Vendors.NSN:
+							case Vendors.NSN:
 								char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
 								string elementID = null;
 								if(nodeNSNcellID[2] == '4')
@@ -84,7 +84,7 @@ namespace appCore.Netcool
 								elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
 								element = elementID;
 								break;
-							case SiteFinder.Site.Vendors.Ericsson:
+							case Vendors.Ericsson:
 								switch(RncBsc.Substring(0,1)) {
 									case "B":
 										string GCellId = Summary.Substring(Summary.IndexOf("CELL =  ") + 8);
@@ -230,42 +230,35 @@ namespace appCore.Netcool
 			}
 			private set { }
 		}
-		[FieldHidden]
-		string bearer;
-		public string Bearer {
+
+		public Bearers Bearer {
 			get {
-				if(string.IsNullOrEmpty(bearer)) {
-					if(!string.IsNullOrEmpty(RncBsc)) {
-						switch(RncBsc.Substring(0, 1)) {
-							case "B":
-								bearer = "2G";
-								break;
-							case "R":
-								bearer = "3G";
-								break;
-							case "X":
-								bearer = "4G";
-								break;
-						}
-					}
-					else{
-						try {
-							if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
-								bearer = "2G";
-						} catch { }
-						try {
-							if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
-								bearer = "3G";
-						} catch { }
-						try {
-							if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
-								bearer = "4G";
-						} catch { }
+                if (!string.IsNullOrEmpty(RncBsc)) {
+					switch(RncBsc.Substring(0, 1)) {
+						case "B":
+							return Bearers.GSM;
+						case "R":
+                            return Bearers.UMTS;
+						case "X":
+                            return Bearers.LTE;
 					}
 				}
-				return bearer;
+
+				try {
+					if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
+                        return Bearers.GSM;
+				} catch { }
+				try {
+					if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
+                        return Bearers.UMTS;
+				} catch { }
+				try {
+					if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
+                        return Bearers.LTE;
+				} catch { }
+
+                return Bearers.Unknown;
 			}
-			private set { }
 		}
 		
 		[FieldHidden]
@@ -283,19 +276,14 @@ namespace appCore.Netcool
 			private set { }
 		}
 		
-		[FieldHidden]
-		string celloperator;
-		public string Operator {
+        public Operators Operator {
 			get {
-				if(string.IsNullOrEmpty(celloperator))
-					celloperator = Element.StartsWith("T")
-						|| Element.EndsWith("W")
-						|| Element.EndsWith("X")
-						|| Element.EndsWith("Y")
-						? "TEF" : "VF";
-				return celloperator;
+                return Element.StartsWith("T")
+					|| Element.EndsWith("W")
+					|| Element.EndsWith("X")
+					|| Element.EndsWith("Y")
+					? Operators.Telefonica : Operators.Vodafone;
 			}
-			private set { celloperator = value;}
 		}
 		
 		public Alarm() {}
@@ -345,7 +333,7 @@ namespace appCore.Netcool
 			lastOccurrence = alarmTime.ToString();
 			element = cell.Name;
 			coos = alarmCOOS;
-			bearer = cell.Bearer;
+			//bearer = cell.Bearer;
 			string temp = cell.ParentSite;
 			while(temp.Length < 5)
 				temp = "0" + temp;
@@ -362,7 +350,7 @@ namespace appCore.Netcool
 			lastOccurrence = parentAlarm.LastOccurrence.ToString();
 			element = cell.Name;
 			coos = alarmCOOS;
-			bearer = cell.Bearer;
+			//bearer = cell.Bearer;
 			location = parentAlarm.Location;
 			
 			vendor = cell.Vendor.ToString();
@@ -381,10 +369,10 @@ namespace appCore.Netcool
 		
 		void checkCoosOrOnM() {
 			switch (Vendor) {
-				case SiteFinder.Site.Vendors.ALU:
+				case Vendors.ALU:
 					coos = Summary.Contains("UNDERLYING_RESOURCE_UNAVAILABLE: State change to Disable") && (!Element.StartsWith("RNC") || !Location.StartsWith("MTX"));
 					break;
-				case SiteFinder.Site.Vendors.Ericsson:
+				case Vendors.Ericsson:
 					if ((Summary.Contains("CELL LOGICAL CHANNEL AVAILABILITY SUPERVISION") && Summary.Contains("BCCH"))
 					    || Summary.Contains("UtranCell_ServiceUnavailable")
 					    || Summary.Contains("UtranCell_NbapMessageFailure")
@@ -395,7 +383,7 @@ namespace appCore.Netcool
 					else
 						onm = Summary.Contains("Heartbeat Failure") || Summary.Contains("OML FAULT");
 					break;
-				case SiteFinder.Site.Vendors.Huawei:
+				case Vendors.Huawei:
 					if (Summary.Contains("Cell out of Service")
 					    || Summary.Contains("Cell Unavailable")
 					    || Summary.Contains("Local Cell Unusable")
@@ -404,7 +392,7 @@ namespace appCore.Netcool
 					else
 						onm = Summary.Contains("NE Is Disconnected") || Summary.Contains("OML Fault");
 					break;
-				case SiteFinder.Site.Vendors.NSN:
+				case Vendors.NSN:
 					if (Summary.Contains("BCCH MISSING")
 					    || Summary.Contains("CELL FAULTY")
 					    || Summary.Contains("WCDMA CELL OUT OF USE"))
@@ -493,18 +481,18 @@ namespace appCore.Netcool
 			return toParse;
 		}
 		
-		Site.Vendors getVendor(string strVendor) {
+		Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
-					return SiteFinder.Site.Vendors.Ericsson;
+					return Vendors.Ericsson;
 				case "HUAWEI":
-					return SiteFinder.Site.Vendors.Huawei;
+					return Vendors.Huawei;
 				case "ALU":
-					return SiteFinder.Site.Vendors.ALU;
+					return Vendors.ALU;
 				case "NSN":
-					return SiteFinder.Site.Vendors.NSN;
+					return Vendors.NSN;
 				default:
-					return SiteFinder.Site.Vendors.None;
+					return Vendors.Unknown;
 			}
 		}
 		

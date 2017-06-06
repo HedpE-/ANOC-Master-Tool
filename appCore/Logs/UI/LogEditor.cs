@@ -65,41 +65,41 @@ namespace appCore.Logs.UI
 			
 			for(int c = 0; c < Logs.Count; c++) {
 				switch (Logs[c].LogType) {
-					case "Troubleshoot":
+					case TemplateTypes.Troubleshoot:
 						Troubleshoot TSlog = new Troubleshoot();
 						Toolbox.Tools.CopyProperties(TSlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = "Troubleshoot Template",
+						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
 						             	INC = TSlog.INC,
 						             	Target = TSlog.SiteId,
 						             	Timestamp = TSlog.GenerationDate.ToString("HH:mm:ss")
 						             });
 						break;
-					case "Failed CRQ":
+					case TemplateTypes.FailedCRQ:
 						FailedCRQ FCRQlog = new FailedCRQ();
 						Toolbox.Tools.CopyProperties(FCRQlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = "Failed CRQ",
+						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
 						             	INC = FCRQlog.INC,
 						             	Target = FCRQlog.SiteId,
 						             	Timestamp = FCRQlog.GenerationDate.ToString("HH:mm:ss")
 						             });
 						break;
-					case "TX":
+					case TemplateTypes.TX:
 						TX TXlog = new TX();
 						Toolbox.Tools.CopyProperties(TXlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = "TX Template",
+						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
 						             	INC = "-",
 						             	Target = TXlog.SiteIDs,
 						             	Timestamp = TXlog.GenerationDate.ToString("HH:mm:ss")
 						             });
 						break;
-					case "Update":
+					case TemplateTypes.Update:
 						Update UPDlog = new Update();
 						Toolbox.Tools.CopyProperties(UPDlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = "Update Template",
+						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
 						             	INC = UPDlog.INC,
 						             	Target = UPDlog.SiteId,
 						             	Timestamp = UPDlog.GenerationDate.ToString("HH:mm:ss")

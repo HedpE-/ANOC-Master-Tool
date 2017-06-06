@@ -23,7 +23,7 @@ namespace appCore.Templates
 		
 		public DateTime GenerationDate { get; set; }
 		
-		public virtual string LogType { get; set; }
+		public virtual TemplateTypes LogType { get; set; }
 		public virtual string fullLog { get; set; }
 		public virtual string Signature { get; protected set; }
 		//local member variable which stores the object's UniqueId
@@ -60,13 +60,13 @@ namespace appCore.Templates
 			return null;
 		}
 		
-		public enum Filters : byte {
-			Troubleshoot,
-			FailedCRQ,
-			TX,
-			Update,
-			Outage,
-			TicketCount
-		};
+		//public enum Filters : byte {
+		//	Troubleshoot,
+		//	FailedCRQ,
+		//	TX,
+		//	Update,
+		//	Outage,
+		//	TicketCount
+		//};
 	}
 }

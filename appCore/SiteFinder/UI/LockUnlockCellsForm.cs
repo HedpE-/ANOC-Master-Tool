@@ -1150,7 +1150,7 @@ namespace appCore.SiteFinder.UI
 			if(radioButtonText == "Lock Cells") {
 				foreach (Cell cell in currentSite.Cells) {
 					string ossID;
-					if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+					if(cell.Vendor == Vendors.NSN && cell.Bearer == Bearers.LTE)
 						ossID = cell.ENodeB_Id;
 					else
 						ossID = cell.WBTS_BCF;
@@ -1180,7 +1180,7 @@ namespace appCore.SiteFinder.UI
 				if(radioButtonText == "Unlock Cells") {
 					foreach (Cell cell in currentSite.Cells) {
 						string ossID;
-						if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+						if(cell.Vendor == Vendors.NSN && cell.Bearer == Bearers.LTE)
 							ossID = cell.ENodeB_Id;
 						else
 							ossID = cell.WBTS_BCF;
@@ -1239,13 +1239,14 @@ namespace appCore.SiteFinder.UI
 						Cell cell = currentSite.Cells.Find(s => s.Name == dr[0].ToString());
 						string ossID = string.Empty;
 						if(cell != null) {
-							if(cell.Vendor == SiteFinder.Site.Vendors.NSN && cell.Bearer == "4G")
+							if(cell.Vendor == Vendors.NSN && cell.Bearer == Bearers.LTE)
 								ossID = cell.ENodeB_Id;
 							else
 								ossID = cell.WBTS_BCF;
 						}
 						
-						row["Tech"] = cell != null ? cell.Bearer : string.Empty;
+
+						row["Tech"] = cell != null ? EnumExtensions.GetDescription(cell.Bearer) : string.Empty;
 						row["Cell Name"] = dr[0].ToString();
 						row["Switch"] = cell != null ? cell.BscRnc_Id : string.Empty;
 						row["OSS ID"] = ossID;

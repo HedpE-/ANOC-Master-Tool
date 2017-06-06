@@ -17,14 +17,6 @@ namespace appCore.Settings
 	/// </summary>
 	public static class CurrentUser
     {
-        public enum Roles
-        {
-            ShiftLeader,
-            TEF,
-            ExternalAlarms,
-            RAN,
-            Unknown
-        }
         public static bool HasOICredentials
 		{
 			get;

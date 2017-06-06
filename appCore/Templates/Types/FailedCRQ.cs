@@ -60,7 +60,7 @@ namespace appCore.Templates.Types
 		}
 		
 		public FailedCRQ() {
-			LogType = "Failed CRQ";
+			LogType = TemplateTypes.FailedCRQ;
 		}
 		
 		public FailedCRQ(Control.ControlCollection controlsCollection)
@@ -89,13 +89,13 @@ namespace appCore.Templates.Types
 			try { EmailBody = buildHTMLemailBody(); } catch (Exception) { }
 			try { EmailSubject = "Site " + SiteId + " - " + INC + " (Failed " + CRQ + ")"; } catch (Exception) { }
 			fullLog = generateFullLog();
-			LogType = "Failed CRQ";
+			LogType = TemplateTypes.FailedCRQ;
 		}
 		
 		public FailedCRQ(FailedCRQ template) {
 			Tools.CopyProperties(this, template);
 			fullLog = generateFullLog();
-			LogType = "Failed CRQ";
+			LogType = TemplateTypes.FailedCRQ;
 		}
 		
 		public FailedCRQ(string[] log, DateTime date) {
@@ -105,7 +105,7 @@ namespace appCore.Templates.Types
 			string[] strTofind = { " - " };
 			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
-			LogType = "Failed CRQ";
+			LogType = TemplateTypes.FailedCRQ;
 		}
 		
 		public void LoadFCRQ(string[] log)

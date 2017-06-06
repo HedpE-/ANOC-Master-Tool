@@ -30,7 +30,7 @@ namespace appCore.Shifts
 			private set;
 		}
 		
-		public CurrentUser.Roles Role {
+		public Roles Role {
 			get;
 			private set;
 		}
@@ -40,16 +40,16 @@ namespace appCore.Shifts
 			Shift = shift;
 			Date = date;
 			if(DB.Databases.shiftsFile.ShiftLeaders.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-				Role = CurrentUser.Roles.ShiftLeader;
+				Role = Roles.ShiftLeader;
 			else {
 				if(DB.Databases.shiftsFile.TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-					Role = CurrentUser.Roles.TEF;
+					Role = Roles.TEF;
 				else {
 					if(DB.Databases.shiftsFile.External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-						Role = CurrentUser.Roles.ExternalAlarms;
+						Role = Roles.ExternalAlarms;
 					else {
 						if(DB.Databases.shiftsFile.RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-							Role = CurrentUser.Roles.RAN;
+							Role = Roles.RAN;
 					}
 				}
 			}

@@ -37,7 +37,7 @@ namespace appCore.Templates.Types
 		}
 		
 		public Update() {
-			LogType = "Update";
+			LogType = TemplateTypes.Update;
 		}
 		
 		public Update(Control.ControlCollection controlsCollection)
@@ -47,13 +47,13 @@ namespace appCore.Templates.Types
 			try { update = controlsCollection["UpdateTextBox"].Text; } catch (Exception) { }
 			try { NextActions = string.IsNullOrWhiteSpace(controlsCollection["NextActionsTextBox"].Text) ? string.Empty : controlsCollection["NextActionsTextBox"].Text; } catch (Exception) { }
 			fullLog = generateFullLog();
-			LogType = "Update";
+			LogType = TemplateTypes.Update;
 		}
 		
 		public Update(Update template) {
 			Toolbox.Tools.CopyProperties(this, template);
 			fullLog = generateFullLog();
-			LogType = "Update";
+			LogType = TemplateTypes.Update;
 		}
 		
 		public Update(string[] log, DateTime date) {
@@ -61,7 +61,7 @@ namespace appCore.Templates.Types
 			string[] strTofind = { " - " };
 			string[] time = log[0].Split(strTofind, StringSplitOptions.None)[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
-			LogType = "Update";
+			LogType = TemplateTypes.Update;
 		}
 		
 		public void LoadUpdate(string[] log)

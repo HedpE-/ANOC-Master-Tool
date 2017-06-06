@@ -37,7 +37,7 @@ namespace appCore.SiteFinder
 		public string BscRnc_Id { get { return BSC_RNC_ID; } }
 		[FieldOrder(6)]
 		string VENDOR;
-		public Site.Vendors Vendor { get { return getVendor(VENDOR); } }
+		public Vendors Vendor { get { return getVendor(VENDOR); } }
 		[FieldOrder(7)]
 		string ENODEB_ID;
 		public string ENodeB_Id { get { return ENODEB_ID; } }
@@ -49,7 +49,23 @@ namespace appCore.SiteFinder
 		public string Name { get { return CELL_NAME; } }
 		[FieldOrder(10)]
 		string BEARER;
-		public string Bearer { get { return BEARER; } }
+		public Bearers Bearer
+        {
+            get
+            {
+                switch (BEARER)
+                {
+                    case "2G":
+                        return Bearers.GSM;
+                    case "3G":
+                        return Bearers.UMTS;
+                    case "4G":
+                        return Bearers.LTE;
+                }
+
+                return Bearers.Unknown;
+            }
+        }
 		[FieldOrder(11)]
 		[FieldConverter(ConverterKind.Boolean, "Y", "")]
 		[FieldNullValue(typeof (bool), "false")]
@@ -105,27 +121,24 @@ namespace appCore.SiteFinder
 		
 		[FieldHidden]
 		string celloperator;
-		public string Operator {
+		public Operators Operator {
 			get {
-				if(string.IsNullOrEmpty(celloperator))
-					celloperator = Name.StartsWith("T") || Name.EndsWith("W") || Name.EndsWith("X") || Name.EndsWith("Y") ? "TEF" : "VF";
-				return celloperator;
+				return Name.StartsWith("T") || Name.EndsWith("W") || Name.EndsWith("X") || Name.EndsWith("Y") ? Operators.Telefonica : Operators.Vodafone;
 			}
-			private set { celloperator = value;}
 		}
 		
-		Site.Vendors getVendor(string strVendor) {
+		Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
-					return Site.Vendors.Ericsson;
+					return Vendors.Ericsson;
 				case "HUAWEI":
-					return Site.Vendors.Huawei;
+					return Vendors.Huawei;
 				case "ALU": case "ALCATEL":
-					return Site.Vendors.ALU;
+					return Vendors.ALU;
 				case "NSN":
-					return Site.Vendors.NSN;
+					return Vendors.NSN;
 				default:
-					return Site.Vendors.None;
+					return Vendors.Unknown;
 			}
 		}
 		
@@ -142,82 +155,5 @@ namespace appCore.SiteFinder
 			Locked,
 			Unlocked
 		};
-	}
-}
-
-public static class CellExtension {
-	public static List<Cell> Filter(this List<Cell> toFilter, Cell.Filters filter) {
-		List<Cell> list = new List<Cell>();
-		if(toFilter != null) {
-			switch(filter) {
-				case Cell.Filters.All_2G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "2G" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.VF_2G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "2G" && cell.Operator == "VF" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.TF_2G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "2G" && cell.Operator == "TEF" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.All_3G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "3G" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.VF_3G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "3G" && cell.Operator == "VF" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.TF_3G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "3G" && cell.Operator == "TEF" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.All_4G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "4G" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.VF_4G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "4G" && cell.Operator == "VF" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.TF_4G:
-					foreach(Cell cell in toFilter) {
-						if(cell.Bearer == "4G" && cell.Operator == "TEF" && cell.Noc.Contains("ANOC"))
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.Locked:
-					foreach(Cell cell in toFilter) {
-						if(cell.Locked)
-							list.Add(cell);
-					}
-					return list;
-				case Cell.Filters.Unlocked:
-					foreach(Cell cell in toFilter) {
-						if(!cell.Locked)
-							list.Add(cell);
-					}
-					return list;
-			}
-		}
-		return list;
 	}
 }

@@ -258,19 +258,19 @@ namespace appCore.SiteFinder
 		public string IP_4G_E;
 		[FieldOrder(56)]
 		string VENDOR_2G;
-		public Site.Vendors Vendor2G {
+		public Vendors Vendor2G {
 			get { return resolveVendor(VENDOR_2G); }
 			private set { VENDOR_2G = value.ToString(); }
 		}
 		[FieldOrder(57)]
 		string VENDOR_3G;
-		public Site.Vendors Vendor3G {
+		public Vendors Vendor3G {
 			get { return resolveVendor(VENDOR_3G); }
 			private set { VENDOR_3G = value.ToString(); }
 		}
 		[FieldOrder(58)]
 		string VENDOR_4G;
-		public Site.Vendors Vendor4G {
+		public Vendors Vendor4G {
 			get { return resolveVendor(VENDOR_4G); }
 			private set { VENDOR_4G = value.ToString(); }
 		}
@@ -1007,18 +1007,18 @@ namespace appCore.SiteFinder
 			}
 		}
 		
-		Site.Vendors resolveVendor(string strVendor) {
+		Vendors resolveVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
-					return Site.Vendors.Ericsson;
+					return Vendors.Ericsson;
 				case "HUAWEI":
-					return Site.Vendors.Huawei;
+					return Vendors.Huawei;
 				case "ALU":
-					return Site.Vendors.ALU;
+					return Vendors.ALU;
 				case "NSN":
-					return Site.Vendors.NSN;
+					return Vendors.NSN;
 				default:
-					return Site.Vendors.None;
+					return Vendors.Unknown;
 			}
 		}
 		
