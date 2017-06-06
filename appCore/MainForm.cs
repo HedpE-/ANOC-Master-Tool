@@ -186,8 +186,7 @@ namespace appCore
             if ((CurrentUser.Department.Contains("1st Line RAN") || CurrentUser.Department.Contains("First Line Operations")) && Databases.shiftsFile.Exists)
             {
                 string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], DateTime.Now.Month);
-
-                //				if(monthShifts.Length > 0) {
+                
                 pictureBox6.Visible = true;
                 shiftsCalendar = new ShiftsCalendar();
                 shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
@@ -201,7 +200,7 @@ namespace appCore
 
             // HACK: Developer specific action
             //if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") {
-            if (CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == CurrentUser.Roles.ShiftLeader)
+            if (CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == Roles.ShiftLeader)
             {
                 Button butt2 = new Button();
                 butt2.Name = "butt2";
@@ -210,16 +209,17 @@ namespace appCore
                 butt2.Click += UpdateDbFilesButtonClick;
                 tabPage1.Controls.Add(butt2);
                 butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
-                
-                allCellsLabel.Text = "all_cells last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
-                //allCellsLabel.Size = new Size(250, 13);
-                allCellsLabel.Location = new Point(5, butt2.Top - 5 - allCellsLabel.Height);
-                allCellsLabel.Visible = true;
-                
-                allSitesLabel.Text = "all_sites last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
-                //allSitesLabel.Size = new Size(250, 13);
+                System.Timers.Timer OiDbFilesLastUpdatedTimer = new System.Timers.Timer(60 * 1000); // fires every 60 sec.
+                OiDbFilesLastUpdatedTimer.Elapsed += OiDbFilesLastUpdatedTimer_Elapsed;
+
+                OiDbFilesLastUpdatedTimer.Enabled = true;
+
+                allCellsLabel.Location = new Point(5, tabPage1.Controls["butt2"].Top - 5 - allCellsLabel.Height);
                 allSitesLabel.Location = new Point(5, allCellsLabel.Top - allSitesLabel.Height);
+                allCellsLabel.Visible = true;
                 allSitesLabel.Visible = true;
+
+                OiDbFilesLastUpdatedTimer_Elapsed(null, null);
 
                 if (CurrentUser.UserName == "GONCARJ3")
                 {
@@ -341,6 +341,23 @@ namespace appCore
             }
         }
 
+        void OiDbFilesLastUpdatedTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if(InvokeRequired)
+            {
+                Invoke((MethodInvoker)delegate
+                {
+                    allCellsLabel.Text = "all_cells last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+                    allSitesLabel.Text = "all_sites last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+                });
+            }
+            else
+            {
+                allCellsLabel.Text = "all_cells last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+                allSitesLabel.Text = "all_sites last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+            }
+        }
+
         public void FillTemplateFromLog(Template log)
         {
             //			if(tabControl1.InvokeRequired)
@@ -353,7 +370,7 @@ namespace appCore
             Control parent = null;
             switch (log.LogType)
             {
-                case "Troubleshoot":
+                case TemplateTypes.Troubleshoot:
                     tabControl2.SelectTab(0);
                     parent = tabPage8;
                     action = new Action(delegate
@@ -364,7 +381,7 @@ namespace appCore
                         tabPage8.Controls.Add(TroubleshootUI);
                     });
                     break;
-                case "Failed CRQ":
+                case TemplateTypes.FailedCRQ:
                     tabControl2.SelectTab(1);
                     parent = tabPage10;
                     action = new Action(delegate
@@ -375,7 +392,7 @@ namespace appCore
                         tabPage10.Controls.Add(FailedCRQUI);
                     });
                     break;
-                case "Update":
+                case TemplateTypes.Update:
                     tabControl2.SelectTab(2);
                     parent = tabPage6;
                     action = new Action(delegate
@@ -386,7 +403,7 @@ namespace appCore
                         tabPage6.Controls.Add(UpdateUI);
                     });
                     break;
-                case "TX":
+                case TemplateTypes.TX:
                     tabControl2.SelectTab(3);
                     parent = tabPage9;
                     action = new Action(delegate
@@ -406,7 +423,7 @@ namespace appCore
         public static void UpdateTicketCountLabel(bool ignoreLabelVisibility = false)
         {
             if (!string.IsNullOrEmpty(TicketCountLabel.Text) || ignoreLabelVisibility)
-                TicketCountLabel.Text = logFiles.FilterCounts(Template.Filters.TicketCount).ToString();
+                TicketCountLabel.Text = logFiles.FilterCounts(TemplateTypes.Troubleshoot | TemplateTypes.FailedCRQ).ToString();
         }
 
         void TicketCountLabelMouseClick(object sender, MouseEventArgs e)
@@ -439,7 +456,6 @@ namespace appCore
 
         void TabPage1BackgroundImageChanged(object sender, EventArgs e)
         {
-            //			if(!string.IsNullOrEmpty(TicketCountLabel.Text)) {
             Control[] controls = new[] { TicketCountLabel, allSitesLabel, allCellsLabel };
             for(int c = 0; c < controls.Length;c++)
             {
@@ -456,7 +472,6 @@ namespace appCore
                     ctrl.Text = text;
                 }
             }
-            //			}
         }
 
         void allSitesCellsLabelsForeColorChanged(object sender, EventArgs e)
