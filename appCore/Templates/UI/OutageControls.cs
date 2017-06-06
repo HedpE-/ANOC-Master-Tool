@@ -337,14 +337,6 @@ namespace appCore.Templates.UI
 			                           	dataGridView.GridColor = SystemColors.ControlDarkDark;
 			                           	dataGridView.Location = Point.Empty;
 			                           	dataGridView.Name = "dataGridView";
-			                           	//DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-			                           	//dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-			                           	//dataGridViewCellStyle2.BackColor = SystemColors.Control;
-			                           	//dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-			                           	//dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-			                           	//dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-			                           	//dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-			                           	//dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
 			                           	dataGridView.RowHeadersVisible = false;
 			                           	dataGridView.RowTemplate.Resizable = DataGridViewTriState.True;
 			                           	dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
