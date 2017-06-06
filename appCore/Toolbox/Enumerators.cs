@@ -10,39 +10,41 @@ using System.ComponentModel;
 
 namespace appCore
 {
-    public enum Vendors : byte {
-			Ericsson,
-			ALU,
-			Huawei,
-			NSN,
-			Unknown
-		};
-
-    public enum Bearers : byte
+    public enum Vendors
     {
-        [Description("2G")]
-        GSM,
-        [Description("3G")]
-        UMTS,
-        [Description("4G")]
-        LTE,
-        Unknown
+        Ericsson = 1,
+        ALU = 2,
+        Huawei = 4,
+        NSN = 8,
+        Unknown = 16
     };
 
-    public enum Operators : byte
+    public enum Bearers
     {
-        Vodafone,
-        Telefonica,
-        Unknown
+        [Description("2G")]
+        GSM = 1,
+        [Description("3G")]
+        UMTS = 2,
+        [Description("4G")]
+        LTE = 4,
+        [Description("Unknown")]
+        Unknown = 8
+    };
+
+    public enum Operators
+    {
+        Vodafone = 1,
+        Telefonica = 2,
+        Unknown = 4
     }
 
     public enum Roles
     {
-        ShiftLeader,
-        TEF,
-        ExternalAlarms,
-        RAN,
-        Unknown
+        ShiftLeader = 1,
+        TEF = 2,
+        ExternalAlarms = 4,
+        RAN = 8,
+        Unknown = 16
     }
 
     public enum Months : byte
@@ -61,23 +63,23 @@ namespace appCore
         December
     };
 
-    public enum UiEnum : byte
+    public enum UiEnum
     {
-        Template,
-        Log
+        Template = 1,
+        Log = 2
     }
 
-    public enum TemplateTypes : byte
+    public enum TemplateTypes
     {
         [Description("Troubleshoot Template")]
-        Troubleshoot,
+        Troubleshoot = 1,
         [Description("Failed CRQ")]
-        FailedCRQ,
+        FailedCRQ = 2,
         [Description("Update Template")]
-        Update,
+        Update = 4,
         [Description("TX Template")]
-        TX,
+        TX = 8,
         [Description("Outage")]
-        Outage
+        Outage = 16
     }
 }
