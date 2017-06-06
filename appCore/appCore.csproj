@@ -171,6 +171,8 @@
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Toolbox\CellExtensions.cs" />
+    <Compile Include="Toolbox\EnumExtensions.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
     <Compile Include="Toolbox\NumericComparer.cs" />
     <Compile Include="Toolbox\NumericListComparer.cs" />
@@ -1322,7 +1324,7 @@
     <Compile Include="Toolbox\StringLogicalComparer.cs" />
     <Compile Include="Toolbox\SVGParser.cs" />
     <Compile Include="Toolbox\Tools.cs" />
-    <Compile Include="SiteFinder\Vendors.cs" />
+    <Compile Include="Toolbox\Enumerators.cs" />
     <Compile Include="Toolbox\Transitions\IManagedType.cs" />
     <Compile Include="Toolbox\Transitions\ITransitionType.cs" />
     <Compile Include="Toolbox\Transitions\ManagedType_Color.cs" />
@@ -1378,9 +1380,6 @@
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\AMTLargeTextForm.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\GlassPanel2.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\Loading.cs">
       <SubType>Form</SubType>
