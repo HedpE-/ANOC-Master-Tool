@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using appCore.SiteFinder;
 using FileHelpers;
 
@@ -59,31 +60,73 @@ namespace appCore.Netcool
 			get {
 				if(string.IsNullOrEmpty(element)) {
 					try {
-						switch(Vendor) {
+                        string temp = string.Empty;
+                        switch (Vendor) {
 							case Vendors.Huawei:
-								if(Identifier.Contains("Cell Name=")) {
-									string temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
+								if (Identifier.Contains("Cell Name=")) {
+									temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
 									element = temp.Substring(0, temp.IndexOf(','));
 								}
 								else
 									element = Node;
 								break;
 							case Vendors.NSN:
-								char[] nodeNSNcellID = Node.Substring(Node.Length - 3).ToCharArray();
-								string elementID = null;
-								if(nodeNSNcellID[2] == '4')
-									elementID = "M";
-								else
-									elementID = "W";
-								elementID += Location.Substring(3);
-								
-								if(nodeNSNcellID[2] == '1' || nodeNSNcellID[2] == '4')
-									elementID += "0";
-								else
-									elementID += nodeNSNcellID[2];
-								elementID += nodeNSNcellID[0] + nodeNSNcellID[1];
-								element = elementID;
-								break;
+        //                        Cell cell = null;
+        //                        temp = string.Empty;
+        //                        switch (RncBsc.Substring(0, 1)) {
+        //                            case "B":
+								//	    temp = identifier.Substring(identifier.IndexOf("BtsSiteMgr=") + "BtsSiteMgr=".Length);
+								//	    string[] arr = temp.Substring(0, temp.IndexOf(' ')).Replace("GsmCell=", string.Empty).Split(',');
+        //                                var sector = Convert.ToInt16(arr[1].RemoveLetters()) - Convert.ToInt16(arr[0].RemoveLetters()) + 1;
+        //                                Operators op = Operators.Unknown;
+        //                                if (sector > 3)
+        //                                {
+        //                                    op = Operators.Telefonica;
+        //                                    sector -= 3;
+        //                                }
+        //                                else
+        //                                    op = Operators.Vodafone;
+        //                                cell = ParentSite.Cells.FirstOrDefault(c => c.WBTS_BCF.RemoveLetters() == arr[0].RemoveLetters() && c.Sector == sector && c.Operator == op);
+        //                                try { element = cell.Name; } catch { element = Location + " - No cell description on Netcool."; }
+        //                                break;
+        //                            case "R":
+        //                                var wCel = NodeAlias.Substring(nodeAlias.IndexOf("UtranCell=") + "UtranCell=".Length).Split('/');
+        //                                var wCelArr = wCel[1].Substring(wCel[1].Length - 3).ToCharArray();
+        //                                List<Cell> results = ParentSite.Cells
+        //                                    .Filter(Cell.Filters.All_3G)
+        //                                    .Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(new string(new[] { wCelArr[0], wCelArr[1] })) && c.Operator == Operators.Vodafone)
+        //                                    .ToList();
+        //                                if(!results.Any())
+        //                                {
+        //                                    switch(wCelArr[1])
+        //                                    {
+        //                                        case '7':
+        //                                            results = ParentSite.Cells.Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(wCelArr[0] + "5") && c.Operator == Operators.Telefonica).ToList();
+        //                                            break;
+        //                                        case '8':
+        //                                            results = ParentSite.Cells.Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(wCelArr[0] + "2") && c.Operator == Operators.Telefonica).ToList();
+        //                                            break;
+        //                                        case '9':
+        //                                            results = ParentSite.Cells.Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(wCelArr[0] + "1") && c.Operator == Operators.Telefonica).ToList();
+        //                                            break;
+        //                                    }
+        //                                }
+
+        //                                if (results.Count == 1)
+        //                                    element = results[0].Name;
+
+        //                                if(string.IsNullOrEmpty(element))
+        //                                    element = Location + " - No cell description on Netcool.";
+        //                                break;
+        //                            default:
+        //                                if(node.StartsWith("LNCEL"))
+        //                                    cell = ParentSite.Cells.FirstOrDefault(c => c.Id == Node.RemoveLetters()) ?? ParentSite.Cells.FirstOrDefault(c => c.Id == Node.RemoveLetters() + "0");
+        //                                element = cell != null ? cell.Name :
+        //                                    Location + " - No cell description on Netcool.";
+        //                                break;
+								//}
+                                element = Location + " - No cell description on Netcool.";
+                                break;
 							case Vendors.Ericsson:
 								switch(RncBsc.Substring(0,1)) {
 									case "B":
@@ -93,9 +136,9 @@ namespace appCore.Netcool
 									case "R":
 										string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
 										List<Cell> results = DB.SitesDB.queryAllCellsDB("CELL_ID", UCellId);
-										foreach(Cell cell in results)
-											if(cell.BscRnc_Id == RncBsc && cell.Vendor == Vendor)
-												element = cell.Name;
+										foreach(Cell c2 in results)
+											if(c2.BscRnc_Id == RncBsc && c2.Vendor == Vendor)
+												element = c2.Name;
 										break;
 								}
 								break;
@@ -187,7 +230,7 @@ namespace appCore.Netcool
 		public string SiteId {
 			get {
 				if(string.IsNullOrEmpty(siteid)) {
-					siteid = Element.Contains("RBS") ? Element : Location;
+					siteid = Location.Contains("RBS") ? Location : string.Empty;
 					if(!string.IsNullOrEmpty(siteid))
 						try { siteid = Convert.ToInt32(siteid.RemoveLetters()).ToString(); } catch { siteid = string.Empty; }
 				}
@@ -203,14 +246,22 @@ namespace appCore.Netcool
 		public Site ParentSite {
 			get {
 				if(_site == null)
-					_site = DB.SitesDB.getSite(SiteId);
-				return _site;
+                {
+                    while (GettingParentSiteFlag) { }
+
+                    GettingParentSiteFlag = true;
+                    _site = DB.SitesDB.getSite(SiteId);
+                    GettingParentSiteFlag = false;
+                }
+                return _site;
 			}
 			private set {
 				_site = value;
 			}
-		}
-		[FieldHidden]
+        }
+        [FieldHidden]
+        bool GettingParentSiteFlag;
+        [FieldHidden]
 		bool coos;
 		public bool COOS {
 			get {
@@ -233,31 +284,31 @@ namespace appCore.Netcool
 
 		public Bearers Bearer {
 			get {
-                if (!string.IsNullOrEmpty(RncBsc)) {
+				if (!string.IsNullOrEmpty(RncBsc)) {
 					switch(RncBsc.Substring(0, 1)) {
 						case "B":
 							return Bearers.GSM;
 						case "R":
-                            return Bearers.UMTS;
+							return Bearers.UMTS;
 						case "X":
-                            return Bearers.LTE;
+							return Bearers.LTE;
 					}
 				}
 
 				try {
 					if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
-                        return Bearers.GSM;
+						return Bearers.GSM;
 				} catch { }
 				try {
 					if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
-                        return Bearers.UMTS;
+						return Bearers.UMTS;
 				} catch { }
 				try {
 					if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
-                        return Bearers.LTE;
+						return Bearers.LTE;
 				} catch { }
 
-                return Bearers.Unknown;
+				return Bearers.Unknown;
 			}
 		}
 		
@@ -265,20 +316,17 @@ namespace appCore.Netcool
 		string _parsedAlarm;
 		public string ParsedAlarm {
 			get {
-				if(string.IsNullOrEmpty(_parsedAlarm)) {
-					_parsedAlarm = LastOccurrence + " - " + parseSummary(Summary) + Environment.NewLine + RncBsc + " > " + Location;
-					if(!string.IsNullOrEmpty(Element))
-						_parsedAlarm += " > " + Element;
-					_parsedAlarm += Environment.NewLine + "Alarm count: " + AlarmCount;
-				}
+                if (string.IsNullOrEmpty(_parsedAlarm))
+                    UpdateParsedAlarm();
+
 				return _parsedAlarm;
 			}
 			private set { }
 		}
 		
-        public Operators Operator {
+		public Operators Operator {
 			get {
-                return Element.StartsWith("T")
+				return Element.StartsWith("T")
 					|| Element.EndsWith("W")
 					|| Element.EndsWith("X")
 					|| Element.EndsWith("Y")
@@ -297,7 +345,7 @@ namespace appCore.Netcool
 				alarmCount = alarmArray[Array.IndexOf(headers, "Count")];
 				rncBsc = alarmArray[Array.IndexOf(headers, "RNC/BSC")];
 				location = alarmArray[Array.IndexOf(headers, "Location")];
-				element = alarmArray[Array.IndexOf(headers, "Element")];
+                element = alarmArray[Array.IndexOf(headers, "Element")];
 				summary = alarmArray[Array.IndexOf(headers, "Summary")].Trim();
 				triagedBy = alarmArray[Array.IndexOf(headers, "Triaged By")];
 				operatorComments = alarmArray[Array.IndexOf(headers, "Operator Comments")];
@@ -338,8 +386,8 @@ namespace appCore.Netcool
 			while(temp.Length < 5)
 				temp = "0" + temp;
 			location = "RBS" + temp;
-			
-			vendor = cell.Vendor.ToString();
+
+            vendor = cell.Vendor.ToString();
 			
 			county = ParentSite.County;
 			town = ParentSite.Town;
@@ -352,8 +400,8 @@ namespace appCore.Netcool
 			coos = alarmCOOS;
 			//bearer = cell.Bearer;
 			location = parentAlarm.Location;
-			
-			vendor = cell.Vendor.ToString();
+
+            vendor = cell.Vendor.ToString();
 			
 			summary = parentAlarm.Summary + "(Auto generated alarm)";
 			alarmCount = parentAlarm.AlarmCount.ToString();
@@ -480,8 +528,77 @@ namespace appCore.Netcool
 			
 			return toParse;
 		}
-		
-		Vendors getVendor(string strVendor) {
+
+        public void ResolveNsnElement(Site parentSite)
+        {
+            ParentSite = parentSite;
+            Cell cell = null;
+            string temp = string.Empty;
+            switch (RncBsc.Substring(0, 1))
+            {
+                case "B":
+                    temp = identifier.Substring(identifier.IndexOf("BtsSiteMgr=") + "BtsSiteMgr=".Length);
+                    string[] arr = temp.Substring(0, temp.IndexOf(' ')).Replace("GsmCell=", string.Empty).Split(',');
+                    var sector = Convert.ToInt16(arr[1].RemoveLetters()) - Convert.ToInt16(arr[0].RemoveLetters()) + 1;
+                    Operators op = Operators.Unknown;
+                    if (sector > 3)
+                    {
+                        op = Operators.Telefonica;
+                        sector -= 3;
+                    }
+                    else
+                        op = Operators.Vodafone;
+                    cell = ParentSite.Cells.FirstOrDefault(c => c.WBTS_BCF.RemoveLetters() == arr[0].RemoveLetters() && c.Sector == sector && c.Operator == op);
+                    try { element = cell.Name; } catch { element = Location + " - No cell description on Netcool."; }
+                    break;
+                case "R":
+                    var wCel = NodeAlias.Substring(nodeAlias.IndexOf("UtranCell=") + "UtranCell=".Length).Split('/');
+                    var wCelArr = wCel[1].Substring(wCel[1].Length - 3).ToCharArray();
+                    List<Cell> results = ParentSite.Cells
+                        .Filter(Cell.Filters.All_3G)
+                        .Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(new string(new[] { wCelArr[0], wCelArr[1] })) && c.Operator == Operators.Vodafone)
+                        .ToList();
+                    if (!results.Any())
+                    {
+                        switch (wCelArr[1])
+                        {
+                            case '7':
+                                results = ParentSite.Cells.Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(wCelArr[0] + "5") && c.Operator == Operators.Telefonica).ToList();
+                                break;
+                            case '8':
+                                results = ParentSite.Cells.Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(wCelArr[0] + "2") && c.Operator == Operators.Telefonica).ToList();
+                                break;
+                            case '9':
+                                results = ParentSite.Cells.Where(c => c.WBTS_BCF == wCel[0] && c.Name.EndsWith(wCelArr[0] + "1") && c.Operator == Operators.Telefonica).ToList();
+                                break;
+                        }
+                    }
+
+                    if (results.Count == 1)
+                        element = results[0].Name;
+
+                    if (string.IsNullOrEmpty(element))
+                        element = Location + " - No cell description on Netcool.";
+                    break;
+                default:
+                    if (node.StartsWith("LNCEL"))
+                        cell = ParentSite.Cells.FirstOrDefault(c => c.Id == Node.RemoveLetters()) ?? ParentSite.Cells.FirstOrDefault(c => c.Id == Node.RemoveLetters() + "0");
+                    element = cell != null ? cell.Name :
+                        Location + " - No cell description on Netcool.";
+                    break;
+            }
+            UpdateParsedAlarm();
+        }
+
+        void UpdateParsedAlarm()
+        {
+            _parsedAlarm = LastOccurrence + " - " + parseSummary(Summary) + Environment.NewLine + RncBsc + " > " + Location;
+            if (!string.IsNullOrEmpty(Element))
+                _parsedAlarm += " > " + Element;
+            _parsedAlarm += Environment.NewLine + "Alarm count: " + AlarmCount;
+        }
+
+        Vendors getVendor(string strVendor) {
 			switch (strVendor.ToUpper()) {
 				case "ERICSSON":
 					return Vendors.Ericsson;
