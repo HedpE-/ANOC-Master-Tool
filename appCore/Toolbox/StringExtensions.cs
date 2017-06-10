@@ -37,9 +37,14 @@ public static class StringExtensions
 				return false;
 		
 		return true;
-	}
-	
-	public static String RemoveDiacritics(this string str) {
+    }
+
+    public static bool IsDigit(this char @char)
+    {
+        return IsAllDigits(@char.ToString());
+    }
+
+    public static String RemoveDiacritics(this string str) {
 		var normalizedString = str.Normalize(NormalizationForm.FormD);
 		var stringBuilder = new StringBuilder();
 
