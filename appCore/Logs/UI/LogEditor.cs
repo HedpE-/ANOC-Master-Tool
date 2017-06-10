@@ -58,7 +58,7 @@ namespace appCore.Logs.UI
 			
 			GlobalLogType = "Templates";
 			
-			this.Height = 152;
+			this.Height = 164;
 			this.Text = "Log Editor - " + WindowTitle + " - " + GlobalLogType + " logs";
 			
 			var logsList = new List<dynamic>();
@@ -137,7 +137,7 @@ namespace appCore.Logs.UI
 			
 			GlobalLogType = "Outages";
 			
-			this.Height = 152;
+			this.Height = 164;
 			this.Text = "Log Editor - " + WindowTitle + " - " + GlobalLogType + " logs";
 			
 			var logsList = new List<dynamic>();
@@ -244,32 +244,30 @@ namespace appCore.Logs.UI
 					                                      		OutageUI.Dispose();
 					                                      	switch(GlobalLogType) {
 					                                      		case "Templates":
-					                                      			switch (dataGridView1.SelectedRows[0].Cells["LogType"].Value.ToString()) {
-					                                      				case "Troubleshoot Template":
+					                                      			switch ((EnumExtensions.Parse(typeof(TemplateTypes), dataGridView1.SelectedRows[0].Cells["LogType"].Value.ToString()))) {
+					                                      				case TemplateTypes.Troubleshoot:
 					                                      					TroubleshootUI = new TroubleshootControls(Logs[dataGridView1.SelectedRows[0].Index].ToTroubleshootTemplate());
 					                                      					TroubleshootUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
-					                                      					this.Controls.Add(TroubleshootUI);
-					                                      					
-					                                      					this.Size = new System.Drawing.Size(TroubleshootUI.Right + 6, TroubleshootUI.Bottom + 29);
+					                                      					this.Controls.Add(TroubleshootUI);					                                      					
+					                                      					//this.Height = TroubleshootUI.Bottom + 29;
 					                                      					break;
-					                                      				case "Failed CRQ":
+					                                      				case TemplateTypes.FailedCRQ:
 					                                      					FailedCRQUI = new FailedCRQControls(Logs[dataGridView1.SelectedRows[0].Index].ToFailedCRQTemplate());
 					                                      					FailedCRQUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
 					                                      					this.Controls.Add(FailedCRQUI);
-					                                      					this.Size = new System.Drawing.Size(FailedCRQUI.Right + 6, FailedCRQUI.Bottom + 29);
+					                                      					//this.Height = FailedCRQUI.Bottom + 29;
 					                                      					break;
-					                                      				case "TX Template":
-					                                      					if(TXUI != null)
-					                                      						TXUI = new TxControls(Logs[dataGridView1.SelectedRows[0].Index].ToTxTemplate());
+					                                      				case TemplateTypes.TX:
+					                                      					TXUI = new TxControls(Logs[dataGridView1.SelectedRows[0].Index].ToTxTemplate());
 					                                      					TXUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
 					                                      					this.Controls.Add(TXUI);
-					                                      					this.Size = new System.Drawing.Size(TXUI.Right + 6, TXUI.Bottom + 29);
+					                                      					//this.Height = TXUI.Bottom + 29;
 					                                      					break;
-					                                      				case "Update Template":
+					                                      				case TemplateTypes.Update:
 					                                      					UpdateUI = new UpdateControls(Logs[dataGridView1.SelectedRows[0].Index].ToUpdateTemplate());
 					                                      					UpdateUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
 					                                      					this.Controls.Add(UpdateUI);
-					                                      					this.Size = new System.Drawing.Size(UpdateUI.Right + 6, UpdateUI.Bottom + 29);
+                                                                            //this.Height = UpdateUI.Bottom + 29;
 					                                      					break;
 					                                      			}
 					                                      			break;
@@ -277,10 +275,12 @@ namespace appCore.Logs.UI
 					                                      			OutageUI = new OutageControls(OutageLogs[dataGridView1.SelectedRows[0].Index]);
 					                                      			OutageUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
 					                                      			this.Controls.Add(OutageUI);
-					                                      			this.Size = new System.Drawing.Size(OutageUI.Right + 6, OutageUI.Bottom + 29);
-					                                      			break;
-					                                      	}
-					                                      });
+                                                                    //this.Height = OutageUI.Bottom + 29;
+                                                                    break;
+                                                            }
+                                                            var ct = Controls.Cast<Control>().FirstOrDefault(c => c.Name.EndsWith("GUI"));
+                                                            this.Height = ct.Bottom + 45;
+                    });
 					appCore.UI.LoadingPanel loading = new appCore.UI.LoadingPanel();
 					loading.Show(actionNonThreaded, this);
 				}
