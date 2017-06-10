@@ -47,10 +47,14 @@ namespace OpenWeatherAPI
             }
             private set { _temperature = value; }
         }
-        public int pressure { get; set; }
+        public double pressure { get; set; }
         public int humidity { get; set; }
+        [JsonIgnore]
+        public System.Drawing.Image HumidityPicture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\hygrometer.png");
         public double temp_min { get; set; }
         public double temp_max { get; set; }
+        [JsonIgnore]
+        public System.Drawing.Image TemperaturePicture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\thermometer.png");
 
         public class TemperatureObj
         {
@@ -126,9 +130,57 @@ namespace OpenWeatherAPI
                     try { return assignDirection(deg); }
                     catch { return DirectionEnum.Unknown; }
                 }
+        }
+        [JsonIgnore]
+        System.Drawing.Image picture;
+        [JsonIgnore]
+        public System.Drawing.Image DirectionPicture
+        {
+            get
+            {
+                if(picture == null)
+                {
+                    switch(Direction)
+                    {
+                        case DirectionEnum.North:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-1.png");
+                            break;
+                        case DirectionEnum.North_North_East:
+                        case DirectionEnum.North_East:
+                        case DirectionEnum.East_North_East:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-5.png");
+                            break;
+                        case DirectionEnum.East:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-2.png");
+                            break;
+                        case DirectionEnum.East_South_East:
+                        case DirectionEnum.South_East:
+                        case DirectionEnum.South_South_East:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-6.png");
+                            break;
+                        case DirectionEnum.South:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-3.png");
+                            break;
+                        case DirectionEnum.South_South_West:
+                        case DirectionEnum.South_West:
+                        case DirectionEnum.West_South_West:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-7.png");
+                            break;
+                        case DirectionEnum.West:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-4.png");
+                            break;
+                        case DirectionEnum.West_North_West:
+                        case DirectionEnum.North_West:
+                        case DirectionEnum.North_North_West:
+                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-8.png");
+                            break;
+                    }
+                }
+                return picture;
             }
+        }
 
-            public string directionEnumToString(DirectionEnum dir)
+        public string directionEnumToString(DirectionEnum dir)
             {
                 switch (dir)
                 {
@@ -220,6 +272,8 @@ namespace OpenWeatherAPI
     public class Clouds
     {
         public int all { get; set; }
+        [JsonIgnore]
+        public System.Drawing.Image Picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\cloudiness.png");
     }
 
     public class Sys
