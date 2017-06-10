@@ -197,10 +197,8 @@ namespace appCore.OssScripts.UI
 						break;
 				}
                 foreach (Cell cell in cells)
-                {
-                    //string bearer = cell.Bearer.Equals(Bearers.GSM) ? "2G" : (cell.Bearer.Equals(Bearers.UMTS) ? "3G" : "4G");
                     CellsListView.Items.Add(new ListViewItem(new[] { EnumExtensions.GetDescription(cell.Bearer), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, cell.Noc }));
-                }
+
 				foreach (ColumnHeader col in CellsListView.Columns)
 					col.Width = -2;
 				SelectAllButton.Enabled = SelectNoneButton.Enabled = CellsListView.Enabled = true;
