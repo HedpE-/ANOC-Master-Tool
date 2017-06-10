@@ -69,6 +69,7 @@ namespace appCore.GeoAPIs.UI
 			FormBorderStyle = FormBorderStyle.None;
 			Text = "Weather Conditions: " + weatherItem.name;
 			Icon = global::appCore.UI.Resources.app_icon;
+            Region = weatherPanel.Region;
 		}
 		
 //		public const int WM_NCLBUTTONDOWN = 0xA1;
