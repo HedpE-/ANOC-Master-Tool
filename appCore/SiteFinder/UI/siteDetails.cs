@@ -514,7 +514,7 @@ namespace appCore.SiteFinder.UI
 					ossID = cell.ENodeB_Id;
 				else
 					ossID = cell.WBTS_BCF;
-				var row = table.Rows.Add(cell.Bearer, cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, ossID, cell.Vendor.ToString(), cell.Noc);
+				var row = table.Rows.Add(EnumExtensions.GetDescription(cell.Bearer), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, ossID, cell.Vendor.ToString(), cell.Noc);
 				if(!siteDetails_UIMode.Contains("outage"))
 					row["COOS"] = cell.COOS ? "YES" : "No";
 				row["Locked"] = cell.Locked ? "YES" : "No";
@@ -848,7 +848,7 @@ namespace appCore.SiteFinder.UI
 			List<AccessInformation> powerList = null;
 			if(fetchPowerList.Count > 0) {
 				Thread thread = new Thread(() => {
-				                           	powerList = SiteFinder.Site.BulkFetchPowerCompany(fetchPowerList);
+				                           	powerList = appCore.Site.BulkFetchPowerCompany(fetchPowerList);
 				                           	finishedThreadsCount++;
 				                           });
 				thread.Name = "siteFinder_BulkFetchPowerCompany";
@@ -858,7 +858,7 @@ namespace appCore.SiteFinder.UI
 			List<OiCell> cellDetailsList = null;
 			if(fetchCellDetailsList.Count > 0) {
 				Thread thread = new Thread(() => {
-				                           	cellDetailsList = SiteFinder.Site.BulkFetchOiCellsState(fetchCellDetailsList);
+				                           	cellDetailsList = appCore.Site.BulkFetchOiCellsState(fetchCellDetailsList);
 				                           	finishedThreadsCount++;
 				                           });
 				thread.Name = "siteFinder_BulkFetchOiCellsState";
@@ -868,7 +868,7 @@ namespace appCore.SiteFinder.UI
 			DataTable cramerDataList = null;
 			if(fetchCramerDataList.Count > 0) {
 				Thread thread = new Thread(() => {
-				                           	cramerDataList = SiteFinder.Site.BulkFetchCramerData(fetchCramerDataList);
+				                           	cramerDataList = appCore.Site.BulkFetchCramerData(fetchCramerDataList);
 				                           	finishedThreadsCount++;
 				                           });
 				thread.Name = "siteFinder_BulkFetchCramerData";
@@ -878,23 +878,24 @@ namespace appCore.SiteFinder.UI
 			List<Change> crqList = null;
 			if(fetchCrqList.Count > 0) {
 				Thread thread = new Thread(() => {
-				                           	crqList = SiteFinder.Site.BulkFetchCRQs(fetchCrqList);
+				                           	crqList = appCore.Site.BulkFetchCRQs(fetchCrqList);
 				                           	finishedThreadsCount++;
 				                           });
 				thread.Name = "siteFinder_BulkFetchCRQs";
 				threads.Add(thread);
             }
 
-            //if (currentOutage.AffectedLocations.Count > 0)
-            //{
-            //    Thread thread = new Thread(() => {
-            //        var t = currentOutage.AffectedSites.Select(s => new[] { s.Id, s.Town });
-            //        SiteFinder.Site.BulkFetchWeather(currentOutage.AffectedSites.Select(s => s.Town));
-            //        finishedThreadsCount++;
-            //    });
-            //    thread.Name = "siteFinder_BulkFetchWeather";
-            //    threads.Add(thread);
-            //}
+            if (currentOutage.AffectedLocations.Count > 0)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    var t = currentOutage.AffectedSites.Select(s => new[] { s.Id, s.Town });
+                    appCore.Site.BulkFetchWeather(currentOutage.AffectedSites.Select(s => s.Town));
+                    finishedThreadsCount++;
+                });
+                thread.Name = "siteFinder_BulkFetchWeather";
+                threads.Add(thread);
+            }
 
             foreach (Thread thread in threads) {
 				thread.SetApartmentState(ApartmentState.STA);

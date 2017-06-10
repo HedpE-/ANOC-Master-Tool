@@ -61,8 +61,8 @@ namespace appCore.Templates.Types
 		string OngoingINCs;
 		string OngoingCRQs;
 		
-		SiteFinder.Site site;
-		public SiteFinder.Site Site {
+		Site site;
+		public Site Site {
 			get {
 				if(site == null)
 					site = DB.SitesDB.getSite(SiteId);

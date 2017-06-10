@@ -759,7 +759,7 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void FetchCellsState(IEnumerable<string> sites) {
-			List<OiCell> list = SiteFinder.Site.BulkFetchOiCellsState(sites);
+			List<OiCell> list = appCore.Site.BulkFetchOiCellsState(sites);
 			
 			foreach(string siteStr in sites) {
 				int siteIndex = cellsLockedSites.FindIndex(s => s.Id == siteStr);
@@ -779,8 +779,8 @@ namespace appCore.SiteFinder.UI
 		}
 		
 		void FetchAvailability(IEnumerable<string> sites) {
-			DataTable dt = SiteFinder.Site.BulkFetchAvailability(sites);
-			
+			DataTable dt = appCore.Site.BulkFetchAvailability(sites);
+
 			if(dt != null) {
 				foreach(var site in cellsLockedSites) {
 					var drs = dt.Rows.Cast<DataRow>().Where(s => s["Site"].ToString() == site.Id);
@@ -1156,7 +1156,7 @@ namespace appCore.SiteFinder.UI
 						ossID = cell.WBTS_BCF;
 					
 					DataRow row = Table.NewRow();
-					row["Tech"] = cell.Bearer;
+					row["Tech"] = EnumExtensions.GetDescription(cell.Bearer);
 					row["Cell Name"] = cell.Name;
 					row["Switch"] = cell.BscRnc_Id;
 					row["OSS ID"] = ossID;
@@ -1186,7 +1186,7 @@ namespace appCore.SiteFinder.UI
 							ossID = cell.WBTS_BCF;
 						
 						DataRow row = Table.NewRow();
-						row["Tech"] = cell.Bearer;
+						row["Tech"] = EnumExtensions.GetDescription(cell.Bearer);
 						row["Cell Name"] = cell.Name;
 						row["Switch"] = cell.BscRnc_Id;
 						row["OSS ID"] = ossID;

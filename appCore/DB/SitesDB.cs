@@ -154,7 +154,7 @@ namespace appCore.DB
 				foreach(string site in findSites) {
 					Site foundSite = SitesCache.Find(s => s.Id == site);
 					if(foundSite != null) {
-						foundSites.Add(site);
+                        foundSites.Add(site);
 						totalFoundSites.Add(foundSite);
 					}
 				}

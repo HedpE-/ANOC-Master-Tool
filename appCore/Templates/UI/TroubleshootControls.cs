@@ -138,7 +138,7 @@ namespace appCore.Templates.UI
 					AlarmHistoryTextBox.ReadOnly = true;
 					TroubleshootTextBox.ReadOnly = true;
 					MTXAddressButton.Enabled = false;
-					TroubleshootTextBox.Height = 183;
+					//TroubleshootTextBox.Height = 183;
 					
 					MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
 					                                         	generateTemplateToolStripMenuItem,
@@ -156,7 +156,7 @@ namespace appCore.Templates.UI
 					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 					INCTextBox.KeyPress += INCTextBoxKeyPress;
-					TroubleshootTextBox.Height = 203;
+					//TroubleshootTextBox.Height = 203;
 					
 					MainMenu.InitializeTroubleshootMenu();
 					MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;

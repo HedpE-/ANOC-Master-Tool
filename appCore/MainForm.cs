@@ -230,16 +230,17 @@ namespace appCore
                     butt.Location = new Point(butt2.Right + 10, butt2.Top);
                     butt.Click += delegate
                     {
+                        SitesDB.Clear();
+
                         System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
-                        int c = 0;
-                        Stopwatch st = new Stopwatch();
-                        st.Start();
                         while (list.Count < 1000000)
                             list.Add("str");
-                        st.Stop();
-                        var t = st.Elapsed;
 
+                        //Stopwatch st = new Stopwatch();
+                        //st.Start();
                         bool result = list.Contains("and", StringComparison.OrdinalIgnoreCase);
+                        //st.Stop();
+                        //var t = st.Elapsed;
 
                         //var sites = SitesDB.getSites(new[] { "15", "3792", "4467", "1190", "46788" });
                         //// horizontal
@@ -252,7 +253,6 @@ namespace appCore
 
                         //var t = openWeatherAPI.queryZipCode(sites[0].PostCode);
                         //var cities = openWeatherAPI.query(minLongitude, maxLongitude, minLatitude, maxLatitude);
-                        //						SitesDB.List.Clear();
                         //						InputBoxDialog ib = new InputBoxDialog();
                         //						ib.FormPrompt = "Site to remove?\n\n(Leave blank and click ok to clear whole DB";
                         //						DialogResult ans = ib.ShowDialog();
@@ -272,6 +272,7 @@ namespace appCore
 
                     Button butt3 = new Button();
                     butt3.Name = "butt3";
+                    butt3.Text = "Show SitesDB";
                     butt3.AutoSize = true;
                     butt3.Location = new Point(butt.Right + 10, butt.Top);
                     butt3.Click += delegate
@@ -631,7 +632,11 @@ namespace appCore
             {
                 try
                 {
+                    var st = new Stopwatch();
+                    st.Start();
                     netcool = new Netcool.AlarmsParser(alarms);
+                    st.Stop();
+                    var t = st.Elapsed;
                 }
                 catch (Exception ex)
                 {
