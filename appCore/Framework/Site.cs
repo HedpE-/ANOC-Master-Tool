@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenWeatherAPI;
 
-namespace appCore.SiteFinder
+namespace appCore
 {
 	/// <summary>
 	/// Description of Site.
@@ -382,19 +382,19 @@ namespace appCore.SiteFinder
         private WeatherItem currentWeather;
 		public WeatherItem CurrentWeather {
 			get {
-                //if (currentWeather == null)
-                //    //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-                //    //st.Start();
-                //    currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
-                //    //st.Stop();
-                //    //var t = st.Elapsed;
-                //else
-                //{
-                //    if (DateTime.Now - currentWeather.DataTimestamp > new TimeSpan(2, 0, 0))
-                //        currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
-                //}
+                if (currentWeather == null)
+                    //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+                    //st.Start();
+                    currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
+                    //st.Stop();
+                    //var t = st.Elapsed;
+                else
+                {
+                    if (DateTime.Now - currentWeather.DataTimestamp > new TimeSpan(2, 0, 0))
+                        currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
+                }
 
-				return currentWeather;
+                return currentWeather;
 			}
 		}
 		

@@ -157,8 +157,8 @@
     <Compile Include="OI\JSON\Tables.cs" />
     <Compile Include="OI\OIConnection.cs" />
     <Compile Include="Shifts\SingleShift.cs" />
-    <Compile Include="SiteFinder\Cell.cs" />
-    <Compile Include="SiteFinder\Site.cs" />
+    <Compile Include="Framework\Cell.cs" />
+    <Compile Include="Framework\Site.cs" />
     <Compile Include="SiteFinder\UI\LockUnlockCellsForm.cs">
       <SubType>Form</SubType>
     </Compile>

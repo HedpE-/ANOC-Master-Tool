@@ -12,7 +12,7 @@ using System.Data;
 using appCore.SiteFinder;
 using FileHelpers;
 
-namespace appCore.SiteFinder
+namespace appCore
 {
 	/// <summary>
 	/// Description of Cell.
@@ -37,7 +37,11 @@ namespace appCore.SiteFinder
 		public string BscRnc_Id { get { return BSC_RNC_ID; } }
 		[FieldOrder(6)]
 		string VENDOR;
-		public Vendors Vendor { get { return getVendor(VENDOR); } }
+		public Vendors Vendor
+        {
+            get { return EnumExtensions.Parse(typeof(Vendors), VENDOR); }
+            private set { VENDOR = EnumExtensions.GetDescription(value); }
+        }
 		[FieldOrder(7)]
 		string ENODEB_ID;
 		public string ENodeB_Id { get { return ENODEB_ID; } }
@@ -47,23 +51,13 @@ namespace appCore.SiteFinder
 		[FieldOrder(9)]
 		string CELL_NAME;
 		public string Name { get { return CELL_NAME; } }
-		[FieldOrder(10)]
+        [FieldOrder(10)]
 		string BEARER;
 		public Bearers Bearer
         {
             get
             {
-                switch (BEARER)
-                {
-                    case "2G":
-                        return Bearers.GSM;
-                    case "3G":
-                        return Bearers.UMTS;
-                    case "4G":
-                        return Bearers.LTE;
-                }
-
-                return Bearers.Unknown;
+                return EnumExtensions.Parse(typeof(Bearers), BEARER);
             }
         }
 		[FieldOrder(11)]
@@ -119,30 +113,103 @@ namespace appCore.SiteFinder
 		string VENDOR_4G;
 //		public Site.Vendors Vendor4G { get { return getVendor(VENDOR_4G); } }
 		
-		[FieldHidden]
-		string celloperator;
 		public Operators Operator {
 			get {
 				return Name.StartsWith("T") || Name.EndsWith("W") || Name.EndsWith("X") || Name.EndsWith("Y") ? Operators.Telefonica : Operators.Vodafone;
 			}
 		}
-		
-		Vendors getVendor(string strVendor) {
-			switch (strVendor.ToUpper()) {
-				case "ERICSSON":
-					return Vendors.Ericsson;
-				case "HUAWEI":
-					return Vendors.Huawei;
-				case "ALU": case "ALCATEL":
-					return Vendors.ALU;
-				case "NSN":
-					return Vendors.NSN;
-				default:
-					return Vendors.Unknown;
-			}
-		}
-		
-		public enum Filters : byte {
+
+        public int Sector
+        {
+            get
+            {
+                int sector = 0;
+                switch (Bearer)
+                {
+                    case Bearers.GSM:
+                        char lastChar = Name.Substring(Name.Length - 1)[0];
+                        if(lastChar.IsDigit())
+                            sector = Convert.ToInt16(lastChar.ToString());
+                        else
+                        {
+                            switch(lastChar)
+                            {
+                                case 'Y':
+                                    sector = 1;
+                                    break;
+                                case 'X':
+                                    sector = 2;
+                                    break;
+                                case 'W':
+                                    sector = 3;
+                                    break;
+                            }
+                        }
+                        break;
+                    case Bearers.UMTS:
+                    case Bearers.LTE:
+                        sector = Convert.ToInt16(Name.Substring(Name.Length - 2, 1));
+                        break;
+                }
+                return sector;
+            }
+        }
+
+        public int Carrier
+        {
+            get
+            {
+                int carrier = 0;
+                switch (Bearer)
+                {
+                    case Bearers.GSM:
+                        carrier = -1;
+                        break;
+                    case Bearers.UMTS:
+                    case Bearers.LTE:
+                        carrier = Convert.ToInt16(Name.Substring(Name.Length - 1));
+                        break;
+                }
+                return carrier;
+            }
+        }
+
+        public Cell() { }
+
+        public Cell(string site, string bsc_rnc, string cellName)
+        {
+            SITE = Convert.ToInt32(site.RemoveLetters()).ToString();
+            CELL_NAME = cellName;
+            BSC_RNC_ID = bsc_rnc;
+            BEARER = BscRnc_Id.StartsWith("B") ? "2G" : BscRnc_Id.StartsWith("R") ? "3G" : "4G";
+            NOC = "ANOC";
+        }
+
+        public Cell(string site, string bsc_rnc, Operators @operator)
+        {
+            SITE = Convert.ToInt32(site.RemoveLetters()).ToString();
+            CELL_NAME = @operator == Operators.Telefonica ? "T" : "";
+            BSC_RNC_ID = bsc_rnc;
+            BEARER = BscRnc_Id.StartsWith("B") ? "2G" : BscRnc_Id.StartsWith("R") ? "3G" : "4G";
+            NOC = "ANOC";
+        }
+
+        //      Vendors getVendor(string strVendor) {
+        //	switch (strVendor.ToUpper()) {
+        //		case "ERICSSON":
+        //			return Vendors.Ericsson;
+        //		case "HUAWEI":
+        //			return Vendors.Huawei;
+        //		case "ALU": case "ALCATEL":
+        //			return Vendors.ALU;
+        //		case "NSN":
+        //			return Vendors.NSN;
+        //		default:
+        //			return Vendors.Unknown;
+        //	}
+        //}
+
+        public enum Filters : byte {
 			All_2G,
 			All_3G,
 			All_4G,
