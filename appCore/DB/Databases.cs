@@ -102,7 +102,6 @@ namespace appCore.DB
 
             Thread thread = new Thread(() =>
             {
-                //			                       	string response = OiConnection.requestPhpOutput("allsites");
                 string response = OiConnection.requestApiOutput("sites");
                 if (response.StartsWith("SITE,JVCO_ID,GSM900,"))
                 {
@@ -110,24 +109,33 @@ namespace appCore.DB
                         MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
                     if (GlobalProperties.shareAccess || onUserFolder)
                     {
-                        bool updated = false;
-                        if (source_allsites.Exists)
+                        FileInfo updating = new FileInfo(source_allsites.DirectoryName + @"\Updating");
+                        if (!updating.Exists)
                         {
-                            if (response != File.ReadAllText(source_allsites.FullName))
+                            bool updated = false;
+                            updating.Create();
+                            updating = new FileInfo(updating.FullName);
+                            if (source_allsites.Exists)
                             {
-                                MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
+                                if (response != File.ReadAllText(source_allsites.FullName))
+                                {
+                                    MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
+                                    File.WriteAllText(source_allsites.FullName, response);
+                                    updated = true;
+                                }
+                            }
+                            else
+                            {
+                                MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
                                 File.WriteAllText(source_allsites.FullName, response);
                                 updated = true;
                             }
+                            if (updated)
+                                MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
+                            updating.Delete();
                         }
                         else
-                        {
-                            MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
-                            File.WriteAllText(source_allsites.FullName, response);
-                            updated = true;
-                        }
-                        if (updated)
-                            MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
+                            UI.FlexibleMessageBox.Show("Another update request is already ongoing.", "Update request failed", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                     }
                 }
 
@@ -140,7 +148,6 @@ namespace appCore.DB
 
             thread = new Thread(() =>
             {
-                //			                       	string response = OiConnection.requestPhpOutput("allcells");
                 string response = OiConnection.requestApiOutput("cells");
                 if (response.StartsWith("SITE,JVCO_ID,CELL_ID,"))
                 {
