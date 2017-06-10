@@ -12,10 +12,15 @@ namespace appCore
 {
     public enum Vendors
     {
+        [Description("ERICSSON")]
         Ericsson = 1,
+        [Description("ALU")]
         ALU = 2,
+        [Description("HUAWEI")]
         Huawei = 4,
+        [Description("NSN")]
         NSN = 8,
+        [Description("Unknown")]
         Unknown = 16
     };
 
