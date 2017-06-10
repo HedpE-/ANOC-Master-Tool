@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace appCore
 {
@@ -16,7 +15,7 @@ namespace appCore
         /// </summary>
         /// <param name="value">The Enum to get the description for</param>
         /// <returns></returns>
-        public static string GetDescription(System.Enum value)
+        public static string GetDescription(Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
             DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
@@ -33,7 +32,7 @@ namespace appCore
         /// <param name="enumType">The System.Type of the enumeration.</param>
         /// <param name="value">A string containing the name or value to convert.</param>
         /// <returns></returns>
-        public static object Parse(Type enumType, string value)
+        public static dynamic Parse(Type enumType, string value)
         {
             return Parse(enumType, value, false);
         }
@@ -47,12 +46,15 @@ namespace appCore
         /// <param name="value">A string containing the name or value to convert.</param>
         /// <param name="ignoreCase">Whether the operation is case-sensitive or not.</param>
         /// <returns></returns>
-        public static object Parse(Type enumType, string value, bool ignoreCase)
+        public static dynamic Parse(Type enumType, string value, bool ignoreCase)
         {
+            if (value == "ALCATEL")
+                value = "ALU";
+
             if (ignoreCase)
                 value = value.ToLower();
 
-            foreach (System.Enum val in System.Enum.GetValues(enumType))
+            foreach (Enum val in Enum.GetValues(enumType))
             {
                 string comparisson = GetDescription(val);
                 if (ignoreCase)
@@ -61,7 +63,7 @@ namespace appCore
                     return val;
             }
 
-            return System.Enum.Parse(enumType, value, ignoreCase);
+            return Enum.Parse(enumType, value, ignoreCase);
         }
     }
 }
