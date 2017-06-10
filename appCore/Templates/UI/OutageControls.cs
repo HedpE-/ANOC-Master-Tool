@@ -29,6 +29,11 @@ namespace appCore.Templates.UI
 		Button Alarms_ReportLargeTextButton = new Button(); // Alarms_ReportLargeTextButton
 		RadioButton VFReportRadioButton = new RadioButton(); // VFReportRadioButton
 		RadioButton TFReportRadioButton = new RadioButton(); // TFReportRadioButton
+        RadioButton FromNetcoolRadioButton = new RadioButton();
+        RadioButton FromExistingReportRadioButton = new RadioButton();
+        RadioButton FromSitesListRadioButton = new RadioButton();
+        Panel GenerationSourceContainer = new Panel();
+        Panel VfTfReportsRadioButtonsContainer = new Panel();
 		Label Alarms_ReportLabel = new Label(); // Alarms_ReportLabel
 		Label BulkCILabel = new Label(); // BulkCILabel
 		AMTRichTextBox BulkCITextBox = new AMTRichTextBox(); // BulkCITextBox
@@ -42,7 +47,6 @@ namespace appCore.Templates.UI
 		ToolStripMenuItem copyToClipboardToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateSitesListToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem outageFollowUpToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem generateFromSitesListToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem sitesPerTechToolStripMenuItem = new ToolStripMenuItem();
 		
 		int paddingLeftRight = 1;
@@ -73,7 +77,7 @@ namespace appCore.Templates.UI
 					InitializeComponent();
 					BulkCITextBox.ReadOnly =
 						Alarms_ReportTextBox.ReadOnly = true;
-					Alarms_ReportLabel.Text = "Generated Outage Report";
+                    GenerationSourceContainer.Visible = false;
 					
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
@@ -83,10 +87,12 @@ namespace appCore.Templates.UI
 				}
 				else {
 					InitializeComponent();
-					Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
-					
-					MainMenu.MainMenu.DropDownItems.Add(generateReportToolStripMenuItem);
-					MainMenu.MainMenu.DropDownItems.Add(generateFromSitesListToolStripMenuItem);
+                    //Alarms_ReportLabel.Text = "Generate outage";
+                    Alarms_ReportLabel.Visible = false;
+                    FromNetcoolRadioButton.Checked = true;
+
+                    MainMenu.MainMenu.DropDownItems.Add(generateReportToolStripMenuItem);
+					//MainMenu.MainMenu.DropDownItems.Add(generateFromSitesListToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(outageFollowUpToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add(sitesPerTechToolStripMenuItem);
@@ -97,7 +103,6 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(clearToolStripMenuItem);
 					
 					generateReportToolStripMenuItem.Enabled =
-						generateFromSitesListToolStripMenuItem.Enabled =
 						clearToolStripMenuItem.Enabled =
 						copyToClipboardToolStripMenuItem.Enabled =
 						generateSitesListToolStripMenuItem.Enabled =
@@ -123,19 +128,26 @@ namespace appCore.Templates.UI
 				TFReportRadioButton.Checked = true;
 			
 			TFReportRadioButton.Enabled = !string.IsNullOrEmpty(currentOutage.TefOutage);
-		}
+        }
 
-		void GenerateReport(object sender, EventArgs e)
+        void GenerateReport(object sender, EventArgs e)
+        {
+            if (FromNetcoolRadioButton.Checked)
+                GenerateFromAlarms();
+            else
+            {
+                if (FromExistingReportRadioButton.Checked)
+                    GenerateFromExistingReport();
+                else
+                {
+
+                    GenerateFromSitesList();
+                }
+            }
+        }
+
+        void GenerateFromAlarms()
 		{
-//			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
-//				Action actionNonThreaded = new Action(delegate {
-//				                                      	FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//				                                      	return;
-//				                                      });
-//				LoadingPanel load = new LoadingPanel();
-//				load.Show(null, actionNonThreaded, false, this.FindForm());
-//			}
-			
 			bool parsingError = false;
 			string textBoxContent = Alarms_ReportTextBox.Text;
 			Action actionThreaded = new Action(delegate {
@@ -144,7 +156,7 @@ namespace appCore.Templates.UI
 			                                   		currentOutage = alarms.GenerateOutage();
 			                                   	}
 			                                   	catch(Exception ex) {
-			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\n\nError message:\n" + ex.Message);
+			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nError message:\n" + ex.Message);
 			                                   		parsingError = true;
 			                                   	}
 			                                   });
@@ -172,8 +184,8 @@ namespace appCore.Templates.UI
 			                                      			}
 			                                      		}
 			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      			generateReportToolStripMenuItem.Enabled =
-			                                      				generateFromSitesListToolStripMenuItem.Enabled = false;
+                                                            GenerationSourceContainer.Visible =
+                                                                generateReportToolStripMenuItem.Enabled = false;
 			                                      			Alarms_ReportTextBox.ReadOnly =
 			                                      				BulkCITextBox.ReadOnly = true;
 			                                      			outageFollowUpToolStripMenuItem.Enabled =
@@ -181,7 +193,8 @@ namespace appCore.Templates.UI
 			                                      				sitesPerTechToolStripMenuItem.Enabled =
 			                                      				generateSitesListToolStripMenuItem.Enabled = true;
 			                                      			Alarms_ReportTextBox.Focus();
-			                                      			Alarms_ReportLabel.Text = "Generated Outage Report";
+                                                            Alarms_ReportLabel.Visible = true;
+                                                            GenerationSourceContainer.Visible = false;
 			                                      			MainForm.logFiles.HandleOutageLog(currentOutage);
 			                                      		}
 			                                      	}
@@ -189,8 +202,146 @@ namespace appCore.Templates.UI
 			LoadingPanel loading = new LoadingPanel();
 			loading.ShowAsync(actionThreaded, actionNonThreaded, true, this);
 		}
-		
-		void OutageFollowUp(object sender, EventArgs e) {
+
+        void GenerateFromExistingReport()
+        {
+            bool parsingError = false;
+            string[] textBoxContent = Alarms_ReportTextBox.Lines;
+            Action actionThreaded = new Action(delegate {
+                try
+                {
+                    currentOutage = new Outage(textBoxContent, DateTime.Now);
+                }
+                catch (Exception ex)
+                {
+                    MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nError message:\n" + ex.Message);
+                    parsingError = true;
+                }
+            });
+
+            Action actionNonThreaded = new Action(delegate {
+                if (!parsingError)
+                {
+                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+                        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                    else
+                    {
+                        if (string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                        {
+                            MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
+                            Alarms_ReportTextBox.Text = string.Empty;
+                            VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                            return;
+                        }
+                        if (!string.IsNullOrEmpty(currentOutage.VfOutage))
+                        {
+                            VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                            TFReportRadioButton.Enabled = false;
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(currentOutage.TefOutage))
+                            {
+                                TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+                                VFReportRadioButton.Enabled = false;
+                            }
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
+                    {
+                        GenerationSourceContainer.Visible =
+                            generateReportToolStripMenuItem.Enabled =false;
+                        Alarms_ReportTextBox.ReadOnly =
+                            BulkCITextBox.ReadOnly = true;
+                        outageFollowUpToolStripMenuItem.Enabled =
+                            copyToClipboardToolStripMenuItem.Enabled =
+                            sitesPerTechToolStripMenuItem.Enabled =
+                            generateSitesListToolStripMenuItem.Enabled = true;
+                        Alarms_ReportTextBox.Focus();
+                        Alarms_ReportLabel.Visible = true;
+                        GenerationSourceContainer.Visible = false;
+                        MainForm.logFiles.HandleOutageLog(currentOutage);
+                    }
+                }
+            });
+            LoadingPanel loading = new LoadingPanel();
+            loading.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+        }
+
+        void GenerateFromSitesList()
+        {
+            bool parsingError = false;
+            string[] textBoxContent = Alarms_ReportTextBox.Lines;
+            Action actionThreaded = new Action(delegate {
+                try
+                {
+                    List<string> input = textBoxContent.Contains(";") ? string.Join(Environment.NewLine, textBoxContent).Split(';').ToList() : textBoxContent.ToList();
+
+                    for (int c = 0; c < input.Count; c++)
+                    {
+                        input[c] = input[c].Trim().RemoveLetters();
+                        while (input[c].StartsWith("0"))
+                            input[c] = input[c].Substring(1);
+                    }
+
+                    currentOutage = new Outage(input);
+                }
+                catch (Exception ex)
+                {
+                    var m = ex.Message;
+                    MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
+                    parsingError = true;
+                }
+            });
+
+            Action actionNonThreaded = new Action(delegate {
+                if (!parsingError)
+                {
+                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+                        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                    else
+                    {
+                        if (string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                        {
+                            MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
+                            Alarms_ReportTextBox.Text = string.Empty;
+                            VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                            return;
+                        }
+                        if (!string.IsNullOrEmpty(currentOutage.VfOutage))
+                        {
+                            VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                            TFReportRadioButton.Enabled = false;
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(currentOutage.TefOutage))
+                            {
+                                TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+                                VFReportRadioButton.Enabled = false;
+                            }
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
+                    {
+                        generateReportToolStripMenuItem.Enabled = false;
+                        Alarms_ReportTextBox.ReadOnly =
+                            BulkCITextBox.ReadOnly = true;
+                        copyToClipboardToolStripMenuItem.Enabled =
+                            generateSitesListToolStripMenuItem.Enabled =
+                            outageFollowUpToolStripMenuItem.Enabled = true;
+                        Alarms_ReportTextBox.Focus();
+                        Alarms_ReportLabel.Visible = true;
+                        GenerationSourceContainer.Visible = false;
+                        MainForm.logFiles.HandleOutageLog(currentOutage);
+                    }
+                }
+            });
+            LoadingPanel load = new LoadingPanel();
+            load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+        }
+
+        void OutageFollowUp(object sender, EventArgs e) {
 			Thread thread = new Thread(() => {
 			                           	siteDetails sd = new siteDetails(currentOutage, this);
 //			                           	sd.Name = "Outage Follow-up";
@@ -219,78 +370,6 @@ namespace appCore.Templates.UI
 					BulkCITextBox.Select(0,0);
 				}
 			}
-		}
-
-		void GenerateFromSitesList(object sender, EventArgs e)
-		{
-//			Action action;
-//			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
-//				action = new Action(delegate {
-//				                    	MessageBox.Show("Please insert sites list.\n\nTIP: write 1 site PER LINE", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//				                    });
-//				Toolbox.Tools.darkenBackgroundForm(action, false, Toolbox.Tools.getParentForm(this));
-//				return;
-//			}
-			bool parsingError = false;
-			string textBoxContent = Alarms_ReportTextBox.Text;
-			Action actionThreaded = new Action(delegate {
-			                                   	try {
-			                                   		List<string> input = textBoxContent.Contains(";") ? textBoxContent.Split(';').ToList() : textBoxContent.Split('\n').ToList();
-			                                   		
-			                                   		for(int c=0;c < input.Count;c++) {
-			                                   			input[c] = input[c].Trim();
-			                                   			while(input[c].StartsWith("0"))
-			                                   				input[c] = input[c].Substring(1);
-			                                   		}
-			                                   		
-			                                   		currentOutage = new Outage(input);
-			                                   	}
-			                                   	catch(Exception ex) {
-			                                   		var m = ex.Message;
-			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
-			                                   		parsingError = true;
-			                                   	}
-			                                   });
-			
-			Action actionNonThreaded = new Action(delegate {
-			                                      	if(!parsingError) {
-			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-			                                      			VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-			                                      		else {
-			                                      			if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      				MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
-			                                      				Alarms_ReportTextBox.Text = string.Empty;
-			                                      				VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
-			                                      				return;
-			                                      			}
-			                                      			if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-			                                      				VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-			                                      				TFReportRadioButton.Enabled = false;
-			                                      			}
-			                                      			else {
-			                                      				if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      					TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
-			                                      					VFReportRadioButton.Enabled = false;
-			                                      				}
-			                                      			}
-			                                      		}
-			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      			generateFromSitesListToolStripMenuItem.Enabled =
-			                                      				generateReportToolStripMenuItem.Enabled = false;
-			                                      			Alarms_ReportTextBox.ReadOnly =
-			                                      				BulkCITextBox.ReadOnly = true;
-			                                      			copyToClipboardToolStripMenuItem.Enabled =
-			                                      				generateSitesListToolStripMenuItem.Enabled =
-			                                      				outageFollowUpToolStripMenuItem.Enabled = true;
-			                                      			Alarms_ReportTextBox.Focus();
-			                                      			Alarms_ReportLabel.Text = "Generated Outage Report";
-			                                      			MainForm.logFiles.HandleOutageLog(currentOutage);
-			                                      		}
-			                                      	}
-			                                      });
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
-//			Toolbox.Tools.darkenBackgroundForm(action, true, Toolbox.Tools.getParentForm(this));
 		}
 
 		void ShowSitesPerTech(object sender, EventArgs e)
@@ -645,12 +724,17 @@ namespace appCore.Templates.UI
 			load.ShowAsync(null, actionNonThreaded, false, this.FindForm());
 		}
 
-		void ClearAllControls(object sender, EventArgs e)
+        void CopyReportToClipboard(object sender, EventArgs e) {
+            Clipboard.SetText(Alarms_ReportTextBox.Text);
+        }
+
+        void ClearAllControls(object sender, EventArgs e)
 		{
 			currentOutage = null;
-			Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
-			generateReportToolStripMenuItem.Enabled =
-				generateFromSitesListToolStripMenuItem.Enabled = true;
+            //Alarms_ReportLabel.Text = "Copy Outage alarms from Netcool";
+            Alarms_ReportLabel.Visible = false;
+            GenerationSourceContainer.Visible =
+			    generateReportToolStripMenuItem.Enabled = true;
 			Alarms_ReportTextBox.ReadOnly = false;
 			Alarms_ReportTextBox.Text =
 				BulkCITextBox.Text = string.Empty;
@@ -676,7 +760,6 @@ namespace appCore.Templates.UI
 				case "Alarms_ReportTextBox":
 					btn = (Button)Alarms_ReportLargeTextButton;
 					generateReportToolStripMenuItem.Enabled =
-						generateFromSitesListToolStripMenuItem.Enabled =
 						clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(tb.Text);
 					break;
 			}
@@ -713,15 +796,17 @@ namespace appCore.Templates.UI
 		{
 			BackColor = SystemColors.Control;
 			Name = "Outages GUI";
-			Controls.Add(MainMenu);
-			Controls.Add(Alarms_ReportLabel);
-			Controls.Add(Alarms_ReportTextBox);
-			Controls.Add(Alarms_ReportLargeTextButton);
-			Controls.Add(BulkCILabel);
-			Controls.Add(BulkCITextBox);
-			Controls.Add(BulkCILargeTextButton);
-			Controls.Add(VFReportRadioButton);
-			Controls.Add(TFReportRadioButton);
+			Controls.AddRange(new Control[] {
+                MainMenu,
+                Alarms_ReportLabel,
+                GenerationSourceContainer,
+                Alarms_ReportTextBox,
+                Alarms_ReportLargeTextButton,
+                BulkCILabel,
+                BulkCITextBox,
+                BulkCILargeTextButton,
+                VfTfReportsRadioButtonsContainer
+            });
 			// 
 			// MainMenu
 			// 
@@ -733,12 +818,6 @@ namespace appCore.Templates.UI
 			generateReportToolStripMenuItem.Text = "Generate Report";
 			generateReportToolStripMenuItem.Click += GenerateReport;
 			// 
-			// generateFromSitesListToolStripMenuItem
-			// 
-			generateFromSitesListToolStripMenuItem.Name = "generateFromSitesListToolStripMenuItem";
-			generateFromSitesListToolStripMenuItem.Text = "Generate Report from sites list";
-			generateFromSitesListToolStripMenuItem.Click += GenerateFromSitesList;
-			// 
 			// clearToolStripMenuItem
 			// 
 			clearToolStripMenuItem.Name = "clearToolStripMenuItem";
@@ -749,9 +828,7 @@ namespace appCore.Templates.UI
 			// 
 			copyToClipboardToolStripMenuItem.Name = "copyToClipboardToolStripMenuItem";
 			copyToClipboardToolStripMenuItem.Text = "Copy to Clipboard";
-			copyToClipboardToolStripMenuItem.Click += delegate {
-				Clipboard.SetText(Alarms_ReportTextBox.Text);
-			};
+            copyToClipboardToolStripMenuItem.Click += CopyReportToClipboard;
 			// 
 			// generateSitesListToolStripMenuItem
 			// 
@@ -776,12 +853,38 @@ namespace appCore.Templates.UI
 //			Alarms_ReportLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
 //			Alarms_ReportLabel.Size = new Size(179, 20);
 			Alarms_ReportLabel.Name = "Alarms_ReportLabel";
-			Alarms_ReportLabel.TabIndex = 30;
+            Alarms_ReportLabel.Text = "Generated Outage Report";
+            Alarms_ReportLabel.TabIndex = 30;
 			Alarms_ReportLabel.TextAlign = ContentAlignment.MiddleLeft;
-			// 
-			// Alarms_ReportTextBox
-			// 
-			Alarms_ReportTextBox.DetectUrls = false;
+            // 
+            // FromNetcoolRadioButton
+            // 
+            FromNetcoolRadioButton.Name = "FromNetcoolRadioButton";
+            FromNetcoolRadioButton.Text = "Netcool alarms";
+            FromNetcoolRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // FromExistingReportRadioButton
+            // 
+            FromExistingReportRadioButton.Name = "FromExistingReportRadioButton";
+            FromExistingReportRadioButton.Text = "Existing Report";
+            FromExistingReportRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // FromSitesListRadioButton
+            // 
+            FromSitesListRadioButton.Name = "FromSitesListRadioButton";
+            FromSitesListRadioButton.Text = "Sites list/Bulk CI";
+            FromSitesListRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // GenerationSourceContainer
+            // 
+            GenerationSourceContainer.BackColor = BackColor;
+            GenerationSourceContainer.Name = "GenerationSourceContainer";
+            GenerationSourceContainer.Controls.AddRange(new[] { FromNetcoolRadioButton, FromExistingReportRadioButton, FromSitesListRadioButton });
+            
+            // 
+            // Alarms_ReportTextBox
+            // 
+            Alarms_ReportTextBox.DetectUrls = false;
 			Alarms_ReportTextBox.Font = new Font("Courier New", 8.25F);
 //			Alarms_ReportTextBox.Location = new Point(PaddingLeftRight, label33.Bottom + 4);
 //			Alarms_ReportTextBox.Size = new Size(510, 368);
@@ -801,10 +904,10 @@ namespace appCore.Templates.UI
 			Alarms_ReportLargeTextButton.Text = "...";
 			Alarms_ReportLargeTextButton.UseVisualStyleBackColor = true;
 			Alarms_ReportLargeTextButton.Click += LargeTextButtonsClick;
-			// 
-			// VFReportRadioButton
-			// 
-			VFReportRadioButton.Appearance = Appearance.Button;
+            // 
+            // VFReportRadioButton
+            // 
+            VFReportRadioButton.Appearance = Appearance.Button;
 			VFReportRadioButton.Enabled = false;
 			VFReportRadioButton.Name = "VFReportRadioButton";
 			VFReportRadioButton.TabIndex = 34;
@@ -824,12 +927,18 @@ namespace appCore.Templates.UI
 			TFReportRadioButton.TextAlign = ContentAlignment.MiddleCenter;
 			TFReportRadioButton.UseVisualStyleBackColor = true;
 			TFReportRadioButton.CheckedChanged += VFTFReportRadioButtonsCheckedChanged;
-			// 
-			// BulkCILabel
-			// 
-//			BulkCILabel.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
-//			BulkCILabel.Size = new Size(198, 20);
-			BulkCILabel.Name = "BulkCILabel";
+            // 
+            // VfTfReportsRadioButtonsContainer
+            // 
+            VfTfReportsRadioButtonsContainer.BackColor = BackColor;
+            VfTfReportsRadioButtonsContainer.Name = "VfTfReportsRadioButtonsContainer";
+            VfTfReportsRadioButtonsContainer.Controls.AddRange(new[] { VFReportRadioButton, TFReportRadioButton });
+            // 
+            // BulkCILabel
+            // 
+            //			BulkCILabel.Location = new Point(PaddingLeftRight, textBox10.Bottom + 4);
+            //			BulkCILabel.Size = new Size(198, 20);
+            BulkCILabel.Name = "BulkCILabel";
 			BulkCILabel.Text = "BulkCI (Divided into 50 sites chunks)";
 			BulkCILabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
@@ -861,21 +970,36 @@ namespace appCore.Templates.UI
 		
 		void DynamicControlsSizesLocations() {
 			Alarms_ReportLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
-			Alarms_ReportLabel.Size = new Size(179, 20);
-			
-			Alarms_ReportTextBox.Location = new Point(PaddingLeftRight, Alarms_ReportLabel.Bottom + 4);
+			Alarms_ReportLabel.Size = new Size(180, 20);
+
+            FromNetcoolRadioButton.Location = Point.Empty;
+            FromNetcoolRadioButton.Size = new Size(95, 20);
+
+            FromExistingReportRadioButton.Location = new Point(FromNetcoolRadioButton.Right, 0);
+            FromExistingReportRadioButton.Size = new Size(96, 20);
+
+            FromSitesListRadioButton.Location = new Point(FromExistingReportRadioButton.Right, 0);
+            FromSitesListRadioButton.Size = new Size(102, 20);
+
+            GenerationSourceContainer.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
+            GenerationSourceContainer.Size = new Size(FromNetcoolRadioButton.Width + FromExistingReportRadioButton.Width + FromSitesListRadioButton.Width, FromNetcoolRadioButton.Height);
+
+            Alarms_ReportTextBox.Location = new Point(PaddingLeftRight, Alarms_ReportLabel.Bottom + 4);
 			Alarms_ReportTextBox.Size = new Size(510, 368);
 			
 			Alarms_ReportLargeTextButton.Size = new Size(24, 20);
 			Alarms_ReportLargeTextButton.Location = new Point(Alarms_ReportTextBox.Right - Alarms_ReportLargeTextButton.Width, MainMenu.Bottom + 4);
-			
-			TFReportRadioButton.Size = new Size(64, 21);
-			TFReportRadioButton.Location = new Point(Alarms_ReportLargeTextButton.Left - TFReportRadioButton.Width - 5, MainMenu.Bottom + 4);
-			
-			VFReportRadioButton.Size = new Size(64, 21);
-			VFReportRadioButton.Location = new Point(TFReportRadioButton.Left - VFReportRadioButton.Width - 5, MainMenu.Bottom + 4);
-			
-			BulkCILabel.Location = new Point(PaddingLeftRight, Alarms_ReportTextBox.Bottom + 4);
+
+            VFReportRadioButton.Size = new Size(64, 20);
+            VFReportRadioButton.Location = Point.Empty;
+
+            TFReportRadioButton.Size = new Size(64, 20);
+			TFReportRadioButton.Location = new Point(VFReportRadioButton.Right + 5, VFReportRadioButton.Top);
+
+            VfTfReportsRadioButtonsContainer.Size = new Size(VFReportRadioButton.Width + TFReportRadioButton.Width + 5, VFReportRadioButton.Height);
+            VfTfReportsRadioButtonsContainer.Location = new Point(Alarms_ReportLargeTextButton.Left - VfTfReportsRadioButtonsContainer.Width - 5, MainMenu.Bottom + 4);
+
+            BulkCILabel.Location = new Point(PaddingLeftRight, Alarms_ReportTextBox.Bottom + 4);
 			BulkCILabel.Size = new Size(198, 20);
 			
 			BulkCITextBox.Location = new Point(PaddingLeftRight, BulkCILabel.Bottom + 4);
