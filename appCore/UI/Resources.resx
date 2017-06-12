@@ -12080,7 +12080,14 @@ ZJ - LTE2100 Micro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
+    <value>####### ANOC Master Tool 7.1alpha4 12/06/2017 #######
+
+- Optimized Alarms/Outage Parsing
+- New layout on Outage reports
+- Fixed NSN cell alarms without the cell on Element Column, the tool now resolves the correct cell name
+- Bulk site search and generate outage from sites list now support lists with RBSxxxxx format
+
+####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
 
 - Fixed a lot of crashes caused by changes on the OI API's returned data
 - Enhanced the view for INCs, CRQs and Book ins

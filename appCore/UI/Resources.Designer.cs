@@ -198,14 +198,18 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
+		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha4 12/06/2017 #######
+		///
+		///- Optimized Alarms/Outage Parsing
+		///- New layout on Outage reports
+		///- Fixed NSN cell alarms without the cell on Element Column, the tool now resolves the correct cell name
+		///- Bulk site search and generate outage from sites list now support lists with RBSxxxxx format
+		///
+		///####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
 		///
 		///- Fixed a lot of crashes caused by changes on the OI API&apos;s returned data
 		///- Enhanced the view for INCs, CRQs and Book ins
-		///- Enhanced the alarm data for 2G E/// cell alarms that don&apos;t have BCCH affected
-		///- Site Finder/Outage Follow up layout changed. It&apos;s now bigger and has more info
-		///- Monitoring perion on &quot;Monitoring&quot; tasks generation may now be specified in hours or days
-		///- The textboxes on the templates now have Trim function option on right click [rest of string was truncated]&quot;;.
+		///- Enha [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {
