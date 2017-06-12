@@ -813,13 +813,16 @@ namespace appCore.SiteFinder.UI
 			if(string.IsNullOrEmpty(sitesList_tb.Text))
 				return;
 			
-			string[] input = sitesList_tb.Text.Contains(";") ? sitesList_tb.Text.Split(';') : sitesList_tb.Text.Split('\n');
-			
-			for(int c=0;c < input.Length;c++) {
+			string[] input = sitesList_tb.Text.Contains(";") ? sitesList_tb.Text.Split(';') : sitesList_tb.Lines;
+
+            for (int c=0;c < input.Length;c++) {
+                input[c] = input[c].RemoveLetters();
 				input[c] = input[c].Trim();
 				while(input[c].StartsWith("0"))
 					input[c] = input[c].Substring(1);
 			}
+
+            input = input.Distinct().Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
 			
 			siteFinder(input);
 		}
