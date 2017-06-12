@@ -275,7 +275,7 @@ namespace appCore.Templates.UI
             Action actionThreaded = new Action(delegate {
                 try
                 {
-                    List<string> input = textBoxContent.Contains(";") ? string.Join(Environment.NewLine, textBoxContent).Split(';').ToList() : textBoxContent.ToList();
+                    List<string> input = textBoxContent.Count(l => l.Contains(";")) > 0 ? string.Join(Environment.NewLine, textBoxContent).Split(';').ToList() : textBoxContent.ToList();
 
                     for (int c = 0; c < input.Count; c++)
                     {
@@ -375,9 +375,10 @@ namespace appCore.Templates.UI
 		void ShowSitesPerTech(object sender, EventArgs e)
 		{
 			Action action = new Action(delegate {
-			                           	Form showSitesPerTechForm = new Form
-			                           	{
-			                           		Text = (VFReportRadioButton.Checked ? "VF" : "TF") + " Affected Sites Per Tech",
+                Form showSitesPerTechForm = new Form
+                {
+                                            Text = (VFReportRadioButton.Checked ? "VF" : "TF") + " Affected Sites Per Tech",
+                                            Icon = Resources.app_icon,
 			                           		Name = "showSitesPerTechForm",
 			                           		Size = new Size(790, 250),
 			                           		MaximizeBox = false,
@@ -457,8 +458,24 @@ namespace appCore.Templates.UI
 			                           	                    });
 
 			                           	int[] listcounts = VFReportRadioButton.Checked ?
-			                           		new[] { currentOutage.VfGsmOnlyAffectedSites.Count, currentOutage.VfGsmUmtsAffectedSites.Count, currentOutage.VfGsmLteAffectedSites.Count, currentOutage.VfGsmUmtsLteAffectedSites.Count, currentOutage.VfUmtsOnlyAffectedSites.Count, currentOutage.VfUmtsLteAffectedSites.Count, currentOutage.VfLteOnlyAffectedSites.Count } :
-			                           		new[] { currentOutage.TefGsmOnlyAffectedSites.Count, currentOutage.TefGsmUmtsAffectedSites.Count, currentOutage.TefGsmLteAffectedSites.Count, currentOutage.TefGsmUmtsLteAffectedSites.Count, currentOutage.TefUmtsOnlyAffectedSites.Count, currentOutage.TefUmtsLteAffectedSites.Count, currentOutage.TefLteOnlyAffectedSites.Count };
+			                           		new[] {
+                                                   currentOutage.VfGsmOnlyAffectedSites.Count,
+                                                   currentOutage.VfGsmUmtsAffectedSites.Count,
+                                                   currentOutage.VfGsmLteAffectedSites.Count,
+                                                   currentOutage.VfGsmUmtsLteAffectedSites.Count,
+                                                   currentOutage.VfUmtsOnlyAffectedSites.Count,
+                                                   currentOutage.VfUmtsLteAffectedSites.Count,
+                                                   currentOutage.VfLteOnlyAffectedSites.Count
+                                               } :
+			                           		new[] {
+                                                   currentOutage.TefGsmOnlyAffectedSites.Count,
+                                                   currentOutage.TefGsmUmtsAffectedSites.Count,
+                                                   currentOutage.TefGsmLteAffectedSites.Count,
+                                                   currentOutage.TefGsmUmtsLteAffectedSites.Count,
+                                                   currentOutage.TefUmtsOnlyAffectedSites.Count,
+                                                   currentOutage.TefUmtsLteAffectedSites.Count,
+                                                   currentOutage.TefLteOnlyAffectedSites.Count
+                                               };
 
 			                           	int max = listcounts.Max();
 			                           	for (int c = 0; c < max; c++)
