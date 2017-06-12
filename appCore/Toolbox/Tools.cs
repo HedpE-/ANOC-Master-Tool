@@ -341,82 +341,84 @@ namespace appCore.Toolbox
 					descendantNodes = table.SelectSingleNode("/table[1]/thead[1]/tr[1]").ChildNodes; // "/table[1]/thead[1]/tr[1]"
 					descendantNodes = descendantNodes.Where(item => item.Name == "td");
 					break;
-				case "table_ca": case "table_cramer":
-					descendantNodes = table.Descendants("thead").First().Descendants("th");
+				case "table_ca": case "table_cramer": // ca -> 204 th cramer -> // 6 th
+                    descendantNodes = table.Descendants("thead").First().Descendants("th");
 					break;
-				case "table_checkbox_cells 2G": case "table_checkbox_cells 3G": case "table_checkbox_cells 4G":
+				case "table_checkbox_cells 2G": case "table_checkbox_cells 3G": case "table_checkbox_cells 4G": // 12 th
 					descendantNodes = table.Descendants("thead").First().Descendants("tr").First().Descendants("th");
 					break;
 				default:
 					descendantNodes = table.Descendants("th");
 					break;
 			}
-//			int lockedColumnIndex;
-			foreach (HtmlNode node in descendantNodes) {
-				if(node.InnerText.Contains("Date") || node.InnerText.Contains("Scheduled") || node.InnerText == "Arrived" || node.InnerText == "Planned Finish" || node.InnerText == "Departed Site" || node.InnerText == "Time")
-					dt.Columns.Add(node.InnerText, typeof(DateTime));
-				else {
-					if(!dt.Columns.Contains(node.InnerText))
-						dt.Columns.Add(node.InnerText);
-				}
-			}
+
+            if(descendantNodes.Count() > 1)
+            {
+			    foreach (HtmlNode node in descendantNodes) {
+				    if(node.InnerText.Contains("Date") || node.InnerText.Contains("Scheduled") || node.InnerText == "Arrived" || node.InnerText == "Planned Finish" || node.InnerText == "Departed Site" || node.InnerText == "Time")
+					    dt.Columns.Add(node.InnerText, typeof(DateTime));
+				    else {
+					    if(!dt.Columns.Contains(node.InnerText))
+						    dt.Columns.Add(node.InnerText);
+				    }
+			    }
 			
-			// Build DataTable
+			    // Build DataTable
 			
-			descendantNodes = tableName.Contains("_cells ") || tableName.Contains("_cramer") ? table.Descendants("tbody").First().Descendants("tr") : table.Descendants("tr");
-			descendantNodes = descendantNodes.Where(dn => dn.Name != "#text");
-			foreach(HtmlNode tr in descendantNodes) {
-				List<string> tableRow = new List<string>();
-				if(tr.Name != "#text" && tr.ParentNode.Name != "thead") {
-					var childNodes = tr.ChildNodes.Where(cn => cn.Name != "#text");
-					foreach(var node in childNodes) {
-						if(node.Name != "td")
-							continue;
+			    descendantNodes = tableName.Contains("_cells ") || tableName.Contains("_cramer") ? table.Descendants("tbody").First().Descendants("tr") : table.Descendants("tr");
+			    descendantNodes = descendantNodes.Where(dn => dn.Name != "#text");
+			    foreach(HtmlNode tr in descendantNodes) {
+				    List<string> tableRow = new List<string>();
+				    if(tr.Name != "#text" && tr.ParentNode.Name != "thead") {
+					    var childNodes = tr.ChildNodes.Where(cn => cn.Name != "#text");
+					    foreach(var node in childNodes) {
+						    if(node.Name != "td")
+							    continue;
 						
-						if(node.InnerText == "&nbsp;")
-							tableRow.Add(string.Empty);
-						else {
-							if(tableName.Contains("_cells ") && tableRow.Count == dt.Columns["&nbsp;"].Ordinal) {
-								HtmlNode input = node.FirstChild;
-								if(input != null) {
-									var checkd = input.Attributes.Contains("checked") ? "Y" : "";
-									var jvco = input.Attributes["data-jvco"].Value;
-									tableRow.Add(checkd + '/' + jvco);
-								}
-								else
-									tableRow.Add(string.Empty);
-							}
-							else
-								tableRow.Add(node.InnerText);
-						}
-					}
-				}
+						    if(node.InnerText == "&nbsp;")
+							    tableRow.Add(string.Empty);
+						    else {
+							    if(tableName.Contains("_cells ") && tableRow.Count == dt.Columns["&nbsp;"].Ordinal) {
+								    HtmlNode input = node.FirstChild;
+								    if(input != null) {
+									    var checkd = input.Attributes.Contains("checked") ? "Y" : "";
+									    var jvco = input.Attributes["data-jvco"].Value;
+									    tableRow.Add(checkd + '/' + jvco);
+								    }
+								    else
+									    tableRow.Add(string.Empty);
+							    }
+							    else
+								    tableRow.Add(node.InnerText);
+						    }
+					    }
+				    }
 				
-				if(tableRow.Count > 0) {
-					DataRow dataRow = dt.NewRow();
-					for(int i = 0;i < tableRow.Count;i++) {
-						if(i < dataRow.ItemArray.Count()) {
-							if(dt.Columns[i].DataType == typeof(DateTime)) {
-								if(!string.IsNullOrWhiteSpace(tableRow[i]))
-									dataRow[i] = Convert.ToDateTime(tableRow[i]);
-							}
-							else {
-								dataRow[i] = tableRow[i];
-							}
-						}
-					}
-					dt.Rows.Add(dataRow);
-				}
-			}
+				    if(tableRow.Count > 0) {
+					    DataRow dataRow = dt.NewRow();
+					    for(int i = 0;i < tableRow.Count;i++) {
+						    if(i < dataRow.ItemArray.Count()) {
+							    if(dt.Columns[i].DataType == typeof(DateTime)) {
+								    if(!string.IsNullOrWhiteSpace(tableRow[i]))
+									    dataRow[i] = Convert.ToDateTime(tableRow[i]);
+							    }
+							    else {
+								    dataRow[i] = tableRow[i];
+							    }
+						    }
+					    }
+					    dt.Rows.Add(dataRow);
+				    }
+			    }
 			
-			if(dt.TableName.Contains("availability") || dt.TableName == "table_ca") {
-				for(int c = 3;c < dt.Columns.Count;c++) {
-					string colName = dt.Columns[3].ColumnName;
-					dt.Columns[colName].SetOrdinal((dt.Columns.Count - 1) - (c - 3));
-				}
-			}
-			
-			return dt;
+			    if(dt.TableName.Contains("availability") || dt.TableName == "table_ca") {
+				    for(int c = 3;c < dt.Columns.Count;c++) {
+					    string colName = dt.Columns[3].ColumnName;
+					    dt.Columns[colName].SetOrdinal((dt.Columns.Count - 1) - (c - 3));
+				    }
+			    }
+            }
+            return dt.Rows.Count > 0 ? dt : null;
 		}
 		
 		/// <summary>
