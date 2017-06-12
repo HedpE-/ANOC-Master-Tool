@@ -65,20 +65,20 @@ namespace appCore.DB
 //			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == CurrentUser.Roles.ShiftLeader) && autoUpdateRemoteDbFiles) {
 //				RemoteDbAutoUpdateTimer.Elapsed += RemoteDbAutoUpdateTimer_Elapsed;
 //
-//                Thread thread = new Thread(() =>
-//                {
-//                    RemoteDbAutoUpdateTimer_Elapsed(null, null);
-//                })
-//                {
-//                    Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed"
-//                };
-//                thread.SetApartmentState(ApartmentState.STA);
+			//                Thread thread = new Thread(() =>
+			//                {
+			//                    RemoteDbAutoUpdateTimer_Elapsed(null, null);
+			//                })
+			//                {
+			//                    Name = "Databases.Initialize_RemoteDbAutoUpdateTimer_Elapsed"
+			//                };
+			//                thread.SetApartmentState(ApartmentState.STA);
 //				thread.Start();
-//				
+//
 //				RemoteDbAutoUpdateTimer.Enabled = true;
 //			}
 			
-			WeatherCollection.Initialize(GlobalProperties.DBFilesDefaultLocation.FullName + @"\WeatherDB.json");
+			WeatherCollection.Initialize(GlobalProperties.DBFilesDefaultLocation.FullName);
 		}
 		
 		static void RemoteDbAutoUpdateTimer_Elapsed(object sender, ElapsedEventArgs e) {
@@ -99,96 +99,98 @@ namespace appCore.DB
 			
 			List<Thread> threads = new List<Thread>();
 			int finishedThreadsCount = 0;
+			FileInfo updating = new FileInfo(source_allsites.DirectoryName + @"\Updating");
 
-            Thread thread = new Thread(() =>
+			if (!updating.Exists)
             {
-                string response = OiConnection.requestApiOutput("sites");
-                if (response.StartsWith("SITE,JVCO_ID,GSM900,"))
-                {
-                    if (response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
-                        MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
-                    if (GlobalProperties.shareAccess || onUserFolder)
-                    {
-                        FileInfo updating = new FileInfo(source_allsites.DirectoryName + @"\Updating");
-                        if (!updating.Exists)
-                        {
-                            bool updated = false;
-                            updating.Create();
-                            updating = new FileInfo(updating.FullName);
-                            if (source_allsites.Exists)
-                            {
-                                if (response != File.ReadAllText(source_allsites.FullName))
-                                {
-                                    MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
-                                    File.WriteAllText(source_allsites.FullName, response);
-                                    updated = true;
-                                }
-                            }
-                            else
-                            {
-                                MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
-                                File.WriteAllText(source_allsites.FullName, response);
-                                updated = true;
-                            }
-                            if (updated)
-                                MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
-                            updating.Delete();
-                        }
-                        else
-                            UI.FlexibleMessageBox.Show("Another update request is already ongoing.", "Update request failed", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                    }
-                }
+                using (updating.Create()) { };
+                updating = new FileInfo(updating.FullName);
 
-                finishedThreadsCount++;
-            })
-            {
-                Name = "UpdateSourceDBFiles_allsitesThread"
-            };
-            threads.Add(thread);
+                Thread thread = new Thread(() =>
+				                           {
+				                           	string response = OiConnection.requestApiOutput("sites");
+				                           	if (response.StartsWith("SITE,JVCO_ID,GSM900,"))
+				                           	{
+				                           		if (response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
+				                           			MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
+				                           		if (GlobalProperties.shareAccess || onUserFolder)
+				                           		{
+				                           			bool updated = false;
+				                           			if (source_allsites.Exists)
+				                           			{
+				                           				if (response != File.ReadAllText(source_allsites.FullName))
+				                           				{
+				                           					MainForm.trayIcon.showBalloon("Updating file", "all_sites.csv updating...");
+				                           					File.WriteAllText(source_allsites.FullName, response);
+				                           					updated = true;
+				                           				}
+				                           			}
+				                           			else
+				                           			{
+				                           				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
+				                           				File.WriteAllText(source_allsites.FullName, response);
+				                           				updated = true;
+				                           			}
+				                           			if (updated)
+				                           				MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
+				                           		}
+				                           	}
 
-            thread = new Thread(() =>
-            {
-                string response = OiConnection.requestApiOutput("cells");
-                if (response.StartsWith("SITE,JVCO_ID,CELL_ID,"))
-                {
-                    if (response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
-                        MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
-                    if (GlobalProperties.shareAccess || onUserFolder)
-                    {
-                        bool updated = false;
-                        if (source_allcells.Exists)
-                        {
-                            if (response != File.ReadAllText(source_allcells.FullName))
-                            {
-                                MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
-                                File.WriteAllText(source_allcells.FullName, response);
-                                updated = true;
-                            }
-                        }
-                        else
-                        {
-                            MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
-                            File.WriteAllText(source_allcells.FullName, response);
-                            updated = true;
-                        }
-                        if (updated)
-                            MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully " + updLocation);
-                    }
-                }
+				                           	finishedThreadsCount++;
+				                           })
+				{
+					Name = "UpdateSourceDBFiles_allsitesThread"
+				};
+				threads.Add(thread);
 
-                finishedThreadsCount++;
-            })
-            {
-                Name = "UpdateSourceDBFiles_allcellsThread"
-            };
-            threads.Add(thread);
-			
-			foreach(Thread th in threads) {
-				th.SetApartmentState(ApartmentState.STA);
-				th.Start();
+				thread = new Thread(() =>
+				                    {
+				                    	string response = OiConnection.requestApiOutput("cells");
+				                    	if (response.StartsWith("SITE,JVCO_ID,CELL_ID,"))
+				                    	{
+				                    		if (response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
+				                    			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
+				                    		if (GlobalProperties.shareAccess || onUserFolder)
+				                    		{
+				                    			bool updated = false;
+				                    			if (source_allcells.Exists)
+				                    			{
+				                    				if (response != File.ReadAllText(source_allcells.FullName))
+				                    				{
+				                    					MainForm.trayIcon.showBalloon("Updating file", "all_cells.csv updating...");
+				                    					File.WriteAllText(source_allcells.FullName, response);
+				                    					updated = true;
+				                    				}
+				                    			}
+				                    			else
+				                    			{
+				                    				MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
+				                    				File.WriteAllText(source_allcells.FullName, response);
+				                    				updated = true;
+				                    			}
+				                    			if (updated)
+				                    				MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully " + updLocation);
+				                    		}
+				                    	}
+
+				                    	finishedThreadsCount++;
+				                    })
+				{
+					Name = "UpdateSourceDBFiles_allcellsThread"
+				};
+				threads.Add(thread);
+				
+				foreach(Thread th in threads) {
+					th.SetApartmentState(ApartmentState.STA);
+					th.Start();
+				}
+				
+				while(finishedThreadsCount < threads.Count) { }
+
+				updating.Delete();
 			}
-			
-			while(finishedThreadsCount < threads.Count) { }
+			else
+				UI.FlexibleMessageBox.Show("Another update request is already ongoing.", "Update request failed", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 		}
 		
 		public static void PopulateDatabases() {
