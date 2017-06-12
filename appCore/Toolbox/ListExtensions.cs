@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenWeatherAPI;
 
 public static class ListExtensions
 {
@@ -17,9 +18,9 @@ public static class ListExtensions
         return list.FindIndex(x => x.Equals(pattern, stringComparison)) != -1;
     }
     
-    public static List<OpenWeatherAPI.WeatherItem> ConvertToWeatherItems(this List<OpenWeatherAPI.WeatherQuery> list)
+    public static List<OpenWeatherAPI.CurrentWeather.CurrentWeatherItem> ConvertToWeatherItems(this List<OpenWeatherAPI.CurrentWeather.CurrentWeatherQuery> list)
     {
-        var newList = list.Select(w => new OpenWeatherAPI.WeatherItem(w, w.name));
+        var newList = list.Select(w => new OpenWeatherAPI.CurrentWeather.CurrentWeatherItem(w, w.name));
         return newList.ToList();
     }
 
