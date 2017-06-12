@@ -31,6 +31,35 @@ namespace appCore.Settings.UI
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TabPage userAdminTab;
+        private System.Windows.Forms.Panel noPermPanel;
+        private System.Windows.Forms.Label label9;
+        private JCS.ToggleSwitch toggleSwitch2;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Panel userAdminPanel;
+        private appCore.UI.AMTDataGridView dataGridView1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private appCore.UI.AMTTextBox textBox3;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private appCore.UI.AMTTextBox textBox2;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Username;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Permission;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private appCore.UI.AMTTextBox textBox4;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private appCore.UI.AMTTextBox textBox5;
+        private JCS.ToggleSwitch toggleSwitch1;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label7;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -60,6 +89,10 @@ namespace appCore.Settings.UI
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.toggleSwitch2 = new JCS.ToggleSwitch();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.toggleSwitch1 = new JCS.ToggleSwitch();
             this.button5 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -94,8 +127,6 @@ namespace appCore.Settings.UI
             this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label9 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -158,6 +189,8 @@ namespace appCore.Settings.UI
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.toggleSwitch2);
+            this.tabPage1.Controls.Add(this.label17);
             this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.toggleSwitch1);
@@ -176,6 +209,47 @@ namespace appCore.Settings.UI
             this.tabPage1.Size = new System.Drawing.Size(488, 291);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
+            // 
+            // toggleSwitch2
+            // 
+            this.toggleSwitch2.Location = new System.Drawing.Point(135, 151);
+            this.toggleSwitch2.Name = "toggleSwitch2";
+            this.toggleSwitch2.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toggleSwitch2.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toggleSwitch2.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.toggleSwitch2.Size = new System.Drawing.Size(50, 19);
+            this.toggleSwitch2.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
+            this.toggleSwitch2.TabIndex = 16;
+            this.toggleSwitch2.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitch1CheckedChanged);
+            // 
+            // label17
+            // 
+            this.label17.Location = new System.Drawing.Point(3, 155);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(123, 15);
+            this.label17.TabIndex = 15;
+            this.label17.Text = "Weather Service";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label16
+            // 
+            this.label16.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label16.Location = new System.Drawing.Point(3, 122);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(322, 15);
+            this.label16.TabIndex = 14;
+            this.label16.Text = "Current all_cells file last updated on: ";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label7
+            // 
+            this.label7.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label7.Location = new System.Drawing.Point(3, 98);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(322, 15);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Current all_sites file last updated on: ";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toggleSwitch1
             // 
@@ -545,26 +619,6 @@ namespace appCore.Settings.UI
             this.label9.TabIndex = 0;
             this.label9.Text = "User not authorized";
             // 
-            // label7
-            // 
-            this.label7.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label7.Location = new System.Drawing.Point(3, 98);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(322, 15);
-            this.label7.TabIndex = 13;
-            this.label7.Text = "Current all_sites file last updated on: ";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label16
-            // 
-            this.label16.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label16.Location = new System.Drawing.Point(3, 122);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(322, 15);
-            this.label16.TabIndex = 14;
-            this.label16.Text = "Current all_cells file last updated on: ";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -594,33 +648,5 @@ namespace appCore.Settings.UI
             this.ResumeLayout(false);
 
 		}
-
-        private System.Windows.Forms.TabPage userAdminTab;
-        private System.Windows.Forms.Panel noPermPanel;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Panel userAdminPanel;
-        private appCore.UI.AMTDataGridView dataGridView1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private appCore.UI.AMTTextBox textBox3;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
-        private appCore.UI.AMTTextBox textBox2;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Username;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Permission;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private appCore.UI.AMTTextBox textBox4;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
-        private appCore.UI.AMTTextBox textBox5;
-        private JCS.ToggleSwitch toggleSwitch1;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label7;
     }
 }

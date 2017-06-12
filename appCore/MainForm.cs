@@ -852,12 +852,12 @@ namespace appCore
         {
             Action action = new Action(delegate
             {
-                Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm(GlobalProperties.siteFinder_mainswitch);
+                Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm();
                 settings.StartPosition = FormStartPosition.CenterParent;
                 settings.ShowDialog();
 
-                if (settings.siteFinder_newSwitch != GlobalProperties.siteFinder_mainswitch)
-                    GlobalProperties.siteFinder_mainswitch = settings.siteFinder_newSwitch;
+                //if (settings.siteFinder_newSwitch != GlobalProperties.siteFinder_mainswitch)
+                //    GlobalProperties.siteFinder_mainswitch = settings.siteFinder_newSwitch;
 
                 //			                           	SetUserFolder(false);
             });

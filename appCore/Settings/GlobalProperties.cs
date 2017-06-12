@@ -79,9 +79,11 @@ namespace appCore.Settings
 					MainForm.UpdateUI.siteFinderSwitch("on");
 				}
 			}
-		}
-		
-		public static void CheckShareAccess() {
+        }
+
+        public static bool WeatherServiceEnabled { get; set; } = true;
+
+        public static void CheckShareAccess() {
 			if(!IsDirectoryWritable(ShareRootDir.FullName)) {
 				MainForm.trayIcon.showBalloon("Network share access denied","Access to the network share was denied! Your settings file will be created on the following path:" + Environment.NewLine + Environment.NewLine + Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ANOC Master Tool\\UserSettings\\");
 				shareAccess = false;
