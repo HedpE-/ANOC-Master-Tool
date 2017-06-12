@@ -382,17 +382,17 @@ namespace appCore
         private WeatherItem currentWeather;
 		public WeatherItem CurrentWeather {
 			get {
-                if (currentWeather == null)
-                    //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-                    //st.Start();
-                    currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
-                    //st.Stop();
-                    //var t = st.Elapsed;
-                else
-                {
-                    if (DateTime.Now - currentWeather.DataTimestamp > new TimeSpan(2, 0, 0))
-                        currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
-                }
+                //if (currentWeather == null)
+                //    //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+                //    //st.Start();
+                //    currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
+                //    //st.Stop();
+                //    //var t = st.Elapsed;
+                //else
+                //{
+                //    if (DateTime.Now - currentWeather.CurrentWeather.DataTimestamp > new TimeSpan(2, 0, 0))
+                //        currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
+                //}
 
                 return currentWeather;
 			}
@@ -698,23 +698,23 @@ namespace appCore
         public static List<WeatherItem> BulkFetchWeather(IEnumerable<string> locations)
         {
             List<WeatherItem> weatherList = new List<WeatherItem>();
-            List<int> ids = new List<int>();
-            List<string> locList = locations.ToList();
-            for(int c = 0;c < locList.Count;c++)
-            {
-                var city = DB.Databases.Cities.FindCity(locList[c]);
-                if (city != null)
-                {
-                    ids.Add(city.id);
-                    locList.Remove(locList[c--]);
-                }
-            }
-            if(ids.Any())
-                weatherList.AddRange(DB.WeatherCollection.RetrieveWeatherData(ids));
+            //List<int> ids = new List<int>();
+            //List<string> locList = locations.ToList();
+            //for(int c = 0;c < locList.Count;c++)
+            //{
+            //    var city = DB.Databases.Cities.FindCity(locList[c]);
+            //    if (city != null)
+            //    {
+            //        ids.Add(city.id);
+            //        locList.Remove(locList[c--]);
+            //    }
+            //}
+            //if(ids.Any())
+            //    weatherList.AddRange(DB.WeatherCollection.RetrieveWeatherData(ids));
 
-            if(locList.Any())
-            foreach (string location in locations)
-                weatherList.Add(DB.WeatherCollection.RetrieveWeatherData(location));
+            //if(locList.Any())
+            //foreach (string location in locations)
+            //    weatherList.Add(DB.WeatherCollection.RetrieveWeatherData(location));
 
             return weatherList;
         }
@@ -831,7 +831,8 @@ namespace appCore
 				str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
 				dt = Tools.ConvertHtmlTableToDT(str, "table_cramer");
 			}
-			return new CramerDetails(dt.Rows[0]);
+
+            return dt == null ? new CramerDetails(dt.Rows[0]) : null;
 		}
 		
 		public static DataTable BulkFetchCramerData(IEnumerable<string> sites) {
