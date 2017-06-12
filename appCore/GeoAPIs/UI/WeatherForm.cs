@@ -67,7 +67,7 @@ namespace appCore.GeoAPIs.UI
 //			ShowInTaskbar = false;
 			Size = weatherPanel.Size;
 			FormBorderStyle = FormBorderStyle.None;
-			Text = "Weather Conditions: " + weatherItem.name;
+			Text = "Weather Conditions: " + weatherItem.CurrentWeather.name;
 			Icon = global::appCore.UI.Resources.app_icon;
             Region = weatherPanel.Region;
 		}

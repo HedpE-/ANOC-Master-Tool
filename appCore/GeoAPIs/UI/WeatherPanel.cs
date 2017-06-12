@@ -50,7 +50,7 @@ namespace appCore.GeoAPIs.UI
 			}
 		}
 		
-		WeatherItem currentWeatherQuery;
+		WeatherItem weatherQuery;
 		
 		public WeatherPanel()
 		{
@@ -83,23 +83,23 @@ namespace appCore.GeoAPIs.UI
 		{
 			SetStyle(ControlStyles.Opaque, true);
 			InitializeComponent();
-						
-			currentWeatherQuery = weatherItem;
+
+            weatherQuery = weatherItem;
 
             if (Settings.GlobalProperties.WeatherPicturesLocation.Exists)
-                WeatherPicture = Image.FromFile(Settings.GlobalProperties.WeatherPicturesLocation.FullName + "\\" + weatherItem.weather[0].icon + ".png");
+                WeatherPicture = Image.FromFile(Settings.GlobalProperties.WeatherPicturesLocation.FullName + "\\" + weatherItem.CurrentWeather.weather[0].icon + ".png");
             else
             {
                 // Resolve PEN root path
                 System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
 			    if(pen != null)
-				    WeatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherItem.weather[0].icon + ".png");
+				    WeatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherItem.CurrentWeather.weather[0].icon + ".png");
 			    else {
 				    using(System.Net.WebClient wc = new System.Net.WebClient()) {
 					    System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
 					    proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
 					    wc.Proxy = proxy;
-					    byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherItem.weather[0].icon + ".png");
+					    byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherItem.CurrentWeather.weather[0].icon + ".png");
 					    System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
 					    WeatherPicture = Image.FromStream(ms);
 				    }
@@ -172,9 +172,10 @@ namespace appCore.GeoAPIs.UI
 					// 
 					var rect = new Rectangle(Point.Empty, new Size(Width, 30));
 					g.FillRectangle(new SolidBrush(Color.FromArgb(Opacity * 255 / 100, Color.DarkRed)), rect);
-					g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.name : "Town",
-						new Font(font, currentWeatherQuery.name.Length > 20 ? 13F : 15.75F, FontStyle.Bold),
+                    string text = weatherQuery != null ? weatherQuery.CurrentWeather.name : "Town";
+                    g.DrawString(
+						text,
+						new Font(font, text.Length > 20 ? 13F : 15.75F, FontStyle.Bold),
 						Brushes.White,
 						rect,
 						drawStringFormat
@@ -182,14 +183,14 @@ namespace appCore.GeoAPIs.UI
                     // 
                     // TemperaturePicture
                     // 
-                    if (currentWeatherQuery.main.TemperaturePicture != null)
-                        g.DrawImage(currentWeatherQuery.main.TemperaturePicture, new Rectangle(new Point(102, 37), new Size(18, 18)));
+                    if (weatherQuery.CurrentWeather.main.TemperaturePicture != null)
+                        g.DrawImage(weatherQuery.CurrentWeather.main.TemperaturePicture, new Rectangle(new Point(102, 37), new Size(18, 18)));
                     // 
                     // CurrentTemperature
                     // 
                     drawStringFormat.Alignment = StringAlignment.Near;
 					g.DrawString(
-						currentWeatherQuery != null ? Math.Round(currentWeatherQuery.main.temperature.CelsiusCurrent, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
+						weatherQuery != null ? Math.Round(weatherQuery.CurrentWeather.main.temperature.CelsiusCurrent, MidpointRounding.AwayFromZero) + "°C" : "CurrentTemperature",
 						new Font(font, 15.75F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(120, 35), new Size(50, 25)),
@@ -200,7 +201,7 @@ namespace appCore.GeoAPIs.UI
 					// 
 					drawStringFormat.LineAlignment = StringAlignment.Near;
 					g.DrawString(
-						currentWeatherQuery != null ? "Max: " + Math.Round(currentWeatherQuery.main.temperature.CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxTemperature",
+						weatherQuery != null ? "Max: " + Math.Round(weatherQuery.Forecast5D3H.temp_min_max_5days[0].CelsiusMaximum, 0, MidpointRounding.AwayFromZero) + "°C" : "MaxTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(170, 35), new Size(Width - 170, 12)),
@@ -211,7 +212,7 @@ namespace appCore.GeoAPIs.UI
 					// 
 					drawStringFormat.LineAlignment = StringAlignment.Far;
 					g.DrawString(
-						currentWeatherQuery != null ? "Min: " + Math.Round(currentWeatherQuery.main.temperature.CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MinTemperature",
+						weatherQuery != null ? "Min: " + Math.Round(weatherQuery.Forecast5D3H.temp_min_max_5days[0].CelsiusMinimum, 0, MidpointRounding.AwayFromZero) + "°C" : "MinTemperature",
 						new Font(font, 8F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(170, 48), new Size(Width - 170, 12)),
@@ -221,24 +222,25 @@ namespace appCore.GeoAPIs.UI
                     // WeatherDescription
                     // 
                     drawStringFormat.LineAlignment = StringAlignment.Center;
+                    text = weatherQuery != null ? weatherQuery.CurrentWeather.weather.FirstOrDefault().description.CapitalizeWords() : "WeatherDescription";
                     g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.weather.FirstOrDefault().description.CapitalizeWords() : "WeatherDescription",
-						new Font(font, 11F, FontStyle.Regular),
+						text,
+						new Font(font, text.Length > 15 ? 9.5F : 11F, FontStyle.Regular),
 						Brushes.White,
-						new Rectangle(new Point(100, 60), new Size(Width - 100, 18)),
+						new Rectangle(new Point(100, text.Length > 12 ? 63 : 60), new Size(Width - 100, 18)),
 						drawStringFormat
 					);
                     // 
                     // HumidityPicture
                     // 
-                    if (currentWeatherQuery.wind.DirectionPicture != null)
-                        g.DrawImage(currentWeatherQuery.main.HumidityPicture, new Rectangle(new Point(103, 86), new Size(16, 16)));
+                    if (weatherQuery.CurrentWeather.main.HumidityPicture != null)
+                        g.DrawImage(weatherQuery.CurrentWeather.main.HumidityPicture, new Rectangle(new Point(103, 86), new Size(16, 16)));
                     // 
                     // Humidity
                     // 
                     drawStringFormat.LineAlignment = StringAlignment.Near;
                     g.DrawString(
-                        currentWeatherQuery != null ? currentWeatherQuery.main.humidity + "%" : "Humidity",
+                        weatherQuery != null ? weatherQuery.CurrentWeather.main.humidity + "%" : "Humidity",
                         new Font(font, 12F, FontStyle.Regular),
                         Brushes.White,
                         new Rectangle(new Point(120, 85), new Size(43, 18)),
@@ -247,13 +249,13 @@ namespace appCore.GeoAPIs.UI
                     // 
                     // CloudsPicture
                     // 
-                    if (currentWeatherQuery.clouds.Picture != null)
-                        g.DrawImage(currentWeatherQuery.clouds.Picture, new Rectangle(new Point(162, 86), new Size(16, 16)));
+                    if (weatherQuery.CurrentWeather.clouds.Picture != null)
+                        g.DrawImage(weatherQuery.CurrentWeather.clouds.Picture, new Rectangle(new Point(162, 86), new Size(16, 16)));
                     // 
                     // Cloudiness
                     // 
                     g.DrawString(
-                        currentWeatherQuery != null ? currentWeatherQuery.clouds.all + "%" : "Humidity",
+                        weatherQuery != null ? weatherQuery.CurrentWeather.clouds.all + "%" : "Humidity",
                         new Font(font, 12F, FontStyle.Regular),
                         Brushes.White,
                         new Rectangle(new Point(182, 85), new Size(Width - 182, 18)),
@@ -262,14 +264,14 @@ namespace appCore.GeoAPIs.UI
                     // 
                     // WindDirectionPicture
                     // 
-                    if (currentWeatherQuery.wind.DirectionPicture != null)
-                        g.DrawImage(currentWeatherQuery.wind.DirectionPicture, new Rectangle(new Point(100, 110), new Size(18, 18)));
+                    if (weatherQuery.CurrentWeather.wind.DirectionPicture != null)
+                        g.DrawImage(weatherQuery.CurrentWeather.wind.DirectionPicture, new Rectangle(new Point(100, 110), new Size(18, 18)));
                     // 
                     // WindSpeed
                     // 
                     drawStringFormat.LineAlignment = StringAlignment.Near;
                     g.DrawString(
-						currentWeatherQuery != null ? currentWeatherQuery.wind.SpeedMetersPerSecond + " m/s" : "WindSpeed",
+						weatherQuery != null ? weatherQuery.CurrentWeather.wind.SpeedMetersPerSecond + " m/s" : "WindSpeed",
 						new Font(font, 12F, FontStyle.Regular),
 						Brushes.White,
 						new Rectangle(new Point(120, 110), new Size(Width - 120, 18)),
@@ -284,7 +286,7 @@ namespace appCore.GeoAPIs.UI
                     drawStringFormat.LineAlignment = StringAlignment.Near;
                     drawStringFormat.Alignment = StringAlignment.Far;
                     g.DrawString(
-                        currentWeatherQuery != null ? "(" + currentWeatherQuery.DataTimestamp.ToString("dd-MM-yyyy HH:mm:ss") + ")" : "",
+                        weatherQuery != null ? "(" + weatherQuery.CurrentWeather.DataTimestamp.ToString("dd-MM-yyyy HH:mm:ss") + ")" : "",
                         new Font(font, 7.5F, FontStyle.Regular),
                         Brushes.LightGray,
                         new Rectangle(new Point(Width - 190, 131), new Size(170, 12)),

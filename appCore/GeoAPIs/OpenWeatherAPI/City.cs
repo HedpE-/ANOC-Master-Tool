@@ -22,6 +22,8 @@ namespace OpenWeatherAPI
 		public string country { get; set; }
 		public Coord coord { get; set; }
 
+        public City() { }
+
         public City(JObject cityData)
         {
             id = int.Parse(cityData.SelectToken("id").ToString());

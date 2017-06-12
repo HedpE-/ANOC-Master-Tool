@@ -133,9 +133,16 @@
     <Compile Include="DB\SitesDB.cs" />
     <Compile Include="DB\WeatherCollection.cs" />
     <Compile Include="GeoAPIs\GMap.NET\GmapMarkerWithLabel.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\TemperatureObj.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\City.cs" />
-    <Compile Include="GeoAPIs\OpenWeatherAPI\Objects.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\WeatherItem.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\ForecastAPI.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\CurrentWeatherAPI.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\OpenWeatherAPI.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Clouds.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Coord.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Weather.cs" />
+    <Compile Include="GeoAPIs\OpenWeatherAPI\Wind.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Rain.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\Snow.cs" />
     <Compile Include="GeoAPIs\UI\WeatherForm.cs">

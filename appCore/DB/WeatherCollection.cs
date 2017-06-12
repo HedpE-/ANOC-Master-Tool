@@ -12,7 +12,10 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Threading;
+using appCore.Settings;
 using OpenWeatherAPI;
+using OpenWeatherAPI.CurrentWeather;
+using OpenWeatherAPI.Forecast;
 
 namespace appCore.DB
 {
@@ -21,29 +24,65 @@ namespace appCore.DB
 	/// </summary>
 	public static class WeatherCollection
 	{
-		static FileInfo DbFile;
-		
-		public static void Initialize(string filePath) {
-			DbFile = new FileInfo(filePath);
-			
-			while(!DbFile.Exists)
+		static FileInfo CurrentWeatherDbFile;
+        static FileInfo ForecastDbFile;
+
+        public static void Initialize(string DbFilesDir) {
+            CurrentWeatherDbFile = new FileInfo(DbFilesDir + @"\CurrentWeatherDB.json");
+            ForecastDbFile = new FileInfo(DbFilesDir + @"\ForecastWeatherDB.json");
+
+            List<Thread> threads = new List<Thread>();
+            int finishedThreadsCount = 0;
+            Thread thread = new Thread(() => {
+                while (!CurrentWeatherDbFile.Exists)
+                {
+                    try
+                    {
+                        using (CurrentWeatherDbFile.Create()) { };
+                        CurrentWeatherDbFile = new FileInfo(CurrentWeatherDbFile.FullName);
+                    }
+                    catch (Exception e) // if creation fails probably the file already exists
+                    {
+                        CurrentWeatherDbFile = new FileInfo(CurrentWeatherDbFile.FullName);
+                    }
+                }
+                finishedThreadsCount++;
+            });
+            thread.Name = "CurrentWeatherDbFile.Create()";
+            threads.Add(thread);
+
+            thread = new Thread(() => {
+                while (!ForecastDbFile.Exists)
+                {
+                    try
+                    {
+                        using (ForecastDbFile.Create()) { };
+                        ForecastDbFile = new FileInfo(ForecastDbFile.FullName);
+                    }
+                    catch (Exception e) // if creation fails probably the file already exists
+                    {
+                        ForecastDbFile = new FileInfo(ForecastDbFile.FullName);
+                    }
+                }
+                finishedThreadsCount++;
+            });
+            thread.Name = "ForecastDbFile.Create()";
+            threads.Add(thread);
+
+            foreach (Thread th in threads)
             {
-                try
-                {
-                    DbFile.Create();
-                    DbFile = new FileInfo(DbFile.FullName);
-                }
-                catch(Exception e) // if creation fails probably the file already exists
-                {
-                    DbFile = new FileInfo(DbFile.FullName);
-                }
+                th.SetApartmentState(ApartmentState.STA);
+                th.Start();
             }
 
-            if(Settings.CurrentUser.UserName == "GONCARJ3")
+            while (finishedThreadsCount < threads.Count) { }
+
+            if (CurrentUser.UserName == "GONCARJ3")
             {
-                Thread thread = new Thread(() =>
+                threads.Clear();
+                thread = new Thread(() =>
                 {
-                    List<WeatherItem> list = JsonConvert.DeserializeObject<List<WeatherItem>>(ReadAllTextFromDbFile()) ?? new List<WeatherItem>();
+                    List<CurrentWeatherItem> list = JsonConvert.DeserializeObject<List<CurrentWeatherItem>>(ReadAllTextFromDbFile("CurrentWeather")) ?? new List<CurrentWeatherItem>();
 
                     for (int c = 0; c < list.Count; c++)
                     {
@@ -56,60 +95,110 @@ namespace appCore.DB
                 {
                     Name = "Databases.WeatherCollection.Initialize_RemoveExpiredWeatherItems"
                 };
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
+                threads.Add(thread);
+
+                thread = new Thread(() =>
+                {
+                    List<ForecastItem> list = JsonConvert.DeserializeObject<List<ForecastItem>>(ReadAllTextFromDbFile("Forecast")) ?? new List<ForecastItem>();
+
+                    for (int c = 0; c < list.Count; c++)
+                    {
+                        if (DateTime.Now - list[c].DataTimestamp > new TimeSpan(2, 0, 0))
+                            list.RemoveAt(c--);
+                    }
+
+                    SerializeListToDbFile(list);
+                })
+                {
+                    Name = "Databases.WeatherCollection.Initialize_RemoveExpiredWeatherItems"
+                };
+                threads.Add(thread);
+
+                foreach (Thread th in threads)
+                {
+                    th.SetApartmentState(ApartmentState.STA);
+                    th.Start();
+                }
+
+                //while (finishedThreadsCount < threads.Count) { }
             }
         }
 
         public static WeatherItem RetrieveWeatherData(string Town)
         {
             WeatherItem weatherItem = RetrieveExistingWeatherData(Town);
-            if (weatherItem == null)
+            if (weatherItem.CurrentWeather == null || weatherItem.Forecast5D3H == null)
             {
                 OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-                weatherItem = new WeatherItem(openWeatherAPI.queryCityName(Town + ",UK"), Town);
-                AddWeatherData(weatherItem);
+
+                if (weatherItem.CurrentWeather == null)
+                {
+                    weatherItem.CurrentWeather = new CurrentWeatherItem(openWeatherAPI.queryCurrentWeatherCityName(Town + ",UK"), Town);
+                    AddWeatherData(weatherItem.CurrentWeather);
+                }
+
+                if (weatherItem.Forecast5D3H == null)
+                {
+                    weatherItem.Forecast5D3H = new ForecastItem(openWeatherAPI.queryForecastCityName(Town + ",UK"), Town);
+                    AddWeatherData(weatherItem.Forecast5D3H);
+                }
             }
 
             return weatherItem;
         }
 
-        public static List<WeatherItem> RetrieveWeatherData(List<int> ids)
+        //public static List<CurrentWeatherItem> RetrieveWeatherData(List<int> ids)
+        //{
+        //    var tempIds = ids;
+        //    List<CurrentWeatherItem> foundItems = RetrieveExistingWeatherData(ref tempIds).ToList();
+
+        //    if (tempIds.Any())
+        //    {
+        //        OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
+        //        int c = 0;
+        //        while (c < tempIds.Count)
+        //        {
+        //            List<int> tempArr = new List<int>();
+        //            for (c = c;c < tempArr.Count && ((c + 1) % 20 > 0); c++)
+        //                tempArr.Add(ids[c]);
+
+        //            var query = openWeatherAPI.queryCurrentWeatherBulkCityId(tempArr);
+        //            foundItems.AddRange(query);
+        //            AddWeatherData(query);
+        //        }
+        //    }
+
+        //    return foundItems;
+        //}
+
+        static void AddWeatherData(CurrentWeatherItem json)
         {
-            var tempIds = ids;
-            List<WeatherItem> foundItems = RetrieveExistingWeatherData(ref tempIds).ToList();
 
-            if (tempIds.Any())
-            {
-                OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
-                int c = 0;
-                while (c < tempIds.Count)
-                {
-                    List<int> tempArr = new List<int>();
-                    for (c = c;c < tempArr.Count && ((c + 1) % 20 > 0); c++)
-                        tempArr.Add(ids[c]);
-
-                    var query = openWeatherAPI.queryBulkCityId(tempArr);
-                    foundItems.AddRange(query);
-                    AddWeatherData(query);
-                }
-            }
-
-            return foundItems;
-        }
-
-        static void AddWeatherData(WeatherItem json)
-        {
-
-            List<WeatherItem> list = new List<WeatherItem>();
+            List<CurrentWeatherItem> list = new List<CurrentWeatherItem>();
             list.Add(json);
 
             AddWeatherData(list);
         }
 
-        static void AddWeatherData(List<WeatherItem> weatherCollection)
+        static void AddWeatherData(List<CurrentWeatherItem> weatherCollection)
         {
-            List<WeatherItem> list = JsonConvert.DeserializeObject<List<WeatherItem>>(ReadAllTextFromDbFile()) ?? new List<WeatherItem>();
+            List<CurrentWeatherItem> list = JsonConvert.DeserializeObject<List<CurrentWeatherItem>>(ReadAllTextFromDbFile("CurrentWeather")) ?? new List<CurrentWeatherItem>();
+            list.AddRange(weatherCollection);
+
+            SerializeListToDbFile(list);
+        }
+
+        static void AddWeatherData(ForecastItem json)
+        {
+            List<ForecastItem> list = new List<ForecastItem>();
+            list.Add(json);
+
+            AddWeatherData(list);
+        }
+
+        static void AddWeatherData(List<ForecastItem> weatherCollection)
+        {
+            List<ForecastItem> list = JsonConvert.DeserializeObject<List<ForecastItem>>(ReadAllTextFromDbFile("Forecast")) ?? new List<ForecastItem>();
             list.AddRange(weatherCollection);
 
             SerializeListToDbFile(list);
@@ -117,11 +206,45 @@ namespace appCore.DB
 
         static WeatherItem RetrieveExistingWeatherData(string Town)
         {
-            List<WeatherItem> list = JsonConvert.DeserializeObject<List<WeatherItem>>(ReadAllTextFromDbFile()) ?? new List<WeatherItem>();
+            WeatherItem weatherItem = new WeatherItem()
+            {
+                CurrentWeather = RetrieveExistingCurrentWeatherData(Town),
+                Forecast5D3H = RetrieveExistingForecastWeatherData(Town)
+            };
 
-            WeatherItem weatherItem = list.FirstOrDefault(w => String.Equals(w.Town, Town, StringComparison.OrdinalIgnoreCase));
-			
-			if(weatherItem != null) {
+            return weatherItem;
+        }
+
+        //static List<WeatherItem> RetrieveExistingWeatherData(ref List<int> ids)
+        //{
+        //    List<CurrentWeatherItem> list = JsonConvert.DeserializeObject<List<CurrentWeatherItem>>(ReadAllTextFromDbFile("CurrentWeather")) ?? new List<CurrentWeatherItem>();
+
+        //    List<int> tempList = ids;
+        //    List<CurrentWeatherItem> foundItems = new List<CurrentWeatherItem>();
+        //    for(int c = 0;c < tempList.Count;c++)
+        //    {
+        //        City city = Databases.Cities.FirstOrDefault(ct => ct.id == tempList[c]);
+        //        WeatherItem weatherItem = RetrieveExistingWeatherData(city.name);
+        //        if (weatherItem != null)
+        //        {
+        //            foundItems.Add(weatherItem);
+        //            tempList.RemoveAt(c--);
+        //        }
+        //    }
+
+        //    ids = tempList;
+
+        //    return foundItems;
+        //}
+
+        static CurrentWeatherItem RetrieveExistingCurrentWeatherData(string Town)
+        {
+            List<CurrentWeatherItem> list = JsonConvert.DeserializeObject<List<CurrentWeatherItem>>(ReadAllTextFromDbFile("CurrentWeather")) ?? new List<CurrentWeatherItem>();
+
+            CurrentWeatherItem weatherItem = list.FirstOrDefault(w => String.Equals(w.Town, Town, StringComparison.OrdinalIgnoreCase));
+
+            if (weatherItem != null)
+            {
                 if (DateTime.Now - weatherItem.DataTimestamp > new TimeSpan(2, 0, 0))
                 {
                     list.RemoveAt(list.IndexOf(weatherItem));
@@ -131,33 +254,32 @@ namespace appCore.DB
                     weatherItem = null;
                 }
             }
-			
-			return weatherItem;
+
+            return weatherItem;
         }
 
-        static List<WeatherItem> RetrieveExistingWeatherData(ref List<int> ids)
+        static ForecastItem RetrieveExistingForecastWeatherData(string Town)
         {
-            List<WeatherItem> list = JsonConvert.DeserializeObject<List<WeatherItem>>(ReadAllTextFromDbFile()) ?? new List<WeatherItem>();
+            List<ForecastItem> list = JsonConvert.DeserializeObject<List<ForecastItem>>(ReadAllTextFromDbFile("Forecast")) ?? new List<ForecastItem>();
 
-            List<int> tempList = ids;
-            List<WeatherItem> foundItems = new List<WeatherItem>();
-            for(int c = 0;c < tempList.Count;c++)
+            ForecastItem weatherItem = list.FirstOrDefault(w => String.Equals(w.Town, Town, StringComparison.OrdinalIgnoreCase));
+
+            if (weatherItem != null)
             {
-                City city = Databases.Cities.FirstOrDefault(ct => ct.id == tempList[c]);
-                WeatherItem weatherItem = RetrieveExistingWeatherData(city.name);
-                if (weatherItem != null)
+                if (DateTime.Now.Day != weatherItem.list[0].dt_txt.Day || DateTime.Now.Month != weatherItem.list[0].dt_txt.Month || DateTime.Now.Year != weatherItem.list[0].dt_txt.Year)
                 {
-                    foundItems.Add(weatherItem);
-                    tempList.RemoveAt(c--);
+                    list.RemoveAt(list.IndexOf(weatherItem));
+
+                    SerializeListToDbFile(list);
+
+                    weatherItem = null;
                 }
             }
 
-            ids = tempList;
-
-            return foundItems;
+            return weatherItem;
         }
 
-        static string ReadAllTextFromDbFile()
+        static string ReadAllTextFromDbFile(string queryType)
         {
             bool operationFinished = false;
             string contents = string.Empty;
@@ -165,7 +287,7 @@ namespace appCore.DB
             {
                 try
                 {
-                    contents = File.ReadAllText(DbFile.FullName);
+                    contents = File.ReadAllText(queryType == "CurrentWeather" ? CurrentWeatherDbFile.FullName : ForecastDbFile.FullName);
                     operationFinished = true;
                 }
                 catch
@@ -177,14 +299,36 @@ namespace appCore.DB
             return contents;
         }
 
-        static void SerializeListToDbFile(List<WeatherItem> list)
+        static void SerializeListToDbFile(List<CurrentWeatherItem> list)
         {
             bool operationFinished = false;
             while (!operationFinished)
             {
                 try
                 {
-                    using (StreamWriter sw = DbFile.CreateText())
+                    using (StreamWriter sw = CurrentWeatherDbFile.CreateText())
+                    {
+                        sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented));
+                        sw.Close();
+                    }
+
+                    operationFinished = true;
+                }
+                catch
+                {
+                    Thread.Sleep(500);
+                }
+            }
+        }
+
+        static void SerializeListToDbFile(List<ForecastItem> list)
+        {
+            bool operationFinished = false;
+            while (!operationFinished)
+            {
+                try
+                {
+                    using (StreamWriter sw = ForecastDbFile.CreateText())
                     {
                         sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented));
                         sw.Close();
