@@ -63,32 +63,39 @@ namespace appCore.DB
 			protected set { }
 		}
 
-		public int Year {
+		public int Year
+        {
 			get;
 			private set;
 		}
 		
-		public List<string> ShiftLeaders {
+		public List<string> ShiftLeaders
+        {
+			get;
+			private set;
+		}		
+		public List<string> RAN
+        {
+			get;
+			private set;
+		}		
+		public List<string> TEF
+        {
+			get;
+			private set;
+		}		
+		public List<string> ExternalAlarms
+        {
 			get;
 			private set;
 		}
-		
-		public List<string> RAN {
-			get;
-			private set;
-		}
-		
-		public List<string> TEF {
-			get;
-			private set;
-		}
-		
-		public List<string> External {
-			get;
-			private set;
-		}
-		
-		int LastRow { get; set; }
+        public List<string> Reporting
+        {
+            get;
+            private set;
+        }
+
+        int LastRow { get; set; }
 		
 		public ShiftsFile(int year) {
 			shiftsFile = UserFolder.getDBFile("shift*" + year + "*.xlsx");
@@ -119,64 +126,122 @@ namespace appCore.DB
 				
 				SortAlphabetLength alphaLen = new SortAlphabetLength();
 				monthRanges.Sort(alphaLen);
-				
-				var currentCell = package.Workbook.Worksheets[1].Cells["a:a"].FirstOrDefault(c => c.Text == "Closure Code").Offset(2, 0);
-//					package.Workbook.Worksheets[1].Cells[rangeStartCell + ":a"].FirstOrDefault(c => string.IsNullOrEmpty(c.Text)).Address];
-				while(!string.IsNullOrEmpty(currentCell.Text)) {
-					if(ShiftLeaders == null)
-						ShiftLeaders = new List<string>();
-					ShiftLeaders.Add(currentCell.Offset(0, 2).Text);
+
+                var currentMonthHeaderRange = package.Workbook.Worksheets[1].Cells[monthRanges[DateTime.Now.Month - 1].ToString()];
+                var currentCell = package.Workbook.Worksheets[1].Cells["a:a"].FirstOrDefault(c => c.Text == "Closure Code").Offset(2, 0);
+
+				while(!string.IsNullOrEmpty(currentCell.Text))
+                {
+                    var currentMonthShifts = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row, currentMonthHeaderRange.Start.Column, currentCell.Start.Row, currentMonthHeaderRange.End.Column];
+                    int shiftsCount = CalculateShiftsInRange(currentMonthShifts);
+
+                    if (shiftsCount > 0)
+                    {
+                        if (ShiftLeaders == null)
+                            ShiftLeaders = new List<string>();
+                        ShiftLeaders.Add(currentCell.Offset(0, 2).Text);
+                    }
 					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
 				}
-				while(string.IsNullOrEmpty(currentCell.Text)) {
+				while(string.IsNullOrEmpty(currentCell.Text))
 					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+
+				while(!string.IsNullOrEmpty(currentCell.Text))
+                {
+                    var currentMonthShifts = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row, currentMonthHeaderRange.Start.Column, currentCell.Start.Row, currentMonthHeaderRange.End.Column];
+                    int shiftsCount = CalculateShiftsInRange(currentMonthShifts);
+
+                    if (shiftsCount > 0)
+                    {
+					    if(TEF == null)
+						    TEF = new List<string>();
+					    TEF.Add(currentCell.Offset(0, 2).Text);
+                    }
+                    currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
 				}
-				while(!string.IsNullOrEmpty(currentCell.Text)) {
-					if(TEF == null)
-						TEF = new List<string>();
-					TEF.Add(currentCell.Offset(0, 2).Text);
+				currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+				while(!string.IsNullOrEmpty(currentCell.Text))
+                {
+                    var currentMonthShifts = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row, currentMonthHeaderRange.Start.Column, currentCell.Start.Row, currentMonthHeaderRange.End.Column];
+                    int shiftsCount = CalculateShiftsInRange(currentMonthShifts);
+
+                    if (shiftsCount > 0)
+                    {
+                        if (ExternalAlarms == null)
+                            ExternalAlarms = new List<string>();
+                        ExternalAlarms.Add(currentCell.Offset(0, 2).Text);
+                    }
 					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
 				}
 				currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
-				while(!string.IsNullOrEmpty(currentCell.Text)) {
-					if(External == null)
-						External = new List<string>();
-					External.Add(currentCell.Offset(0, 2).Text);
+				while(!string.IsNullOrEmpty(currentCell.Text))
+                {
+                    var currentMonthShifts = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row, currentMonthHeaderRange.Start.Column, currentCell.Start.Row, currentMonthHeaderRange.End.Column];
+                    int shiftsCount = CalculateShiftsInRange(currentMonthShifts);
+
+                    if (shiftsCount > 0)
+                    {
+                        if (Reporting == null)
+                            Reporting = new List<string>();
+                        Reporting.Add(currentCell.Offset(0, 2).Text);
+                    }
 					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
-				}
-				currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
-				while(!string.IsNullOrEmpty(currentCell.Text)) {
-					if(RAN == null)
-						RAN = new List<string>();
-					RAN.Add(currentCell.Offset(0, 2).Text);
-					currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
-				}
-//				foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
-//					if(cell.Value != null) {
-//						if(cell.Text != "Closure Code") {
-//							if(!slListEnd) {
-//								if(ShiftLeaders == null)
-//									ShiftLeaders = new List<string>();
-//								ShiftLeaders.Add(cell.Offset(0, 2).Text);
-//							}
-//							else {
-//								if(RAN == null)
-//									RAN = new List<string>();
-//								RAN.Add(cell.Offset(0, 2).Text);
-//								LastRow = cell.Start.Row;
-//							}
-//						}
-//					}
-//					else {
-//						if(!slListEnd && cell.Offset(0, 2).Value != null)
-//							slListEnd = cell.Offset(0, 2).Text == "Morning";
-//					}
-//				}
-			}
+                }
+                currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+                while (!string.IsNullOrEmpty(currentCell.Text))
+                {
+                    if(!ShiftLeaders.Contains(currentCell.Offset(0, 2).Text) && !TEF.Contains(currentCell.Offset(0, 2).Text) && !ExternalAlarms.Contains(currentCell.Offset(0, 2).Text) && !Reporting.Contains(currentCell.Offset(0, 2).Text))
+                    {
+                        if (RAN == null)
+                            RAN = new List<string>();
+                        RAN.Add(currentCell.Offset(0, 2).Text);
+                    }
+                    currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+                }
+                //				foreach(var cell in package.Workbook.Worksheets[1].Cells["a:a"]) {
+                //					if(cell.Value != null) {
+                //						if(cell.Text != "Closure Code") {
+                //							if(!slListEnd) {
+                //								if(ShiftLeaders == null)
+                //									ShiftLeaders = new List<string>();
+                //								ShiftLeaders.Add(cell.Offset(0, 2).Text);
+                //							}
+                //							else {
+                //								if(RAN == null)
+                //									RAN = new List<string>();
+                //								RAN.Add(cell.Offset(0, 2).Text);
+                //								LastRow = cell.Start.Row;
+                //							}
+                //						}
+                //					}
+                //					else {
+                //						if(!slListEnd && cell.Offset(0, 2).Value != null)
+                //							slListEnd = cell.Offset(0, 2).Text == "Morning";
+                //					}
+                //				}
+            }
 			Year = year;
 			if(package.File.FullName.Contains(UserFolder.TempFolder.FullName))
 				UserFolder.ClearTempFolder();
 		}
+
+        int CalculateShiftsInRange(ExcelRangeBase range)
+        {
+            int shiftsCount = 0;
+            foreach (var cell in range)
+            {
+                var t = cell.Style.Fill.BackgroundColor;
+                if (!string.IsNullOrEmpty(cell.Style.Fill.BackgroundColor.Theme))
+                {
+                    if (!(cell.Style.Fill.BackgroundColor.Theme == "1" && cell.Style.Fill.BackgroundColor.Tint == 0 && cell.Style.Fill.BackgroundColor.Index == 10) && cell.Value != null)
+                        shiftsCount++;
+                }
+                else
+                    shiftsCount++;
+            }
+
+            return shiftsCount;
+        }
 		
 		public string GetShift(string name, DateTime date) {
 			int personRow = FindPersonRow(name);
@@ -296,7 +361,7 @@ namespace appCore.DB
 			if(TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
 				return Roles.TEF;
 			
-			if(External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+			if(ExternalAlarms.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
 				return Roles.ExternalAlarms;
 			
 			if(RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)

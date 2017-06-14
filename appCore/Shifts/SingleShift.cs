@@ -39,20 +39,31 @@ namespace appCore.Shifts
 			Name = name;
 			Shift = shift;
 			Date = date;
-			if(DB.Databases.shiftsFile.ShiftLeaders.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+			if(DB.Databases.shiftsFile.ShiftLeaders.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
 				Role = Roles.ShiftLeader;
 			else {
-				if(DB.Databases.shiftsFile.TEF.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+				if(DB.Databases.shiftsFile.TEF.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
 					Role = Roles.TEF;
 				else {
-					if(DB.Databases.shiftsFile.External.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
+					if(DB.Databases.shiftsFile.ExternalAlarms.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
 						Role = Roles.ExternalAlarms;
-					else {
-						if(DB.Databases.shiftsFile.RAN.FindIndex(s => s.ToUpper() == name.ToUpper()) > -1)
-							Role = Roles.RAN;
+					else
+                    {
+                        if (DB.Databases.shiftsFile.Reporting.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
+                            Role = Roles.Reporting;
+                        else
+                        {
+                            if (DB.Databases.shiftsFile.RAN.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
+                                Role = Roles.RAN;
+                        }
 					}
 				}
 			}
 		}
-	}
+
+        public override string ToString()
+        {
+            return Name + " - " + Shift;
+        }
+    }
 }

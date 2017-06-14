@@ -280,7 +280,7 @@ namespace appCore.Shifts
 				drawStringFormat.Alignment = StringAlignment.Center;
 				drawStringFormat.LineAlignment = StringAlignment.Far;
 				using (Pen pen = new Pen(Color.Black, 1)) {
-					string title = System.Enum.GetName(typeof(Months),shiftsChosenDate.Month - 1) + " " + shiftsChosenDate.Year;
+					string title = Enum.GetName(typeof(Months),shiftsChosenDate.Month - 1) + " " + shiftsChosenDate.Year;
 					Rectangle rectangle = new Rectangle(new Point(7, 0), new Size(shiftsRectWidth * 7, shiftsRectHeight + 3));
 					g.DrawString(title, new Font("Tahoma",12, FontStyle.Bold), Brushes.Black, rectangle, drawStringFormat);
 					drawStringFormat.LineAlignment = StringAlignment.Center;

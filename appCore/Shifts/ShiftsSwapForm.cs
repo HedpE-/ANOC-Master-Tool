@@ -40,7 +40,7 @@ namespace appCore.Shifts
 					list = DB.Databases.shiftsFile.TEF;
 					break;
 				case Roles.ExternalAlarms:
-					list = DB.Databases.shiftsFile.External;
+					list = DB.Databases.shiftsFile.ExternalAlarms;
 					break;
 				case Roles.RAN:
 					list = DB.Databases.shiftsFile.RAN;
