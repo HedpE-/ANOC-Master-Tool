@@ -39,7 +39,7 @@ namespace appCore
 		string VENDOR;
 		public Vendors Vendor
         {
-            get { return EnumExtensions.Parse(typeof(Vendors), VENDOR); }
+            get { return string.IsNullOrEmpty(VENDOR) ? Vendors.Unknown : EnumExtensions.Parse(typeof(Vendors), VENDOR); }
             private set { VENDOR = EnumExtensions.GetDescription(value); }
         }
 		[FieldOrder(7)]
@@ -57,7 +57,7 @@ namespace appCore
         {
             get
             {
-                return EnumExtensions.Parse(typeof(Bearers), BEARER);
+                return string.IsNullOrEmpty(BEARER) ? Bearers.Unknown : EnumExtensions.Parse(typeof(Bearers), BEARER);
             }
         }
 		[FieldOrder(11)]
