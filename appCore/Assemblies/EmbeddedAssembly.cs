@@ -19,15 +19,23 @@ public static class EmbeddedAssemblies
 		Load("appCore.Assemblies.Outlook.dll", "Outlook.dll");
 		Load("appCore.Assemblies.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
 		Load("appCore.Assemblies.BMC.ARSystem.dll", "BMC.ARSystem.dll");
-		Load("appCore.Assemblies.System.Data.SqlServerCe.dll", "System.Data.SqlServerCe.dll");
 		Load("appCore.Assemblies.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
 		Load("appCore.Assemblies.GMap.NET.Core.dll", "GMap.NET.Core.dll");
 		Load("appCore.Assemblies.FileHelpers.dll", "FileHelpers.dll");
 		Load("appCore.Assemblies.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
-		Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
-		Load("appCore.Assemblies.Svg2.3.0.dll", "Svg2.3.0.dll");
-		
-		AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+        //Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
+        //Load("appCore.Assemblies.Svg2.3.0.dll", "Svg2.3.0.dll");
+
+        Load("appCore.Assemblies.EntityFramework.dll", "EntityFramework.dll");
+        Load("appCore.Assemblies.EntityFramework.SqlServer.dll", "EntityFramework.SqlServer.dll");
+
+        //Load("appCore.Assemblies.SQLite.Interop.dll", "SQLite.Interop.dll");
+
+        Load("appCore.Assemblies.System.Data.SQLite.dll", "System.Data.SQLite.dll");
+        Load("appCore.Assemblies.System.Data.SQLite.EF6.dll", "System.Data.SQLite.EF6.dll");
+        Load("appCore.Assemblies.System.Data.SQLite.Linq.dll", "System.Data.SQLite.Linq.dll");
+
+        AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 	}
 
 	static Dictionary<string, Assembly> dic = null;
