@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using OpenWeatherAPI.CurrentWeather;
@@ -14,7 +15,7 @@ namespace OpenWeatherAPI
 	{
 		string openWeatherAPIKey;
 
-		public OpenWeatherAPI(string apiKey)
+        public OpenWeatherAPI(string apiKey)
 		{
 			openWeatherAPIKey = apiKey;
 		}
@@ -27,7 +28,16 @@ namespace OpenWeatherAPI
 		//Returns null if invalid request
 		public CurrentWeatherQuery queryCurrentWeatherCityName(string queryStr)
 		{
-            string jSon = new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/weather?appid={0}&q={1}", openWeatherAPIKey, queryStr));
+            string jSon = string.Empty;
+            try
+            {
+                jSon = new WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/weather?appid={0}&q={1}", openWeatherAPIKey, queryStr));
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+
             var query = JsonConvert.DeserializeObject<CurrentWeatherQuery>(jSon);
 
             return query;
@@ -36,8 +46,8 @@ namespace OpenWeatherAPI
         //Returns null if invalid request
         public List<CurrentWeatherItem> queryCurrentWeatherBulkCityId(List<int> ids)
         {
-            string units = "metric";
-            string jSon = new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/group?appid={0}&id={1}&units={3}", openWeatherAPIKey, string.Join(",", ids), units));
+            //string units = "metric";
+            string jSon = new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/group?appid={0}&id={1}", openWeatherAPIKey, string.Join(",", ids)));
             var query = JsonConvert.DeserializeObject<List<CurrentWeatherQuery>>(jSon);
 
             return query.ConvertToWeatherItems();
@@ -46,10 +56,34 @@ namespace OpenWeatherAPI
         //Returns null if invalid request
         public ForecastQuery queryForecastCityName(string queryStr)
         {
-            string jSon = new System.Net.WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/forecast?appid={0}&q={1}", openWeatherAPIKey, queryStr));
-            var query = JsonConvert.DeserializeObject<ForecastQuery>(jSon);
+            string jSon = string.Empty;
+            try
+            {
+                jSon = new WebClient().DownloadString(string.Format("http://api.openweathermap.org/data/2.5/forecast?appid={0}&q={1}", openWeatherAPIKey, queryStr));
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            ForecastQuery query = JsonConvert.DeserializeObject<ForecastQuery>(jSon);
 
             return query;
+        }
+        
+        public string requestApiOutput(string queryStr)
+        {
+            RestClient client = new RestClient();
+            client.BaseUrl = new Uri("http://api.openweathermap.org");
+            client.Proxy = Proxy;
+            IRestRequest request = new RestRequest("/data/2.5/forecast", Method.GET);
+            //request.AddHeader("Content-Type", "application/html");
+            //request.AddHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; InfoPath.3; Tablet PC 2.0)");
+            request.AddParameter("q", queryStr);
+            request.AddParameter("appid", openWeatherAPIKey);
+
+            IRestResponse response = client.Execute(request);
+
+            return response.Content;
         }
 
         //Returns null if invalid request
