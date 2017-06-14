@@ -12080,7 +12080,13 @@ ZJ - LTE2100 Micro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.1alpha4 12/06/2017 #######
+    <value>####### ANOC Master Tool 7.1alpha4 14/06/2017 #######
+
+- Optimized Weather Service, it should be much faster now
+- Optimized startup procedure, the tool is starting much faster
+- Updates on Shifts Calendar, people show divided by teams
+
+####### ANOC Master Tool 7.1alpha4 12/06/2017 #######
 
 - Optimized Alarms/Outage Parsing
 - New layout on Outage reports

@@ -16,7 +16,6 @@ using appCore.Settings;
 using OpenWeatherAPI;
 using OpenWeatherAPI.CurrentWeather;
 using OpenWeatherAPI.Forecast;
-using System.Data.SQLite;
 using System.Threading.Tasks;
 
 namespace appCore.DB

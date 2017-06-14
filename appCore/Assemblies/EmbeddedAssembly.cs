@@ -26,15 +26,6 @@ public static class EmbeddedAssemblies
         //Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
         //Load("appCore.Assemblies.Svg2.3.0.dll", "Svg2.3.0.dll");
 
-        Load("appCore.Assemblies.EntityFramework.dll", "EntityFramework.dll");
-        Load("appCore.Assemblies.EntityFramework.SqlServer.dll", "EntityFramework.SqlServer.dll");
-
-        //Load("appCore.Assemblies.SQLite.Interop.dll", "SQLite.Interop.dll");
-
-        Load("appCore.Assemblies.System.Data.SQLite.dll", "System.Data.SQLite.dll");
-        Load("appCore.Assemblies.System.Data.SQLite.EF6.dll", "System.Data.SQLite.EF6.dll");
-        Load("appCore.Assemblies.System.Data.SQLite.Linq.dll", "System.Data.SQLite.Linq.dll");
-
         AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 	}
 
