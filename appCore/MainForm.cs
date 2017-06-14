@@ -63,6 +63,7 @@ namespace appCore
             SplashForm.ShowSplashScreen(true);
             trayIcon = new TrayIcon(tray);
 
+            //GlobalProperties.DeployExternalAssemblies();
             EmbeddedAssemblies.Init();
 
             SplashForm.UpdateLabelText("Getting network access");
