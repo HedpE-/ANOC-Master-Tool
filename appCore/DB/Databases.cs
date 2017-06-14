@@ -199,7 +199,7 @@ namespace appCore.DB
 			shiftsFile = new ShiftsFile(DateTime.Now.Year);
 //			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
 //			st.Start();
-			Cities = new UkCities();
+			//Cities = new UkCities();
 //			st.Stop();
 //			var t = st.Elapsed;
 		}
