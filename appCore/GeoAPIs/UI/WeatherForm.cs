@@ -70,27 +70,27 @@ namespace appCore.GeoAPIs.UI
 			Text = "Weather Conditions: " + weatherItem.CurrentWeather.name;
 			Icon = global::appCore.UI.Resources.app_icon;
             Region = weatherPanel.Region;
-		}
-		
-//		public const int WM_NCLBUTTONDOWN = 0xA1;
-//		public const int HT_CAPTION = 0x2;
-//
-//		[DllImportAttribute("user32.dll")]
-//		public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-//		[DllImportAttribute("user32.dll")]
-//		public static extern bool ReleaseCapture();
-//
-//		protected override void OnMouseDown(MouseEventArgs e)
-//		{
-//			base.OnMouseDown(e);
-//			if (e.Button == MouseButtons.Left)
-//			{
-//				ReleaseCapture();
-//				SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-//			}
-//		}
-		
-		protected override void OnPaint(PaintEventArgs e) {
+        }
+
+        //		public const int WM_NCLBUTTONDOWN = 0xA1;
+        //		public const int HT_CAPTION = 0x2;
+        //
+        //		[DllImportAttribute("user32.dll")]
+        //		public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        //		[DllImportAttribute("user32.dll")]
+        //		public static extern bool ReleaseCapture();
+        //
+        //		protected override void OnMouseDown(MouseEventArgs e)
+        //		{
+        //			base.OnMouseDown(e);
+        //			if (e.Button == MouseButtons.Left)
+        //			{
+        //				ReleaseCapture();
+        //				SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+        //			}
+        //		}
+
+        protected override void OnPaint(PaintEventArgs e) {
 			base.OnPaint(e);
 			if(weatherPanel != null)
 				weatherPanel.Refresh();

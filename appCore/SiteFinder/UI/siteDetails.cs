@@ -424,7 +424,7 @@ namespace appCore.SiteFinder.UI
 						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
 				}
 				
-				toggleSwitch1.Enabled = currentSite.CurrentWeather != null;
+				toggleSwitch1.Enabled = currentSite.WeatherData != null;
 			}
 			else {
 				foreach(Control ctr in Controls) {
@@ -1079,6 +1079,7 @@ namespace appCore.SiteFinder.UI
 				                                   		currentSite = DB.SitesDB.getSiteWithJVCO(filterProperty);
 				                                   	
 				                                   	if(currentSite.Exists) {
+                                                        System.Threading.Tasks.Task.Run(() => currentSite.WeatherData);
 				                                   		string dataToRequest = "INCCellsState";
 				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
 				                                   			dataToRequest += "CRQ";
@@ -1408,19 +1409,20 @@ namespace appCore.SiteFinder.UI
 						}
 					}
 					else {
-						if(currentSite != null) {
-							weatherForm = new GeoAPIs.UI.WeatherForm(currentSite.CurrentWeather);
-							weatherForm.BackColor = Color.Black;
-							weatherForm.WeatherPanelOpacity = 60;
-							weatherForm.Owner = this;
-							weatherForm.StartPosition = FormStartPosition.Manual;
-							weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
-							weatherForm.Show();
-//
-							weatherFormOffset = new Point(
-								weatherForm.Location.X - Location.X,
-								weatherForm.Location.Y - Location.Y);
-						}
+						if(currentSite != null)
+                        {
+                            weatherForm = new GeoAPIs.UI.WeatherForm(currentSite.WeatherData);
+                            weatherForm.BackColor = Color.Black;
+                            weatherForm.WeatherPanelOpacity = 60;
+                            weatherForm.Owner = this; // owner;
+                            weatherForm.StartPosition = FormStartPosition.Manual;
+                            weatherForm.Location = PointToScreen(new Point(myMap.Right - weatherForm.Width, myMap.Top));
+                            weatherForm.Show();
+
+                            weatherFormOffset = new Point(
+                                weatherForm.Location.X - Location.X,
+                                weatherForm.Location.Y - Location.Y);
+                        }
 					}
 					break;
 				case "toggleSwitch2":
@@ -1435,6 +1437,7 @@ namespace appCore.SiteFinder.UI
 					break;
 			}
 		}
+
 		void SiteDetailsLoad(object sender, EventArgs e)
 		{
 			

@@ -379,22 +379,24 @@ namespace appCore
 		}
 
         [FieldHidden]
-        private WeatherItem currentWeather;
-		public WeatherItem CurrentWeather {
+        bool weatherDataRequestedFlag;
+        [FieldHidden]
+        WeatherItem weatherData;
+		public WeatherItem WeatherData {
 			get {
-                //if (currentWeather == null)
-                //    //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-                //    //st.Start();
-                //    currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
-                //    //st.Stop();
-                //    //var t = st.Elapsed;
-                //else
-                //{
-                //    if (DateTime.Now - currentWeather.CurrentWeather.DataTimestamp > new TimeSpan(2, 0, 0))
-                //        currentWeather = DB.WeatherCollection.RetrieveWeatherData(Town);
-                //}
+                if (!weatherDataRequestedFlag)
+                {
+                    if(weatherData == null)
+                    {
+                        weatherDataRequestedFlag = true;
+                        weatherData = Settings.GlobalProperties.WeatherServiceEnabled ? DB.WeatherCollection.RetrieveWeatherData(Town).Result : null;
+                        weatherDataRequestedFlag = false;
+                    }
+                }
+                else
+                    while(weatherDataRequestedFlag) { }
 
-                return currentWeather;
+                return weatherData;
 			}
 		}
 		
@@ -832,7 +834,7 @@ namespace appCore
 				dt = Tools.ConvertHtmlTableToDT(str, "table_cramer");
 			}
 
-            return dt == null ? new CramerDetails(dt.Rows[0]) : null;
+            return dt == null ? null : new CramerDetails(dt.Rows[0]);
 		}
 		
 		public static DataTable BulkFetchCramerData(IEnumerable<string> sites) {
@@ -1169,11 +1171,14 @@ namespace appCore
 				string sitesList = details["EFFECTED SITE LIST"].ToString();
 				if(!string.IsNullOrEmpty(sitesList)) {
 					OnwardSites.AddRange(sitesList.Split(','));
-					for(int c = 0;c < OnwardSites.Count;c++)
-						if(OnwardSites[c].StartsWith("0"))
+					for(int c = 0;c < OnwardSites.Count; c++)
+                    {
+                        OnwardSites[c] = OnwardSites[c].Trim();
+                        if (OnwardSites[c].StartsWith("0"))
 							OnwardSites[c] = Convert.ToInt16(OnwardSites[c]).ToString();
-					OnwardSites = OnwardSites.OrderBy(c => int.Parse(c)).ToList();
-				}
+                    }
+                    OnwardSites = OnwardSites.OrderBy(c => int.Parse(c)).ToList();
+                }
 				Thread thread = new Thread(() => {
 				                           	var t = OnwardSitesObjects;
 				                           });

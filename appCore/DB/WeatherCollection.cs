@@ -16,6 +16,8 @@ using appCore.Settings;
 using OpenWeatherAPI;
 using OpenWeatherAPI.CurrentWeather;
 using OpenWeatherAPI.Forecast;
+using System.Data.SQLite;
+using System.Threading.Tasks;
 
 namespace appCore.DB
 {
@@ -24,8 +26,10 @@ namespace appCore.DB
 	/// </summary>
 	public static class WeatherCollection
 	{
-		static FileInfo CurrentWeatherDbFile;
+        static FileInfo CurrentWeatherDbFile;
         static FileInfo ForecastDbFile;
+
+        //public static int 
 
         public static void Initialize(string DbFilesDir) {
             CurrentWeatherDbFile = new FileInfo(DbFilesDir + @"\CurrentWeatherDB.json");
@@ -124,27 +128,72 @@ namespace appCore.DB
             }
         }
 
-        public static WeatherItem RetrieveWeatherData(string Town)
+        //static void WriteToDB()
+        //{
+        //    try
+        //    {
+        //        using (SQLiteConnection myconnection = new SQLiteConnection(@"Data Source=" + CurrentWeatherDbFile.FullName.Replace(CurrentWeatherDbFile.Extension, ".sqlite")))
+        //        {
+        //            myconnection.Open();
+        //            using (SQLiteTransaction mytransaction = myconnection.BeginTransaction())
+        //            {
+        //                using (SQLiteCommand mycommand = new SQLiteCommand(myconnection))
+        //                {
+        //                    Guid id = Guid.NewGuid();
+
+        //                    mycommand.CommandText = "INSERT INTO Categories(ID, Name) VALUES ('" + id.ToString() + "', '111')";
+        //                    mycommand.ExecuteNonQuery();
+
+        //                    mycommand.CommandText = "UPDATE Categories SET Name='222' WHERE ID='" + id.ToString() + "'";
+        //                    mycommand.ExecuteNonQuery();
+
+        //                    mycommand.CommandText = "DELETE FROM Categories WHERE ID='" + id.ToString() + "'";
+        //                    mycommand.ExecuteNonQuery();
+        //                }
+        //                mytransaction.Commit();
+        //            }
+        //        }
+        //    }
+        //    catch (SQLiteException ex)
+        //    {
+        //        //if (ex.ReturnCode == SQLiteErrorCode.Busy)
+        //        //    Console.WriteLine("Database is locked by another process!");
+        //    }
+        //}
+
+        public static async Task<WeatherItem> RetrieveWeatherData(string Town)
         {
-            WeatherItem weatherItem = RetrieveExistingWeatherData(Town);
+            WeatherItem weatherItem = RetrieveExistingWeatherData(Town).Result;
             if (weatherItem.CurrentWeather == null || weatherItem.Forecast5D3H == null)
             {
                 OpenWeatherAPI.OpenWeatherAPI openWeatherAPI = new OpenWeatherAPI.OpenWeatherAPI("7449082d365b8a6314614efed99d2696");
 
                 if (weatherItem.CurrentWeather == null)
                 {
-                    weatherItem.CurrentWeather = new CurrentWeatherItem(openWeatherAPI.queryCurrentWeatherCityName(Town + ",UK"), Town);
-                    AddWeatherData(weatherItem.CurrentWeather);
+                    var query = openWeatherAPI.queryCurrentWeatherCityName(Town + ",UK");
+                    if (query != null)
+                    {
+                        weatherItem.CurrentWeather = new CurrentWeatherItem(query, Town);
+                        AddWeatherData(weatherItem.CurrentWeather);
+                    }
+                    else
+                        weatherItem.CurrentWeather = null;
                 }
 
                 if (weatherItem.Forecast5D3H == null)
                 {
-                    weatherItem.Forecast5D3H = new ForecastItem(openWeatherAPI.queryForecastCityName(Town + ",UK"), Town);
-                    AddWeatherData(weatherItem.Forecast5D3H);
+                    var query = openWeatherAPI.queryForecastCityName(Town + ",UK");
+                    if (query != null)
+                    {
+                        weatherItem.Forecast5D3H = new ForecastItem(query, Town);
+                        AddWeatherData(weatherItem.Forecast5D3H);
+                    }
+                    else
+                        weatherItem.Forecast5D3H = null;
                 }
             }
 
-            return weatherItem;
+            return weatherItem.CurrentWeather == null && weatherItem.Forecast5D3H == null ? null : weatherItem;
         }
 
         //public static List<CurrentWeatherItem> RetrieveWeatherData(List<int> ids)
@@ -204,12 +253,12 @@ namespace appCore.DB
             SerializeListToDbFile(list);
         }
 
-        static WeatherItem RetrieveExistingWeatherData(string Town)
+        static async Task<WeatherItem> RetrieveExistingWeatherData(string Town)
         {
             WeatherItem weatherItem = new WeatherItem()
             {
-                CurrentWeather = RetrieveExistingCurrentWeatherData(Town),
-                Forecast5D3H = RetrieveExistingForecastWeatherData(Town)
+                CurrentWeather = await RetrieveExistingCurrentWeatherData(Town),
+                Forecast5D3H = await RetrieveExistingForecastWeatherData(Town)
             };
 
             return weatherItem;
@@ -237,7 +286,7 @@ namespace appCore.DB
         //    return foundItems;
         //}
 
-        static CurrentWeatherItem RetrieveExistingCurrentWeatherData(string Town)
+        static async Task<CurrentWeatherItem> RetrieveExistingCurrentWeatherData(string Town)
         {
             List<CurrentWeatherItem> list = JsonConvert.DeserializeObject<List<CurrentWeatherItem>>(ReadAllTextFromDbFile("CurrentWeather")) ?? new List<CurrentWeatherItem>();
 
@@ -249,7 +298,7 @@ namespace appCore.DB
                 {
                     list.RemoveAt(list.IndexOf(weatherItem));
 
-                    SerializeListToDbFile(list);
+                    await SerializeListToDbFile(list);
 
                     weatherItem = null;
                 }
@@ -258,7 +307,7 @@ namespace appCore.DB
             return weatherItem;
         }
 
-        static ForecastItem RetrieveExistingForecastWeatherData(string Town)
+        static async Task<ForecastItem> RetrieveExistingForecastWeatherData(string Town)
         {
             List<ForecastItem> list = JsonConvert.DeserializeObject<List<ForecastItem>>(ReadAllTextFromDbFile("Forecast")) ?? new List<ForecastItem>();
 
@@ -266,7 +315,7 @@ namespace appCore.DB
 
             if (weatherItem != null)
             {
-                if (DateTime.Now.Day != weatherItem.list[0].dt_txt.Day || DateTime.Now.Month != weatherItem.list[0].dt_txt.Month || DateTime.Now.Year != weatherItem.list[0].dt_txt.Year)
+                if (DateTime.Now.ToShortDateString() != weatherItem.list[0].dt_txt.ToShortDateString())
                 {
                     list.RemoveAt(list.IndexOf(weatherItem));
 
@@ -292,14 +341,14 @@ namespace appCore.DB
                 }
                 catch
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                 }
             }
 
             return contents;
         }
 
-        static void SerializeListToDbFile(List<CurrentWeatherItem> list)
+        static async Task SerializeListToDbFile(List<CurrentWeatherItem> list)
         {
             bool operationFinished = false;
             while (!operationFinished)
@@ -308,7 +357,7 @@ namespace appCore.DB
                 {
                     using (StreamWriter sw = CurrentWeatherDbFile.CreateText())
                     {
-                        sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented));
+                        await sw.WriteAsync(JsonConvert.SerializeObject(list, Formatting.Indented));
                         sw.Close();
                     }
 
@@ -316,12 +365,12 @@ namespace appCore.DB
                 }
                 catch
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                 }
             }
         }
 
-        static void SerializeListToDbFile(List<ForecastItem> list)
+        static async Task SerializeListToDbFile(List<ForecastItem> list)
         {
             bool operationFinished = false;
             while (!operationFinished)
@@ -330,7 +379,7 @@ namespace appCore.DB
                 {
                     using (StreamWriter sw = ForecastDbFile.CreateText())
                     {
-                        sw.Write(JsonConvert.SerializeObject(list, Formatting.Indented));
+                        await sw.WriteAsync(JsonConvert.SerializeObject(list, Formatting.Indented));
                         sw.Close();
                     }
 
@@ -338,7 +387,7 @@ namespace appCore.DB
                 }
                 catch
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                 }
             }
         }
