@@ -48,8 +48,9 @@ namespace appCore
         ShiftLeader = 1,
         TEF = 2,
         ExternalAlarms = 4,
-        RAN = 8,
-        Unknown = 16
+        Reporting = 8,
+        RAN = 16,
+        Unknown = 32
     }
 
     public enum Months : byte
