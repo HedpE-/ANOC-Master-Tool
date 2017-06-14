@@ -204,12 +204,10 @@ namespace appCore.UI {
 		///- New layout on Outage reports
 		///- Fixed NSN cell alarms without the cell on Element Column, the tool now resolves the correct cell name
 		///- Bulk site search and generate outage from sites list now support lists with RBSxxxxx format
+		///- Weather Service is available on Site Finder, it will show the current weather information for each site location
+		///- Fixed some bugs related with OI missing data
 		///
-		///####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
-		///
-		///- Fixed a lot of crashes caused by changes on the OI API&apos;s returned data
-		///- Enhanced the view for INCs, CRQs and Book ins
-		///- Enha [rest of string was truncated]&quot;;.
+		///####### ANOC Master To [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

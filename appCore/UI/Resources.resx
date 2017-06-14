@@ -12086,6 +12086,8 @@ ZK - LTE2100 Pico</value>
 - New layout on Outage reports
 - Fixed NSN cell alarms without the cell on Element Column, the tool now resolves the correct cell name
 - Bulk site search and generate outage from sites list now support lists with RBSxxxxx format
+- Weather Service is available on Site Finder, it will show the current weather information for each site location
+- Fixed some bugs related with OI missing data
 
 ####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
 
