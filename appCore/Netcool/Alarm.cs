@@ -63,13 +63,21 @@ namespace appCore.Netcool
                         string temp = string.Empty;
                         switch (Vendor) {
 							case Vendors.Huawei:
-								if (Identifier.Contains("Cell Name=")) {
-									temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + 10);
-									element = temp.Substring(0, temp.IndexOf(','));
-								}
-								else
-									element = Node;
-								break;
+                                if (Identifier.Contains("Cell Name=")) {
+                                    temp = Identifier.Substring(Identifier.IndexOf("Cell Name=") + "Cell Name=".Length);
+                                    element = temp.Substring(0, temp.IndexOf(','));
+                                }
+                                else
+                                {
+                                    //if(Identifier.Contains("Local Cell ID="))
+                                    //{
+                                    //    temp = Identifier.Substring(Identifier.IndexOf("Local Cell ID=") + "Local Cell ID=".Length);
+                                    //    element = temp.Substring(0, temp.IndexOf(','));
+                                    //}
+                                    //else
+                                        element = Location + " - No cell description on Netcool.";
+                                }
+                                break;
 							case Vendors.NSN:
         //                        Cell cell = null;
         //                        temp = string.Empty;
@@ -585,6 +593,23 @@ namespace appCore.Netcool
                         cell = ParentSite.Cells.FirstOrDefault(c => c.Id == Node.RemoveLetters()) ?? ParentSite.Cells.FirstOrDefault(c => c.Id == Node.RemoveLetters() + "0");
                     element = cell != null ? cell.Name :
                         Location + " - No cell description on Netcool.";
+                    break;
+            }
+            UpdateParsedAlarm();
+        }
+
+        public void ResolveHuaweiElement(Site parentSite)
+        {
+            ParentSite = parentSite;
+            Cell cell = null;
+            string temp = string.Empty;
+            switch (RncBsc.Substring(0, 1))
+            {
+                case "B":
+                    break;
+                case "R":
+                    break;
+                default:
                     break;
             }
             UpdateParsedAlarm();
