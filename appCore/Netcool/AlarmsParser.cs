@@ -118,18 +118,24 @@ namespace appCore.Netcool
                 //System.Windows.Forms.DialogResult ans = appCore.UI.FlexibleMessageBox.Show(alarmsWithoutElement.Count + " alarms without cell description found.\n\nIt's possible to try resolving the correct cell names but the operation might take a while.\nDo you want to proceed with the operation?", "Alarms without cell description", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
                 //if(ans == System.Windows.Forms.DialogResult.Yes)
                 //{
-                    System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-                    st.Start();
-                    var sites = AlarmsList.Where(a => alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => a.SiteId).ToList().Distinct();
-                    var allSites = DB.SitesDB.getSites(sites);
-                    foreach(int index in alarmsWithoutElement)
-                        AlarmsList[index].ResolveNsnElement(allSites.FirstOrDefault(s => s.Id == AlarmsList[index].SiteId));
-                    st.Stop();
-                    var t = st.Elapsed;
+                //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+                //st.Start();
+                var sites = AlarmsList.Where(a => alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => a.SiteId).ToList().Distinct();
+                var allSites = DB.SitesDB.getSites(sites);
+                var NsnAlarmsWithoutElement = AlarmsList.Where(a => a.Vendor == Vendors.NSN && alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => AlarmsList.IndexOf(a));
+                var HuaweiAlarmsWithoutElement = AlarmsList.Where(a => a.Vendor == Vendors.Huawei && alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => AlarmsList.IndexOf(a));
+
+                foreach (int index in NsnAlarmsWithoutElement)
+                    AlarmsList[index].ResolveNsnElement(allSites.FirstOrDefault(s => s.Id == AlarmsList[index].SiteId));
+
+                foreach (int index in HuaweiAlarmsWithoutElement)
+                    AlarmsList[index].ResolveHuaweiElement(allSites.FirstOrDefault(s => s.Id == AlarmsList[index].SiteId));
+                //st.Stop();
+                //var t = st.Elapsed;
                 //}
             }
-			
-			if(lteSitesOnM.Any())
+
+            if (lteSitesOnM.Any())
 				lteSitesOnM = lteSitesOnM.Distinct().ToList();
 			
 			if(AlarmsList.Count == 0)
