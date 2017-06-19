@@ -742,9 +742,28 @@ namespace appCore.Templates.Types
 				VfGsmCells.Sort();
 				VfUmtsCells.Sort();
 				VfLteCells.Sort();
-				VfOutage = cellTotal + "x COOS (" + VfSites.Count;
-				Summary = VfOutage += VfSites.Count == 1 ? " Site)" : " Sites)";
-				VfOutage += Environment.NewLine + Environment.NewLine + "Locations (" + VfLocations.Count + ")" + Environment.NewLine;
+                //VfOutage = cellTotal + "x COOS (" + VfSites.Count;
+
+                Summary = VfSites.Count + (VfSites.Count > 1 ? " Sites" : "Site") + " / " + cellTotal + (cellTotal > 1 ? " Cells" : " Cell") + " down (";
+                if (VfGsmCells.Any())
+                    Summary += "2G:" + VfGsmCells.Count;
+                if (VfUmtsCells.Any())
+                {
+                    if (!Summary.EndsWith("("))
+                        Summary += " ";
+                    Summary += "3G:" + VfUmtsCells.Count;
+                }
+                if (VfLteCells.Any())
+                {
+                    if (!Summary.EndsWith("("))
+                        Summary += " ";
+                    Summary += "4G:" + VfLteCells.Count;
+                }
+
+                VfOutage = Summary += ")";
+
+                //Summary = VfOutage += VfSites.Count == 1 ? " Site)" : " Sites)";
+                VfOutage += Environment.NewLine + Environment.NewLine + "Locations (" + VfLocations.Count + ")" + Environment.NewLine;
 
                 string locationDetails = string.Empty;
 				foreach(string location in VfLocations)
@@ -910,9 +929,28 @@ namespace appCore.Templates.Types
 				TefGsmCells.Sort();
 				TefUmtsCells.Sort();
 				TefLteCells.Sort();
-				TefOutage = cellTotal + "x COOS (" + TefSites.Count;
-				TefOutage += TefSites.Count == 1 ? " Site)" : " Sites)";
-				//TefOutage += Environment.NewLine + Environment.NewLine + "Locations (" + TefLocations.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine, TefLocations) + Environment.NewLine + Environment.NewLine + "Site List";
+                //TefOutage = cellTotal + "x COOS (" + TefSites.Count;
+
+                TefOutage = TefSites.Count + (TefSites.Count > 1 ? " Sites" : "Site") + " / " + cellTotal + (cellTotal > 1 ? " Cells" : " Cell") + " down (";
+                if (TefGsmCells.Any())
+                    TefOutage += "2G:" + TefGsmCells.Count;
+                if (TefUmtsCells.Any())
+                {
+                    if (!TefOutage.EndsWith("("))
+                        TefOutage += " ";
+                    TefOutage += "3G:" + TefUmtsCells.Count;
+                }
+                if (TefLteCells.Any())
+                {
+                    if (!TefOutage.EndsWith("("))
+                        TefOutage += " ";
+                    TefOutage += "4G:" + TefLteCells.Count;
+                }
+
+                TefOutage += ")";
+
+                //TefOutage += TefSites.Count == 1 ? " Site)" : " Sites)";
+                //TefOutage += Environment.NewLine + Environment.NewLine + "Locations (" + TefLocations.Count + ")" + Environment.NewLine + string.Join(Environment.NewLine, TefLocations) + Environment.NewLine + Environment.NewLine + "Site List";
                 TefOutage += Environment.NewLine + Environment.NewLine + "Locations (" + TefLocations.Count + ")" + Environment.NewLine;
 
                 string locationDetails = string.Empty;
