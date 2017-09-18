@@ -290,7 +290,7 @@ namespace appCore.Templates.UI
 			// copyToNewTemplateToolStripMenuItem
 			// 
 			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
-			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
+			copyToNewTemplateToolStripMenuItem.Text = "Copy to new TX template";
 			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
 			// SitesLabel

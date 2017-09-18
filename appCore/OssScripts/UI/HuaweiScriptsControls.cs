@@ -33,7 +33,7 @@ namespace appCore.OssScripts.UI
 		Button LockScriptLargeTextButton = new Button();
 		Button CellsListLargeTextButton = new Button();
 		AMTTextBox ListCellsTextBox = new AMTTextBox();
-		AMTTextBox SiteTextBox = new AMTTextBox();
+		public AMTTextBox SiteTextBox = new AMTTextBox();
 		AMTRichTextBox CellsListTextBox = new AMTRichTextBox();
 		AMTRichTextBox LockScriptTextBox = new AMTRichTextBox();
 		AMTRichTextBox UnlockScriptTextBox = new AMTRichTextBox();
@@ -217,9 +217,9 @@ namespace appCore.OssScripts.UI
 					break;
 			}
 			if (!string.IsNullOrEmpty(LockScriptTextBox.Text))
-				LockScriptTextBox.Text = LockScriptTextBox.Text.Remove(LockScriptTextBox.Text.Length - 1,1);
+				LockScriptTextBox.Text = LockScriptTextBox.Text.Remove(LockScriptTextBox.Text.Length - 1, 1);
 			if (!string.IsNullOrEmpty(UnlockScriptTextBox.Text))
-				UnlockScriptTextBox.Text = UnlockScriptTextBox.Text.Remove(UnlockScriptTextBox.Text.Length - 1,1);
+				UnlockScriptTextBox.Text = UnlockScriptTextBox.Text.Remove(UnlockScriptTextBox.Text.Length - 1, 1);
 		}
 
 		void copyLockScript(object sender, EventArgs e)
@@ -252,8 +252,8 @@ namespace appCore.OssScripts.UI
 					lbl = UnlockScriptLabel.Text;
 					break;
 			}
-			
-			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
+
+            AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text, lbl, btn.Name != "CellsListLargeTextButton");
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
@@ -475,7 +475,7 @@ namespace appCore.OssScripts.UI
 			// 
 			// LockScriptRichTextBox
 			// 
-			LockScriptTextBox.Enabled = false;
+			LockScriptTextBox.ReadOnly = true;
 			LockScriptTextBox.Name = "LockScriptTextBox";
 //			LockScriptTextBox.Size = new Size(250, 272);
 			LockScriptTextBox.TabIndex = 33;
@@ -503,7 +503,7 @@ namespace appCore.OssScripts.UI
 			// 
 			// UnlockScriptTextBox
 			// 
-			UnlockScriptTextBox.Enabled = false;
+			UnlockScriptTextBox.ReadOnly = true;
 			UnlockScriptTextBox.Name = "UnlockScriptTextBox";
 //			UnlockScriptTextBox.Size = new Size(250, 272);
 			UnlockScriptTextBox.TabIndex = 34;

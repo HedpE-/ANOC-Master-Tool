@@ -118,50 +118,55 @@ namespace appCore.Logs.UI
 		}
 		
 		void ListBox3DoubleClick(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	if (listBox3.SelectedIndex != -1) {
-			                           		string separator = string.Empty;
-			                           		for (int c = 1; c < 301; c++) {
-			                           			if (c == 151) separator += "\r\n";
-			                           			separator += "*";
-			                           		}
-			                           		string LogFile = UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
-			                           		string[] strTofind = { "\r\n" };
-			                           		string[] Logs;
+        {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+            if (listBox3.SelectedIndex != -1)
+            {
+			    string separator = string.Empty;
+			    for (int c = 1; c < 301; c++)
+                {
+			        if (c == 151) separator += "\r\n";
+			        separator += "*";
+			    }
+			    string LogFile = UserFolder.LogsFolder.FullName + "\\" + listBox2.Text + "-" + listBox1.Text + "\\";
+			    string[] strTofind = { "\r\n" };
+			    string[] Logs;
 			                           		
-			                           		if (chkrb == "Templates") {
-			                           			LogFile += listBox3.Text + ".txt";
-			                           			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                           			if (Logs[0].Contains(" - ")) {
-			                           				LogsCollection<Template> logs = ChosenDate == DateTime.Now ?
-			                           					MainForm.logFiles :
-			                           					new LogsCollection<Template>().ImportLogFile(new FileInfo(LogFile));
-			                           				LogEditor LogEdit = new LogEditor(logs);
-			                           				LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                           				LogEdit.ShowDialog(this);
-			                           			}
-			                           			else {
-			                           				DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-			                           				if(ans == DialogResult.No)
-			                           					return;
-			                           				System.Diagnostics.Process.Start("notepad.exe", LogFile);
-			                           			}
-			                           		}
-			                           		else {
-			                           			LogFile += "outages\\" + listBox3.Text + ".txt";
+			    if (chkrb == "Templates")
+                {
+			        LogFile += listBox3.Text + ".txt";
+			        Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			        if (Logs[0].Contains(" - "))
+                    {
+			            LogsCollection<Template> logs = ChosenDate == DateTime.Now ?
+			                MainForm.logFiles :
+			                new LogsCollection<Template>().ImportLogFile(new FileInfo(LogFile));
+			            LogEditor LogEdit = new LogEditor(logs);
+			            LogEdit.StartPosition = FormStartPosition.CenterParent;
+			            LogEdit.ShowDialog(this);
+			        }
+			        else
+                    {
+			            DialogResult ans = FlexibleMessageBox.Show("This Log file isn't compatible with the built-in viewer.\n\nDo you want to open with Notepad?","Can't open log file",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+			            if(ans == DialogResult.No)
+			                return;
+			            System.Diagnostics.Process.Start("notepad.exe", LogFile);
+			        }
+			    }
+			    else
+                {
+			        LogFile += "outages\\" + listBox3.Text + ".txt";
 			                           			
-			                           			Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
-			                           			LogsCollection<Outage> logs = new LogsCollection<Outage>();
-			                           			logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
-			                           			LogEditor LogEdit = new LogEditor(logs);
-			                           			LogEdit.StartPosition = FormStartPosition.CenterParent;
-			                           			LogEdit.ShowDialog();
-			                           		}
-			                           	}
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.Show(action, this);
+			        Logs = File.ReadAllText(LogFile).Split(strTofind, StringSplitOptions.None);
+			        LogsCollection<Outage> logs = new LogsCollection<Outage>();
+			        logs = logs.ImportOutagesLogFile(new FileInfo(LogFile));
+			        LogEditor LogEdit = new LogEditor(logs);
+			        LogEdit.StartPosition = FormStartPosition.CenterParent;
+			        LogEdit.ShowDialog();
+			    }
+			}
+            load.Close();
 		}
 		
 		void ListBox3KeyPress(object sender, KeyPressEventArgs e)
@@ -181,17 +186,21 @@ namespace appCore.Logs.UI
 //			}
 		}
 		
-		void RadioButtonsCheckedChanged(object sender, EventArgs e) {
+		void RadioButtonsCheckedChanged(object sender, EventArgs e)
+        {
 			RadioButton rb = sender as RadioButton;
 			listBox1.Items.Clear();
 			listBox2.Items.Clear();
 			listBox3.Items.Clear();
 			ArrayList items = new ArrayList();
 			
-			switch(rb.Name) {
+			switch(rb.Name)
+            {
 				case "radioButton1":
-					foreach (var folder in UserFolder.LogsFolder.GetDirectories()) {
-						if (folder.GetFiles("*.txt").Length > 0) {
+					foreach (var folder in UserFolder.LogsFolder.GetDirectories())
+                    {
+						if (folder.GetFiles("*.txt").Length > 0)
+                        {
 							string year = folder.Name.Substring(4,4);
 							if (!items.Contains(year))
 								items.Add(year);
@@ -199,11 +208,14 @@ namespace appCore.Logs.UI
 					}
 					break;
 				case "radioButton2":
-					foreach (var folder in UserFolder.LogsFolder.GetDirectories()) {
+					foreach (var folder in UserFolder.LogsFolder.GetDirectories()
+                        ) {
 						string year = folder.Name.Substring(4,4);
 						DirectoryInfo tempdir = new DirectoryInfo(UserFolder.LogsFolder.FullName + "\\" + folder.Name);
-						foreach (var tempfolder in tempdir.GetDirectories()) {
-							if (tempfolder.Name == "outages") {
+						foreach (var tempfolder in tempdir.GetDirectories())
+                        {
+							if (tempfolder.Name == "outages")
+                            {
 								if (!items.Contains(year))
 									items.Add(year);
 							}
@@ -223,7 +235,8 @@ namespace appCore.Logs.UI
 		public string LogCount(string logfile)
 		{
 			string strTofind = string.Empty;
-			for (int c = 1; c < 301; c++) {
+			for (int c = 1; c < 301; c++)
+            {
 				if (c == 151) strTofind = strTofind + Environment.NewLine;
 				strTofind = strTofind + "*";
 			}
@@ -234,7 +247,8 @@ namespace appCore.Logs.UI
 		public string WindowTitle()
 		{
 			string temp = listBox3.Text;
-			switch (temp) {
+			switch (temp)
+            {
 				case "1": case "21": case "31":
 					temp += "st of ";
 					break;
@@ -250,5 +264,10 @@ namespace appCore.Logs.UI
 			}
 			return temp + DateTime.ParseExact(listBox2.Text,"MMM",CultureInfo.GetCultureInfo("pt-PT")).ToString("MMMM",CultureInfo.GetCultureInfo("en-GB")) + ", " + listBox1.Text;
 		}
-	}
+
+        private void ImportExportLogs(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

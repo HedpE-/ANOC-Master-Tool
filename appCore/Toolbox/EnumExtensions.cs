@@ -7,7 +7,7 @@ namespace appCore
     /// <summary>
 	/// Summary description for Enum.
 	/// </summary>
-	public sealed class EnumExtensions
+	public static class EnumExtensions
     {
         /// <summary>
         /// Returns the value of the DescriptionAttribute if the specified Enum value has one.
@@ -15,7 +15,7 @@ namespace appCore
         /// </summary>
         /// <param name="value">The Enum to get the description for</param>
         /// <returns></returns>
-        public static string GetDescription(Enum value)
+        public static string GetDescription(this Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
             DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
@@ -48,7 +48,7 @@ namespace appCore
         /// <returns></returns>
         public static dynamic Parse(Type enumType, string value, bool ignoreCase)
         {
-            if (value == "ALCATEL")
+            if (String.Equals(value, "ALCATEL", StringComparison.OrdinalIgnoreCase))
                 value = "ALU";
 
             if (ignoreCase)
@@ -56,10 +56,10 @@ namespace appCore
 
             foreach (Enum val in Enum.GetValues(enumType))
             {
-                string comparisson = GetDescription(val);
+                string comparison = val.GetDescription();
                 if (ignoreCase)
-                    comparisson = comparisson.ToLower();
-                if (GetDescription(val) == value)
+                    comparison = comparison.ToLower();
+                if (val.GetDescription() == value)
                     return val;
             }
 

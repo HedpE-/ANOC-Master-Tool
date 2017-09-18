@@ -15,13 +15,11 @@ namespace appCore.Settings.UI
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 		private appCore.UI.AMTTextBox textBox1;
-		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
 		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.TabPage GeneralTabPage;
+		private System.Windows.Forms.TabPage AboutTabPage;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label3;
@@ -31,32 +29,8 @@ namespace appCore.Settings.UI
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.TabPage userAdminTab;
-        private System.Windows.Forms.Panel noPermPanel;
-        private System.Windows.Forms.Label label9;
         private JCS.ToggleSwitch toggleSwitch2;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Panel userAdminPanel;
-        private appCore.UI.AMTDataGridView dataGridView1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private appCore.UI.AMTTextBox textBox3;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
-        private appCore.UI.AMTTextBox textBox2;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AgentName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Username;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Permission;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private appCore.UI.AMTTextBox textBox4;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
-        private appCore.UI.AMTTextBox textBox5;
         private JCS.ToggleSwitch toggleSwitch1;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label7;
@@ -83,12 +57,13 @@ namespace appCore.Settings.UI
 		private void InitializeComponent()
 		{
             this.textBox1 = new appCore.UI.AMTTextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.GeneralTabPage = new System.Windows.Forms.TabPage();
+            this.toggleSwitch3 = new JCS.ToggleSwitch();
+            this.label9 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.toggleSwitch2 = new JCS.ToggleSwitch();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -99,43 +74,15 @@ namespace appCore.Settings.UI
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.PermissionsTabPage = new System.Windows.Forms.TabPage();
+            this.AboutTabPage = new System.Windows.Forms.TabPage();
             this.button3 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.userAdminTab = new System.Windows.Forms.TabPage();
-            this.noPermPanel = new System.Windows.Forms.Panel();
-            this.userAdminPanel = new System.Windows.Forms.Panel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button7 = new System.Windows.Forms.Button();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.textBox4 = new appCore.UI.AMTTextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.textBox5 = new appCore.UI.AMTTextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.textBox3 = new appCore.UI.AMTTextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.textBox2 = new appCore.UI.AMTTextBox();
-            this.dataGridView1 = new appCore.UI.AMTDataGridView();
-            this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Permission = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.userAdminTab.SuspendLayout();
-            this.noPermPanel.SuspendLayout();
-            this.userAdminPanel.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.GeneralTabPage.SuspendLayout();
+            this.AboutTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
@@ -146,16 +93,6 @@ namespace appCore.Settings.UI
             this.textBox1.Size = new System.Drawing.Size(348, 20);
             this.textBox1.TabIndex = 1;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(452, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(29, 20);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "...";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1Click);
-            // 
             // label1
             // 
             this.label1.Location = new System.Drawing.Point(3, 3);
@@ -165,20 +102,11 @@ namespace appCore.Settings.UI
             this.label1.Text = "User Folder Path";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(395, 260);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(86, 23);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Save Changes";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2Click);
-            // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.GeneralTabPage);
+            this.tabControl1.Controls.Add(this.PermissionsTabPage);
+            this.tabControl1.Controls.Add(this.AboutTabPage);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -186,33 +114,64 @@ namespace appCore.Settings.UI
             this.tabControl1.Size = new System.Drawing.Size(496, 317);
             this.tabControl1.TabIndex = 0;
             // 
-            // tabPage1
+            // GeneralTabPage
             // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.toggleSwitch2);
-            this.tabPage1.Controls.Add(this.label17);
-            this.tabPage1.Controls.Add(this.label16);
-            this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.toggleSwitch1);
-            this.tabPage1.Controls.Add(this.button5);
-            this.tabPage1.Controls.Add(this.label8);
-            this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.label5);
-            this.tabPage1.Controls.Add(this.button4);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.button2);
-            this.tabPage1.Controls.Add(this.textBox1);
-            this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(488, 291);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "General";
+            this.GeneralTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.GeneralTabPage.Controls.Add(this.toggleSwitch3);
+            this.GeneralTabPage.Controls.Add(this.label9);
+            this.GeneralTabPage.Controls.Add(this.button1);
+            this.GeneralTabPage.Controls.Add(this.toggleSwitch2);
+            this.GeneralTabPage.Controls.Add(this.label17);
+            this.GeneralTabPage.Controls.Add(this.label16);
+            this.GeneralTabPage.Controls.Add(this.label7);
+            this.GeneralTabPage.Controls.Add(this.toggleSwitch1);
+            this.GeneralTabPage.Controls.Add(this.button5);
+            this.GeneralTabPage.Controls.Add(this.label8);
+            this.GeneralTabPage.Controls.Add(this.label6);
+            this.GeneralTabPage.Controls.Add(this.label5);
+            this.GeneralTabPage.Controls.Add(this.button4);
+            this.GeneralTabPage.Controls.Add(this.label1);
+            this.GeneralTabPage.Controls.Add(this.textBox1);
+            this.GeneralTabPage.Location = new System.Drawing.Point(4, 22);
+            this.GeneralTabPage.Name = "GeneralTabPage";
+            this.GeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.GeneralTabPage.Size = new System.Drawing.Size(488, 291);
+            this.GeneralTabPage.TabIndex = 0;
+            this.GeneralTabPage.Text = "General";
+            // 
+            // toggleSwitch3
+            // 
+            this.toggleSwitch3.Location = new System.Drawing.Point(135, 162);
+            this.toggleSwitch3.Name = "toggleSwitch3";
+            this.toggleSwitch3.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toggleSwitch3.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toggleSwitch3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.toggleSwitch3.Size = new System.Drawing.Size(50, 19);
+            this.toggleSwitch3.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
+            this.toggleSwitch3.TabIndex = 19;
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(3, 166);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(123, 15);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "Show tips on Startup";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(452, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(29, 20);
+            this.button1.TabIndex = 17;
+            this.button1.Text = "...";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // toggleSwitch2
             // 
-            this.toggleSwitch2.Location = new System.Drawing.Point(135, 151);
+            this.toggleSwitch2.Location = new System.Drawing.Point(135, 137);
             this.toggleSwitch2.Name = "toggleSwitch2";
             this.toggleSwitch2.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toggleSwitch2.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -220,11 +179,11 @@ namespace appCore.Settings.UI
             this.toggleSwitch2.Size = new System.Drawing.Size(50, 19);
             this.toggleSwitch2.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
             this.toggleSwitch2.TabIndex = 16;
-            this.toggleSwitch2.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitch1CheckedChanged);
+            this.toggleSwitch2.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitchesCheckedChanged);
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(3, 155);
+            this.label17.Location = new System.Drawing.Point(3, 141);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(123, 15);
             this.label17.TabIndex = 15;
@@ -234,7 +193,7 @@ namespace appCore.Settings.UI
             // label16
             // 
             this.label16.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label16.Location = new System.Drawing.Point(3, 122);
+            this.label16.Location = new System.Drawing.Point(3, 85);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(322, 15);
             this.label16.TabIndex = 14;
@@ -244,7 +203,7 @@ namespace appCore.Settings.UI
             // label7
             // 
             this.label7.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label7.Location = new System.Drawing.Point(3, 98);
+            this.label7.Location = new System.Drawing.Point(3, 61);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(322, 15);
             this.label7.TabIndex = 13;
@@ -253,7 +212,7 @@ namespace appCore.Settings.UI
             // 
             // toggleSwitch1
             // 
-            this.toggleSwitch1.Location = new System.Drawing.Point(135, 59);
+            this.toggleSwitch1.Location = new System.Drawing.Point(135, 112);
             this.toggleSwitch1.Name = "toggleSwitch1";
             this.toggleSwitch1.OffFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toggleSwitch1.OnFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -261,11 +220,11 @@ namespace appCore.Settings.UI
             this.toggleSwitch1.Size = new System.Drawing.Size(50, 19);
             this.toggleSwitch1.Style = JCS.ToggleSwitch.ToggleSwitchStyle.Fancy;
             this.toggleSwitch1.TabIndex = 12;
-            this.toggleSwitch1.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitch1CheckedChanged);
+            this.toggleSwitch1.CheckedChanged += new JCS.ToggleSwitch.CheckedChangedDelegate(this.ToggleSwitchesCheckedChanged);
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(383, 98);
+            this.button5.Location = new System.Drawing.Point(383, 77);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(98, 23);
             this.button5.TabIndex = 11;
@@ -275,7 +234,7 @@ namespace appCore.Settings.UI
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(3, 63);
+            this.label8.Location = new System.Drawing.Point(3, 116);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(123, 15);
             this.label8.TabIndex = 9;
@@ -311,20 +270,30 @@ namespace appCore.Settings.UI
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.Button4Click);
             // 
-            // tabPage2
+            // PermissionsTabPage
             // 
-            this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.button3);
-            this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.label2);
-            this.tabPage2.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(488, 291);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "About";
+            this.PermissionsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.PermissionsTabPage.Name = "PermissionsTabPage";
+            this.PermissionsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.PermissionsTabPage.Size = new System.Drawing.Size(488, 291);
+            this.PermissionsTabPage.TabIndex = 2;
+            this.PermissionsTabPage.Text = "Permissions Manager";
+            this.PermissionsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // AboutTabPage
+            // 
+            this.AboutTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.AboutTabPage.Controls.Add(this.button3);
+            this.AboutTabPage.Controls.Add(this.label4);
+            this.AboutTabPage.Controls.Add(this.label3);
+            this.AboutTabPage.Controls.Add(this.label2);
+            this.AboutTabPage.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.AboutTabPage.Location = new System.Drawing.Point(4, 22);
+            this.AboutTabPage.Name = "AboutTabPage";
+            this.AboutTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.AboutTabPage.Size = new System.Drawing.Size(488, 291);
+            this.AboutTabPage.TabIndex = 1;
+            this.AboutTabPage.Text = "About";
             // 
             // button3
             // 
@@ -367,258 +336,6 @@ namespace appCore.Settings.UI
             this.label2.Text = "ANOC Master Tool";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // userAdminTab
-            // 
-            this.userAdminTab.Controls.Add(this.noPermPanel);
-            this.userAdminTab.Location = new System.Drawing.Point(4, 22);
-            this.userAdminTab.Margin = new System.Windows.Forms.Padding(1);
-            this.userAdminTab.Name = "userAdminTab";
-            this.userAdminTab.Size = new System.Drawing.Size(506, 291);
-            this.userAdminTab.TabIndex = 2;
-            this.userAdminTab.Text = "User Administration";
-            this.userAdminTab.UseVisualStyleBackColor = true;
-            // 
-            // noPermPanel
-            // 
-            this.noPermPanel.Controls.Add(this.userAdminPanel);
-            this.noPermPanel.Controls.Add(this.label9);
-            this.noPermPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.noPermPanel.Location = new System.Drawing.Point(0, 0);
-            this.noPermPanel.Margin = new System.Windows.Forms.Padding(1);
-            this.noPermPanel.Name = "noPermPanel";
-            this.noPermPanel.Size = new System.Drawing.Size(506, 291);
-            this.noPermPanel.TabIndex = 0;
-            this.noPermPanel.Visible = false;
-            // 
-            // userAdminPanel
-            // 
-            this.userAdminPanel.Controls.Add(this.groupBox2);
-            this.userAdminPanel.Controls.Add(this.groupBox1);
-            this.userAdminPanel.Controls.Add(this.dataGridView1);
-            this.userAdminPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.userAdminPanel.Location = new System.Drawing.Point(0, 0);
-            this.userAdminPanel.Margin = new System.Windows.Forms.Padding(1);
-            this.userAdminPanel.Name = "userAdminPanel";
-            this.userAdminPanel.Size = new System.Drawing.Size(506, 291);
-            this.userAdminPanel.TabIndex = 1;
-            this.userAdminPanel.Visible = false;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.button7);
-            this.groupBox2.Controls.Add(this.comboBox3);
-            this.groupBox2.Controls.Add(this.textBox4);
-            this.groupBox2.Controls.Add(this.label13);
-            this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Controls.Add(this.label15);
-            this.groupBox2.Controls.Add(this.textBox5);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.groupBox2.Location = new System.Drawing.Point(227, 142);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(1);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(1);
-            this.groupBox2.Size = new System.Drawing.Size(279, 149);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Modify User";
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(210, 22);
-            this.button7.Margin = new System.Windows.Forms.Padding(1);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(51, 64);
-            this.button7.TabIndex = 13;
-            this.button7.Text = "Modify";
-            this.button7.UseVisualStyleBackColor = true;
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Items.AddRange(new object[] {
-            "Shiftleader",
-            "1st Line",
-            "2nd Line"});
-            this.comboBox3.Location = new System.Drawing.Point(68, 70);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(1);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(138, 21);
-            this.comboBox3.TabIndex = 12;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(68, 22);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(1);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(138, 20);
-            this.textBox4.TabIndex = 11;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(7, 71);
-            this.label13.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(63, 13);
-            this.label13.TabIndex = 10;
-            this.label13.Text = "Permission: ";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(7, 47);
-            this.label14.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(58, 13);
-            this.label14.TabIndex = 9;
-            this.label14.Text = "Username:";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(7, 23);
-            this.label15.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(38, 13);
-            this.label15.TabIndex = 8;
-            this.label15.Text = "Name:";
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(68, 45);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(1);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(138, 20);
-            this.textBox5.TabIndex = 7;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.button6);
-            this.groupBox1.Controls.Add(this.comboBox2);
-            this.groupBox1.Controls.Add(this.textBox3);
-            this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox1.Location = new System.Drawing.Point(0, 142);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(1);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(1);
-            this.groupBox1.Size = new System.Drawing.Size(275, 149);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Add User";
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(210, 21);
-            this.button6.Margin = new System.Windows.Forms.Padding(1);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(51, 64);
-            this.button6.TabIndex = 6;
-            this.button6.Text = "Add";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "Shiftleader",
-            "1st Line",
-            "2nd Line"});
-            this.comboBox2.Location = new System.Drawing.Point(72, 68);
-            this.comboBox2.Margin = new System.Windows.Forms.Padding(1);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(138, 21);
-            this.comboBox2.TabIndex = 5;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(72, 45);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(1);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(138, 20);
-            this.textBox3.TabIndex = 4;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(7, 70);
-            this.label12.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(63, 13);
-            this.label12.TabIndex = 3;
-            this.label12.Text = "Permission: ";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(7, 46);
-            this.label11.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(58, 13);
-            this.label11.TabIndex = 2;
-            this.label11.Text = "Username:";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 22);
-            this.label10.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(38, 13);
-            this.label10.TabIndex = 1;
-            this.label10.Text = "Name:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(72, 21);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(1);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(138, 20);
-            this.textBox2.TabIndex = 0;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AlwaysVisibleVScrollBar = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Username,
-            this.Permission});
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.dataGridView1.DoubleBuffer = true;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(1);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 37;
-            this.dataGridView1.Size = new System.Drawing.Size(506, 142);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // Username
-            // 
-            this.Username.HeaderText = "Username";
-            this.Username.Name = "Username";
-            this.Username.ReadOnly = true;
-            this.Username.Width = 150;
-            // 
-            // Permission
-            // 
-            this.Permission.HeaderText = "Permission";
-            this.Permission.Name = "Permission";
-            this.Permission.Width = 150;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.Red;
-            this.label9.Location = new System.Drawing.Point(7, 6);
-            this.label9.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(99, 13);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "User not authorized";
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -631,22 +348,19 @@ namespace appCore.Settings.UI
             this.MinimizeBox = false;
             this.Name = "SettingsForm";
             this.Text = "Settings";
+            this.Shown += new System.EventHandler(this.SettingsForm_Shown);
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.userAdminTab.ResumeLayout(false);
-            this.noPermPanel.ResumeLayout(false);
-            this.noPermPanel.PerformLayout();
-            this.userAdminPanel.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.GeneralTabPage.ResumeLayout(false);
+            this.GeneralTabPage.PerformLayout();
+            this.AboutTabPage.ResumeLayout(false);
+            this.AboutTabPage.PerformLayout();
             this.ResumeLayout(false);
 
 		}
+
+        private System.Windows.Forms.TabPage PermissionsTabPage;
+        private System.Windows.Forms.Button button1;
+        private JCS.ToggleSwitch toggleSwitch3;
+        private System.Windows.Forms.Label label9;
     }
 }

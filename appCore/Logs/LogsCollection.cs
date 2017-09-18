@@ -466,7 +466,7 @@ namespace appCore.Logs
 						//string logtype = EnumExtensions.GetDescription(n.LogType);
 						//if(logtype != "Failed CRQ")
 						//	logtype += " Template";
-						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + EnumExtensions.GetDescription(n.LogType));
+						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + n.LogType.GetDescription());
 						sw.WriteLine(n.fullLog);
 //						if(logtype == "Troubleshoot") {
 //							TroubleShoot temp = (TroubleShoot)n;
@@ -500,7 +500,7 @@ namespace appCore.Logs
 						//string logtype = n.LogType;
 						//if(logtype != "Failed CRQ")
 						//	logtype += " Template";
-						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + EnumExtensions.GetDescription(n.LogType));
+						sw.WriteLine(n.GenerationDate.ToString("HH:mm:ss") + " - " + n.LogType.GetDescription());
 						sw.WriteLine(n.fullLog);
 						sw.Write(logSeparator);
 					}

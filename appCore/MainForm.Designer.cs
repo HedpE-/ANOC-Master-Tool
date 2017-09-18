@@ -23,39 +23,39 @@ namespace appCore
 		private System.Windows.Forms.Label label19;
 		private appCore.UI.AMTTextBox textBox13;
 		private System.Windows.Forms.Label label18;
-		private System.Windows.Forms.TabPage tabPage5;
-		private System.Windows.Forms.TabPage tabPage4;
-		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage NetcoolParserTabPage;
+		private System.Windows.Forms.TabPage RAN_OutagesTabPage;
+		private System.Windows.Forms.TabPage RAN_ClosureCodeTabPage;
+		private System.Windows.Forms.TabPage TemplatesTabPage;
+		private System.Windows.Forms.TabPage StartTabPage;
+		private System.Windows.Forms.TabControl MainTabControl;
 		private System.Windows.Forms.Label label31;
 		private System.Windows.Forms.Label label30;
 		private System.Windows.Forms.Label label34;
-		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.PictureBox SettingsPictureBox;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-		private System.Windows.Forms.PictureBox pictureBox2;
-		private System.Windows.Forms.PictureBox pictureBox3;
-		private System.Windows.Forms.PictureBox pictureBox4;
-		private System.Windows.Forms.TabControl tabControl2;
-		private System.Windows.Forms.TabPage tabPage8;
-		private System.Windows.Forms.TabPage tabPage9;
-		private System.Windows.Forms.TabPage tabPage10;
+		private System.Windows.Forms.PictureBox AMTBrowserPictureBox;
+		private System.Windows.Forms.PictureBox NotesPictureBox;
+		private System.Windows.Forms.PictureBox LogsPictureBox;
+		private System.Windows.Forms.TabControl Ran_TemplatesTabControl;
+		private System.Windows.Forms.TabPage TroubleshootTabPage;
+		private System.Windows.Forms.TabPage TxTabPage;
+		private System.Windows.Forms.TabPage FailedCRQsTabPage;
 		private System.Windows.Forms.Button button13;
-		private System.Windows.Forms.TabPage tabPage6;
-		private System.Windows.Forms.TabPage tabPage7;
-		private System.Windows.Forms.TabControl tabControl3;
-		private System.Windows.Forms.TabPage tabPage11;
-		private System.Windows.Forms.TabPage tabPage12;
-		private System.Windows.Forms.TabPage tabPage13;
-		private System.Windows.Forms.TabPage tabPage14;
+		private System.Windows.Forms.TabPage UpdatesTabPage;
+		private System.Windows.Forms.TabPage ScriptsTabPage;
+		private System.Windows.Forms.TabControl RAN_ScriptsTabControl;
+		private System.Windows.Forms.TabPage HuaweiTabPage;
+		private System.Windows.Forms.TabPage NokiaTabPage;
+		private System.Windows.Forms.TabPage EricsonScriptTabPage;
+		private System.Windows.Forms.TabPage AlcatelTabPage;
 		private System.Windows.Forms.Button button24;
-		private System.Windows.Forms.PictureBox pictureBox6;
-		private System.Windows.Forms.TabPage tabPage17;
-		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.PictureBox CalendarPictureBox;
+		private System.Windows.Forms.TabPage TestTabPage;
+		private System.Windows.Forms.Panel StartMenuPanel;
 		private System.Windows.Forms.ComboBox comboBox1;
 		
 		/// <summary>
@@ -80,102 +80,110 @@ namespace appCore
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.MainTabControl = new System.Windows.Forms.TabControl();
+            this.StartTabPage = new System.Windows.Forms.TabPage();
             this.allCellsLabel = new System.Windows.Forms.Label();
             this.allSitesLabel = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.tabPage10 = new System.Windows.Forms.TabPage();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.tabControl3 = new System.Windows.Forms.TabControl();
-            this.tabPage13 = new System.Windows.Forms.TabPage();
-            this.tabPage12 = new System.Windows.Forms.TabPage();
-            this.tabPage11 = new System.Windows.Forms.TabPage();
-            this.tabPage14 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.StartMenuPanel = new System.Windows.Forms.Panel();
+            this.AMTBrowserPictureBox = new System.Windows.Forms.PictureBox();
+            this.CalendarPictureBox = new System.Windows.Forms.PictureBox();
+            this.SettingsPictureBox = new System.Windows.Forms.PictureBox();
+            this.LogsPictureBox = new System.Windows.Forms.PictureBox();
+            this.NotesPictureBox = new System.Windows.Forms.PictureBox();
+            this.TemplatesTabPage = new System.Windows.Forms.TabPage();
+            this.Ran_TemplatesTabControl = new System.Windows.Forms.TabControl();
+            this.TroubleshootTabPage = new System.Windows.Forms.TabPage();
+            this.FailedCRQsTabPage = new System.Windows.Forms.TabPage();
+            this.UpdatesTabPage = new System.Windows.Forms.TabPage();
+            this.TxTabPage = new System.Windows.Forms.TabPage();
+            this.ScriptsTabPage = new System.Windows.Forms.TabPage();
+            this.RAN_ScriptsTabControl = new System.Windows.Forms.TabControl();
+            this.EricsonScriptTabPage = new System.Windows.Forms.TabPage();
+            this.NokiaTabPage = new System.Windows.Forms.TabPage();
+            this.HuaweiTabPage = new System.Windows.Forms.TabPage();
+            this.AlcatelTabPage = new System.Windows.Forms.TabPage();
+            this.RAN_ClosureCodeTabPage = new System.Windows.Forms.TabPage();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label31 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.textBox14 = new appCore.UI.AMTTextBox();
+            this.textBox13 = new appCore.UI.AMTTextBox();
+            this.RAN_OutagesTabPage = new System.Windows.Forms.TabPage();
+            this.NetcoolParserTabPage = new System.Windows.Forms.TabPage();
             this.button24 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.label34 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
-            this.tabPage17 = new System.Windows.Forms.TabPage();
+            this.textBox12 = new appCore.UI.AMTRichTextBox();
+            this.RAN_CellsDownTabPage = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.amtRichTextBox1 = new appCore.UI.AMTRichTextBox();
+            this.TestTabPage = new System.Windows.Forms.TabPage();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBox14 = new appCore.UI.AMTTextBox();
-            this.textBox13 = new appCore.UI.AMTTextBox();
-            this.textBox12 = new appCore.UI.AMTRichTextBox();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.tabControl2.SuspendLayout();
-            this.tabPage7.SuspendLayout();
-            this.tabControl3.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage5.SuspendLayout();
+            this.MainTabControl.SuspendLayout();
+            this.StartTabPage.SuspendLayout();
+            this.StartMenuPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AMTBrowserPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CalendarPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SettingsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LogsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesPictureBox)).BeginInit();
+            this.TemplatesTabPage.SuspendLayout();
+            this.Ran_TemplatesTabControl.SuspendLayout();
+            this.ScriptsTabPage.SuspendLayout();
+            this.RAN_ScriptsTabControl.SuspendLayout();
+            this.RAN_ClosureCodeTabPage.SuspendLayout();
+            this.NetcoolParserTabPage.SuspendLayout();
+            this.RAN_CellsDownTabPage.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // MainTabControl
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage7);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Controls.Add(this.tabPage5);
-            this.tabControl1.Controls.Add(this.tabPage17);
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.Padding = new System.Drawing.Point(0, 0);
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(533, 682);
-            this.tabControl1.TabIndex = 0;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1SelectedIndexChanged);
-            this.tabControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TabControl1MouseDown);
+            this.MainTabControl.Controls.Add(this.StartTabPage);
+            this.MainTabControl.Controls.Add(this.TemplatesTabPage);
+            this.MainTabControl.Controls.Add(this.ScriptsTabPage);
+            this.MainTabControl.Controls.Add(this.RAN_ClosureCodeTabPage);
+            this.MainTabControl.Controls.Add(this.RAN_OutagesTabPage);
+            this.MainTabControl.Controls.Add(this.NetcoolParserTabPage);
+            this.MainTabControl.Controls.Add(this.RAN_CellsDownTabPage);
+            this.MainTabControl.Controls.Add(this.TestTabPage);
+            this.MainTabControl.Location = new System.Drawing.Point(0, 0);
+            this.MainTabControl.Margin = new System.Windows.Forms.Padding(0);
+            this.MainTabControl.Name = "MainTabControl";
+            this.MainTabControl.Padding = new System.Drawing.Point(0, 0);
+            this.MainTabControl.SelectedIndex = 0;
+            this.MainTabControl.Size = new System.Drawing.Size(533, 682);
+            this.MainTabControl.TabIndex = 0;
+            this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl1SelectedIndexChanged);
+            this.MainTabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TabControl1MouseDown);
             // 
-            // tabPage1
+            // StartTabPage
             // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.BackgroundImage = global::appCore.UI.Resources.zoozoo_wallpaper_15;
-            this.tabPage1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.tabPage1.Controls.Add(this.allCellsLabel);
-            this.tabPage1.Controls.Add(this.allSitesLabel);
-            this.tabPage1.Controls.Add(this.panel1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(525, 656);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Start";
-            this.tabPage1.BackgroundImageChanged += new System.EventHandler(this.TabPage1BackgroundImageChanged);
-            this.tabPage1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabPage1MouseClick);
+            this.StartTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.StartTabPage.BackgroundImage = global::appCore.UI.Resources.zoozoo_wallpaper_15;
+            this.StartTabPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.StartTabPage.Controls.Add(this.allCellsLabel);
+            this.StartTabPage.Controls.Add(this.allSitesLabel);
+            this.StartTabPage.Controls.Add(this.StartMenuPanel);
+            this.StartTabPage.Location = new System.Drawing.Point(4, 22);
+            this.StartTabPage.Margin = new System.Windows.Forms.Padding(0);
+            this.StartTabPage.Name = "StartTabPage";
+            this.StartTabPage.Size = new System.Drawing.Size(525, 656);
+            this.StartTabPage.TabIndex = 0;
+            this.StartTabPage.Text = "Start";
+            this.StartTabPage.BackgroundImageChanged += new System.EventHandler(this.TabPage1BackgroundImageChanged);
+            this.StartTabPage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabPage1MouseClick);
             // 
             // allCellsLabel
             // 
@@ -203,236 +211,237 @@ namespace appCore
             this.allSitesLabel.Visible = false;
             this.allSitesLabel.ForeColorChanged += new System.EventHandler(this.allSitesCellsLabelsForeColorChanged);
             // 
-            // panel1
+            // StartMenuPanel
             // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.pictureBox2);
-            this.panel1.Controls.Add(this.pictureBox6);
-            this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Controls.Add(this.pictureBox4);
-            this.panel1.Controls.Add(this.pictureBox3);
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(98, 138);
-            this.panel1.TabIndex = 10;
+            this.StartMenuPanel.BackColor = System.Drawing.Color.Transparent;
+            this.StartMenuPanel.Controls.Add(this.AMTBrowserPictureBox);
+            this.StartMenuPanel.Controls.Add(this.CalendarPictureBox);
+            this.StartMenuPanel.Controls.Add(this.SettingsPictureBox);
+            this.StartMenuPanel.Controls.Add(this.LogsPictureBox);
+            this.StartMenuPanel.Controls.Add(this.NotesPictureBox);
+            this.StartMenuPanel.Location = new System.Drawing.Point(0, 0);
+            this.StartMenuPanel.Name = "StartMenuPanel";
+            this.StartMenuPanel.Size = new System.Drawing.Size(98, 138);
+            this.StartMenuPanel.TabIndex = 10;
             // 
-            // pictureBox2
+            // AMTBrowserPictureBox
             // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox2.Image = global::appCore.UI.Resources.globe;
-            this.pictureBox2.Location = new System.Drawing.Point(6, 3);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(40, 40);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox2.TabIndex = 3;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.PictureBoxesClick);
-            this.pictureBox2.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
-            this.pictureBox2.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
+            this.AMTBrowserPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AMTBrowserPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.AMTBrowserPictureBox.Image = global::appCore.UI.Resources.globe;
+            this.AMTBrowserPictureBox.Location = new System.Drawing.Point(6, 3);
+            this.AMTBrowserPictureBox.Name = "AMTBrowserPictureBox";
+            this.AMTBrowserPictureBox.Size = new System.Drawing.Size(40, 40);
+            this.AMTBrowserPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.AMTBrowserPictureBox.TabIndex = 3;
+            this.AMTBrowserPictureBox.TabStop = false;
+            this.AMTBrowserPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.AMTBrowserPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.AMTBrowserPictureBox.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
             // 
-            // pictureBox6
+            // CalendarPictureBox
             // 
-            this.pictureBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox6.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox6.Image = global::appCore.UI.Resources.Business_Planner_icon;
-            this.pictureBox6.Location = new System.Drawing.Point(52, 95);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(40, 40);
-            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox6.TabIndex = 9;
-            this.pictureBox6.TabStop = false;
-            this.pictureBox6.Visible = false;
-            this.pictureBox6.Click += new System.EventHandler(this.PictureBoxesClick);
-            this.pictureBox6.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
-            this.pictureBox6.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
+            this.CalendarPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.CalendarPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.CalendarPictureBox.Image = global::appCore.UI.Resources.Business_Planner_icon;
+            this.CalendarPictureBox.Location = new System.Drawing.Point(52, 95);
+            this.CalendarPictureBox.Name = "CalendarPictureBox";
+            this.CalendarPictureBox.Size = new System.Drawing.Size(40, 40);
+            this.CalendarPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.CalendarPictureBox.TabIndex = 9;
+            this.CalendarPictureBox.TabStop = false;
+            this.CalendarPictureBox.Visible = false;
+            this.CalendarPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.CalendarPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.CalendarPictureBox.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
             // 
-            // pictureBox1
+            // SettingsPictureBox
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::appCore.UI.Resources.Settings_normal;
-            this.pictureBox1.Location = new System.Drawing.Point(6, 95);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(40, 40);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.PictureBoxesClick);
-            this.pictureBox1.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
-            this.pictureBox1.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
+            this.SettingsPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SettingsPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.SettingsPictureBox.Image = global::appCore.UI.Resources.Settings_normal;
+            this.SettingsPictureBox.Location = new System.Drawing.Point(6, 95);
+            this.SettingsPictureBox.Name = "SettingsPictureBox";
+            this.SettingsPictureBox.Size = new System.Drawing.Size(40, 40);
+            this.SettingsPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.SettingsPictureBox.TabIndex = 1;
+            this.SettingsPictureBox.TabStop = false;
+            this.SettingsPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.SettingsPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.SettingsPictureBox.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
             // 
-            // pictureBox4
+            // LogsPictureBox
             // 
-            this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox4.Image = global::appCore.UI.Resources._lock;
-            this.pictureBox4.Location = new System.Drawing.Point(52, 49);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(40, 40);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox4.TabIndex = 7;
-            this.pictureBox4.TabStop = false;
-            this.pictureBox4.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.LogsPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.LogsPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.LogsPictureBox.Image = global::appCore.UI.Resources._lock;
+            this.LogsPictureBox.Location = new System.Drawing.Point(52, 49);
+            this.LogsPictureBox.Name = "LogsPictureBox";
+            this.LogsPictureBox.Size = new System.Drawing.Size(40, 40);
+            this.LogsPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.LogsPictureBox.TabIndex = 7;
+            this.LogsPictureBox.TabStop = false;
+            this.LogsPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
             // 
-            // pictureBox3
+            // NotesPictureBox
             // 
-            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox3.Image = global::appCore.UI.Resources.Book_512;
-            this.pictureBox3.Location = new System.Drawing.Point(52, 3);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(40, 40);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 4;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.PictureBoxesClick);
-            this.pictureBox3.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.NotesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NotesPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.NotesPictureBox.Image = global::appCore.UI.Resources.Book_512;
+            this.NotesPictureBox.Location = new System.Drawing.Point(52, 3);
+            this.NotesPictureBox.Name = "NotesPictureBox";
+            this.NotesPictureBox.Size = new System.Drawing.Size(40, 40);
+            this.NotesPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.NotesPictureBox.TabIndex = 4;
+            this.NotesPictureBox.TabStop = false;
+            this.NotesPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.NotesPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
             // 
-            // tabPage2
+            // TemplatesTabPage
             // 
-            this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.tabControl2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(525, 656);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Templates";
+            this.TemplatesTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.TemplatesTabPage.Controls.Add(this.Ran_TemplatesTabControl);
+            this.TemplatesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.TemplatesTabPage.Name = "TemplatesTabPage";
+            this.TemplatesTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.TemplatesTabPage.Size = new System.Drawing.Size(525, 656);
+            this.TemplatesTabPage.TabIndex = 1;
+            this.TemplatesTabPage.Text = "Templates";
             // 
-            // tabControl2
+            // Ran_TemplatesTabControl
             // 
-            this.tabControl2.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabControl2.Controls.Add(this.tabPage8);
-            this.tabControl2.Controls.Add(this.tabPage10);
-            this.tabControl2.Controls.Add(this.tabPage6);
-            this.tabControl2.Controls.Add(this.tabPage9);
-            this.tabControl2.Location = new System.Drawing.Point(0, 0);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(527, 658);
-            this.tabControl2.TabIndex = 0;
-            this.tabControl2.SelectedIndexChanged += new System.EventHandler(this.TabControl2SelectedIndexChanged);
+            this.Ran_TemplatesTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.Ran_TemplatesTabControl.Controls.Add(this.TroubleshootTabPage);
+            this.Ran_TemplatesTabControl.Controls.Add(this.FailedCRQsTabPage);
+            this.Ran_TemplatesTabControl.Controls.Add(this.UpdatesTabPage);
+            this.Ran_TemplatesTabControl.Controls.Add(this.TxTabPage);
+            this.Ran_TemplatesTabControl.Location = new System.Drawing.Point(0, 0);
+            this.Ran_TemplatesTabControl.Name = "Ran_TemplatesTabControl";
+            this.Ran_TemplatesTabControl.SelectedIndex = 0;
+            this.Ran_TemplatesTabControl.Size = new System.Drawing.Size(527, 658);
+            this.Ran_TemplatesTabControl.TabIndex = 0;
+            this.Ran_TemplatesTabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl2SelectedIndexChanged);
             // 
-            // tabPage8
+            // TroubleshootTabPage
             // 
-            this.tabPage8.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage8.Location = new System.Drawing.Point(4, 25);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(519, 629);
-            this.tabPage8.TabIndex = 0;
-            this.tabPage8.Text = "Troubleshoot Template";
+            this.TroubleshootTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.TroubleshootTabPage.Location = new System.Drawing.Point(4, 25);
+            this.TroubleshootTabPage.Name = "TroubleshootTabPage";
+            this.TroubleshootTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.TroubleshootTabPage.Size = new System.Drawing.Size(519, 629);
+            this.TroubleshootTabPage.TabIndex = 0;
+            this.TroubleshootTabPage.Text = "Troubleshoot Template";
             // 
-            // tabPage10
+            // FailedCRQsTabPage
             // 
-            this.tabPage10.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage10.Location = new System.Drawing.Point(4, 25);
-            this.tabPage10.Name = "tabPage10";
-            this.tabPage10.Size = new System.Drawing.Size(519, 629);
-            this.tabPage10.TabIndex = 2;
-            this.tabPage10.Text = "Failed CRQ\'s";
+            this.FailedCRQsTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.FailedCRQsTabPage.Location = new System.Drawing.Point(4, 25);
+            this.FailedCRQsTabPage.Name = "FailedCRQsTabPage";
+            this.FailedCRQsTabPage.Size = new System.Drawing.Size(519, 629);
+            this.FailedCRQsTabPage.TabIndex = 2;
+            this.FailedCRQsTabPage.Text = "Failed CRQ\'s";
             // 
-            // tabPage6
+            // UpdatesTabPage
             // 
-            this.tabPage6.Location = new System.Drawing.Point(4, 25);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(519, 629);
-            this.tabPage6.TabIndex = 3;
-            this.tabPage6.Text = "Updates";
-            this.tabPage6.UseVisualStyleBackColor = true;
+            this.UpdatesTabPage.Location = new System.Drawing.Point(4, 25);
+            this.UpdatesTabPage.Name = "UpdatesTabPage";
+            this.UpdatesTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.UpdatesTabPage.Size = new System.Drawing.Size(519, 629);
+            this.UpdatesTabPage.TabIndex = 3;
+            this.UpdatesTabPage.Text = "Updates";
+            this.UpdatesTabPage.UseVisualStyleBackColor = true;
             // 
-            // tabPage9
+            // TxTabPage
             // 
-            this.tabPage9.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage9.Location = new System.Drawing.Point(4, 25);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(519, 629);
-            this.tabPage9.TabIndex = 1;
-            this.tabPage9.Text = "TX Template";
+            this.TxTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.TxTabPage.Location = new System.Drawing.Point(4, 25);
+            this.TxTabPage.Name = "TxTabPage";
+            this.TxTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.TxTabPage.Size = new System.Drawing.Size(519, 629);
+            this.TxTabPage.TabIndex = 1;
+            this.TxTabPage.Text = "TX Template";
             // 
-            // tabPage7
+            // ScriptsTabPage
             // 
-            this.tabPage7.Controls.Add(this.tabControl3);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(525, 656);
-            this.tabPage7.TabIndex = 5;
-            this.tabPage7.Text = "Scripts";
-            this.tabPage7.UseVisualStyleBackColor = true;
+            this.ScriptsTabPage.Controls.Add(this.RAN_ScriptsTabControl);
+            this.ScriptsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.ScriptsTabPage.Name = "ScriptsTabPage";
+            this.ScriptsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.ScriptsTabPage.Size = new System.Drawing.Size(525, 656);
+            this.ScriptsTabPage.TabIndex = 5;
+            this.ScriptsTabPage.Text = "Scripts";
+            this.ScriptsTabPage.UseVisualStyleBackColor = true;
             // 
-            // tabControl3
+            // RAN_ScriptsTabControl
             // 
-            this.tabControl3.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabControl3.Controls.Add(this.tabPage13);
-            this.tabControl3.Controls.Add(this.tabPage12);
-            this.tabControl3.Controls.Add(this.tabPage11);
-            this.tabControl3.Controls.Add(this.tabPage14);
-            this.tabControl3.Location = new System.Drawing.Point(0, 0);
-            this.tabControl3.Name = "tabControl3";
-            this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(527, 660);
-            this.tabControl3.TabIndex = 1;
+            this.RAN_ScriptsTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.RAN_ScriptsTabControl.Controls.Add(this.EricsonScriptTabPage);
+            this.RAN_ScriptsTabControl.Controls.Add(this.NokiaTabPage);
+            this.RAN_ScriptsTabControl.Controls.Add(this.HuaweiTabPage);
+            this.RAN_ScriptsTabControl.Controls.Add(this.AlcatelTabPage);
+            this.RAN_ScriptsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.RAN_ScriptsTabControl.Name = "RAN_ScriptsTabControl";
+            this.RAN_ScriptsTabControl.SelectedIndex = 0;
+            this.RAN_ScriptsTabControl.Size = new System.Drawing.Size(527, 660);
+            this.RAN_ScriptsTabControl.TabIndex = 1;
+            this.RAN_ScriptsTabControl.SelectedIndexChanged += new System.EventHandler(this.RAN_ScriptsTabControlSelectedIndexChanged);
             // 
-            // tabPage13
+            // EricsonScriptTabPage
             // 
-            this.tabPage13.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage13.Location = new System.Drawing.Point(4, 25);
-            this.tabPage13.Name = "tabPage13";
-            this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage13.Size = new System.Drawing.Size(519, 631);
-            this.tabPage13.TabIndex = 1;
-            this.tabPage13.Text = "Ericsson";
+            this.EricsonScriptTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.EricsonScriptTabPage.Location = new System.Drawing.Point(4, 25);
+            this.EricsonScriptTabPage.Name = "EricsonScriptTabPage";
+            this.EricsonScriptTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.EricsonScriptTabPage.Size = new System.Drawing.Size(519, 631);
+            this.EricsonScriptTabPage.TabIndex = 1;
+            this.EricsonScriptTabPage.Text = "Ericsson";
             // 
-            // tabPage12
+            // NokiaTabPage
             // 
-            this.tabPage12.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage12.Location = new System.Drawing.Point(4, 25);
-            this.tabPage12.Name = "tabPage12";
-            this.tabPage12.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.tabPage12.Size = new System.Drawing.Size(519, 631);
-            this.tabPage12.TabIndex = 2;
-            this.tabPage12.Text = "Nokia";
+            this.NokiaTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.NokiaTabPage.Location = new System.Drawing.Point(4, 25);
+            this.NokiaTabPage.Name = "NokiaTabPage";
+            this.NokiaTabPage.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.NokiaTabPage.Size = new System.Drawing.Size(519, 631);
+            this.NokiaTabPage.TabIndex = 2;
+            this.NokiaTabPage.Text = "Nokia";
             // 
-            // tabPage11
+            // HuaweiTabPage
             // 
-            this.tabPage11.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage11.Location = new System.Drawing.Point(4, 25);
-            this.tabPage11.Name = "tabPage11";
-            this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage11.Size = new System.Drawing.Size(519, 631);
-            this.tabPage11.TabIndex = 0;
-            this.tabPage11.Text = "Huawei";
+            this.HuaweiTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.HuaweiTabPage.Location = new System.Drawing.Point(4, 25);
+            this.HuaweiTabPage.Name = "HuaweiTabPage";
+            this.HuaweiTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.HuaweiTabPage.Size = new System.Drawing.Size(519, 631);
+            this.HuaweiTabPage.TabIndex = 0;
+            this.HuaweiTabPage.Text = "Huawei";
             // 
-            // tabPage14
+            // AlcatelTabPage
             // 
-            this.tabPage14.Location = new System.Drawing.Point(4, 25);
-            this.tabPage14.Name = "tabPage14";
-            this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage14.Size = new System.Drawing.Size(519, 631);
-            this.tabPage14.TabIndex = 3;
-            this.tabPage14.Text = "Alcatel";
-            this.tabPage14.UseVisualStyleBackColor = true;
+            this.AlcatelTabPage.Location = new System.Drawing.Point(4, 25);
+            this.AlcatelTabPage.Name = "AlcatelTabPage";
+            this.AlcatelTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.AlcatelTabPage.Size = new System.Drawing.Size(519, 631);
+            this.AlcatelTabPage.TabIndex = 3;
+            this.AlcatelTabPage.Text = "Alcatel";
+            this.AlcatelTabPage.UseVisualStyleBackColor = true;
             // 
-            // tabPage3
+            // RAN_ClosureCodeTabPage
             // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage3.Controls.Add(this.comboBox1);
-            this.tabPage3.Controls.Add(this.label31);
-            this.tabPage3.Controls.Add(this.label30);
-            this.tabPage3.Controls.Add(this.label19);
-            this.tabPage3.Controls.Add(this.label20);
-            this.tabPage3.Controls.Add(this.label18);
-            this.tabPage3.Controls.Add(this.textBox14);
-            this.tabPage3.Controls.Add(this.textBox13);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(525, 656);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Closure Code";
+            this.RAN_ClosureCodeTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.comboBox1);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.label31);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.label30);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.label19);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.label20);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.label18);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.textBox14);
+            this.RAN_ClosureCodeTabPage.Controls.Add(this.textBox13);
+            this.RAN_ClosureCodeTabPage.Location = new System.Drawing.Point(4, 22);
+            this.RAN_ClosureCodeTabPage.Name = "RAN_ClosureCodeTabPage";
+            this.RAN_ClosureCodeTabPage.Size = new System.Drawing.Size(525, 656);
+            this.RAN_ClosureCodeTabPage.TabIndex = 2;
+            this.RAN_ClosureCodeTabPage.Text = "Closure Code";
             // 
             // comboBox1
             // 
@@ -495,29 +504,50 @@ namespace appCore
             this.label18.Text = "INC";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tabPage4
+            // textBox14
             // 
-            this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(525, 656);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Outages";
+            this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox14.Location = new System.Drawing.Point(87, 59);
+            this.textBox14.MaxLength = 9;
+            this.textBox14.Name = "textBox14";
+            this.textBox14.ReadOnly = true;
+            this.textBox14.Size = new System.Drawing.Size(76, 20);
+            this.textBox14.TabIndex = 3;
             // 
-            // tabPage5
+            // textBox13
             // 
-            this.tabPage5.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage5.Controls.Add(this.button24);
-            this.tabPage5.Controls.Add(this.button13);
-            this.tabPage5.Controls.Add(this.label34);
-            this.tabPage5.Controls.Add(this.button5);
-            this.tabPage5.Controls.Add(this.button6);
-            this.tabPage5.Controls.Add(this.textBox12);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(525, 656);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Netcool Parser";
+            this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox13.Location = new System.Drawing.Point(87, 7);
+            this.textBox13.MaxLength = 15;
+            this.textBox13.Name = "textBox13";
+            this.textBox13.Size = new System.Drawing.Size(111, 20);
+            this.textBox13.TabIndex = 1;
+            this.textBox13.TextChanged += new System.EventHandler(this.TextBox13TextChanged);
+            this.textBox13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox13KeyPress);
+            // 
+            // RAN_OutagesTabPage
+            // 
+            this.RAN_OutagesTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.RAN_OutagesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.RAN_OutagesTabPage.Name = "RAN_OutagesTabPage";
+            this.RAN_OutagesTabPage.Size = new System.Drawing.Size(525, 656);
+            this.RAN_OutagesTabPage.TabIndex = 3;
+            this.RAN_OutagesTabPage.Text = "Outages";
+            // 
+            // NetcoolParserTabPage
+            // 
+            this.NetcoolParserTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.NetcoolParserTabPage.Controls.Add(this.button24);
+            this.NetcoolParserTabPage.Controls.Add(this.button13);
+            this.NetcoolParserTabPage.Controls.Add(this.label34);
+            this.NetcoolParserTabPage.Controls.Add(this.button5);
+            this.NetcoolParserTabPage.Controls.Add(this.button6);
+            this.NetcoolParserTabPage.Controls.Add(this.textBox12);
+            this.NetcoolParserTabPage.Location = new System.Drawing.Point(4, 22);
+            this.NetcoolParserTabPage.Name = "NetcoolParserTabPage";
+            this.NetcoolParserTabPage.Size = new System.Drawing.Size(525, 656);
+            this.NetcoolParserTabPage.TabIndex = 4;
+            this.NetcoolParserTabPage.Text = "Netcool Parser";
             // 
             // button24
             // 
@@ -571,15 +601,94 @@ namespace appCore
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.Button6Click);
             // 
-            // tabPage17
+            // textBox12
             // 
-            this.tabPage17.BackColor = System.Drawing.Color.DimGray;
-            this.tabPage17.Location = new System.Drawing.Point(4, 22);
-            this.tabPage17.Name = "tabPage17";
-            this.tabPage17.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage17.Size = new System.Drawing.Size(525, 656);
-            this.tabPage17.TabIndex = 6;
-            this.tabPage17.Text = "tabPage17";
+            this.textBox12.DetectUrls = false;
+            this.textBox12.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox12.Location = new System.Drawing.Point(8, 27);
+            this.textBox12.Name = "textBox12";
+            this.textBox12.Size = new System.Drawing.Size(513, 597);
+            this.textBox12.TabIndex = 1;
+            this.textBox12.Text = "";
+            this.textBox12.TextChanged += new System.EventHandler(this.TextBox12TextChanged);
+            // 
+            // RAN_CellsDownTabPage
+            // 
+            this.RAN_CellsDownTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.RAN_CellsDownTabPage.Controls.Add(this.button1);
+            this.RAN_CellsDownTabPage.Controls.Add(this.label1);
+            this.RAN_CellsDownTabPage.Controls.Add(this.button3);
+            this.RAN_CellsDownTabPage.Controls.Add(this.button4);
+            this.RAN_CellsDownTabPage.Controls.Add(this.amtRichTextBox1);
+            this.RAN_CellsDownTabPage.Location = new System.Drawing.Point(4, 22);
+            this.RAN_CellsDownTabPage.Name = "RAN_CellsDownTabPage";
+            this.RAN_CellsDownTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.RAN_CellsDownTabPage.Size = new System.Drawing.Size(525, 656);
+            this.RAN_CellsDownTabPage.TabIndex = 7;
+            this.RAN_CellsDownTabPage.Text = "Cells Down";
+            // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(496, 4);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(24, 20);
+            this.button1.TabIndex = 31;
+            this.button1.Text = "...";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1Click);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(4, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(244, 20);
+            this.label1.TabIndex = 35;
+            this.label1.Text = "Paste all active alarms from Netcool";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button3
+            // 
+            this.button3.Enabled = false;
+            this.button3.Location = new System.Drawing.Point(445, 630);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 34;
+            this.button3.Text = "Clear";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.Button3Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(7, 630);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(151, 23);
+            this.button4.TabIndex = 32;
+            this.button4.Text = "Generate Cells Down report";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.Button4Click);
+            // 
+            // amtRichTextBox1
+            // 
+            this.amtRichTextBox1.DetectUrls = false;
+            this.amtRichTextBox1.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.amtRichTextBox1.Location = new System.Drawing.Point(7, 27);
+            this.amtRichTextBox1.Name = "amtRichTextBox1";
+            this.amtRichTextBox1.Size = new System.Drawing.Size(513, 597);
+            this.amtRichTextBox1.TabIndex = 30;
+            this.amtRichTextBox1.Text = "";
+            this.amtRichTextBox1.WordWrap = false;
+            this.amtRichTextBox1.TextChanged += new System.EventHandler(this.AmtRichTextBox1TextChanged);
+            // 
+            // TestTabPage
+            // 
+            this.TestTabPage.BackColor = System.Drawing.Color.DimGray;
+            this.TestTabPage.Location = new System.Drawing.Point(4, 22);
+            this.TestTabPage.Name = "TestTabPage";
+            this.TestTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.TestTabPage.Size = new System.Drawing.Size(525, 656);
+            this.TestTabPage.TabIndex = 6;
+            this.TestTabPage.Text = "TestTabPage";
             // 
             // contextMenuStrip1
             // 
@@ -611,67 +720,36 @@ namespace appCore
             this.toolStripMenuItem2.Text = "Choose from file...";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
             // 
-            // textBox14
-            // 
-            this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox14.Location = new System.Drawing.Point(87, 59);
-            this.textBox14.MaxLength = 9;
-            this.textBox14.Name = "textBox14";
-            this.textBox14.ReadOnly = true;
-            this.textBox14.Size = new System.Drawing.Size(76, 20);
-            this.textBox14.TabIndex = 3;
-            // 
-            // textBox13
-            // 
-            this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox13.Location = new System.Drawing.Point(87, 7);
-            this.textBox13.MaxLength = 15;
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(111, 20);
-            this.textBox13.TabIndex = 1;
-            this.textBox13.TextChanged += new System.EventHandler(this.TextBox13TextChanged);
-            this.textBox13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox13KeyPress);
-            // 
-            // textBox12
-            // 
-            this.textBox12.DetectUrls = false;
-            this.textBox12.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox12.Location = new System.Drawing.Point(8, 27);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(513, 597);
-            this.textBox12.TabIndex = 1;
-            this.textBox12.Text = "";
-            this.textBox12.WordWrap = false;
-            this.textBox12.TextChanged += new System.EventHandler(this.TextBox12TextChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(533, 682);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.MainTabControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::appCore.UI.Resources.app_icon;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "ANOC Master Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormFormClosing);
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.tabControl2.ResumeLayout(false);
-            this.tabPage7.ResumeLayout(false);
-            this.tabControl3.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
-            this.tabPage5.ResumeLayout(false);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.MainTabControl.ResumeLayout(false);
+            this.StartTabPage.ResumeLayout(false);
+            this.StartMenuPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.AMTBrowserPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CalendarPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SettingsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LogsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesPictureBox)).EndInit();
+            this.TemplatesTabPage.ResumeLayout(false);
+            this.Ran_TemplatesTabControl.ResumeLayout(false);
+            this.ScriptsTabPage.ResumeLayout(false);
+            this.RAN_ScriptsTabControl.ResumeLayout(false);
+            this.RAN_ClosureCodeTabPage.ResumeLayout(false);
+            this.RAN_ClosureCodeTabPage.PerformLayout();
+            this.NetcoolParserTabPage.ResumeLayout(false);
+            this.RAN_CellsDownTabPage.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -679,5 +757,11 @@ namespace appCore
 
         private System.Windows.Forms.Label allCellsLabel;
         private System.Windows.Forms.Label allSitesLabel;
+        private System.Windows.Forms.TabPage RAN_CellsDownTabPage;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private UI.AMTRichTextBox amtRichTextBox1;
     }
 }

@@ -88,11 +88,11 @@ namespace appCore.UI
 		public void InitializeTroubleshootMenu(bool enableAvailabilityButton = false) {
 			
 			AvailabilityButtonEnabled = enableAvailabilityButton;
-			INCsButton.Text = "INCs";
-			CRQsButton.Text = "CRQs";
-			BookInsButton.Text = "BookIns";
-			ActiveAlarmsButton.Text = "Alarms";
-			RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
+			//INCsButton.Text = "INCs";
+			//CRQsButton.Text = "CRQs";
+			//BookInsButton.Text = "BookIns";
+			//ActiveAlarmsButton.Text = "Alarms";
+			//RefreshButton.Text = '\u21bb'.ToString(); // \u21bb clockwise arrow unicode character
 			
 			Items.AddRange(new ToolStripItem[]{
 			               	INCsButton,
@@ -101,7 +101,7 @@ namespace appCore.UI
 			               	ActiveAlarmsButton
 			               });
 			if(AvailabilityButtonEnabled) {
-				AvailabilityButton.Text = "Availability Chart";
+				//AvailabilityButton.Text = "Availability Chart";
 				Items.Add(AvailabilityButton);
 				DynamicButtonsSizes();
 			}
@@ -139,151 +139,220 @@ namespace appCore.UI
 								break;
 						}
 						
-						item.Click += (s, a) => {
-							currentSite.requestOIData(dataToRequest);
-							siteFinder_Toggle(true);
-						};
-						
+						item.Click += ContextMenuItemClick;
+                        item.Tag = dataToRequest;
+
 						context.Show(this, PointToClient(Cursor.Position));
 					}
 				}
 			}
 		}
+        
+        async void ContextMenuItemClick (object sender, EventArgs e)
+        {
+            string dataToRequest = ((ToolStripItem)sender).Tag as string;
 
-		public void siteFinder_Toggle(bool toggle, bool siteFound = true) {
-			foreach (ToolStripMenuItem tsmi in Items) {
-				if(tsmi.Name.Contains("Button")) {
-					if(currentSite != null) {
-						if(currentSite.Exists) {
-							switch(tsmi.Name) {
-								case "INCsButton":
-									if(currentSite.Incidents != null) {
-										if(currentSite.Incidents.Count > 0) {
-											tsmi.Enabled = true;
-											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "INCs (" + currentSite.Incidents.Count + ")";
-										}
-										else {
-											tsmi.Enabled = false;
-											tsmi.Text = "No INC history";
-										}
-									}
-									else {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkRed;
-										tsmi.Text = "Click to load INCs";
-									}
-									break;
-								case "CRQsButton":
-									if(currentSite.Changes != null) {
-										if(currentSite.Changes.Count > 0) {
-											tsmi.Enabled = true;
-											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "CRQs (" + currentSite.Changes.Count + ")";
-										}
-										else {
-											tsmi.Enabled = false;
-											tsmi.Text = "No CRQ history";
-										}
-									}
-									else {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkRed;
-										tsmi.Text = "Click to load CRQs";
-									}
-									break;
-								case "BookInsButton":
-									if(currentSite.Visits != null) {
-										if(currentSite.Visits.Count > 0) {
-											tsmi.Enabled = true;
-											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "Book Ins (" + currentSite.Visits.Count + ")";
-										}
-										else {
-											tsmi.Enabled = false;
-											tsmi.Text = "No Book In history";
-										}
-									}
-									else {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkRed;
-										tsmi.Text = "Click to load Book Ins";
-									}
-									break;
-								case "ActiveAlarmsButton":
-									if(currentSite.Alarms != null) {
-										if(currentSite.Alarms.Count > 0) {
-											tsmi.Enabled = true;
-											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
-										}
-										else {
-											tsmi.Enabled = false;
-											tsmi.Text = "No alarms to display";
-										}
-									}
-									else {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkRed;
-										tsmi.Text = "Click to load alarms";
-									}
-									break;
-								case "AvailabilityButton":
-									if(currentSite.Availability != null) {
-										if(currentSite.Availability.Rows.Count > 0) {
-											tsmi.Enabled = true;
-											tsmi.ForeColor = Color.DarkGreen;
-											tsmi.Text = "Availability chart";
-										}
-										else {
-											tsmi.Enabled = false;
-											tsmi.Text = "No availability chart to display";
-										}
-									}
-									else {
-										tsmi.Enabled = true;
-										tsmi.ForeColor = Color.DarkRed;
-										tsmi.Text = "Click to load availability";
-									}
-									break;
-								case "RefreshButton":
-									tsmi.Enabled = true;
-									tsmi.Text = '\u21bb'.ToString();
-									break;
-							}
-						}
-						else {
-							tsmi.Enabled = false;
-							tsmi.Text = string.Empty;
-						}
-					}
-					else {
-						INCsButton.Enabled = false;
-						INCsButton.Text = string.Empty;
-						CRQsButton.Enabled = false;
-						CRQsButton.Text = string.Empty;
-						ActiveAlarmsButton.Enabled = false;
-						ActiveAlarmsButton.Text = string.Empty;
-						BookInsButton.Enabled = false;
-						BookInsButton.Text = string.Empty;
-						RefreshButton.Enabled = false;
-						AvailabilityButton.Text = string.Empty;
-						AvailabilityButton.Enabled = false;
-					}
-				}
-			}
-			
-			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == this.Parent).ToList();
-//			List<OiSiteTablesForm> openForms = new List<OiSiteTablesForm>();
-//
-//			foreach(OiSiteTablesForm frm in fc) {
-//				if(frm.OwnerControl == this.Parent)
-//					openForms.Add(frm);
-//			}
-			
-			for(int c = fc.Count - 1;c >= 0;c--)
-				fc[c].Close();
-		}
+            ToolStripItem tsi = null;
+            switch (dataToRequest)
+            {
+                case "INC":
+                    tsi = INCsButton;
+                    break;
+                case "CRQ":
+                    tsi = CRQsButton;
+                    break;
+                case "Alarms":
+                    tsi = ActiveAlarmsButton;
+                    break;
+                case "Bookins":
+                    tsi = BookInsButton;
+                    break;
+                case "Availability":
+                    tsi = AvailabilityButton;
+                    break;
+            }
+
+            tsi.Text = "Refreshing data...";
+            tsi.Enabled = false;
+            await currentSite.requestOIDataAsync(dataToRequest);
+
+            siteFinder_Toggle(true);
+        }
+
+        async public System.Threading.Tasks.Task ShowLoading()
+        {
+            foreach (ToolStripMenuItem tsmi in Items)
+            {
+                if (tsmi.Name.Contains("Button") && tsmi.Name != "RefreshButton")
+                {
+                    tsmi.Enabled = false;
+                    tsmi.Text = "Loading data...";
+                }
+            }
+        }
+
+        public async System.Threading.Tasks.Task siteFinder_Toggle(bool toggle, bool siteFound = true)
+        {
+            foreach (ToolStripMenuItem tsmi in Items)
+            {
+                if (tsmi.Name.Contains("Button"))
+                {
+                    if (currentSite != null)
+                    {
+                        if (currentSite.Exists)
+                        {
+                            switch (tsmi.Name)
+                            {
+                                case "INCsButton":
+                                    if (currentSite.Incidents != null)
+                                    {
+                                        if (currentSite.Incidents.Count > 0)
+                                        {
+                                            tsmi.Enabled = true;
+                                            tsmi.ForeColor = Color.DarkGreen;
+                                            tsmi.Text = "INCs (" + currentSite.Incidents.Count + ")";
+                                        }
+                                        else
+                                        {
+                                            tsmi.Enabled = false;
+                                            tsmi.Text = "No INC history";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tsmi.Enabled = true;
+                                        tsmi.ForeColor = Color.DarkRed;
+                                        tsmi.Text = "Click to load INCs";
+                                    }
+                                    break;
+                                case "CRQsButton":
+                                    if (currentSite.Changes != null)
+                                    {
+                                        if (currentSite.Changes.Count > 0)
+                                        {
+                                            tsmi.Enabled = true;
+                                            tsmi.ForeColor = Color.DarkGreen;
+                                            tsmi.Text = "CRQs (" + currentSite.Changes.Count + ")";
+                                        }
+                                        else
+                                        {
+                                            tsmi.Enabled = false;
+                                            tsmi.Text = "No CRQ history";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tsmi.Enabled = true;
+                                        tsmi.ForeColor = Color.DarkRed;
+                                        tsmi.Text = "Click to load CRQs";
+                                    }
+                                    break;
+                                case "BookInsButton":
+                                    if (currentSite.Visits != null)
+                                    {
+                                        if (currentSite.Visits.Count > 0)
+                                        {
+                                            tsmi.Enabled = true;
+                                            tsmi.ForeColor = Color.DarkGreen;
+                                            tsmi.Text = "Book Ins (" + currentSite.Visits.Count + ")";
+                                        }
+                                        else
+                                        {
+                                            tsmi.Enabled = false;
+                                            tsmi.Text = "No Book In history";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tsmi.Enabled = true;
+                                        tsmi.ForeColor = Color.DarkRed;
+                                        tsmi.Text = "Click to load Book Ins";
+                                    }
+                                    break;
+                                case "ActiveAlarmsButton":
+                                    if (currentSite.Alarms != null)
+                                    {
+                                        if (currentSite.Alarms.Count > 0)
+                                        {
+                                            tsmi.Enabled = true;
+                                            tsmi.ForeColor = Color.DarkGreen;
+                                            tsmi.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+                                        }
+                                        else
+                                        {
+                                            tsmi.Enabled = false;
+                                            tsmi.Text = "No alarms to display";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tsmi.Enabled = true;
+                                        tsmi.ForeColor = Color.DarkRed;
+                                        tsmi.Text = "Click to load alarms";
+                                    }
+                                    break;
+                                case "AvailabilityButton":
+                                    if (currentSite.Availability != null)
+                                    {
+                                        if (currentSite.Availability.Rows.Count > 0)
+                                        {
+                                            tsmi.Enabled = true;
+                                            tsmi.ForeColor = Color.DarkGreen;
+                                            tsmi.Text = "Availability chart";
+                                        }
+                                        else
+                                        {
+                                            tsmi.Enabled = false;
+                                            tsmi.Text = "No availability chart to display";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tsmi.Enabled = true;
+                                        tsmi.ForeColor = Color.DarkRed;
+                                        tsmi.Text = "Click to load availability";
+                                    }
+                                    break;
+                                case "RefreshButton":
+                                    tsmi.Enabled = true;
+                                    tsmi.Text = '\u21bb'.ToString();
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            tsmi.Enabled = false;
+                            tsmi.Text = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        INCsButton.Enabled = false;
+                        INCsButton.Text = string.Empty;
+                        CRQsButton.Enabled = false;
+                        CRQsButton.Text = string.Empty;
+                        ActiveAlarmsButton.Enabled = false;
+                        ActiveAlarmsButton.Text = string.Empty;
+                        BookInsButton.Enabled = false;
+                        BookInsButton.Text = string.Empty;
+                        RefreshButton.Enabled = false;
+                        AvailabilityButton.Text = string.Empty;
+                        AvailabilityButton.Enabled = false;
+                    }
+                }
+            }
+
+            var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == this.Parent).ToList();
+            //			List<OiSiteTablesForm> openForms = new List<OiSiteTablesForm>();
+            //
+            //			foreach(OiSiteTablesForm frm in fc) {
+            //				if(frm.OwnerControl == this.Parent)
+            //					openForms.Add(frm);
+            //			}
+
+            for (int c = fc.Count - 1; c >= 0; c--)
+                fc[c].Close();
+        }
 		
 		protected override void OnSizeChanged(EventArgs e) {
 			base.OnSizeChanged(e);

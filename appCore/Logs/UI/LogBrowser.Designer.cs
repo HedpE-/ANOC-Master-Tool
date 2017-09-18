@@ -23,7 +23,6 @@ namespace appCore.Logs.UI
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.RadioButton radioButton2;
-		private System.Windows.Forms.GroupBox groupBox1;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -62,7 +61,7 @@ namespace appCore.Logs.UI
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(7, 58);
+            this.listBox1.Location = new System.Drawing.Point(3, 61);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(100, 82);
             this.listBox1.TabIndex = 0;
@@ -71,7 +70,7 @@ namespace appCore.Logs.UI
             // listBox2
             // 
             this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(7, 162);
+            this.listBox2.Location = new System.Drawing.Point(3, 163);
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(100, 173);
             this.listBox2.TabIndex = 1;
@@ -80,7 +79,7 @@ namespace appCore.Logs.UI
             // listBox3
             // 
             this.listBox3.FormattingEnabled = true;
-            this.listBox3.Location = new System.Drawing.Point(113, 58);
+            this.listBox3.Location = new System.Drawing.Point(109, 61);
             this.listBox3.Name = "listBox3";
             this.listBox3.Size = new System.Drawing.Size(128, 277);
             this.listBox3.TabIndex = 2;
@@ -91,7 +90,7 @@ namespace appCore.Logs.UI
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 338);
+            this.label1.Location = new System.Drawing.Point(0, 339);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 3;
@@ -100,7 +99,7 @@ namespace appCore.Logs.UI
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(7, 41);
+            this.label2.Location = new System.Drawing.Point(3, 44);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 14);
             this.label2.TabIndex = 4;
@@ -109,7 +108,7 @@ namespace appCore.Logs.UI
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(113, 41);
+            this.label3.Location = new System.Drawing.Point(109, 44);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(137, 14);
             this.label3.TabIndex = 5;
@@ -118,7 +117,7 @@ namespace appCore.Logs.UI
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(7, 145);
+            this.label4.Location = new System.Drawing.Point(3, 146);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 14);
             this.label4.TabIndex = 6;
@@ -153,10 +152,9 @@ namespace appCore.Logs.UI
             // 
             this.groupBox1.Controls.Add(this.radioButton1);
             this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(248, 38);
+            this.groupBox1.Size = new System.Drawing.Size(234, 38);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             // 
@@ -164,7 +162,7 @@ namespace appCore.Logs.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(248, 353);
+            this.ClientSize = new System.Drawing.Size(241, 356);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -185,6 +183,6 @@ namespace appCore.Logs.UI
             this.PerformLayout();
 
 		}
-
-	}
+        private System.Windows.Forms.GroupBox groupBox1;
+    }
 }

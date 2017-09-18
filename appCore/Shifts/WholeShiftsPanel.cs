@@ -34,9 +34,9 @@ namespace appCore.Shifts
 
             var userCountPerDisplayedTeam = sameShiftRows.GroupBy(s => s.Role).Select(group => new { Role = group.Key, Count = group.Count() });
 
-			int num_lines = sameShiftRows.Count + 1 + userCountPerDisplayedTeam.Count(); // + 1 for Title + 1 for each team header(SL, Agents, TEF, ExternalAlarms & Reporting)
+			int num_lines = sameShiftRows.Count + 1 + userCountPerDisplayedTeam.Count(); // + 1 for Title + 1 for each team header(SL, Agents, APT, TEF, ExternalAlarms & Reporting)
 			
-			int panelHeight = (int)(2 * paddingVertical) + (2 * headerSpacing) + (num_lines * RectHeight);
+			int panelHeight = (int)(2 * paddingVertical) + (userCountPerDisplayedTeam.Count() * headerSpacing) + (num_lines * RectHeight);
 			int panelWidth = (int)(2 * paddingHorizontal) + nameRectWidth + shiftRectWidth;
 			
 			wholeShiftString = string.Empty;
@@ -66,7 +66,7 @@ namespace appCore.Shifts
                     List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.ShiftLeader).ToList();
                     wholeShiftString += Environment.NewLine + "Shift Leaders:" + Environment.NewLine;
                     drawStringFormat.Alignment = StringAlignment.Near;
-                    rectangle = new Rectangle(new Point(7, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
+                    rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
                     g.DrawString("Shift Leaders:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
                     previousRectBottomCoord = rectangle.Bottom;
                     foreach (SingleShift sh in filteredList) {
@@ -82,10 +82,33 @@ namespace appCore.Shifts
                     }
                 }
 
+                if (userCountPerDisplayedTeam.Any(t => t.Role == Roles.APT))
+                {
+                    List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.APT).ToList();
+                    wholeShiftString += Environment.NewLine + "FSO - APT:" + Environment.NewLine;
+                    rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
+                    g.DrawString("FSO - APT:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
+                    previousRectBottomCoord = rectangle.Bottom;
+                    for (int c = 1; c <= filteredList.Count; c++)
+                    {
+                        rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord), new Size(nameRectWidth, RectHeight));
+                        wholeShiftString += filteredList[c - 1].Name + '\t';
+                        g.DrawString(filteredList[c - 1].Name, stringFont, Brushes.Gray, rectangle, drawStringFormat);
+                        drawStringFormat.Alignment = StringAlignment.Far;
+                        rectangle = new Rectangle(new Point(paddingHorizontal + nameRectWidth, previousRectBottomCoord), new Size(shiftRectWidth, RectHeight));
+                        wholeShiftString += filteredList[c - 1].Shift;
+                        if (c < filteredList.Count)
+                            wholeShiftString += Environment.NewLine;
+                        g.DrawString(filteredList[c - 1].Shift, stringFont, Brushes.Gray, rectangle, drawStringFormat);
+                        previousRectBottomCoord = rectangle.Bottom;
+                        drawStringFormat.Alignment = StringAlignment.Near;
+                    }
+                }
+
                 if (userCountPerDisplayedTeam.Any(t => t.Role == Roles.TEF))
                 {
                     List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.TEF).ToList();
-                    wholeShiftString += Environment.NewLine + "TEF Customer:" + Environment.NewLine;
+                    wholeShiftString += Environment.NewLine + Environment.NewLine + "TEF Customer:" + Environment.NewLine;
                     rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
                     g.DrawString("TEF Customer:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
                     previousRectBottomCoord = rectangle.Bottom;
@@ -108,7 +131,7 @@ namespace appCore.Shifts
                 if (userCountPerDisplayedTeam.Any(t => t.Role == Roles.ExternalAlarms))
                 {
                     List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.ExternalAlarms).ToList();
-                    wholeShiftString += Environment.NewLine + "External Alarms:" + Environment.NewLine;
+                    wholeShiftString += Environment.NewLine + Environment.NewLine + "External Alarms:" + Environment.NewLine;
                     rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
                     g.DrawString("External Alarms:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
                     previousRectBottomCoord = rectangle.Bottom;
@@ -131,7 +154,7 @@ namespace appCore.Shifts
                 if (userCountPerDisplayedTeam.Any(t => t.Role == Roles.Reporting))
                 {
                     List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.Reporting).ToList();
-                    wholeShiftString += Environment.NewLine + "Reporting:" + Environment.NewLine;
+                    wholeShiftString += Environment.NewLine + Environment.NewLine + "Reporting:" + Environment.NewLine;
                     rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
                     g.DrawString("Reporting:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
                     previousRectBottomCoord = rectangle.Bottom;
@@ -154,7 +177,7 @@ namespace appCore.Shifts
                 if(userCountPerDisplayedTeam.Any(t => t.Role == Roles.RAN))
                 {
                     List<SingleShift> filteredList = sameShiftRows.Where(s => s.Role == Roles.RAN).ToList();
-                    wholeShiftString += Environment.NewLine + "RAN Agents:" + Environment.NewLine;
+                    wholeShiftString += Environment.NewLine + Environment.NewLine + "RAN Agents:" + Environment.NewLine;
 				    rectangle = new Rectangle(new Point(paddingHorizontal, previousRectBottomCoord + headerSpacing), new Size(nameRectWidth, RectHeight));
 				    g.DrawString("RAN Agents:", titlesFont, Brushes.Red, rectangle, drawStringFormat);
 				    previousRectBottomCoord = rectangle.Bottom;
@@ -172,8 +195,8 @@ namespace appCore.Shifts
 					    drawStringFormat.Alignment = StringAlignment.Near;
                     }
                 }
-                //if (Settings.CurrentUser.UserName == "GONCARJ3")
-                //    wholeShiftSnap.Save(Settings.UserFolder.FullName + @"\wholeShiftSnap.png");
+                if (Settings.CurrentUser.UserName == "GONCARJ3")
+                    wholeShiftSnap.Save(Settings.GlobalProperties.AppDataRootDir + @"\wholeShiftSnap.png");
             }
 			PictureBox shiftsPictureBox = new PictureBox();
 			shiftsPictureBox.Parent = this;

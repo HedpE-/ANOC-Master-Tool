@@ -77,15 +77,16 @@ namespace appCore.Templates.UI
 		}
 		
 		void Button3Click(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-			                           	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox4.Text,label5.Text,true);
+        {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+
+            AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox4.Text,label5.Text,true);
 			                           	enlarge.StartPosition = FormStartPosition.CenterParent;
 			                           	enlarge.ShowDialog();
 			                           	textBox4.Text = enlarge.finaltext;
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, action,false,this);
+
+			load.Close();
 		}
 		
 		void Button1Click(object sender, EventArgs e)

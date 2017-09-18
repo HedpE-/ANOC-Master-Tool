@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using appCore.SiteFinder;
 using FileHelpers;
 
@@ -84,9 +85,31 @@ namespace appCore.DB
 				if(index > -1)
 					SitesCache[index] = site;
 			}
-		}
-		
-		public static Site getSite(string site, bool ignoreCache = false)
+        }
+
+        public static Site getSite(string site, bool ignoreCache = false)
+        {
+            Site foundSite = null;
+            if (!ignoreCache)
+            {
+                int index = GetSiteIndex(site);
+                foundSite = index > -1 ? SitesCache[index] : null;
+            }
+
+            if (foundSite == null)
+            {
+                List<string> sitesList = new List<string>();
+                sitesList.Add(site);
+
+                List<Site> res = getSites(sitesList, true);
+
+                return res.Count > 0 ? res[0] : new Site(site);
+            }
+
+            return foundSite;
+        }
+
+        public async static Task<Site> getSiteAsync(string site, bool ignoreCache = false)
 		{
 			Site foundSite = null;
 			if(!ignoreCache) {
@@ -98,7 +121,7 @@ namespace appCore.DB
 				List<string> sitesList = new List<string>();
 				sitesList.Add(site);
 				
-				List<Site> res = getSites(sitesList, true);
+				List<Site> res = await getSitesAsync(sitesList, true);
 				
 				return res.Count > 0 ? res[0] : new Site(site);
 			}
@@ -106,7 +129,7 @@ namespace appCore.DB
 			return foundSite;
 		}
 		
-		public static Site getSiteWithJVCO(string JVCO, bool ignoreCache = false)
+		public async static Task<Site> getSiteWithJVCO(string JVCO, bool ignoreCache = false)
 		{
 			Site foundSite = null;
 			if(!ignoreCache) {
@@ -130,7 +153,7 @@ namespace appCore.DB
 //							foundSite = e.Record;
 						}
 					};
-					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+					sites = await Task.Run(() => engine.ReadFileAsList(Databases.all_sites.FullName));
 				}
 				catch(FileHelpersException e) {
 					string f = e.Message;
@@ -140,9 +163,76 @@ namespace appCore.DB
 			}
 			
 			return foundSite;
-		}
-		
-		public static List<Site> getSites(IEnumerable<string> sitesToFind, bool ignoreCache = false)
+        }
+
+        public static List<Site> getSites(IEnumerable<string> sitesToFind, bool ignoreCache = false)
+        {
+            List<string> findSites = new List<string>();
+            findSites.AddRange(sitesToFind);
+            List<string> foundSites = new List<string>();
+            List<Site> sites = new List<Site>();
+            List<Site> totalFoundSites = new List<Site>();
+
+            if (!ignoreCache)
+            {
+                foreach (string site in findSites)
+                {
+                    Site foundSite = SitesCache.Find(s => s.Id == site);
+                    if (foundSite != null)
+                    {
+                        foundSites.Add(site);
+                        totalFoundSites.Add(foundSite);
+                    }
+                }
+                foreach (string site in foundSites)
+                    findSites.Remove(site);
+                foundSites = new List<string>();
+            }
+
+            if (findSites.Count > 0)
+            {
+                try
+                {
+                    var engine = new FileHelperEngine<Site>();
+                    engine.BeforeReadRecord += (eng, e) => {
+                        if (!findSites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+                            e.SkipThisRecord = true;
+                    };
+                    engine.AfterReadRecord += (eng, e) => {
+                        if (!findSites.Contains(e.Record.Id))
+                            e.SkipThisRecord = true;
+                        else
+                        {
+                            e.Record.SiteDataTimestamp = DateTime.Now;
+                            foundSites.Add(e.Record.Id);
+                        }
+                    };
+                    sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+                }
+                catch (FileHelpersException e)
+                {
+                    string f = e.Message;
+                }
+
+                if (foundSites.Count > 0)
+                    sites = getCells(foundSites, sites);
+
+                totalFoundSites.AddRange(sites);
+
+                if (!ignoreCache)
+                {
+                    foreach (Site site in totalFoundSites)
+                    {
+                        if (site.DbIndex == -1)
+                            SitesCache.Add(site);
+                    }
+                }
+            }
+
+            return totalFoundSites;
+        }
+
+        public async static Task<List<Site>> getSitesAsync(IEnumerable<string> sitesToFind, bool ignoreCache = false)
 		{
 			List<string> findSites = new List<string>();
 			findSites.AddRange(sitesToFind);
@@ -178,14 +268,15 @@ namespace appCore.DB
 							foundSites.Add(e.Record.Id);
 						}
 					};
-					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+					sites = await Task.Run(() => engine.ReadFileAsList(Databases.all_sites.FullName));
 				}
-				catch(FileHelpersException e) {
+				catch(FileHelpersException e)
+                {
 					string f = e.Message;
 				}
 				
 				if(foundSites.Count > 0)
-					sites = getCells(foundSites, sites);
+					sites = await getCellsAsync(foundSites, sites);
 				
 				totalFoundSites.AddRange(sites);
 				
@@ -200,7 +291,7 @@ namespace appCore.DB
 			return totalFoundSites;
 		}
 		
-		public static List<Site> getSitesWithJVCO(List<string> JVCOsToFind, bool ignoreCache = false)
+		public async static Task<List<Site>> getSitesWithJVCO(List<string> JVCOsToFind, bool ignoreCache = false)
 		{
 			List<string> JVCOs = JVCOsToFind;
 			List<string> foundJVCOs = new List<string>();
@@ -235,14 +326,14 @@ namespace appCore.DB
 							foundJVCOs.Add(e.Record.JVCO_Id);
 						}
 					};
-					sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+					sites = await Task.Run(() => engine.ReadFileAsList(Databases.all_sites.FullName));
 				}
 				catch(FileHelpersException e) {
 					string f = e.Message;
 				}
 				
 				if(foundJVCOs.Count > 0)
-					sites = getCellsWithJVCO(foundJVCOs, sites);
+					sites = await getCellsWithJVCO(foundJVCOs, sites);
 				
 				totalFoundSites.AddRange(sites);
 				
@@ -303,30 +394,60 @@ namespace appCore.DB
 			sitesList.Add(site);
 			
 			return getCells(sitesList, bearers);
-		}
-		
-		static List<Site> getCells(ICollection<string> sites, List<Site> Sites) {
-			try {
-				var engine = new FileHelperEngine<Cell>();
-				engine.AfterReadRecord +=  (eng, e) => {
-					if(!sites.Contains(e.Record.ParentSite))
-						e.SkipThisRecord = true;
-					else {
-						Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
-						if(tempSite != null)
-							tempSite.Cells.Add(e.Record);
-					}
-				};
-				engine.ReadFileAsList(Databases.all_cells.FullName);
-			}
-			catch(FileHelpersException e) {
-				string f = e.Message;
-			}
-			
-			return Sites;
-		}
-		
-		static List<Site> getCellsWithJVCO(ICollection<string> JVCOs, List<Site> Sites) {
+        }
+
+        async static Task<List<Site>> getCellsAsync(ICollection<string> sites, List<Site> Sites)
+        {
+            try
+            {
+                var engine = new FileHelperEngine<Cell>();
+                engine.AfterReadRecord += (eng, e) => {
+                    if (!sites.Contains(e.Record.ParentSite))
+                        e.SkipThisRecord = true;
+                    else
+                    {
+                        Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
+                        if (tempSite != null)
+                            tempSite.Cells.Add(e.Record);
+                    }
+                };
+                await Task.Run(() => engine.ReadFileAsList(Databases.all_cells.FullName));
+            }
+            catch (FileHelpersException e)
+            {
+                string f = e.Message;
+            }
+
+            return Sites;
+        }
+
+        static List<Site> getCells(ICollection<string> sites, List<Site> Sites)
+        {
+            try
+            {
+                var engine = new FileHelperEngine<Cell>();
+                engine.AfterReadRecord += (eng, e) => {
+                    if (!sites.Contains(e.Record.ParentSite))
+                        e.SkipThisRecord = true;
+                    else
+                    {
+                        Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
+                        if (tempSite != null)
+                            tempSite.Cells.Add(e.Record);
+                    }
+                };
+                engine.ReadFileAsList(Databases.all_cells.FullName);
+            }
+            catch (FileHelpersException e)
+            {
+                string f = e.Message;
+            }
+
+            return Sites;
+        }
+
+        async static Task<List<Site>> getCellsWithJVCO(ICollection<string> JVCOs, List<Site> Sites)
+        {
 			try {
 				var engine = new FileHelperEngine<Cell>();
 				engine.AfterReadRecord +=  (eng, e) => {
@@ -338,8 +459,8 @@ namespace appCore.DB
 							tempSite.Cells.Add(e.Record);
 					}
 				};
-				engine.ReadFileAsList(Databases.all_cells.FullName);
-			}
+                await Task.Run(() => engine.ReadFileAsList(Databases.all_cells.FullName));
+            }
 			catch(FileHelpersException e) {
 				string f = e.Message;
 			}

@@ -30,12 +30,6 @@ namespace appCore.Templates.UI
 			InitializeComponent();
 		}
 		
-		public void RadioButtonCheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton rb = (RadioButton)sender;
-			if(rb.Checked) currentTask = rb.Text;
-		}
-		
 		public string currentTask {
 			get {
 				return _currentTask;
@@ -61,8 +55,9 @@ namespace appCore.Templates.UI
 						label4.Text = "Power Company";
 						label5.Text = "Fault Reference";
 						label5.Visible = true;
-						label6.Visible = false;
-						comboBox1.Visible = false;
+                        label6.Visible = false;
+                        label7.Visible = false;
+                        comboBox1.Visible = false;
 						if(!checkBox1.Checked)
 							dateTimePicker1.Visible = false;
 						dateTimePicker1.Format = DateTimePickerFormat.Custom;
@@ -78,7 +73,9 @@ namespace appCore.Templates.UI
 						label4.Visible = false;
 						label5.Text = _currentTask + " Reference";
 						label5.Visible = true;
-						textBox1.Text = siteID;
+                        label6.Visible = false;
+                        label7.Visible = false;
+                        textBox1.Text = siteID;
 						textBox2.Text = siteAddress;
 						textBox3.Height = 46;
 						textBox3.Multiline = true;
@@ -89,7 +86,6 @@ namespace appCore.Templates.UI
 						textBox5.Visible = true;
 						if(_currentTask == "BT")
 							textBox5.Text = relatedINC;
-						label6.Visible = false;
 						comboBox1.Visible = false;
 						checkBox1.Visible = false;
 						dateTimePicker1.Visible = false;
@@ -112,7 +108,8 @@ namespace appCore.Templates.UI
 						label4.Text = "TEF Reference";
 						label5.Visible = false;
 						label6.Visible = false;
-						comboBox1.Visible = false;
+                        label7.Visible = false;
+                        comboBox1.Visible = false;
 						checkBox1.Visible = false;
 						dateTimePicker1.Visible = false;
 						numericUpDown1.Visible = false;
@@ -135,22 +132,32 @@ namespace appCore.Templates.UI
 						label5.Visible = true;
 						label6.Text = "Monitor duration";
 						label6.Visible = true;
-						comboBox1.Visible = true;
-						comboBox1.SelectedIndex = 0;
-						checkBox1.Visible = false;
+                        label7.Text = string.Empty;
+                        label7.Visible = true;
 						dateTimePicker1.Visible = true;
 						dateTimePicker1.Location = textBox5.Location;
 						dateTimePicker1.Size = textBox5.Size;
 						dateTimePicker1.Format = DateTimePickerFormat.Custom;
 						dateTimePicker1.CustomFormat = "dd/MM/yyyy HH:mm";
+                        dateTimePicker1.Value = DateTime.Now;
 						numericUpDown1.Visible = true;
 						numericUpDown1.Text = "1";
-						break;
+                        comboBox1.Visible = true;
+                        comboBox1.SelectedIndex = 0;
+                        checkBox1.Visible = false;
+                        break;
 				}
 			}
-		}
-		
-		void CheckBox1CheckedChanged(object sender, EventArgs e)
+        }
+
+        public void RadioButtonCheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton rb = (RadioButton)sender;
+            if (rb.Checked)
+                currentTask = rb.Text;
+        }
+
+        void CheckBox1CheckedChanged(object sender, EventArgs e)
 		{
 			if (checkBox1.Checked) {
 				dateTimePicker1.Visible = true;
@@ -199,11 +206,10 @@ namespace appCore.Templates.UI
 					break;
 			}
 			if (!string.IsNullOrEmpty(errmsg)) {
-				Action action = new Action(delegate {
-				                           	FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				                           });
-				LoadingPanel load = new LoadingPanel();
-				load.Show(action, this);
+                LoadingPanel loading = new LoadingPanel();
+                loading.Show(false, this);
+				FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                loading.Close();
 				return;
 			}
 			string taskString = string.Empty;
@@ -248,5 +254,19 @@ namespace appCore.Templates.UI
 			Clipboard.SetText(taskString);
 			MainForm.trayIcon.showBalloon("Template successfully copied to Clipboard","\n\n" + taskString);
 		}
-	}
+
+        private void MonitoringEndTimeChanged(object sender, EventArgs e)
+        {
+            if(currentTask == "Monitoring")
+            {
+                if(!string.IsNullOrEmpty(numericUpDown1.Value.ToString()) && !string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(dateTimePicker1.Value.ToString()))
+                {
+                    DateTime monitorEndTime = DateTime.ParseExact(dateTimePicker1.Text, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture)
+                        .AddHours(comboBox1.Text == "Hours" ? Convert.ToDouble(numericUpDown1.Text) : Convert.ToDouble(Convert.ToInt16(numericUpDown1.Text) * 24));
+                    label7.Text = monitorEndTime.ToString("dd/MM/yyyy HH:mm");
+                    //System.Threading.Thread.Sleep(1);
+                }
+            }
+        }
+    }
 }

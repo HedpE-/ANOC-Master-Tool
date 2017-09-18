@@ -18,7 +18,7 @@ namespace appCore.Web.UI
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.WebBrowser webBrowser1;
+		private appCore.UI.AMTBrowser webBrowser1;
 		private appCore.UI.AMTBrowser webBrowser2;
 		private appCore.UI.AMTBrowser webBrowser3;
 		private System.Windows.Forms.PictureBox pictureBox1;
@@ -64,7 +64,7 @@ namespace appCore.Web.UI
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.textBox1 = new appCore.UI.AMTTextBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+			this.webBrowser1 = new appCore.UI.AMTBrowser();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.textBox2 = new appCore.UI.AMTTextBox();
 			this.label2 = new System.Windows.Forms.Label();

@@ -30,7 +30,7 @@ namespace appCore.DB
 			}
 			private set
 			{
-				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
+				if (/*File.Exists(all_sites.FullName) && */File.Exists(value.FullName))
 					_all_sites = value;
 			}
 		}
@@ -43,7 +43,7 @@ namespace appCore.DB
 				return _all_cells;
 			}
 			private set {
-				if (File.Exists(all_sites.FullName) && File.Exists(value.FullName))
+				if (/*File.Exists(all_sites.FullName) && */File.Exists(value.FullName))
 					_all_cells = value;
 			}
 		}
@@ -59,8 +59,8 @@ namespace appCore.DB
 		public static UkCities Cities;
 		
 		public static void Initialize() {
-			_all_sites = new FileInfo(UserFolder.FullName + @"\all_sites.csv");
-			_all_cells = new FileInfo(UserFolder.FullName + @"\all_cells.csv");
+			_all_sites = new FileInfo(GlobalProperties.AppDataRootDir + @"\all_sites.csv");
+			_all_cells = new FileInfo(GlobalProperties.AppDataRootDir + @"\all_cells.csv");
 			
 //			if((CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == CurrentUser.Roles.ShiftLeader) && autoUpdateRemoteDbFiles) {
 //				RemoteDbAutoUpdateTimer.Elapsed += RemoteDbAutoUpdateTimer_Elapsed;
@@ -89,13 +89,13 @@ namespace appCore.DB
 				UserFolder.UpdateLocalDBFilesCopy();
 		}
 		
-		public static void UpdateSourceDBFiles(bool onUserFolder = false) {
-			FileInfo source_allsites = onUserFolder ? new FileInfo(UserFolder.FullName + @"\all_sites.csv") :
+		public static void UpdateSourceDBFiles(bool onAppDataFolder = false) {
+			FileInfo source_allsites = onAppDataFolder ? new FileInfo(GlobalProperties.AppDataRootDir + @"\all_sites.csv") :
 				new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv");
-			FileInfo source_allcells = onUserFolder ? new FileInfo(UserFolder.FullName + @"\all_cells.csv") :
+			FileInfo source_allcells = onAppDataFolder ? new FileInfo(GlobalProperties.AppDataRootDir + @"\all_cells.csv") :
 				new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv");
 			
-			string updLocation = onUserFolder ? "on your UserFolder." : "on the Remote folder.";
+			string updLocation = onAppDataFolder ? "." : " on the Remote folder.";
 			
 			List<Thread> threads = new List<Thread>();
 			int finishedThreadsCount = 0;
@@ -113,7 +113,7 @@ namespace appCore.DB
 				                           	{
 				                           		if (response.Substring(0, response.IndexOf("\n")) != currentAllSitesHeaders)
 				                           			MainForm.trayIcon.showBalloon("all_sites Headers changes", "Downloaded all_sites headers are different from the current Site class.");
-				                           		if (GlobalProperties.shareAccess || onUserFolder)
+				                           		if (GlobalProperties.shareHostAccess.CanWrite || onAppDataFolder)
 				                           		{
 				                           			bool updated = false;
 				                           			if (source_allsites.Exists)
@@ -132,7 +132,7 @@ namespace appCore.DB
 				                           				updated = true;
 				                           			}
 				                           			if (updated)
-				                           				MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully " + updLocation);
+				                           				MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully" + updLocation);
 				                           		}
 				                           	}
 
@@ -150,7 +150,7 @@ namespace appCore.DB
 				                    	{
 				                    		if (response.Substring(0, response.IndexOf("\n")) != currentAllCellsHeaders)
 				                    			MainForm.trayIcon.showBalloon("all_cells Headers changes", "Downloaded all_cells headers are different from the current Cell class.");
-				                    		if (GlobalProperties.shareAccess || onUserFolder)
+				                    		if (GlobalProperties.shareHostAccess.CanWrite || onAppDataFolder)
 				                    		{
 				                    			bool updated = false;
 				                    			if (source_allcells.Exists)
@@ -169,7 +169,7 @@ namespace appCore.DB
 				                    				updated = true;
 				                    			}
 				                    			if (updated)
-				                    				MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully " + updLocation);
+				                    				MainForm.trayIcon.showBalloon("Update complete", "all_cells.csv updated successfully" + updLocation);
 				                    		}
 				                    	}
 

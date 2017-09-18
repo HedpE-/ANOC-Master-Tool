@@ -9,10 +9,9 @@
 using System;
 using System.Diagnostics;
 using System.DirectoryServices.ActiveDirectory;
-using System.DirectoryServices.AccountManagement;
 using System.IO;
+using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Launcher
@@ -73,13 +72,14 @@ namespace Launcher
 			                                       });
 			trayIcon.Visible = true;
 
-			//string logfile = localPath + "log.txt";
+            //string logfile = localPath + "log.txt";
 
-			//if (File.Exists(logfile)) File.Delete(logfile);
+            //if (File.Exists(logfile)) File.Delete(logfile);
 
-			// Check if there is network folder access
+            // Check if there is network folder access
 
-			networkAccess = getNetworkAccess(Path.Combine(remotePath, Path.GetRandomFileName()));
+            networkAccess = getNetworkAccess();
+            //networkAccess = getNetworkAccess(Path.Combine(remotePath, Path.GetRandomFileName()));
 
 			// Check if app is running from network drive
 			if (networkAccess && localPath.Contains("\\1. RAN 1st LINE\\ANOC Master Tool"))
@@ -210,24 +210,29 @@ namespace Launcher
 
 		static bool updateChecker(string fn)
 		{
-			bool NewVersionAvailable = false;
+            //bool NewVersionAvailable = false;
 
-			var localFileVer = FileVersionInfo.GetVersionInfo(localPath + fn);
-			var remoteFileVer = FileVersionInfo.GetVersionInfo(remotePath + fn);
-			if (remoteFileVer.FileMajorPart > localFileVer.FileMajorPart) NewVersionAvailable = true;
-			else
-			{
-				if ((remoteFileVer.FileMajorPart == localFileVer.FileMajorPart) && (remoteFileVer.FileMinorPart > localFileVer.FileMinorPart)) NewVersionAvailable = true;
-				else
-				{
-					if ((remoteFileVer.FileMajorPart == localFileVer.FileMajorPart) && (remoteFileVer.FileMinorPart == localFileVer.FileMinorPart) && (remoteFileVer.FileBuildPart > localFileVer.FileBuildPart)) NewVersionAvailable = true;
-					else
-					{
-						if ((remoteFileVer.FileMajorPart == localFileVer.FileMajorPart) && (remoteFileVer.FileMinorPart == localFileVer.FileMinorPart) && (remoteFileVer.FileBuildPart == localFileVer.FileBuildPart) && (remoteFileVer.FilePrivatePart > localFileVer.FilePrivatePart)) NewVersionAvailable = true;
-					}
-				}
-			}
-			return NewVersionAvailable;
+            //var localFileVer = FileVersionInfo.GetVersionInfo(localPath + fn);
+            //var remoteFileVer = FileVersionInfo.GetVersionInfo(remotePath + fn);
+            //if (remoteFileVer.FileMajorPart > localFileVer.FileMajorPart) NewVersionAvailable = true;
+            //else
+            //{
+            //    if ((remoteFileVer.FileMajorPart == localFileVer.FileMajorPart) && (remoteFileVer.FileMinorPart > localFileVer.FileMinorPart)) NewVersionAvailable = true;
+            //    else
+            //    {
+            //        if ((remoteFileVer.FileMajorPart == localFileVer.FileMajorPart) && (remoteFileVer.FileMinorPart == localFileVer.FileMinorPart) && (remoteFileVer.FileBuildPart > localFileVer.FileBuildPart)) NewVersionAvailable = true;
+            //        else
+            //        {
+            //            if ((remoteFileVer.FileMajorPart == localFileVer.FileMajorPart) && (remoteFileVer.FileMinorPart == localFileVer.FileMinorPart) && (remoteFileVer.FileBuildPart == localFileVer.FileBuildPart) && (remoteFileVer.FilePrivatePart > localFileVer.FilePrivatePart)) NewVersionAvailable = true;
+            //        }
+            //    }
+            //}
+            //return NewVersionAvailable;
+
+            Version localFileVer = new Version(FileVersionInfo.GetVersionInfo(localPath + fn).ToString());
+            Version remoteFileVer = new Version(FileVersionInfo.GetVersionInfo(remotePath + fn).ToString());
+
+			return remoteFileVer.CompareTo(localFileVer) > 0;
 		}
 
 		static void showBalloon(string title, string body)
@@ -245,23 +250,60 @@ namespace Launcher
 			trayIcon.ShowBalloonTip(10000);
 		}
 
-		static bool getNetworkAccess(string dirPath)
-		{
-			var task = new Task<bool>(() =>
-			                    {
-			                    	try
-			                    	{
-			                    		File.Create(dirPath, 1024, FileOptions.DeleteOnClose);
-			                    		return true;
-			                    	}
-			                    	catch { return false; }
-			                    });
-			task.Start();
+		static bool getNetworkAccess()
+        {
+            bool readAccess = false;
 
-			networkAccess = task.Wait(TimeSpan.FromSeconds(10)) && task.Result;
-//			task.Dispose();
-			
-			return networkAccess;
+            DirectoryInfo di = new DirectoryInfo(remotePath);
+            if (di.Exists)
+            {
+                try
+                {
+                    var acl = di.GetAccessControl();
+                    if (acl != null)
+                    {
+                        var accessRules = acl.GetAccessRules(true, true, typeof(SecurityIdentifier));
+                        if (accessRules != null)
+                        {
+                            foreach (FileSystemAccessRule rule in accessRules)
+                            {
+                                if ((FileSystemRights.Read & rule.FileSystemRights) != FileSystemRights.Read)
+                                    continue;
+
+                                if (rule.AccessControlType == AccessControlType.Allow)
+                                    readAccess = true;
+
+                                if (readAccess)
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (UnauthorizedAccessException uae)
+                {
+                    if (uae.Message.Contains("read-only"))
+                    {
+                        // seems like it is just read-only
+                        readAccess = true;
+                    }
+                }
+            }
+
+            //var task = new Task<bool>(() =>
+            //                    {
+            //                    	try
+            //                    	{
+            //                    		File.Create(dirPath, 1024, FileOptions.DeleteOnClose);
+            //                    		return true;
+            //                    	}
+            //                    	catch { return false; }
+            //                    });
+            //task.Start();
+
+            //networkAccess = task.Wait(TimeSpan.FromSeconds(10)) && task.Result;
+            //task.Dispose();
+
+            return readAccess;
 		}
 	}
 }

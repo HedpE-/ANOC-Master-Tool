@@ -55,6 +55,11 @@ namespace appCore.Shifts
                         {
                             if (DB.Databases.shiftsFile.RAN.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
                                 Role = Roles.RAN;
+                            else
+                            {
+                                if (DB.Databases.shiftsFile.APT.FindIndex(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)) > -1)
+                                    Role = Roles.APT;
+                            }
                         }
 					}
 				}

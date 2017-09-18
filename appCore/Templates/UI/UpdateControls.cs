@@ -188,53 +188,66 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
+		async void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e)
+        {
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
-				TextBox tb =(TextBox)sender;
+            {
+                LoadingPanel load = new LoadingPanel();
+                load.Show(true, this);
+
+                TextBox tb =(TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
-				Action actionThreaded = new Action(delegate {
-				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
+
+                await System.Threading.Tasks.Task.Run(() =>
+                {
+				    currentSite = DB.SitesDB.getSiteAsync(tb.Text).GetAwaiter().GetResult();
 				                                   	
-				                                   	if(currentSite.Exists) {
-				                                   		string dataToRequest = "INC";
-				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
-				                                   			dataToRequest += "CRQ";
-				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
-				                                   			dataToRequest += "PWR";
-				                                   		currentSite.requestOIData(dataToRequest);
-				                                   	}
-				                                   });
-				
-				Action actionNonThreaded = new Action(delegate {
-				                                      	if(currentSite.Exists) {
-				                                      		PriorityTextBox.Text = currentSite.Priority;
-				                                      		PowerCompanyTextBox.Text = currentSite.PowerCompany;
-				                                      		RegionTextBox.Text = currentSite.Region;
-				                                      		SiteDetailsToolStripMenuItem.Enabled = true;
-				                                      	}
-				                                      	else {
-				                                      		PriorityTextBox.Text = string.Empty;
-				                                      		PowerCompanyTextBox.Text = "No site found";
-				                                      		RegionTextBox.Text = string.Empty;
-				                                      		SiteDetailsToolStripMenuItem.Enabled = false;
-				                                      	}
-				                                      	generateTemplateToolStripMenuItem.Enabled = true;
-				                                      	siteFinder_Toggle(true, currentSite.Exists);
-				                                      });
-				LoadingPanel load = new LoadingPanel();
-				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+				    if(currentSite.Exists)
+                    {
+				        string dataToRequest = "INC";
+				        if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+				            dataToRequest += "CRQ";
+				        if(string.IsNullOrEmpty(currentSite.PowerCompany))
+				            dataToRequest += "PWR";
+				        currentSite.requestOIData(dataToRequest);
+				    }
+                });
+                
+                if (currentSite.Exists)
+                {
+				    PriorityTextBox.Text = currentSite.Priority;
+				    PowerCompanyTextBox.Text = currentSite.PowerCompany;
+				    RegionTextBox.Text = currentSite.Region;
+				    SiteDetailsToolStripMenuItem.Enabled = true;
+				}
+				else
+                {
+				    PriorityTextBox.Text = string.Empty;
+				    PowerCompanyTextBox.Text = "No site found";
+				    RegionTextBox.Text = string.Empty;
+				    SiteDetailsToolStripMenuItem.Enabled = false;
+				}
+				generateTemplateToolStripMenuItem.Enabled = true;
+				siteFinder_Toggle(true, currentSite.Exists);
+
+				load.Close();
 			}
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
-		{
-			currentSite = null;
-			siteFinder_Toggle(false, false);
-			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
-			SiteDetailsToolStripMenuItem.Enabled =
-				generateTemplateToolStripMenuItem.Enabled = false;
+        {
+            if (GlobalProperties.siteFinder_mainswitch)
+            {
+                currentSite = null;
+                siteFinder_Toggle(false, false);
+
+                SiteDetailsToolStripMenuItem.Enabled = false;
+            }
+            else
+                generateTemplateToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
+
+            clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
@@ -382,13 +395,15 @@ namespace appCore.Templates.UI
 		}
 		
 		public void siteFinderSwitch(string toState) {
-			if (toState == "off") {
-				INCTextBox.KeyPress -= INCTextBoxKeyPress;
-				siteFinder_Toggle(true,false);
+			if (toState == "off")
+            {
+                SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
+                siteFinder_Toggle(true,false);
 			}
-			else {
-				INCTextBox.KeyPress += INCTextBoxKeyPress;
-				siteFinder_Toggle(false,false);
+			else
+            {
+                SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
+                siteFinder_Toggle(false,false);
 			}
 		}
 
@@ -556,7 +571,7 @@ namespace appCore.Templates.UI
 			// copyToNewTemplateToolStripMenuItem
 			// 
 			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
-			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
+			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Update template";
 			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
 			// SiteIdLabel

@@ -20,6 +20,13 @@ namespace appCore.Netcool
 	/// </summary>
 	public class AlarmsParser
 	{
+        public enum ParsingMode
+        {
+            Outage = 1,
+            CoosReport = 2,
+            ParseAllAlarms = 4
+        }
+
 		string parsedOutput;
         string ParsedOutput
         {
@@ -48,7 +55,8 @@ namespace appCore.Netcool
 		public DataTable AlarmsTable = new DataTable();
 		public List<string> lteSitesOnM = new List<string>();
 		
-		public AlarmsParser(string netcoolAlarms, bool generateOutput = true, bool outage = false) {
+		public AlarmsParser(string netcoolAlarms, ParsingMode parsingMode, bool generateOutput = true)
+        {
 //			System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
 //			st.Start();
 			while(netcoolAlarms.Contains("\n-ProbableCause"))
@@ -65,7 +73,9 @@ namespace appCore.Netcool
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\n*** FMX Info Begin ***", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.Contains("*** FMX Info Begin ***\n"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("*** FMX Info Begin ***\n", StringComparison.Ordinal) + "*** FMX Info Begin ***".Length, 1);
-			while(netcoolAlarms.Contains("\nhas"))
+            while (netcoolAlarms.Contains("**** FMX Battery Theft Analysis ****\n"))
+                netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("**** FMX Battery Theft Analysis ****\n", StringComparison.Ordinal) + "**** FMX Battery Theft Analysis ****".Length, 1);
+            while (netcoolAlarms.Contains("\nhas"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nhas", StringComparison.Ordinal), 1);
 			while(netcoolAlarms.Contains("ExternalAlarm\n"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("ExternalAlarm\n", StringComparison.Ordinal) + "ExternalAlarm".Length, 1);
@@ -75,6 +85,14 @@ namespace appCore.Netcool
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("PacketFrequencySyncRef=2 \n", StringComparison.Ordinal) + "PacketFrequencySyncRef=2 ".Length, 1);
 			while(netcoolAlarms.EndsWith("\n"))
 				netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.Length - 1);
+            while (netcoolAlarms.Contains("\neriAlarmNObj"))
+                netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\neriAlarmNObj", StringComparison.Ordinal), 1);
+            while (netcoolAlarms.Contains("\nAlarmActiveLastSequence"))
+                netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nAlarmActiveLastSequence", StringComparison.Ordinal), 1);
+            while (netcoolAlarms.Contains("\nAlarmMajorType"))
+                netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\nAlarmMajorType", StringComparison.Ordinal), 1);
+            while (netcoolAlarms.Contains("\neriAlarmNObjAdditionalText"))
+                netcoolAlarms = netcoolAlarms.Remove(netcoolAlarms.IndexOf("\neriAlarmNObjAdditionalText", StringComparison.Ordinal), 1);
 
             if (netcoolAlarms.Contains("Attributes") && netcoolAlarms.Contains("Summary") && netcoolAlarms.Contains("Element"))
             {
@@ -105,14 +123,28 @@ namespace appCore.Netcool
 					continue;
 				}
 				
-				AlarmsList.Add(al);
-				if(outage) {
-					if(al.Bearer == Bearers.LTE && !al.COOS && al.OnM)
-						lteSitesOnM.Add(al.SiteId);
-				}
-			}
+                switch(parsingMode)
+                {
+                    case ParsingMode.Outage:
+                        if (al.COOS)
+                            AlarmsList.Add(al);
+                        else
+                        {
+                            if (al.Bearer == Bearers.LTE && al.OnM)
+                                lteSitesOnM.Add(al.SiteId);
+                        }
+                        break;
+                    case ParsingMode.CoosReport:
+                        if (al.COOS || (al.Bearer == Bearers.LTE && !al.COOS && al.OnM))
+                            AlarmsList.Add(al);
+                        break;
+                    default:
+                        AlarmsList.Add(al);
+                        break;
+                }
+            }
 
-            var alarmsWithoutElement = AlarmsList.FindAll(a => a.Element.Contains("No cell description")).Select(a => AlarmsList.IndexOf(a)).ToList();
+            var alarmsWithoutElement = AlarmsList.FindAll(a => a.Element.Contains("No cell")).Select(a => AlarmsList.IndexOf(a)).ToList();
             if(alarmsWithoutElement.Any())
             {
                 //System.Windows.Forms.DialogResult ans = appCore.UI.FlexibleMessageBox.Show(alarmsWithoutElement.Count + " alarms without cell description found.\n\nIt's possible to try resolving the correct cell names but the operation might take a while.\nDo you want to proceed with the operation?", "Alarms without cell description", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
@@ -144,9 +176,58 @@ namespace appCore.Netcool
 //			var t = st.Elapsed;
 		}
 		
-		public Outage GenerateOutage() {
+		public Outage GenerateOutage()
+        {
 			return new Outage(this);
 		}
+
+        public string GenerateCoosReport()
+        {
+            AlarmsList = AlarmsList.Where(a => string.IsNullOrWhiteSpace(a.VfTtNumber)).OrderBy(a => a.Location).ToList();
+            var sitesWithAlarms = AlarmsList.Select(a => a.Location).Distinct();
+
+            //string output = "Sites with COOS without INC on Netcool:" + Environment.NewLine + string.Join(Environment.NewLine, sitesWithAlarms) + ;
+            string output = string.Empty;
+            foreach(string site in sitesWithAlarms)
+            {
+                output += string.Format("Site {0}", site) + Environment.NewLine;
+
+                var cellAlarms = AlarmsList.Where(a => a.Location == site);
+                foreach(Alarm alarm in cellAlarms)
+                {
+                    if((alarm.Bearer == Bearers.GSM || alarm.Bearer == Bearers.UMTS) && alarm.Vendor == Vendors.NSN)
+                    {
+                        if(alarm.Bearer == Bearers.GSM) 
+                        {
+                            var temp = alarm.Identifier.Substring(alarm.Identifier.IndexOf("BtsSiteMgr=") + "BtsSiteMgr=".Length);
+                            string[] arr = temp.Substring(0, temp.IndexOf(' ')).Replace("GsmCell=", string.Empty).Split(',');
+
+                            output += string.Format("{0} - {1} {2}", alarm.Element, arr[0], arr[1]);
+                        }
+                        else
+                        {
+                            var wCel = alarm.NodeAlias.Substring(alarm.NodeAlias.IndexOf("UtranCell=") + "UtranCell=".Length).Split('/');
+
+                            output += string.Format("{0} - {1}", alarm.Element, wCel[0]);
+                        }
+                    }
+                    else
+                    {
+                        output += alarm.Bearer == Bearers.LTE && alarm.OnM ?
+                            string.Format("{0} - {1}", alarm.Element, alarm.Summary) :
+                            alarm.Element;
+                    }
+
+                    if (alarm != cellAlarms.LastOrDefault())
+                        output += Environment.NewLine;
+                }
+
+                if (site != sitesWithAlarms.LastOrDefault())
+                    output += Environment.NewLine + Environment.NewLine;
+            }
+
+            return output;
+        }
 		
 		public override string ToString()
 		{

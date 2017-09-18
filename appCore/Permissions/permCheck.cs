@@ -34,7 +34,7 @@ namespace appCore.permChecker
 		// static string permFile = localPath + "\\Permissions\\permissions.xml";
 		static string permFile {
 			get {
-				return GlobalProperties.shareAccess ?
+				return GlobalProperties.shareHostAccess.FullAccess ?
 					"\\\\vf-pt\\fs\\ANOC-UK\\ANOC-UK 1st LINE\\1. RAN 1st LINE\\ANOC Master Tool\\data\\Permissions\\permissions.xml" :
 					"appCore.Permissions.permissions.xml";
 			}

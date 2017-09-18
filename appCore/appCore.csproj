@@ -1329,7 +1329,9 @@
     <Compile Include="Toolbox\StringExtensions.cs" />
     <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\StringLogicalComparer.cs" />
-    <Compile Include="Toolbox\SVGParser.cs" />
+    <Compile Include="Toolbox\TipOfTheDayDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Toolbox\Tools.cs" />
     <Compile Include="Toolbox\Enumerators.cs" />
     <Compile Include="Toolbox\Transitions\IManagedType.cs" />
@@ -1388,15 +1390,7 @@
     <Compile Include="UI\AMTLargeTextForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Loading.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Loading.Designer.cs">
-      <DependentUpon>Loading.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\LoadingPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="UI\LoadingPanel.cs" />
     <Compile Include="UI\NotesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1404,12 +1398,6 @@
       <DependentUpon>NotesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\PopupHelper.cs" />
-    <Compile Include="UI\ProgressSpinner.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\ProgressSpinner.Designer.cs">
-      <DependentUpon>ProgressSpinner.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -1440,9 +1428,6 @@
     <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchOSXRenderer.cs" />
     <Compile Include="UI\ToggleSwitch\Renderers\ToggleSwitchRendererBase.cs" />
     <Compile Include="UI\ToggleSwitch\ToggleSwitch.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\ToolsMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\TranspControl.cs">
@@ -1536,18 +1521,16 @@
     <EmbeddedResource Include="Templates\UI\TasksForm.resx">
       <DependentUpon>TasksForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Loading.resx">
-      <DependentUpon>Loading.cs</DependentUpon>
+    <EmbeddedResource Include="Toolbox\TipOfTheDayDialog.resx">
+      <DependentUpon>TipOfTheDayDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\NotesForm.resx">
       <DependentUpon>NotesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ProgressSpinner.resx">
-      <DependentUpon>ProgressSpinner.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ScrollableMessageBox.resx">
       <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
@@ -1579,7 +1562,6 @@
     <EmbeddedResource Include="Assemblies\FileHelpers.dll" />
     <EmbeddedResource Include="Assemblies\GeoUk.dll" />
     <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
-    <EmbeddedResource Include="Assemblies\Svg2.3.0.dll" />
     <None Include="GeoAPIs\GMap.NET\GMap.Net.README.md" />
     <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />

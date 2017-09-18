@@ -178,7 +178,7 @@ namespace appCore.Templates.UI
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
 			if(UiMode == UiEnum.Template)
-			SiteIdTextBoxKeyPress(SiteIdTextBox, new KeyPressEventArgs((char)Keys.Enter));
+			    SiteIdTextBoxKeyPress(SiteIdTextBox, new KeyPressEventArgs((char)Keys.Enter));
 			else
 				currentSite = currentTemplate.Site;
 			INCTextBox.Text = currentTemplate.INC;
@@ -320,65 +320,93 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
+		async void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
 			if (Convert.ToInt32(e.KeyChar) == 13)
 			{
 				TextBox tb = (TextBox)sender;
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
-				
-				Action actionThreaded = new Action(delegate {
-				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
-				                                   	
-				                                   	if(currentSite.Exists) {
-				                                   		string dataToRequest = "INC";
-				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
-				                                   			dataToRequest += "CRQ";
-				                                   		currentSite.requestOIData(dataToRequest);
-				                                   	}
-				                                   });
-				
-				Action actionNonThreaded = new Action(delegate {
-				                                      	if(currentSite.Exists) {
-				                                      		PriorityTextBox.Text = currentSite.Priority;
-				                                      		RegionTextBox.Text = currentSite.Region;
-				                                      		SiteDetailsToolStripMenuItem.Enabled = true;
-				                                      	}
-				                                      	else {
-				                                      		RegionTextBox.Text = "No site found";
-				                                      		PriorityTextBox.Text = string.Empty;
-				                                      		SiteDetailsToolStripMenuItem.Enabled = false;
-				                                      	}
-				                                      	generateTemplateToolStripMenuItem.Enabled = true;
-				                                      	siteFinder_Toggle(true, currentSite.Exists);
-				                                      });
-				if(this.Parent != null) {
-					LoadingPanel load = new LoadingPanel();
-					load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
-				}
-				else {
-					actionThreaded();
-					actionNonThreaded();
-				}
-			}
+
+                LoadingPanel loading = null;
+                if (Parent != null)
+                {
+                    loading = new LoadingPanel();
+                    loading.Show(true, this);
+                }
+
+                if (currentSite != null)
+                {
+                    if (tb.Text == currentSite.Id)
+                    {
+                        if (currentSite.Exists)
+                        {
+                            await MainMenu.ShowLoading();
+                            await currentSite.requestOIDataAsync("INCCRQBookins");
+                            await MainMenu.siteFinder_Toggle(true);
+                        }
+                        return;
+                    }
+                }
+
+                tb.ReadOnly = true;
+
+                currentSite = await DB.SitesDB.getSiteAsync(tb.Text);
+
+                SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
+
+                if (loading != null)
+                    loading.Close();
+
+                if (currentSite.Exists)
+                {
+                    await MainMenu.ShowLoading();
+                    await siteFinder_Toggle(true, true);
+
+				    PriorityTextBox.Text = currentSite.Priority;
+				    RegionTextBox.Text = currentSite.Region;
+                    string dataToRequest = "INCBookins";
+                    if ((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+                        dataToRequest += "CRQ";
+                    currentSite.requestOIData(dataToRequest);
+                }
+				else
+                {
+				    RegionTextBox.Text = "No site found";
+				    PriorityTextBox.Text = string.Empty;
+				    SiteDetailsToolStripMenuItem.Enabled = false;
+                }
+                await siteFinder_Toggle(true, currentSite.Exists);
+                await MainMenu.siteFinder_Toggle(true, currentSite.Exists);
+
+                tb.ReadOnly = false;
+
+                generateTemplateToolStripMenuItem.Enabled = true;
+            }
 		}
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
-			currentSite = null;
-			siteFinder_Toggle(false, false);
-			SiteDetailsToolStripMenuItem.Enabled = false;
-			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
+            if(GlobalProperties.siteFinder_mainswitch)
+            {
+                currentSite = null;
+                siteFinder_Toggle(false, false);
+
+                SiteDetailsToolStripMenuItem.Enabled = false;
+            }
+            else
+                generateTemplateToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
+
+            clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
-		void siteFinder_Toggle(bool toggle, bool siteFound)
+		async System.Threading.Tasks.Task siteFinder_Toggle(bool toggle, bool siteFound)
 		{
 			foreach (object ctrl in Controls) {
 				switch(ctrl.GetType().ToString())
 				{
-					case "appCore.UI.AMTMenuStrip":
-						MainMenu.siteFinder_Toggle(toggle, siteFound);
-						break;
+					//case "appCore.UI.AMTMenuStrip":
+					//	MainMenu.siteFinder_Toggle(toggle, siteFound);
+					//	break;
 					case "System.Windows.Forms.Button":
 						Button btn = ctrl as Button;
 						if(btn.Text.Contains("Generate") || btn.Text == "Clear")
@@ -419,12 +447,13 @@ namespace appCore.Templates.UI
 		
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {
-				INCTextBox.KeyPress -= INCTextBoxKeyPress;
+				SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
 				siteFinder_Toggle(true,false);
 			}
-			else {
-				INCTextBox.KeyPress += INCTextBoxKeyPress;
-				siteFinder_Toggle(false,false);
+			else
+            {
+                SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
+                siteFinder_Toggle(false,false);
 			}
 		}
 
@@ -734,7 +763,7 @@ namespace appCore.Templates.UI
 			// copyToNewTemplateToolStripMenuItem
 			// 
 			copyToNewTemplateToolStripMenuItem.Name = "copyToNewTemplateToolStripMenuItem";
-			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Troubleshoot template";
+			copyToNewTemplateToolStripMenuItem.Text = "Copy to new Failed CRQ template";
 			copyToNewTemplateToolStripMenuItem.Click += LoadTemplateFromLog;
 			// 
 			// INCLabel

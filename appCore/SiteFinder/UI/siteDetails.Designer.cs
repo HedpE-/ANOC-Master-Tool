@@ -231,7 +231,6 @@ namespace appCore.SiteFinder.UI
 			this.textBox3.ReadOnly = true;
 			this.textBox3.Size = new System.Drawing.Size(76, 20);
 			this.textBox3.TabIndex = 86;
-			this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.siteFinder);
 			// 
 			// label6
 			// 
@@ -756,7 +755,6 @@ namespace appCore.SiteFinder.UI
 			this.MaximizeBox = false;
 			this.Name = "siteDetails";
 			this.Text = "Site Details";
-			this.Load += new System.EventHandler(this.SiteDetailsLoad);
 			this.Move += new System.EventHandler(this.siteDetails_Move);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.amtDataGridView1)).EndInit();

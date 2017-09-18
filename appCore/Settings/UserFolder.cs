@@ -18,34 +18,88 @@ using appCore.DB;
 
 namespace appCore.Settings
 {
-	/// <summary>
-	/// Description of UserFolder.
-	/// </summary>
-	public static class UserFolder
-	{
-		static DirectoryInfo _userFolder;
-		static DirectoryInfo userFolder {
-			get { return _userFolder; }
-			set {
-				_userFolder = value;
-				UsernameFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\" + CurrentUser.UserName);
-			}
-		}
-		static DirectoryInfo _usernameFolder;
-		static DirectoryInfo UsernameFolder {
-			get {
-				return _usernameFolder;
-			}
-			set {
-				_usernameFolder = value;
-				LogsFolder = value == null ? null : new DirectoryInfo(_usernameFolder.FullName + @"\Logs");
-				TempFolder = value == null ? null : new DirectoryInfo(_usernameFolder.FullName + @"\temp");
-			}
-		}
-		
-		public static DirectoryInfo LogsFolder { get; private set; }
-		
-		public static DirectoryInfo TempFolder { get; private set; }
+    /// <summary>
+    /// Description of UserFolder.
+    /// </summary>
+    public static class UserFolder
+    {
+        //static DirectoryInfo _userFolder;
+        //static DirectoryInfo userFolder {
+        //    get { return _userFolder; }
+        //    set {
+        //        _userFolder = value;
+        //        //UsernameFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\" + CurrentUser.UserName);
+        //        //LogsFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\Logs");
+        //        TempFolder = value == null ? null : new DirectoryInfo(_userFolder.FullName + @"\temp");
+        //    }
+        //}
+        //static DirectoryInfo _usernameFolder;
+        //static DirectoryInfo UsernameFolder {
+        //	get {
+        //		return _usernameFolder;
+        //	}
+        //	set {
+        //		_usernameFolder = value;
+        //		LogsFolder = value == null ? null : new DirectoryInfo(_usernameFolder.FullName + @"\Logs");
+        //		TempFolder = value == null ? null : new DirectoryInfo(_usernameFolder.FullName + @"\temp");
+        //	}
+        //}
+
+        static DirectoryInfo _userFolder;
+        public static DirectoryInfo userFolder
+        {
+            get
+            {
+                return _userFolder;
+            }
+            set
+            {
+                var tempFolder = value;
+                if (tempFolder != null)
+                {
+                    if (!tempFolder.Exists)
+                    {
+                        tempFolder.Create();
+                        tempFolder = new DirectoryInfo(tempFolder.FullName);
+                    }
+
+                    var temp = tempFolder.FullName.ToUpper().Split('\\');
+                    if (temp[temp.Length - 1] != CurrentUser.UserName)
+                    {
+                        tempFolder = new DirectoryInfo(tempFolder.FullName + "\\" + CurrentUser.UserName);
+                        tempFolder.Create();
+                        tempFolder = new DirectoryInfo(tempFolder.FullName);
+                    }
+
+                    LogsFolder = new DirectoryInfo(tempFolder.FullName + "\\Logs");
+                }
+                else
+                    LogsFolder = null;
+
+                _userFolder = tempFolder;
+            }
+        }
+
+        static DirectoryInfo logsFolder;
+        public static DirectoryInfo LogsFolder
+        {
+            get
+            {
+                return logsFolder;
+            }
+            set
+            {
+                if(value != null)
+                {
+                    if(!value.Exists)
+                    {
+                        value.Create();
+                        value = new DirectoryInfo(value.FullName);
+                    }
+                }
+                logsFolder = value;
+            }
+        }
 		
 		public static string FullName {
 			get {
@@ -75,75 +129,81 @@ namespace appCore.Settings
 			if (searchPattern == null)
 				throw new ArgumentNullException("searchPattern");
 			
-			return userFolder.GetFiles(searchPattern, SearchOption.TopDirectoryOnly);
+			return GlobalProperties.AppDataRootDir.GetFiles(searchPattern, SearchOption.TopDirectoryOnly);
 		}
 		
-		public static bool ContainsFile(string file) {
-			return userFolder.GetFiles(file).Length > 0;
+		public static bool ContainsFile(string file)
+        {
+			return GlobalProperties.AppDataRootDir.GetFiles(file).Length > 0;
 		}
 		
-		public static void ResolveUserFolder() {
-			DirectoryInfo settingsFolder;
-			if(!GlobalProperties.shareAccess) {
-				if(!GlobalProperties.FallbackRootDir.Exists) {
-					GlobalProperties.FallbackRootDir.Create();
-					GlobalProperties.FallbackRootDir = new DirectoryInfo(GlobalProperties.FallbackRootDir.FullName);
-					GlobalProperties.FallbackRootDir.CreateSubdirectory("UserSettings");
-				}
-				
-				settingsFolder = new DirectoryInfo(GlobalProperties.FallbackRootDir.FullName + @"\UserSettings");
-				userFolder = new DirectoryInfo(GlobalProperties.FallbackRootDir.FullName);
-			}
-			else {
-				settingsFolder = new DirectoryInfo(GlobalProperties.ShareRootDir.FullName + @"\UserSettings");
-				userFolder = new DirectoryInfo(GlobalProperties.ShareRootDir.FullName);
-			}
-			
-			if(!settingsFolder.Exists) {
-				settingsFolder.Create();
-				settingsFolder = new DirectoryInfo(settingsFolder.FullName);
-			}
-		}
-		
-		public static void Initialize() {
-			if(SettingsFile.Exists)
-				userFolder = SettingsFile.UserFolderPath;
-			if(FullName == GlobalProperties.ShareRootDir.FullName || !userFolder.Exists || !UsernameFolder.Exists) {
-				DialogResult result;
-				userFolder = null;
-				FlexibleMessageBox.Show("Defined user folder not found, please choose default user folder.","ANOC Master Tool",MessageBoxButtons.OK,MessageBoxIcon.Information);
-				do
-				{
-					FolderBrowserDialog folderBrowserDialog;
-					folderBrowserDialog = new FolderBrowserDialog();
-					result = folderBrowserDialog.ShowDialog();
-					if (result == DialogResult.OK)
-					{
-						DialogResult ans = FlexibleMessageBox.Show("The following path was chosen:\n\n" + folderBrowserDialog.SelectedPath + "\n\nContinue with User Folder selection?","Path confirmation",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-						if(ans == DialogResult.Yes) {
-							DirectoryInfo chosenFolder = new DirectoryInfo(folderBrowserDialog.SelectedPath);
-							DriveInfo chosenDrive = new DriveInfo(chosenFolder.Root.FullName);
-							if((chosenDrive.DriveType == DriveType.Removable || chosenDrive.DriveType == DriveType.Fixed) && chosenDrive.AvailableFreeSpace > 50 * Math.Pow(1024, 2)) {
-								userFolder = chosenFolder;
-								SettingsFile.UserFolderPath = userFolder;
-							}
-							else {
-								if(chosenDrive.DriveType != DriveType.Removable && chosenDrive.DriveType != DriveType.Fixed)
-									ErrorHandling.showIncompatibleDriveWarningOnUserFolderSelection(chosenDrive);
-								else
-									ErrorHandling.showLowSpaceWarningOnUserFolderSelection(chosenDrive);
-							}
-						}
-					}
-				} while (userFolder == null);
-				
-				if(!UsernameFolder.Exists)
-					UsernameFolder.Create();
-				
-				if(!LogsFolder.Exists)
-					LogsFolder.Create();
-			}
-			Databases.Initialize();
+		public static void Initialize()
+        {
+            if(!GlobalProperties.AppDataRootDir.Exists)
+            {
+                GlobalProperties.AppDataRootDir.Create();
+                GlobalProperties.AppDataRootDir = new DirectoryInfo(GlobalProperties.AppDataRootDir.FullName);
+            }
+
+            if (SettingsFile.Exists)
+            {
+                var temp = SettingsFile.UserFolderPath;
+                if (temp == null)
+                    userFolder = null;
+                else
+                    userFolder = !temp.Exists ? null : temp;
+            }
+
+            if(userFolder == null)
+                RequestUserFolderPath();
+            //if(FullName == GlobalProperties.ShareRootDir.FullName || !userFolder.Exists || !UsernameFolder.Exists) {
+            //	DialogResult result;
+            //	userFolder = null;
+            //	FlexibleMessageBox.Show("Defined user folder not found, please choose default user folder.","ANOC Master Tool",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            //	do
+            //	{
+            //		FolderBrowserDialog folderBrowserDialog;
+            //		folderBrowserDialog = new FolderBrowserDialog();
+            //		result = folderBrowserDialog.ShowDialog();
+            //		if (result == DialogResult.OK)
+            //		{
+            //			DialogResult ans = FlexibleMessageBox.Show("The following path was chosen:\n\n" + folderBrowserDialog.SelectedPath + "\n\nContinue with User Folder selection?","Path confirmation",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+            //			if(ans == DialogResult.Yes) {
+            //				DirectoryInfo chosenFolder = new DirectoryInfo(folderBrowserDialog.SelectedPath);
+            //				DriveInfo chosenDrive = new DriveInfo(chosenFolder.Root.FullName);
+            //				if((chosenDrive.DriveType == DriveType.Removable || chosenDrive.DriveType == DriveType.Fixed) && chosenDrive.AvailableFreeSpace > 50 * Math.Pow(1024, 2)) {
+            //					userFolder = chosenFolder;
+            //					SettingsFile.UserFolderPath = userFolder;
+            //				}
+            //				else {
+            //					if(chosenDrive.DriveType != DriveType.Removable && chosenDrive.DriveType != DriveType.Fixed)
+            //						ErrorHandling.showIncompatibleDriveWarningOnUserFolderSelection(chosenDrive);
+            //					else
+            //						ErrorHandling.showLowSpaceWarningOnUserFolderSelection(chosenDrive);
+            //				}
+            //			}
+            //		}
+            //	} while (userFolder == null);
+
+            //if(!UsernameFolder.Exists)
+            //	UsernameFolder.Create();
+
+            //if (LogsFolder != null)
+            //{
+            //    if (!LogsFolder.Exists)
+            //    {
+            //        try
+            //        {
+            //            LogsFolder.Create();
+            //        }
+            //        catch
+            //        {
+            //            RequestLogsFolder("could not be created");
+            //        }
+            //    }
+            //}
+
+            Databases.Initialize();
 			
 			LocalDbAutoUpdateTimer.Elapsed += delegate {
 				UpdateLocalDBFilesCopy();
@@ -153,111 +213,141 @@ namespace appCore.Settings
 			
 			LocalDbAutoUpdateTimer.Enabled = true;
 		}
-		
-		public static bool Change(DirectoryInfo newFolder) {
-			DriveInfo chosenDrive = new DriveInfo(newFolder.Root.FullName);
-			
-			if((chosenDrive.DriveType == DriveType.Removable || chosenDrive.DriveType == DriveType.Fixed) && chosenDrive.AvailableFreeSpace > 50 * Math.Pow(1024, 2)) {
-				DirectoryInfo prevFolder = userFolder;
-				
-				userFolder = newFolder;
-				if(!UpdateLocalDBFilesCopy()) {
-					userFolder = prevFolder;
-					newFolder.Delete(true);
-					return false;
-				}
-				
-				if(!newFolder.Exists) {
-					newFolder.Create();
-					newFolder = new DirectoryInfo(newFolder.FullName);
-				}
-				if(prevFolder != null) {
-					if(prevFolder.Exists) {
-						bool isPrevFallbackFolder = prevFolder.FullName == GlobalProperties.FallbackRootDir.FullName;
-						DirectoryInfo prevUsernameFolder = new DirectoryInfo(prevFolder.FullName + "\\" + CurrentUser.UserName);
-						if(prevUsernameFolder.Exists) {
-							DialogResult res;
-							res = FlexibleMessageBox.Show("Previous User Folder exists. Do you want to copy all contents to the new Folder?","Copy Contents",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-							if(res == DialogResult.Yes) {
-								res = FlexibleMessageBox.Show("LAST WARNING!" + Environment.NewLine + Environment.NewLine +
-								                              "New User Folder is not empty." + Environment.NewLine + Environment.NewLine +
-								                              "ANY EXISTING FILES WILL BE OVERWRITTEN IF NOT BACKED UP MANUALLY." + Environment.NewLine + Environment.NewLine +
-								                              "Please ensure to backup all data from " + newFolder.FullName +
-								                              "\\ before continuing.",
-								                              "LAST WARNING!",MessageBoxButtons.OKCancel,MessageBoxIcon.Stop);
-								if(res == DialogResult.Cancel) {
-									newFolder.Delete(true);
-									return false;
-								}
-								prevUsernameFolder.CopyTo(newFolder.FullName + "\\" + CurrentUser.UserName);
-								
-								if(!newFolder.FullName.Contains(prevUsernameFolder.FullName))
-									prevUsernameFolder.Delete(true);
-								else {
-									DirectoryInfo[] subDirs = prevUsernameFolder.GetDirectories();
-									foreach (DirectoryInfo dir in subDirs)
-										if(!dir.FullName.Contains(prevUsernameFolder.FullName))
-											dir.Delete(true);
+        
+        static void RequestUserFolderPath()
+        {
+            userFolder = null;
+            FlexibleMessageBox.Show("Defined user folder not found, please choose the desired location." + Environment.NewLine + Environment.NewLine + "This folder will be used for logs storage.", "ANOC Master Tool", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            do
+            {
+                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                DialogResult result = folderBrowserDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    result = FlexibleMessageBox.Show("The following path was chosen:\n\n" + folderBrowserDialog.SelectedPath + "\n\nContinue with User Folder selection?", "Path confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                    if (result == DialogResult.Yes)
+                    {
+                        userFolder = new DirectoryInfo(folderBrowserDialog.SelectedPath);
+                        SettingsFile.UserFolderPath = new DirectoryInfo(folderBrowserDialog.SelectedPath);
+                    }
+                }
+            } while (userFolder == null);
+        }
 
-								}
-								
-								FileInfo[] newSubFiles = prevFolder.GetFiles();
-								foreach (FileInfo file in newSubFiles) {
-									if(!file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
-										file.CopyTo(newFolder.FullName + "\\" + file.Name, true);
-								}
-								
-								newFolder = new DirectoryInfo(newFolder.FullName);
-							}
-							else {
-								if(!isPrevFallbackFolder) {
-									DialogResult ans = FlexibleMessageBox.Show("You chose not to copy the previous UserFolder, do you want to delete it and all it's contents?" +
-									                                           Environment.NewLine + Environment.NewLine +
-									                                           "WARNING: ANY EXISTING FILES WILL BE DELETED WITHOUT RECOVERY!",
-									                                           "Delete previous UserFolder",
-									                                           MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-									if(ans == DialogResult.Yes)
-										prevFolder.Delete(true);
-								}
-							}
-						}
-						
-						prevFolder = new DirectoryInfo(prevFolder.FullName);
-						if(prevFolder.Exists) {
-							if(!isPrevFallbackFolder) {
-								DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
-								if(prevSettingsFolder.Exists) {
-									prevSettingsFolder.Delete(true);
-									prevFolder = new DirectoryInfo(prevFolder.FullName);
-								}
-							}
-							else
-								if(prevFolder.GetDirectories().Length < 1)
-									prevFolder.Delete(true);
-						}
-					}
-				}
-				
-				if(!LogsFolder.Exists)
-					LogsFolder.Create();
-				if(!UsernameFolder.Exists) {
-					UsernameFolder.Create();
-					UsernameFolder = new DirectoryInfo(UsernameFolder.FullName);
-				}
-				SettingsFile.UserFolderPath = userFolder;
-				
-				return true;
-			}
-			
-			if(chosenDrive.DriveType != DriveType.Removable && chosenDrive.DriveType != DriveType.Fixed)
-				ErrorHandling.showIncompatibleDriveWarningOnUserFolderSelection(chosenDrive);
-			else
-				ErrorHandling.showLowSpaceWarningOnUserFolderSelection(chosenDrive);
-			
-			return false;
-		}
+        public static void Change(DirectoryInfo newFolder)
+        {
+            DirectoryInfo prevFolder = userFolder;
 
-		public static bool UpdateLocalDBFilesCopy(bool ForceCloseAppOnError = false) {
+            userFolder = newFolder;
+
+            SettingsFile.UserFolderPath = newFolder;
+
+            //MainForm.logFiles = new Logs.LogsCollection<Templates.Template>();
+            //MainForm.logFiles.Initialize();
+
+            //if (!UpdateLocalDBFilesCopy())
+            //{
+            //    userFolder = prevFolder;
+            //    newFolder.Delete(true);
+            //    return false;
+            //}
+
+            //if (!newFolder.Exists)
+            //{
+            //    newFolder.Create();
+            //    newFolder = new DirectoryInfo(newFolder.FullName);
+            //}
+            //if (prevFolder != null)
+            //{
+            //    if (prevFolder.Exists)
+            //    {
+            //        bool isPrevFallbackFolder = prevFolder.FullName == GlobalProperties.FallbackRootDir.FullName;
+            //DirectoryInfo prevUsernameFolder = new DirectoryInfo(prevFolder.FullName + "\\" + CurrentUser.UserName);
+            //if (prevUsernameFolder.Exists)
+            //{
+            //    DialogResult res;
+            //    res = FlexibleMessageBox.Show("Previous User Folder exists. Do you want to copy all contents to the new Folder?", "Copy Contents", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            //    if (res == DialogResult.Yes)
+            //    {
+            //        res = FlexibleMessageBox.Show("LAST WARNING!" + Environment.NewLine + Environment.NewLine +
+            //                                        "New User Folder is not empty." + Environment.NewLine + Environment.NewLine +
+            //                                        "ANY EXISTING FILES WILL BE OVERWRITTEN IF NOT BACKED UP MANUALLY." + Environment.NewLine + Environment.NewLine +
+            //                                        "Please ensure to backup all data from " + newFolder.FullName +
+            //                                        "\\ before continuing.",
+            //                                        "LAST WARNING!", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
+            //        if (res == DialogResult.Cancel)
+            //        {
+            //            newFolder.Delete(true);
+            //            return false;
+            //        }
+            //        prevUsernameFolder.CopyTo(newFolder.FullName + "\\" + CurrentUser.UserName);
+
+            //        if (!newFolder.FullName.Contains(prevUsernameFolder.FullName))
+            //            prevUsernameFolder.Delete(true);
+            //        else
+            //        {
+            //            DirectoryInfo[] subDirs = prevUsernameFolder.GetDirectories();
+            //            foreach (DirectoryInfo dir in subDirs)
+            //                if (!dir.FullName.Contains(prevUsernameFolder.FullName))
+            //                    dir.Delete(true);
+
+            //        }
+
+            //        FileInfo[] newSubFiles = prevFolder.GetFiles();
+            //        foreach (FileInfo file in newSubFiles)
+            //        {
+            //            if (!file.Attributes.ToString().Contains("Hidden") && !file.FullName.StartsWith("~$"))
+            //                file.CopyTo(newFolder.FullName + "\\" + file.Name, true);
+            //        }
+
+            //        newFolder = new DirectoryInfo(newFolder.FullName);
+            //    }
+            //    else
+            //    {
+            //        if (!isPrevFallbackFolder)
+            //        {
+            //            DialogResult ans = FlexibleMessageBox.Show("You chose not to copy the previous UserFolder, do you want to delete it and all it's contents?" +
+            //                                                        Environment.NewLine + Environment.NewLine +
+            //                                                        "WARNING: ANY EXISTING FILES WILL BE DELETED WITHOUT RECOVERY!",
+            //                                                        "Delete previous UserFolder",
+            //                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            //            if (ans == DialogResult.Yes)
+            //                prevFolder.Delete(true);
+            //        }
+            //    }
+            //}
+
+            //prevFolder = new DirectoryInfo(prevFolder.FullName);
+            //if (prevFolder.Exists)
+            //{
+            //    if (!isPrevFallbackFolder)
+            //    {
+            //        DirectoryInfo prevSettingsFolder = new DirectoryInfo(prevFolder.FullName + @"\UserSettings");
+            //        if (prevSettingsFolder.Exists)
+            //        {
+            //            prevSettingsFolder.Delete(true);
+            //            prevFolder = new DirectoryInfo(prevFolder.FullName);
+            //        }
+            //    }
+            //    else
+            //        if (prevFolder.GetDirectories().Length < 1)
+            //        prevFolder.Delete(true);
+            //}
+            //    }
+            //}
+
+            //if (!LogsFolder.Exists)
+            //    LogsFolder.Create();
+            //if (!UsernameFolder.Exists)
+            //{
+            //    UsernameFolder.Create();
+            //    UsernameFolder = new DirectoryInfo(UsernameFolder.FullName);
+            //}
+
+            //return true;
+        }
+
+        public static bool UpdateLocalDBFilesCopy(bool ForceCloseAppOnError = false) {
 		retry:
 			try {
 				ongoingLocalDbFilesUpdate = true;
@@ -333,11 +423,11 @@ namespace appCore.Settings
 				                    		}
 				                    		else {
 				                    			MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_sites.csv...");
-				                    			source_allsites.CopyTo(FullName + @"\all_sites.csv", true);
+				                    			source_allsites.CopyTo(GlobalProperties.AppDataRootDir + @"\all_sites.csv", true);
 				                    			updated = true;
 				                    		}
 				                    		if(updated)
-				                    			MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully on your UserFolder.");
+				                    			MainForm.trayIcon.showBalloon("Update complete", "all_sites.csv updated successfully.");
 				                    	}
 				                    	
 				                    	finishedThreadsCount++;
@@ -357,11 +447,11 @@ namespace appCore.Settings
 				                    		}
 				                    		else {
 				                    			MainForm.trayIcon.showBalloon("Downloading file", "Downloading all_cells.csv...");
-				                    			source_allcells.CopyTo(FullName + @"\all_cells.csv", true);
+				                    			source_allcells.CopyTo(GlobalProperties.AppDataRootDir + @"\all_cells.csv", true);
 				                    			updated = true;
 				                    		}
 				                    		if(updated)
-				                    			MainForm.trayIcon.showBalloon("Update complete", "Local all_cells.csv updated successfully on your UserFolder.");
+				                    			MainForm.trayIcon.showBalloon("Update complete", "Local all_cells.csv updated successfully.");
 				                    	}
 				                    	
 				                    	finishedThreadsCount++;
@@ -391,7 +481,7 @@ namespace appCore.Settings
 			if(!hasDBFile(pattern))
 				return null;
 			
-			FileInfo[] files = userFolder.GetFiles(pattern);
+			FileInfo[] files = GlobalProperties.AppDataRootDir.GetFiles(pattern);
 			FileInfo foundFile = null;
 			if(files.Length > 1) {
 				foreach (FileInfo file in files) {
@@ -411,7 +501,7 @@ namespace appCore.Settings
 
 		public static bool hasDBFile(string file) {
 			try {
-				return userFolder.GetFiles(file).Length > 0;
+				return GlobalProperties.AppDataRootDir.GetFiles(file).Length > 0;
 			}
 			catch (Exception) { }
 			return false;
@@ -482,7 +572,7 @@ namespace appCore.Settings
 								Retry:
 									try {
 										currentShiftsFile.Delete();
-										newestFile.CopyTo(FullName + "\\" + newestFile.Name, true);
+										newestFile.CopyTo(GlobalProperties.AppDataRootDir + "\\" + newestFile.Name, true);
 										string notificationText = currentShiftsFile.Name == newestFile.Name ?
 											"Changes found on the Shifts file, updated on your User Folder" :
 											"Next Shifts month available, copied to your User Folder";
@@ -502,7 +592,7 @@ namespace appCore.Settings
 							}
 						}
 						else {
-							newestFile.CopyTo(FullName + "\\" + newestFile.Name);
+							newestFile.CopyTo(GlobalProperties.AppDataRootDir + "\\" + newestFile.Name);
 							MainForm.trayIcon.showBalloon("Shifts File updated", "Shifts file copied to your User Folder");
 						}
 					}
@@ -512,12 +602,12 @@ namespace appCore.Settings
 								if(newestNextYear.LastWriteTime > currentNextYearShiftsFile.LastWriteTime) {
 									if(DateTime.Now.Month != 12 && !newestNextYear.Name.Contains((DateTime.Now.Year + 1).ToString()))
 										currentNextYearShiftsFile.Delete();
-									newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name, true);
+									newestNextYear.CopyTo(GlobalProperties.AppDataRootDir + "\\" + newestNextYear.Name, true);
 									MainForm.trayIcon.showBalloon("Shifts File updated", "Changes found on the " + DateTime.Now.Year + 1 + " Shifts file, updated on your User Folder");
 								}
 							}
 							else {
-								newestNextYear.CopyTo(FullName + "\\" + newestNextYear.Name);
+								newestNextYear.CopyTo(GlobalProperties.AppDataRootDir + "\\" + newestNextYear.Name);
 								MainForm.trayIcon.showBalloon("Shifts File updated", DateTime.Now.Year + 1 + " Shifts file copied to your User Folder");
 							}
 						}
@@ -528,29 +618,31 @@ namespace appCore.Settings
 				Databases.shiftsFile = new ShiftsFile(DateTime.Now.Year);
 		}
 		
-		public static void CreateTempFolder() {
-			if(!TempFolder.Exists) {
-				TempFolder.Create();
-				UserFolder.TempFolder = new DirectoryInfo(TempFolder.FullName);
+		public static void CreateTempFolder()
+        {
+			if(!GlobalProperties.TempFolder.Exists)
+            {
+                GlobalProperties.TempFolder.Create();
+                GlobalProperties.TempFolder = new DirectoryInfo(GlobalProperties.TempFolder.FullName);
 			}
 		}
 		
 		public static void ClearTempFolder() {
-			if(TempFolder.Exists) {
-				TempFolder.Delete(true);
-				UserFolder.TempFolder = new DirectoryInfo(TempFolder.FullName);
+			if(GlobalProperties.TempFolder.Exists) {
+                GlobalProperties.TempFolder.Delete(true);
+                GlobalProperties.TempFolder = new DirectoryInfo(GlobalProperties.TempFolder.FullName);
 			}
 		}
 
 		public static FileInfo ReadyAMTFailedCRQTempFile() {
 			CreateTempFolder();
-			FileInfo path = new FileInfo(TempFolder.FullName + @"\AMTmailTemplate.msg");
+			FileInfo filePath = new FileInfo(GlobalProperties.TempFolder.FullName + @"\AMTmailTemplate.msg");
 			
-			if (path.Exists)
-				path.Delete();
+			if (filePath.Exists)
+				filePath.Delete();
 			
-			File.WriteAllBytes(path.FullName, Resources.AMTmailTemplate);
-			return path;
+			File.WriteAllBytes(filePath.FullName, Resources.AMTmailTemplate);
+			return filePath;
 		}
 	}
 

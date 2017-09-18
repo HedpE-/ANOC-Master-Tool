@@ -94,6 +94,11 @@ namespace appCore.DB
             get;
             private set;
         }
+        public List<string> APT
+        {
+            get;
+            private set;
+        }
 
         int LastRow { get; set; }
 		
@@ -103,10 +108,11 @@ namespace appCore.DB
 			try {
 				package = new ExcelPackage(shiftsFile);
 			}
-			catch {
+			catch(Exception e) {
+                var t = e.Message;
 				if(shiftsFile != null) {
 					UserFolder.CreateTempFolder();
-					FileInfo tempShiftsFile = shiftsFile.CopyTo(UserFolder.TempFolder + "\\" + shiftsFile.Name, true);
+					FileInfo tempShiftsFile = shiftsFile.CopyTo(GlobalProperties.TempFolder + "\\" + shiftsFile.Name, true);
 					package = new ExcelPackage(tempShiftsFile);
 				}
 				
@@ -153,14 +159,28 @@ namespace appCore.DB
 
                     if (shiftsCount > 0)
                     {
-					    if(TEF == null)
-						    TEF = new List<string>();
-					    TEF.Add(currentCell.Offset(0, 2).Text);
+					    if(APT == null)
+						    APT = new List<string>();
+					    APT.Add(currentCell.Offset(0, 2).Text);
                     }
                     currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
 				}
 				currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
-				while(!string.IsNullOrEmpty(currentCell.Text))
+                while (!string.IsNullOrEmpty(currentCell.Text))
+                {
+                    var currentMonthShifts = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row, currentMonthHeaderRange.Start.Column, currentCell.Start.Row, currentMonthHeaderRange.End.Column];
+                    int shiftsCount = CalculateShiftsInRange(currentMonthShifts);
+
+                    if (shiftsCount > 0)
+                    {
+                        if (TEF == null)
+                            TEF = new List<string>();
+                        TEF.Add(currentCell.Offset(0, 2).Text);
+                    }
+                    currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+                }
+                currentCell = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row + 1, 1];
+                while (!string.IsNullOrEmpty(currentCell.Text))
                 {
                     var currentMonthShifts = package.Workbook.Worksheets[1].Cells[currentCell.Start.Row, currentMonthHeaderRange.Start.Column, currentCell.Start.Row, currentMonthHeaderRange.End.Column];
                     int shiftsCount = CalculateShiftsInRange(currentMonthShifts);
@@ -221,7 +241,7 @@ namespace appCore.DB
                 //				}
             }
 			Year = year;
-			if(package.File.FullName.Contains(UserFolder.TempFolder.FullName))
+			if(package.File.FullName.Contains(GlobalProperties.TempFolder.FullName))
 				UserFolder.ClearTempFolder();
 		}
 

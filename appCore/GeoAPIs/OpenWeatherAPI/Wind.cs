@@ -56,40 +56,46 @@ namespace OpenWeatherAPI
             {
                 if (picture == null)
                 {
-                    switch (Direction)
+                    if(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.Exists)
                     {
-                        case DirectionEnum.North:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-1.png");
-                            break;
-                        case DirectionEnum.North_North_East:
-                        case DirectionEnum.North_East:
-                        case DirectionEnum.East_North_East:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-5.png");
-                            break;
-                        case DirectionEnum.East:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-2.png");
-                            break;
-                        case DirectionEnum.East_South_East:
-                        case DirectionEnum.South_East:
-                        case DirectionEnum.South_South_East:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-6.png");
-                            break;
-                        case DirectionEnum.South:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-3.png");
-                            break;
-                        case DirectionEnum.South_South_West:
-                        case DirectionEnum.South_West:
-                        case DirectionEnum.West_South_West:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-7.png");
-                            break;
-                        case DirectionEnum.West:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-4.png");
-                            break;
-                        case DirectionEnum.West_North_West:
-                        case DirectionEnum.North_West:
-                        case DirectionEnum.North_North_West:
-                            picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\wind-dart-white-8.png");
-                            break;
+                        if(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.GetFiles("wind-dart-*.png").Length > 0)
+                        {
+                            switch (Direction)
+                            {
+                                case DirectionEnum.North:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-1.png");
+                                    break;
+                                case DirectionEnum.North_North_East:
+                                case DirectionEnum.North_East:
+                                case DirectionEnum.East_North_East:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-5.png");
+                                    break;
+                                case DirectionEnum.East:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-2.png");
+                                    break;
+                                case DirectionEnum.East_South_East:
+                                case DirectionEnum.South_East:
+                                case DirectionEnum.South_South_East:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-6.png");
+                                    break;
+                                case DirectionEnum.South:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-3.png");
+                                    break;
+                                case DirectionEnum.South_South_West:
+                                case DirectionEnum.South_West:
+                                case DirectionEnum.West_South_West:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-7.png");
+                                    break;
+                                case DirectionEnum.West:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-4.png");
+                                    break;
+                                case DirectionEnum.West_North_West:
+                                case DirectionEnum.North_West:
+                                case DirectionEnum.North_North_West:
+                                    picture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\wind-dart-white-8.png");
+                                    break;
+                            }
+                        }
                     }
                 }
                 return picture;

@@ -31,9 +31,13 @@ namespace appCore.GeoAPIs.UI
 				
 				this.Refresh();
 			}
-		}
-		
-		private int opacity = 75;
+        }
+
+        public Image HumidityPicture;
+        public Image TemperaturePicture;
+        public Image CloudinessPicture;
+
+        private int opacity = 75;
 		[System.ComponentModel.DefaultValue(75)]
 		public int Opacity
 		{
@@ -56,8 +60,16 @@ namespace appCore.GeoAPIs.UI
 		{
 			SetStyle(ControlStyles.Opaque, true);
 			InitializeComponent();
-            if (Settings.GlobalProperties.WeatherPicturesLocation.Exists)
-                WeatherPicture = Image.FromFile(Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"01d.png");
+            if (Settings.GlobalProperties.ExternalResourceFilesLocation.Exists)
+            {
+                WeatherPicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"01d.png");
+                if (System.IO.File.Exists(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\hygrometer.png"))
+                    HumidityPicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\hygrometer.png");
+                if (System.IO.File.Exists(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\thermometer.png"))
+                    TemperaturePicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\thermometer.png");
+                if (System.IO.File.Exists(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\cloudiness.png"))
+                    CloudinessPicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\cloudiness.png");
+            }
             else
             {
                 // Resolve PEN root path
@@ -86,23 +98,33 @@ namespace appCore.GeoAPIs.UI
 
             weatherQuery = weatherItem;
 
-            if (Settings.GlobalProperties.WeatherPicturesLocation.Exists)
-                WeatherPicture = Image.FromFile(Settings.GlobalProperties.WeatherPicturesLocation.FullName + "\\" + weatherItem.CurrentWeather.weather[0].icon + ".png");
+            if (Settings.GlobalProperties.ExternalResourceFilesLocation.Exists)
+            {
+                WeatherPicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + "\\" + weatherItem.CurrentWeather.weather[0].icon + ".png");
+                if (System.IO.File.Exists(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\hygrometer.png"))
+                    HumidityPicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\hygrometer.png");
+                if (System.IO.File.Exists(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\thermometer.png"))
+                    TemperaturePicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\thermometer.png");
+                if (System.IO.File.Exists(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\cloudiness.png"))
+                    CloudinessPicture = Image.FromFile(Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + @"\cloudiness.png");
+            }
             else
             {
                 // Resolve PEN root path
                 System.IO.DriveInfo pen = System.IO.DriveInfo.GetDrives().FirstOrDefault(d => d.DriveType == System.IO.DriveType.Removable && d.VolumeLabel == "PEN");
-			    if(pen != null)
-				    WeatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherItem.CurrentWeather.weather[0].icon + ".png");
-			    else {
-				    using(System.Net.WebClient wc = new System.Net.WebClient()) {
-					    System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
-					    proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
-					    wc.Proxy = proxy;
-					    byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherItem.CurrentWeather.weather[0].icon + ".png");
-					    System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
-					    WeatherPicture = Image.FromStream(ms);
-				    }
+                if (pen != null)
+                    WeatherPicture = Image.FromFile(pen.Name + @"Weather\" + weatherItem.CurrentWeather.weather[0].icon + ".png");
+                else
+                {
+                    using (System.Net.WebClient wc = new System.Net.WebClient())
+                    {
+                        System.Net.IWebProxy proxy = System.Net.WebRequest.GetSystemWebProxy();
+                        proxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+                        wc.Proxy = proxy;
+                        byte[] bytes = wc.DownloadData("http://openweathermap.org/img/w/" + weatherItem.CurrentWeather.weather[0].icon + ".png");
+                        System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
+                        WeatherPicture = Image.FromStream(ms);
+                    }
                 }
             }
         }
@@ -183,8 +205,8 @@ namespace appCore.GeoAPIs.UI
                     // 
                     // TemperaturePicture
                     // 
-                    if (weatherQuery.CurrentWeather.main.TemperaturePicture != null)
-                        g.DrawImage(weatherQuery.CurrentWeather.main.TemperaturePicture, new Rectangle(new Point(102, 37), new Size(18, 18)));
+                    if (TemperaturePicture != null)
+                        g.DrawImage(TemperaturePicture, new Rectangle(new Point(102, 37), new Size(18, 18)));
                     // 
                     // CurrentTemperature
                     // 
@@ -233,8 +255,8 @@ namespace appCore.GeoAPIs.UI
                     // 
                     // HumidityPicture
                     // 
-                    if (weatherQuery.CurrentWeather.main.HumidityPicture != null)
-                        g.DrawImage(weatherQuery.CurrentWeather.main.HumidityPicture, new Rectangle(new Point(103, 86), new Size(16, 16)));
+                    if (HumidityPicture != null)
+                        g.DrawImage(HumidityPicture, new Rectangle(new Point(103, 86), new Size(16, 16)));
                     // 
                     // Humidity
                     // 
@@ -249,13 +271,13 @@ namespace appCore.GeoAPIs.UI
                     // 
                     // CloudsPicture
                     // 
-                    if (weatherQuery.CurrentWeather.clouds.Picture != null)
-                        g.DrawImage(weatherQuery.CurrentWeather.clouds.Picture, new Rectangle(new Point(162, 86), new Size(16, 16)));
+                    if (CloudinessPicture != null)
+                        g.DrawImage(CloudinessPicture, new Rectangle(new Point(162, 86), new Size(16, 16)));
                     // 
                     // Cloudiness
                     // 
                     g.DrawString(
-                        weatherQuery != null ? weatherQuery.CurrentWeather.clouds.all + "%" : "Humidity",
+                        weatherQuery != null ? weatherQuery.CurrentWeather.clouds.all + "%" : "Cloudiness",
                         new Font(font, 12F, FontStyle.Regular),
                         Brushes.White,
                         new Rectangle(new Point(182, 85), new Size(Width - 182, 18)),

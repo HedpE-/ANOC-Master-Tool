@@ -114,33 +114,39 @@ namespace appCore.Netcool.UI
 //			TFReportRadioButton.Enabled = !string.IsNullOrEmpty(currentOutage.TefOutage);
 		}
 
-		void GenerateReport(object sender, EventArgs e)
+		async void GenerateReport(object sender, EventArgs e)
 		{
-//			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
-//				Action actionNonThreaded = new Action(delegate {
-//				                                      	FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//				                                      	return;
-//				                                      });
-//				LoadingPanel load = new LoadingPanel();
-//				load.Show(null, actionNonThreaded, false, this.FindForm());
-//			}
-			
-			bool parsingError = false;
+            //			if (string.IsNullOrEmpty(Alarms_ReportTextBox.Text)) {
+            //				Action actionNonThreaded = new Action(delegate {
+            //				                                      	FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //				                                      	return;
+            //				                                      });
+            //				LoadingPanel load = new LoadingPanel();
+            //				load.Show(null, actionNonThreaded, false, this.FindForm());
+            //			}
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(false, this);
+
+            bool parsingError = false;
 			string textBoxContent = Alarms_ReportTextBox.Text;
-			Action actionThreaded = new Action(delegate {
-			                                   	try {
-			                                   		AlarmsParser alarms = new AlarmsParser(textBoxContent, false, true);
+
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+			    try {
+			        AlarmsParser alarms = new AlarmsParser(textBoxContent, AlarmsParser.ParsingMode.Outage, false);
 //			                                   		currentOutage = alarms.GenerateOutage();
-			                                   	}
-			                                   	catch(Exception ex) {
-			                                   		var m = ex.Message;
-			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
-			                                   		parsingError = true;
-			                                   	}
-			                                   });
+			    }
+			    catch(Exception ex) {
+			        var m = ex.Message;
+			        parsingError = true;
+			    }
+			});
 			
-			Action actionNonThreaded = new Action(delegate {
-			                                      	if(!parsingError) {
+			if(parsingError)
+                MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
+            else
+            {
+                loading.ToggleLoadingSpinner();
 //			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
 //			                                      			VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
 //			                                      		else {
@@ -173,10 +179,9 @@ namespace appCore.Netcool.UI
 //			                                      			Alarms_ReportLabel.Text = "Generated Outage Report";
 //			                                      			MainForm.logFiles.HandleOutageLog(currentOutage);
 //			                                      		}
-			                                      	}
-			                                      });
-			LoadingPanel loading = new LoadingPanel();
-			loading.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+            }
+
+			loading.Close();
 		}
 
 		void TextBoxesTextChanged_LargeTextButtons(object sender, EventArgs e)

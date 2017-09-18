@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Data;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using GMap.NET;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
@@ -73,14 +74,22 @@ namespace appCore
 		[FieldOrder(13)]
 		public string Priority;
 		[FieldOrder(14)]
-		string ADDRESS;
-		public string Address {
-			get {
+		string ADDRESS_ORIG;
+        [FieldHidden]
+        string ADDRESS;
+        public string Address
+        {
+			get
+            {
+                if (string.IsNullOrEmpty(ADDRESS))
+                    SplitAddress();
 				return ADDRESS.Replace(';',',');
 			}
-			private set {
-				ADDRESS = value;
-				SplitAddress();
+			private set
+            {
+				ADDRESS_ORIG = value;
+                ADDRESS = string.Empty;
+                SplitAddress();
 			}
 		}
 		[FieldHidden]
@@ -95,8 +104,10 @@ namespace appCore
 		}
 		[FieldHidden]
 		string town;
-		public string Town {
-			get {
+		public string Town
+        {
+			get
+            {
 				if(string.IsNullOrEmpty(town))
 					SplitAddress();
 				return town;
@@ -105,10 +116,12 @@ namespace appCore
 		}
 		[FieldHidden]
 		string county;
-		public string County {
-			get {
-				if(string.IsNullOrEmpty(county))
-					SplitAddress();
+		public string County
+        {
+			get
+            {
+                if (string.IsNullOrEmpty(county))
+                    SplitAddress();
 				return county;
 			}
 			private set { }
@@ -433,7 +446,7 @@ namespace appCore
 				if(Exists) {
 					UpdateTimer = new System.Timers.Timer(((siteDataTimestamp + new TimeSpan(2, 0, 0)) - DateTime.Now).TotalMilliseconds);
 					UpdateTimer.Elapsed += delegate {
-						Site newData = DB.SitesDB.getSite(Id, true);
+						Site newData = DB.SitesDB.getSiteAsync(Id, true).GetAwaiter().GetResult();
 						OnTimerElapsed_UpdateSiteData(newData);
 						if(newData.Exists) {
 							siteDataTimestamp = DateTime.Now;
@@ -447,10 +460,10 @@ namespace appCore
 			}
 		}
 		
-		public Site() {
-		}
+		public Site() { }
 		
-		public Site(string siteId) {
+		public Site(string siteId)
+        {
 			Id = siteId;
 		}
 		
@@ -548,7 +561,7 @@ namespace appCore
 					
 					if(dataToRequest.Contains("CellsState")) {
 						Thread thread = new Thread(() => {
-						                           	getOiCellsState();
+						                           	getOiCellsState().Wait();
 						                           	
 						                           	finishedThreadsCount++;
 						                           });
@@ -558,7 +571,7 @@ namespace appCore
 					
 					if(dataToRequest.Contains("LKULK")) {
 						Thread thread = new Thread(() => {
-						                           	getOiLockedCellsPage();
+						                           	getOiLockedCellsPage().Wait();
 						                           	
 						                           	finishedThreadsCount++;
 						                           });
@@ -569,7 +582,7 @@ namespace appCore
 					if(dataToRequest.Contains("Cramer")) {
 						Thread thread = new Thread(() => {
 						                           	isUpdatingCramerData = true;
-						                           	CramerData = FetchCramerData(null);
+						                           	CramerData = FetchCramerData(null).Result;
 						                           	isUpdatingCramerData = false;
 						                           	finishedThreadsCount++;
 						                           });
@@ -592,9 +605,89 @@ namespace appCore
 					}
 				}
 			}
-		}
-		
-		List<Incident> FetchINCs() {
+        }
+
+        /// <summary>
+        /// Populate with data pulled from OI
+        /// </summary>
+        /// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK", "Cramer"</param>
+        public async Task requestOIDataAsync(string dataToRequest)
+        {
+            if (Exists)
+            {
+                bool connected = await Task.Run(() => !OiConnection.LoggedOn ? OiConnection.InitiateOiConnection() : true);
+
+                if (connected)
+                {
+                    if (dataToRequest.Contains("INC"))
+                    {
+                        isUpdatingIncidents = true;
+                        await FetchINCsAsync();
+                        isUpdatingIncidents = false;
+                    }
+
+                    if (dataToRequest.Contains("CRQ"))
+                    {
+                        isUpdatingChanges = true;
+                        await FetchCRQsAsync();
+                        isUpdatingChanges = false;
+                    }
+
+                    if (dataToRequest.Contains("Alarms"))
+                    {
+                        isUpdatingAlarms = true;
+                        await FetchActiveAlarmsAsync();
+                        isUpdatingAlarms = false;
+                    }
+
+                    if (dataToRequest.Contains("Bookins"))
+                    {
+                        isUpdatingVisits = true;
+                        await FetchBookInsAsync();
+                        //if (Visits == null)
+                        //    Visits = FetchBookIns(null);
+                        isUpdatingVisits = false;
+                    }
+
+                    if (dataToRequest.Contains("Availability"))
+                    {
+                        isUpdatingAvailability = true;
+                        await FetchAvailabilityAsync();
+                        await Task.Run(() => updateCOOS());
+                        isUpdatingAvailability = false;
+                    }
+
+                    if (dataToRequest.Contains("PWR"))
+                    {
+                        if (string.IsNullOrWhiteSpace(PowerCompany))
+                            await getPowerCompanyAsync();
+                    }
+
+                    if (dataToRequest.Contains("CellsState"))
+                        await getOiCellsState();
+
+                    if (dataToRequest.Contains("LKULK"))
+                        await getOiLockedCellsPage();
+
+                    if (dataToRequest.Contains("Cramer"))
+                    {
+                            isUpdatingCramerData = true;
+                            CramerData = await FetchCramerData(null);
+                            isUpdatingCramerData = false;
+                    }
+
+                    if (Exists)
+                    {
+                        if (DbIndex > -1)
+                            DB.SitesDB.UpdateSiteData(this);
+                        else
+                            DB.SitesDB.Add(this);
+                    }
+                }
+            }
+        }
+
+        List<Incident> FetchINCs() {
 			IncidentsTimestamp = DateTime.Now;
 			List<Incident> list = new List<Incident>();
 			string response = OiConnection.requestApiOutput("incidents", Id);
@@ -605,19 +698,39 @@ namespace appCore
 			}
 			catch { return null; }
 			return list;
-		}
-		
-//		DataTable FetchINCs(FileSystemInfo table_inc) {
-//			DataTable dt = new DataTable();
-//			string response = OiConnection.requestPhpOutput("inc", Id);
-//			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents")) {
-//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
-//				INCsTimestamp = DateTime.Now;
-//			}
-//			return dt;
-//		}
-		
-		List<Change> FetchCRQs() {
+        }
+
+        public async Task FetchINCsAsync()
+        {
+            List<Incident> list = new List<Incident>();
+            string response = await OiConnection.requestApiOutputAsync("incidents", Id);
+
+            list = await Task.Run(() => {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                        list.Add(jObj.ToObject<Incident>());
+                }
+                catch { return null; }
+                return list;
+            });
+
+            IncidentsTimestamp = DateTime.Now;
+            Incidents = list;
+        }
+
+        //		DataTable FetchINCs(FileSystemInfo table_inc) {
+        //			DataTable dt = new DataTable();
+        //			string response = OiConnection.requestPhpOutput("inc", Id);
+        //			if(!string.IsNullOrEmpty(response) && !response.Contains("No open or incidents")) {
+        //				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_inc");
+        //				INCsTimestamp = DateTime.Now;
+        //			}
+        //			return dt;
+        //		}
+
+        List<Change> FetchCRQs() {
 			ChangesTimestamp = DateTime.Now;
 			List<Change> list = new List<Change>();
 			string response = OiConnection.requestApiOutput("changes", Id);
@@ -636,51 +749,114 @@ namespace appCore
 			}
 			catch { return null; }
 			return list;
-		}
-		
-//		DataTable FetchCRQs(FileSystemInfo table_crq) {
-//			DataTable dt = new DataTable();
-//			string response = OiConnection.requestPhpOutput("crq", Id);
-//			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days")) {
-//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
-//				foreach(DataRow row in dt.Rows) {
-//					if(row["Scheduled Start"] == DBNull.Value) {
-//						if(row["Scheduled End"] == DBNull.Value)
-//							row["Scheduled Start"] = new DateTime(2500, 1, 1, 0, 0, 0);
-//						else {
-//							DateTime schEnd = Convert.ToDateTime(row["Scheduled End"]);
-//							row["Scheduled Start"] = new DateTime(schEnd.Year, schEnd.Month, schEnd.Day, 0, 0, 0);
-//						}
-//					}
-//					if(row["Scheduled End"] == DBNull.Value)
-//						row["Scheduled End"] = row["Scheduled Start"];
-//				}
-//				CRQsTimestamp = DateTime.Now;
-//			}
-//			return dt;
-//		}
-		
-		public static List<Change> BulkFetchCRQs(IEnumerable<string> sites) {
-			List<Change> list = new List<Change>();
-			string response = OiConnection.requestApiOutput("changes", sites);
-			try {
-				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-				foreach(JObject jObj in jSon.data) {
-					Change item = jObj.ToObject<Change>();
-					// remove HTML tags from Status
-					while(item.Status.Contains(">")) {
-						int startIndex = item.Status.IndexOf("<");
-						int endIndex = item.Status.IndexOf(">");
-						item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
-					}
-					list.Add(item);
-				}
-			}
-			catch { return null; }
-			return list;
-		}
-		
-		List<Alarm> FetchActiveAlarms() {
+        }
+
+        public async Task FetchCRQsAsync()
+        {
+            List<Change> list = new List<Change>();
+            string response = await OiConnection.requestApiOutputAsync("changes", Id);
+
+            list = await Task.Run(() => {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                    {
+                        Change item = jObj.ToObject<Change>();
+                        // remove HTML tags from Status
+                        while (item.Status.Contains(">"))
+                        {
+                            int startIndex = item.Status.IndexOf("<");
+                            int endIndex = item.Status.IndexOf(">");
+                            item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+                        }
+                        list.Add(item);
+                    }
+                }
+                catch { return null; }
+                return list;
+            });
+
+            ChangesTimestamp = DateTime.Now;
+            Changes = list;
+        }
+
+        //		DataTable FetchCRQs(FileSystemInfo table_crq) {
+        //			DataTable dt = new DataTable();
+        //			string response = OiConnection.requestPhpOutput("crq", Id);
+        //			if(!string.IsNullOrEmpty(response) && !response.Contains("No changes in past 90 days")) {
+        //				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_crq");
+        //				foreach(DataRow row in dt.Rows) {
+        //					if(row["Scheduled Start"] == DBNull.Value) {
+        //						if(row["Scheduled End"] == DBNull.Value)
+        //							row["Scheduled Start"] = new DateTime(2500, 1, 1, 0, 0, 0);
+        //						else {
+        //							DateTime schEnd = Convert.ToDateTime(row["Scheduled End"]);
+        //							row["Scheduled Start"] = new DateTime(schEnd.Year, schEnd.Month, schEnd.Day, 0, 0, 0);
+        //						}
+        //					}
+        //					if(row["Scheduled End"] == DBNull.Value)
+        //						row["Scheduled End"] = row["Scheduled Start"];
+        //				}
+        //				CRQsTimestamp = DateTime.Now;
+        //			}
+        //			return dt;
+        //		}
+
+        public static List<Change> BulkFetchCRQs(IEnumerable<string> sites)
+        {
+            List<Change> list = new List<Change>();
+            string response = OiConnection.requestApiOutput("changes", sites);
+            try
+            {
+                var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                foreach (JObject jObj in jSon.data)
+                {
+                    Change item = jObj.ToObject<Change>();
+                    // remove HTML tags from Status
+                    while (item.Status.Contains(">"))
+                    {
+                        int startIndex = item.Status.IndexOf("<");
+                        int endIndex = item.Status.IndexOf(">");
+                        item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+                    }
+                    list.Add(item);
+                }
+            }
+            catch { return null; }
+            return list;
+        }
+
+        public async static Task<List<Change>> BulkFetchCRQsAsync(IEnumerable<string> sites)
+        {
+            List<Change> list = new List<Change>();
+            string response = await OiConnection.requestApiOutputAsync("changes", sites);
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                    {
+                        Change item = jObj.ToObject<Change>();
+                        // remove HTML tags from Status
+                        while (item.Status.Contains(">"))
+                        {
+                            int startIndex = item.Status.IndexOf("<");
+                            int endIndex = item.Status.IndexOf(">");
+                            item.Status = item.Status.Remove(startIndex, (endIndex - startIndex) + 1);
+                        }
+                        list.Add(item);
+                    }
+                }
+                catch { return null; }
+                return list;
+            });
+
+            return list;
+        }
+
+        List<Alarm> FetchActiveAlarms() {
 			AlarmsTimestamp = DateTime.Now;
 			List<Alarm> list = new List<Alarm>();
 			string response = OiConnection.requestApiOutput("alarms", Id);
@@ -691,11 +867,32 @@ namespace appCore
 			}
 			catch { return null; }
 			return list;
-		}
-		
-		public static List<Alarm> BulkFetchActiveAlarms(IEnumerable<string> sites) {
+        }
+
+        async Task FetchActiveAlarmsAsync()
+        {
+            List<Alarm> list = new List<Alarm>();
+            string response = await OiConnection.requestApiOutputAsync("alarms", Id);
+
+            list = await Task.Run(() =>
+            {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                        list.Add(jObj.ToObject<Alarm>());
+                }
+                catch { return null; }
+                return list;
+            });
+
+            Alarms = list;
+            AlarmsTimestamp = DateTime.Now;
+        }
+
+        public static List<Alarm> BulkFetchActiveAlarms(IEnumerable<string> sites) {
 			return null;
-		}
+        }
 
         public static List<WeatherItem> BulkFetchWeather(IEnumerable<string> locations)
         {
@@ -720,18 +917,42 @@ namespace appCore
 
             return weatherList;
         }
-		
-//		DataTable FetchActiveAlarms(FileSystemInfo table_alarms) {
-//			DataTable dt = new DataTable();
-//			string response = OiConnection.requestPhpOutput("alarms", Id);
-//			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported")) {
-//				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
-//				ActiveAlarmsTimestamp = DateTime.Now;
-//			}
-//			return dt;
-//		}
-		
-		List<BookIn> FetchBookIns() {
+
+        public async static Task<List<WeatherItem>> BulkFetchWeatherAsync(IEnumerable<string> locations)
+        {
+            List<WeatherItem> weatherList = new List<WeatherItem>();
+            //List<int> ids = new List<int>();
+            //List<string> locList = locations.ToList();
+            //for(int c = 0;c < locList.Count;c++)
+            //{
+            //    var city = DB.Databases.Cities.FindCity(locList[c]);
+            //    if (city != null)
+            //    {
+            //        ids.Add(city.id);
+            //        locList.Remove(locList[c--]);
+            //    }
+            //}
+            //if(ids.Any())
+            //    weatherList.AddRange(DB.WeatherCollection.RetrieveWeatherData(ids));
+
+            //if(locList.Any())
+            //foreach (string location in locations)
+            //    weatherList.Add(DB.WeatherCollection.RetrieveWeatherData(location));
+
+            return weatherList;
+        }
+
+        //		DataTable FetchActiveAlarms(FileSystemInfo table_alarms) {
+        //			DataTable dt = new DataTable();
+        //			string response = OiConnection.requestPhpOutput("alarms", Id);
+        //			if(!string.IsNullOrEmpty(response) && !response.Contains("No alarms reported")) {
+        //				dt = Tools.ConvertHtmlTabletoDataTable(response, "table_alarms");
+        //				ActiveAlarmsTimestamp = DateTime.Now;
+        //			}
+        //			return dt;
+        //		}
+
+        List<BookIn> FetchBookIns() {
 			VisitsTimestamp = DateTime.Now;
 			List<BookIn> list = new List<BookIn>();
 			string response = OiConnection.requestApiOutput("visits", Id);
@@ -745,9 +966,34 @@ namespace appCore
 				return null;
 			}
 			return list;
-		}
-		
-		List<BookIn> FetchBookIns(FileSystemInfo table_visits) {
+        }
+
+        public async Task FetchBookInsAsync()
+        {
+            List<BookIn> list = new List<BookIn>();
+            string response = await OiConnection.requestApiOutputAsync("visits", Id);
+
+            list = await Task.Run(() =>
+            {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                        list.Add(jObj.ToObject<BookIn>());
+                }
+                catch (Exception e)
+                {
+                    var m = e.Message;
+                    return null;
+                }
+                return list;
+            });
+
+            VisitsTimestamp = DateTime.Now;
+            Visits = list;
+        }
+
+        List<BookIn> FetchBookIns(FileSystemInfo table_visits) {
 			VisitsTimestamp = DateTime.Now;
 			List<BookIn> list = new List<BookIn>();
 //			string response = OiConnection.requestPhpOutput("sitevisit", Id, 90);
@@ -772,9 +1018,41 @@ namespace appCore
 				}
 			}
 			return list;
-		}
-		
-		public static List<BookIn> BulkFetchBookIns(IEnumerable<string> sites) {
+        }
+
+        async Task FetchBookInsAsync(FileSystemInfo table_visits)
+        {
+            VisitsTimestamp = DateTime.Now;
+            List<BookIn> list = new List<BookIn>();
+            string response = await Task.Run(() => OiConnection.requestPhpOutput("visits", Id));
+            if (!string.IsNullOrEmpty(response) && !response.Contains("No site visits"))
+            {
+                await Task.Run(() =>
+                {
+                    DataTable dt = Tools.ConvertHtmlTableToDT(response, "table_visits");
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        BookIn bookin = new BookIn();
+                        bookin.Site = row[0].ToString();
+                        bookin.Visit = row[1].ToString();
+                        bookin.Company = row[2].ToString();
+                        bookin.Engineer = row[3].ToString();
+                        bookin.Mobile = row[4].ToString();
+                        bookin.Reference = row[5].ToString();
+                        bookin.Visit_Type = row[6].ToString();
+                        bookin.Arrived = row[7].ToString();
+                        bookin.Planned_Finish = row[8].ToString();
+                        bookin.Time_Taken = row[9].ToString();
+                        bookin.Time_Remaining = row[10].ToString();
+                        bookin.Departed_Site = row[11].ToString();
+                        list.Add(bookin);
+                    }
+                });
+            }
+            Visits = list;
+        }
+
+        public static List<BookIn> BulkFetchBookIns(IEnumerable<string> sites) {
 			return null;
 		}
 		
@@ -787,9 +1065,29 @@ namespace appCore
 				return jSon;
 			}
 			catch { return null; }
-		}
-		
-		DataTable FetchAvailability(FileSystemInfo table_ca) {
+        }
+
+        async Task FetchAvailabilityAsync()
+        {
+            string response = await OiConnection.requestApiOutputAsync("availability-Html", Id);
+            DataTable dt = null;
+            if (!string.IsNullOrEmpty(response))
+            {
+                dt = await Task.Run(() =>
+                {
+                    try
+                    {
+                        return Tools.ConvertHtmlTableToDT(response, "table_ca");
+                    }
+                    catch { return null; }
+                });
+            }
+
+            AvailabilityTimestamp = DateTime.Now;
+            Availability = dt;
+        }
+
+        DataTable FetchAvailability(FileSystemInfo table_ca) {
 			AvailabilityTimestamp = DateTime.Now;
 			DataTable dt = new DataTable();
 			string response = OiConnection.requestPhpOutput("ca", Id);
@@ -797,92 +1095,215 @@ namespace appCore
 				dt = Tools.ConvertHtmlTableToDT(response, "table_ca");
 			}
 			return dt;
-		}
-		
-		public static DataTable BulkFetchAvailability(IEnumerable<string> sites) {
-			string resp = OiConnection.requestApiOutput("availability", sites);
-			DataTable dt = null;
-			
-			try {
-				Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
-				dt = jSon.ToDataTable();
-			}
-			catch { }
-			
-			if(dt == null) {
-				resp = OiConnection.requestPhpOutput("ca", sites);
-				
-				try {
-					dt = Tools.ConvertHtmlTableToDT(resp, "table_ca");
-				}
-				catch { }
-			}
-			
-			return dt;
-		}
-		
-		CramerDetails FetchCramerData(FileSystemInfo table_ca) {
+        }
+
+        public static DataTable BulkFetchAvailability(IEnumerable<string> sites)
+        {
+            string resp = OiConnection.requestApiOutput("availability", sites);
+            DataTable dt = null;
+
+            try
+            {
+                Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
+                dt = jSon.ToDataTable();
+            }
+            catch { }
+
+            if (dt == null)
+            {
+                resp = OiConnection.requestPhpOutput("ca", sites);
+
+                try
+                {
+                    dt = Tools.ConvertHtmlTableToDT(resp, "table_ca");
+                }
+                catch { }
+            }
+
+            return dt;
+        }
+
+        public async static Task<DataTable> BulkFetchAvailabilityAsync(IEnumerable<string> sites)
+        {
+            string resp = await OiConnection.requestApiOutputAsync("availability", sites);
+            return await Task.Run(() =>
+            {
+                DataTable dt = null;
+                try
+                {
+                    Availability jSon = JsonConvert.DeserializeObject<Availability>(resp);
+                    dt = jSon.ToDataTable();
+                }
+                catch { }
+
+                if (dt == null)
+                {
+                    resp = OiConnection.requestPhpOutput("ca", sites);
+
+                    try
+                    {
+                        dt = Tools.ConvertHtmlTableToDT(resp, "table_ca");
+                    }
+                    catch { }
+                }
+
+                return dt;
+            });
+        }
+
+        async Task<CramerDetails> FetchCramerData(FileSystemInfo table_ca) {
 			CramerDataTimestamp = DateTime.Now;
 			DataTable dt = new DataTable();
-			string response = OiConnection.requestApiOutput("labels-html", Id);
-			if(!string.IsNullOrEmpty(response)) {
-//				string str = response.Substring(response.IndexOf("<strong style=" + '"' + "margin-left: 15px;" + '"' + ">Cramer POC List"));
-				string str = response.Substring(response.IndexOf("Cramer POC List"));
-				if(str.Substring(24).StartsWith("<p style"))
-					return null;
-				str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
-				dt = Tools.ConvertHtmlTableToDT(str, "table_cramer");
-			}
+			string response = await OiConnection.requestApiOutputAsync("labels-html", Id);
+            if (!string.IsNullOrEmpty(response))
+            {
+                //string str = response.Substring(response.IndexOf("<strong style=" + '"' + "margin-left: 15px;" + '"' + ">Cramer POC List"));
+                string str = response.Substring(response.IndexOf("Cramer POC List"));
+                if (str.Substring(24).StartsWith("<p style"))
+                    return null;
+                str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+                dt = await Task.Run(() => Tools.ConvertHtmlTableToDT(str, "table_cramer"));
+            }
 
-            return dt == null ? null : new CramerDetails(dt.Rows[0]);
-		}
-		
-		public static DataTable BulkFetchCramerData(IEnumerable<string> sites) {
-			DataTable cramerDataList = null;
-			string response = OiConnection.requestApiOutput("labels-html", sites);
-			if(!string.IsNullOrEmpty(response)) {
-				string str = response.Substring(response.IndexOf("Cramer POC List"));
-				if(!str.Substring(24).StartsWith("<p style")) {
-					str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
-					cramerDataList = Tools.ConvertHtmlTableToDT(str, "table_cramer");
-				}
-			}
-			return cramerDataList;
-		}
-		
-		string getPowerCompany() {
-			string response = OiConnection.requestApiOutput("access", Id);
-			try {
-				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-				foreach(JObject jObj in jSon.data) {
-					AccessInformation item = jObj.ToObject<AccessInformation>();
-					if(item.CI_NAME == Id)
-						return item.POWER.Replace("<br>",";");
-				}
-			}
-			catch { }
-			
-			return string.Empty;
-		}
-		
-		public static List<AccessInformation> BulkFetchPowerCompany(IEnumerable<string> sites) {
-			List<AccessInformation> powerList = new List<AccessInformation>();
-			string response = OiConnection.requestApiOutput("access", sites);
-			try {
-				var jSon = JsonConvert.DeserializeObject<RootObject>(response);
-				foreach(JObject jObj in jSon.data) {
-					AccessInformation item = jObj.ToObject<AccessInformation>();
-					if(!powerList.Contains(item))
-						powerList.Add(item);
-				}
-			}
-			catch { }
-			
-			return powerList;
-		}
-		
-		void getOiLockedCellsPage() {
-			string response = OiConnection.requestPhpOutput("cellslocked", Id, null, string.Empty);
+            return dt == null ? null : await Task.Run(() => new CramerDetails(dt.Rows[0]));
+        }
+
+        public static DataTable BulkFetchCramerData(IEnumerable<string> sites)
+        {
+            DataTable cramerDataList = null;
+            string response = OiConnection.requestApiOutput("labels-html", sites);
+            if (!string.IsNullOrEmpty(response))
+            {
+                string str = response.Substring(response.IndexOf("Cramer POC List"));
+                if (!str.Substring(24).StartsWith("<p style"))
+                {
+                    str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+                    cramerDataList = Tools.ConvertHtmlTableToDT(str, "table_cramer");
+                }
+            }
+            return cramerDataList;
+        }
+
+        public async static Task<DataTable> BulkFetchCramerDataAsync(IEnumerable<string> sites)
+        {
+            DataTable cramerDataList = null;
+            string response = await OiConnection.requestApiOutputAsync("labels-html", sites);
+            if (!string.IsNullOrEmpty(response))
+            {
+                string str = response.Substring(response.IndexOf("Cramer POC List"));
+                if (!str.Substring(24).StartsWith("<p style"))
+                {
+                    str = str.Insert(str.IndexOf("<table") + 7, "id=" + '"' + "table_cramer" + '"' + " ");
+                    cramerDataList = await Task.Run(() => Tools.ConvertHtmlTableToDT(str, "table_cramer"));
+                }
+            }
+            return cramerDataList;
+        }
+
+        string getPowerCompany()
+        {
+            string response = OiConnection.requestApiOutput("access", Id);
+            try
+            {
+                var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                foreach (JObject jObj in jSon.data)
+                {
+                    AccessInformation item = jObj.ToObject<AccessInformation>();
+                    if (item.CI_NAME == Id)
+                        return item.POWER.Replace("<br>", ";");
+                }
+            }
+            catch { }
+
+            return string.Empty;
+        }
+
+        async Task getPowerCompanyAsync()
+        {
+            string response = await OiConnection.requestApiOutputAsync("access", Id);
+            string pwr = await Task.Run(() =>
+            {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                    {
+                        AccessInformation item = jObj.ToObject<AccessInformation>();
+                        if (item.CI_NAME == Id)
+                            return item.POWER.Replace("<br>", ";");
+                    }
+                }
+                catch { }
+                return string.Empty;
+            });
+
+            if (string.IsNullOrEmpty(pwr))
+            {
+                response = await OiConnection.requestPhpOutputAsync(Id);
+                if (!string.IsNullOrEmpty(response) && response.Contains("div_access"))
+                {
+                    pwr = await Task.Run(() =>
+                    {
+                        try
+                        {
+                            DataTable dt = Tools.ConvertHtmlTableToDT(response, "div_access");
+                            return dt.Rows[0]["Power Company"].ToString();
+                        }
+                        catch
+                        {
+                            return string.Empty;
+                        }
+                    });
+                }
+            }
+
+            PowerCompany = pwr;
+        }
+
+        public static List<AccessInformation> BulkFetchPowerCompany(IEnumerable<string> sites)
+        {
+            List<AccessInformation> powerList = new List<AccessInformation>();
+            string response = OiConnection.requestApiOutput("access", sites);
+            try
+            {
+                var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                foreach (JObject jObj in jSon.data)
+                {
+                    AccessInformation item = jObj.ToObject<AccessInformation>();
+                    if (!powerList.Contains(item))
+                        powerList.Add(item);
+                }
+            }
+            catch { }
+
+            return powerList;
+        }
+
+        public async static Task<List<AccessInformation>> BulkFetchPowerCompanyAsync(IEnumerable<string> sites)
+        {
+            List<AccessInformation> powerList = new List<AccessInformation>();
+            string response = await OiConnection.requestApiOutputAsync("access", sites);
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var jSon = JsonConvert.DeserializeObject<RootObject>(response);
+                    foreach (JObject jObj in jSon.data)
+                    {
+                        AccessInformation item = jObj.ToObject<AccessInformation>();
+                        if (!powerList.Contains(item))
+                            powerList.Add(item);
+                        // TODO: get Power Company from old OI index.php if Access API doesn't have Power Company for any site(s)
+                    }
+                }
+                catch { }
+            });
+
+            return powerList;
+        }
+
+        async Task getOiLockedCellsPage() {
+			string response = await OiConnection.requestPhpOutputAsync("cellslocked", Id, null, string.Empty);
 			response = response.Contains("Site " + Id + "</b><table>") ? response : "No Cells Locked";
 			
 			if(response != "No Cells Locked") {
@@ -891,24 +1312,24 @@ namespace appCore
 				
 				HtmlNode table = doc.DocumentNode.SelectSingleNode("//html[1]/body[1]/div[1]/table[1]");
 				
-				LockedCellsDetails = Tools.ConvertHtmlTableToDT("<table>" + table.InnerHtml + "</table>", string.Empty);
+				LockedCellsDetails = await Task.Run(() => Tools.ConvertHtmlTableToDT("<table>" + table.InnerHtml + "</table>", string.Empty));
 			}
 			else
 				LockedCellsDetails = new DataTable();
 			LockedCellsDetailsTimestamp = DateTime.Now;
 		}
 		
-		void getOiCellsState() {
+		async Task getOiCellsState() {
 			CellsStateTimestamp = DateTime.Now;
 			if(Exists && Cells.Count > 0) {
 				List<OiCell> list = new List<OiCell>();
 				
-				string resp = OiConnection.requestApiOutput("cells-html", Id);
+				string resp = await OiConnection.requestApiOutputAsync("cells-html", Id);
 				DataTable dt = null;
 				for(int c = 2;c <= 4;c++) {
 					string tableName = "table_checkbox_cells " + c + "G";
 					if(resp.Contains("id=" + '"' + tableName + '"')) {
-						DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
+						DataTable tempDT = await Task.Run(() => Tools.ConvertHtmlTableToDT(resp, tableName));
 						if(tempDT.Rows.Count > 0) {
 							if(dt == null)
 								dt = tempDT;
@@ -950,51 +1371,105 @@ namespace appCore
 					}
 				}
 			}
-		}
-		
-		public static List<OiCell> BulkFetchOiCellsState(IEnumerable<string> sites) {
-			List<OiCell> list = new List<OiCell>();
-			
-			string resp = OiConnection.requestApiOutput("cells-html", sites);
-			DataTable dt = null;
-			for(int c = 2;c <= 4;c++) {
-				string tableName = "table_checkbox_cells " + c + "G";
-				if(resp.Contains("id=" + '"' + tableName + '"')) {
-					DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
-					if(tempDT.Rows.Count > 0) {
-						if(dt == null)
-							dt = tempDT;
-						else {
-							foreach(DataRow row in tempDT.Rows)
-								dt.Rows.Add(row.ItemArray);
-						}
-					}
-				}
-			}
-			
-			foreach(DataRow row in dt.Rows) {
-				OiCell cell = new OiCell();
-				cell.SITE = row[0].ToString();
-				cell.BEARER = row[1].ToString();
-				cell.CELL_NAME = row[2].ToString();
-				cell.CELL_ID = row[3].ToString();
-				cell.LAC_TAC = row[4].ToString();
-				cell.BSC_RNC_ID = row[5].ToString();
-				cell.ENODEB_ID = row[6].ToString();
-				cell.WBTS_BCF = row[7].ToString();
-				cell.VENDOR = row[8].ToString();
-				cell.NOC = row[9].ToString();
-				cell.COOS = row[10].ToString();
-				string[] attr = row[11].ToString().Split('/');
-				cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
-				cell.LOCKED = attr[0];
-				list.Add(cell);
-			}
-			
-			return list;
-		}
-		
-		public void updateCOOS() {
+        }
+
+        public static List<OiCell> BulkFetchOiCellsState(IEnumerable<string> sites)
+        {
+            List<OiCell> list = new List<OiCell>();
+
+            string resp = OiConnection.requestApiOutput("cells-html", sites);
+            DataTable dt = null;
+            for (int c = 2; c <= 4; c++)
+            {
+                string tableName = "table_checkbox_cells " + c + "G";
+                if (resp.Contains("id=" + '"' + tableName + '"'))
+                {
+                    DataTable tempDT = Tools.ConvertHtmlTableToDT(resp, tableName);
+                    if (tempDT.Rows.Count > 0)
+                    {
+                        if (dt == null)
+                            dt = tempDT;
+                        else
+                        {
+                            foreach (DataRow row in tempDT.Rows)
+                                dt.Rows.Add(row.ItemArray);
+                        }
+                    }
+                }
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                OiCell cell = new OiCell();
+                cell.SITE = row[0].ToString();
+                cell.BEARER = row[1].ToString();
+                cell.CELL_NAME = row[2].ToString();
+                cell.CELL_ID = row[3].ToString();
+                cell.LAC_TAC = row[4].ToString();
+                cell.BSC_RNC_ID = row[5].ToString();
+                cell.ENODEB_ID = row[6].ToString();
+                cell.WBTS_BCF = row[7].ToString();
+                cell.VENDOR = row[8].ToString();
+                cell.NOC = row[9].ToString();
+                cell.COOS = row[10].ToString();
+                string[] attr = row[11].ToString().Split('/');
+                cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
+                cell.LOCKED = attr[0];
+                list.Add(cell);
+            }
+
+            return list;
+        }
+
+        public async static Task<List<OiCell>> BulkFetchOiCellsStateAsync(IEnumerable<string> sites)
+        {
+            List<OiCell> list = new List<OiCell>();
+
+            string resp = await OiConnection.requestApiOutputAsync("cells-html", sites);
+            DataTable dt = null;
+            for (int c = 2; c <= 4; c++)
+            {
+                string tableName = "table_checkbox_cells " + c + "G";
+                if (resp.Contains("id=" + '"' + tableName + '"'))
+                {
+                    DataTable tempDT = await Task.Run(() => Tools.ConvertHtmlTableToDT(resp, tableName));
+                    if (tempDT.Rows.Count > 0)
+                    {
+                        if (dt == null)
+                            dt = tempDT;
+                        else
+                        {
+                            foreach (DataRow row in tempDT.Rows)
+                                dt.Rows.Add(row.ItemArray);
+                        }
+                    }
+                }
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                OiCell cell = new OiCell();
+                cell.SITE = row[0].ToString();
+                cell.BEARER = row[1].ToString();
+                cell.CELL_NAME = row[2].ToString();
+                cell.CELL_ID = row[3].ToString();
+                cell.LAC_TAC = row[4].ToString();
+                cell.BSC_RNC_ID = row[5].ToString();
+                cell.ENODEB_ID = row[6].ToString();
+                cell.WBTS_BCF = row[7].ToString();
+                cell.VENDOR = row[8].ToString();
+                cell.NOC = row[9].ToString();
+                cell.COOS = row[10].ToString();
+                string[] attr = row[11].ToString().Split('/');
+                cell.JVCO_ID = attr.Length > 1 ? attr[1] : string.Empty;
+                cell.LOCKED = attr[0];
+                list.Add(cell);
+            }
+
+            return list;
+        }
+
+        public void updateCOOS() {
 			foreach(DataRow row in Availability.Rows) {
 				Cell cell = null;
 				try { cell = Cells.Find(s => s.Name == row["Cell"].ToString()); } catch { }
@@ -1030,12 +1505,21 @@ namespace appCore
 		}
 		
 		void SplitAddress() {
-			string[] address = ADDRESS.Split(';');
+			string[] address = ADDRESS_ORIG.ToUpper().Split(';');
 			int addressLastIndex = address.Length - 1;
 			try { postCode = address[addressLastIndex].Trim(); } catch (Exception) { }
-			try { county = address[addressLastIndex - 1].Trim(); } catch (Exception) { }
+			try { county = address[addressLastIndex - 1].Trim().Replace("COUNTY ", string.Empty); } catch (Exception) { }
 			try { town = address[addressLastIndex - 2].Trim(); } catch (Exception) { }
-		}
+
+            if (county.Equals("unknown", StringComparison.InvariantCultureIgnoreCase))
+                try
+                {
+                    county = new System.Net.WebClient().DownloadString(string.Format("http://wikishire.co.uk/lookup/postcode?pc={0}", postCode)).ToUpper();
+                }
+                catch (Exception) { }
+
+            ADDRESS = address[0] + "; " + town + "; " + county + "; " + postCode;
+        }
 		
 		public override string ToString() {
 			return Exists ? Id : string.Empty;
@@ -1147,12 +1631,9 @@ namespace appCore
 			List<Site> onwardSitesObjects;
 			public List<Site> OnwardSitesObjects {
 				get {
-					if(onwardSitesObjects == null) {
-						List<Site> temp = null;
-						if(OnwardSites.Count > 0)
-							temp = DB.SitesDB.getSites(OnwardSites);
-						onwardSitesObjects = temp ?? new List<Site>();
-					}
+					if(onwardSitesObjects == null)
+                        onwardSitesObjects = ResolveOnwardSites().Result;
+
 					return onwardSitesObjects;
 				}
 				private set {
@@ -1179,13 +1660,16 @@ namespace appCore
                     }
                     OnwardSites = OnwardSites.OrderBy(c => int.Parse(c)).ToList();
                 }
-				Thread thread = new Thread(() => {
-				                           	var t = OnwardSitesObjects;
-				                           });
-				thread.Name = "Site " + details[0] + " CramerDetails_GetOnwardSites";
-				thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
-			}
+                OnwardSitesObjects = Task.Run(() => ResolveOnwardSites()).Result;
+            }
+
+            async Task<List<Site>> ResolveOnwardSites()
+            {
+                List<Site> temp = new List<Site>();
+                if (OnwardSites.Count > 0)
+                    temp = await Task.Run(() => DB.SitesDB.getSites(OnwardSites));
+                return temp;
+            }            
 		}
 	}
 }

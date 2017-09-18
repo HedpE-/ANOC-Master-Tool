@@ -29,10 +29,10 @@ namespace OpenWeatherAPI.CurrentWeather
             }
             private set { _temperature = value; }
         }
-        [JsonIgnore]
-        public System.Drawing.Image HumidityPicture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\hygrometer.png");
-        [JsonIgnore]
-        public System.Drawing.Image TemperaturePicture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\thermometer.png");
+        //[JsonIgnore]
+        //public System.Drawing.Image HumidityPicture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\hygrometer.png");
+        //[JsonIgnore]
+        //public System.Drawing.Image TemperaturePicture = System.Drawing.Image.FromFile(appCore.Settings.GlobalProperties.WeatherPicturesLocation.FullName + @"\thermometer.png");
 
     }
 

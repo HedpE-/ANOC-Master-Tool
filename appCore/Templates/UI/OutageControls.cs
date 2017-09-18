@@ -37,7 +37,7 @@ namespace appCore.Templates.UI
 		Label Alarms_ReportLabel = new Label(); // Alarms_ReportLabel
 		Label BulkCILabel = new Label(); // BulkCILabel
 		AMTRichTextBox BulkCITextBox = new AMTRichTextBox(); // BulkCITextBox
-		AMTRichTextBox Alarms_ReportTextBox = new AMTRichTextBox(); // Alarms_ReportTextBox
+		public AMTRichTextBox Alarms_ReportTextBox = new AMTRichTextBox(); // Alarms_ReportTextBox
 
 		public Outage currentOutage;
 		
@@ -146,133 +146,162 @@ namespace appCore.Templates.UI
             }
         }
 
-        void GenerateFromAlarms()
-		{
-			bool parsingError = false;
-			string textBoxContent = Alarms_ReportTextBox.Text;
-			Action actionThreaded = new Action(delegate {
-			                                   	try {
-			                                   		AlarmsParser alarms = new AlarmsParser(textBoxContent, false, true);
-			                                   		currentOutage = alarms.GenerateOutage();
-			                                   	}
-			                                   	catch(Exception ex) {
-			                                   		MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nError message:\n" + ex.Message);
-			                                   		parsingError = true;
-			                                   	}
-			                                   });
-			
-			Action actionNonThreaded = new Action(delegate {
-			                                      	if(!parsingError) {
-			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-			                                      			VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-			                                      		else {
-			                                      			if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      				MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
-			                                      				Alarms_ReportTextBox.Text = string.Empty;
-			                                      				VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
-			                                      				return;
-			                                      			}
-			                                      			if(!string.IsNullOrEmpty(currentOutage.VfOutage)) {
-			                                      				VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-			                                      				TFReportRadioButton.Enabled = false;
-			                                      			}
-			                                      			else {
-			                                      				if(!string.IsNullOrEmpty(currentOutage.TefOutage)) {
-			                                      					TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
-			                                      					VFReportRadioButton.Enabled = false;
-			                                      				}
-			                                      			}
-			                                      		}
-			                                      		if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage)) {
-                                                            GenerationSourceContainer.Visible =
-                                                                generateReportToolStripMenuItem.Enabled = false;
-			                                      			Alarms_ReportTextBox.ReadOnly =
-			                                      				BulkCITextBox.ReadOnly = true;
-			                                      			outageFollowUpToolStripMenuItem.Enabled =
-			                                      				copyToClipboardToolStripMenuItem.Enabled =
-			                                      				sitesPerTechToolStripMenuItem.Enabled =
-			                                      				generateSitesListToolStripMenuItem.Enabled = true;
-			                                      			Alarms_ReportTextBox.Focus();
-                                                            Alarms_ReportLabel.Visible = true;
-                                                            GenerationSourceContainer.Visible = false;
-			                                      			MainForm.logFiles.HandleOutageLog(currentOutage);
-			                                      		}
-			                                      	}
-			                                      });
-			LoadingPanel loading = new LoadingPanel();
-			loading.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+        async void GenerateFromAlarms()
+        {
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(true, this);
+
+            bool parsingError = false;
+            string textBoxContent = Alarms_ReportTextBox.Text;
+
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+			    try
+                {
+			        AlarmsParser alarms = new AlarmsParser(textBoxContent, AlarmsParser.ParsingMode.Outage, false);
+			        currentOutage = alarms.GenerateOutage();
+			    }
+			    catch(Exception ex)
+                {
+			        MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nError message:\n" + ex.Message);
+                    parsingError = true;
+                    return;
+                }
+            });
+
+            if (parsingError)
+                return;
+
+            loading.ToggleLoadingSpinner();
+
+            if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+			    VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+			else
+            {
+			    if(string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                {
+			        MainForm.trayIcon.showBalloon("Empty report","The alarms inserted have no COOS in its content, output is blank");
+			        Alarms_ReportTextBox.Text = string.Empty;
+			        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                    loading.Close();
+                    return;
+			    }
+			    if(!string.IsNullOrEmpty(currentOutage.VfOutage))
+                {
+			        VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+			        TFReportRadioButton.Enabled = false;
+			    }
+			    else
+                {
+			        if(!string.IsNullOrEmpty(currentOutage.TefOutage))
+                    {
+			            TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+			            VFReportRadioButton.Enabled = false;
+			        }
+			    }
+			}
+			if(!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
+            {
+                GenerationSourceContainer.Visible =
+                    generateReportToolStripMenuItem.Enabled = false;
+			    Alarms_ReportTextBox.ReadOnly =
+			        BulkCITextBox.ReadOnly = true;
+			    outageFollowUpToolStripMenuItem.Enabled =
+			        copyToClipboardToolStripMenuItem.Enabled =
+			        sitesPerTechToolStripMenuItem.Enabled =
+			        generateSitesListToolStripMenuItem.Enabled = true;
+			    Alarms_ReportTextBox.Focus();
+                Alarms_ReportLabel.Visible = true;
+                GenerationSourceContainer.Visible = false;
+			    MainForm.logFiles.HandleOutageLog(currentOutage);
+			}
+
+            loading.Close();
 		}
 
-        void GenerateFromExistingReport()
+        async void GenerateFromExistingReport()
         {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+
             bool parsingError = false;
             string[] textBoxContent = Alarms_ReportTextBox.Lines;
-            Action actionThreaded = new Action(delegate {
+            string err = string.Empty;
+
+            await System.Threading.Tasks.Task.Run(() =>
+            {
                 try
                 {
                     currentOutage = new Outage(textBoxContent, DateTime.Now);
                 }
                 catch (Exception ex)
                 {
-                    MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nError message:\n" + ex.Message);
+                    err = ex.Message;
                     parsingError = true;
                 }
             });
+            
+            if (parsingError)
+                MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nError message:\n" + err);
+            else
+            {
+                load.ToggleLoadingSpinner();
 
-            Action actionNonThreaded = new Action(delegate {
-                if (!parsingError)
+                if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+                    VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                else
                 {
-                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-                        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                    if (string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                    {
+                        MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
+                        Alarms_ReportTextBox.Text = string.Empty;
+                        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(currentOutage.VfOutage))
+                    {
+                        VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                        TFReportRadioButton.Enabled = false;
+                    }
                     else
                     {
-                        if (string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                        if (!string.IsNullOrEmpty(currentOutage.TefOutage))
                         {
-                            MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
-                            Alarms_ReportTextBox.Text = string.Empty;
-                            VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
-                            return;
+                            TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+                            VFReportRadioButton.Enabled = false;
                         }
-                        if (!string.IsNullOrEmpty(currentOutage.VfOutage))
-                        {
-                            VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-                            TFReportRadioButton.Enabled = false;
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(currentOutage.TefOutage))
-                            {
-                                TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
-                                VFReportRadioButton.Enabled = false;
-                            }
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
-                    {
-                        GenerationSourceContainer.Visible =
-                            generateReportToolStripMenuItem.Enabled =false;
-                        Alarms_ReportTextBox.ReadOnly =
-                            BulkCITextBox.ReadOnly = true;
-                        outageFollowUpToolStripMenuItem.Enabled =
-                            copyToClipboardToolStripMenuItem.Enabled =
-                            sitesPerTechToolStripMenuItem.Enabled =
-                            generateSitesListToolStripMenuItem.Enabled = true;
-                        Alarms_ReportTextBox.Focus();
-                        Alarms_ReportLabel.Visible = true;
-                        GenerationSourceContainer.Visible = false;
-                        MainForm.logFiles.HandleOutageLog(currentOutage);
                     }
                 }
-            });
-            LoadingPanel loading = new LoadingPanel();
-            loading.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+                if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
+                {
+                    GenerationSourceContainer.Visible =
+                        generateReportToolStripMenuItem.Enabled =false;
+                    Alarms_ReportTextBox.ReadOnly =
+                        BulkCITextBox.ReadOnly = true;
+                    outageFollowUpToolStripMenuItem.Enabled =
+                        copyToClipboardToolStripMenuItem.Enabled =
+                        sitesPerTechToolStripMenuItem.Enabled =
+                        generateSitesListToolStripMenuItem.Enabled = true;
+                    Alarms_ReportTextBox.Focus();
+                    Alarms_ReportLabel.Visible = true;
+                    GenerationSourceContainer.Visible = false;
+                    MainForm.logFiles.HandleOutageLog(currentOutage);
+                }
+            }
+            
+            load.Close();
         }
 
-        void GenerateFromSitesList()
+        async void GenerateFromSitesList()
         {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+
             bool parsingError = false;
             string[] textBoxContent = Alarms_ReportTextBox.Lines;
-            Action actionThreaded = new Action(delegate {
+
+            await System.Threading.Tasks.Task.Run(() =>
+            {
                 try
                 {
                     List<string> input = textBoxContent.Count(l => l.Contains(";")) > 0 ? string.Join(Environment.NewLine, textBoxContent).Split(';').ToList() : textBoxContent.ToList();
@@ -289,59 +318,61 @@ namespace appCore.Templates.UI
                 catch (Exception ex)
                 {
                     var m = ex.Message;
-                    MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
                     parsingError = true;
                 }
             });
-
-            Action actionNonThreaded = new Action(delegate {
-                if (!parsingError)
+            
+            if (parsingError)
+                MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
+            else
+            {
+                load.ToggleLoadingSpinner();
+                
+                if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
+                    VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                else
                 {
-                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
-                        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                    if (string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                    {
+                        MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
+                        Alarms_ReportTextBox.Text = string.Empty;
+                        VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(currentOutage.VfOutage))
+                    {
+                        VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
+                        TFReportRadioButton.Enabled = false;
+                    }
                     else
                     {
-                        if (string.IsNullOrEmpty(currentOutage.VfOutage) && string.IsNullOrEmpty(currentOutage.TefOutage))
+                        if (!string.IsNullOrEmpty(currentOutage.TefOutage))
                         {
-                            MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
-                            Alarms_ReportTextBox.Text = string.Empty;
-                            VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
-                            return;
+                            TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
+                            VFReportRadioButton.Enabled = false;
                         }
-                        if (!string.IsNullOrEmpty(currentOutage.VfOutage))
-                        {
-                            VFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
-                            TFReportRadioButton.Enabled = false;
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(currentOutage.TefOutage))
-                            {
-                                TFReportRadioButton.Enabled = TFReportRadioButton.Checked = true;
-                                VFReportRadioButton.Enabled = false;
-                            }
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
-                    {
-                        generateReportToolStripMenuItem.Enabled = false;
-                        Alarms_ReportTextBox.ReadOnly =
-                            BulkCITextBox.ReadOnly = true;
-                        copyToClipboardToolStripMenuItem.Enabled =
-                            generateSitesListToolStripMenuItem.Enabled =
-                            outageFollowUpToolStripMenuItem.Enabled = true;
-                        Alarms_ReportTextBox.Focus();
-                        Alarms_ReportLabel.Visible = true;
-                        GenerationSourceContainer.Visible = false;
-                        MainForm.logFiles.HandleOutageLog(currentOutage);
                     }
                 }
-            });
-            LoadingPanel load = new LoadingPanel();
-            load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+                if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
+                {
+                    generateReportToolStripMenuItem.Enabled = false;
+                    Alarms_ReportTextBox.ReadOnly =
+                        BulkCITextBox.ReadOnly = true;
+                    copyToClipboardToolStripMenuItem.Enabled =
+                        generateSitesListToolStripMenuItem.Enabled =
+                        outageFollowUpToolStripMenuItem.Enabled = true;
+                    Alarms_ReportTextBox.Focus();
+                    Alarms_ReportLabel.Visible = true;
+                    GenerationSourceContainer.Visible = false;
+                    MainForm.logFiles.HandleOutageLog(currentOutage);
+                }
+            }
+
+            load.Close();
         }
 
-        void OutageFollowUp(object sender, EventArgs e) {
+        void OutageFollowUp(object sender, EventArgs e)
+        {
 			Thread thread = new Thread(() => {
 			                           	siteDetails sd = new siteDetails(currentOutage, this);
 //			                           	sd.Name = "Outage Follow-up";
@@ -353,19 +384,24 @@ namespace appCore.Templates.UI
 			thread.Start();
 		}
 		
-		void VFTFReportRadioButtonsCheckedChanged(object sender, EventArgs e) {
+		void VFTFReportRadioButtonsCheckedChanged(object sender, EventArgs e)
+        {
 			RadioButton rb = sender as RadioButton;
-			if(rb.Checked) {
-				if(rb.Text == "VF Report") {
+			if(rb.Checked)
+            {
+				if(rb.Text == "VF Report")
+                {
 					Alarms_ReportTextBox.Text = currentOutage.VfOutage;
 					BulkCITextBox.Text = currentOutage.VfBulkCI;
 				}
-				else {
+				else
+                {
 					Alarms_ReportTextBox.Text = currentOutage.TefOutage;
 					BulkCITextBox.Text = currentOutage.TefBulkCI;
 				}
 				
-				if(UiMode == UiEnum.Template) {
+				if(UiMode == UiEnum.Template)
+                {
 					Alarms_ReportTextBox.Select(0,0);
 					BulkCITextBox.Select(0,0);
 				}
@@ -373,194 +409,197 @@ namespace appCore.Templates.UI
 		}
 
 		void ShowSitesPerTech(object sender, EventArgs e)
-		{
-			Action action = new Action(delegate {
-                Form showSitesPerTechForm = new Form
+        {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+
+            //Action action = new Action(delegate {
+            Form showSitesPerTechForm = new Form
+            {
+                Text = (VFReportRadioButton.Checked ? "VF" : "TF") + " Affected Sites Per Tech",
+                Icon = Resources.app_icon,
+			    Name = "showSitesPerTechForm",
+			    Size = new Size(790, 250),
+			    MaximizeBox = false,
+			    FormBorderStyle = FormBorderStyle.Sizable
+			};
+            showSitesPerTechForm.MaximumSize = new Size(showSitesPerTechForm.Width, int.MaxValue);
+            showSitesPerTechForm.MinimumSize = new Size(showSitesPerTechForm.Width, 200);
+
+            AMTDataGridView dataGridView = new AMTDataGridView();
+			dataGridView.AllowUserToAddRows = false;
+			dataGridView.AllowUserToDeleteRows = false;
+			dataGridView.AllowUserToResizeColumns = false;
+            dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+            dataGridView.AlwaysVisibleVScrollBar = false;
+			dataGridView.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
+			dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+			dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+			dataGridView.BackgroundColor = SystemColors.Control;
+			dataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+            dataGridView.CellFormatting += (s, a) =>
+            {
+                    a.CellStyle.BackColor = a.RowIndex % 2 == 0 ? dataGridView.DefaultCellStyle.BackColor : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
+            };
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+			dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+			dataGridViewCellStyle1.BackColor = SystemColors.ControlDark;
+			dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+			dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+			dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+			dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView.DefaultCellStyle.BackColor = Color.LightGray;
+            dataGridView.DoubleBuffer = true;
+			dataGridView.EditMode = DataGridViewEditMode.EditProgrammatically;
+			dataGridView.GridColor = SystemColors.ControlDarkDark;
+			dataGridView.Location = Point.Empty;
+			dataGridView.Name = "dataGridView";
+			dataGridView.RowHeadersVisible = false;
+			dataGridView.RowTemplate.Resizable = DataGridViewTriState.True;
+			dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
+			dataGridView.ShowEditingIcon = false;
+			dataGridView.Size = new Size(showSitesPerTechForm.ClientRectangle.Width, 183);
+			dataGridView.SelectionChanged += (s, a) => {
+			    int[] counts = new int[dataGridView.Columns.Count];
+			    foreach(DataGridViewCell cell in dataGridView.SelectedCells)
+			    {
+                    if(!string.IsNullOrEmpty(cell.Value.ToString()))
+			            counts[cell.ColumnIndex]++;
+			    }
+			    foreach(DataGridViewColumn col in dataGridView.Columns)
                 {
-                                            Text = (VFReportRadioButton.Checked ? "VF" : "TF") + " Affected Sites Per Tech",
-                                            Icon = Resources.app_icon,
-			                           		Name = "showSitesPerTechForm",
-			                           		Size = new Size(790, 250),
-			                           		MaximizeBox = false,
-			                           		FormBorderStyle = FormBorderStyle.Sizable
-			                           	};
-                                        showSitesPerTechForm.MaximumSize = new Size(showSitesPerTechForm.Width, int.MaxValue);
-                                        showSitesPerTechForm.MinimumSize = new Size(showSitesPerTechForm.Width, 200);
+                    if (col.HeaderText.IndexOf(" (") > -1)
+                        col.HeaderText = col.HeaderText.Substring(0, col.HeaderText.IndexOf(" ("));
 
-                                        AMTDataGridView dataGridView = new AMTDataGridView();
-			                           	dataGridView.AllowUserToAddRows = false;
-			                           	dataGridView.AllowUserToDeleteRows = false;
-			                           	dataGridView.AllowUserToResizeColumns = false;
-                                        dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
-                                        dataGridView.AlwaysVisibleVScrollBar = false;
-			                           	dataGridView.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
-			                           	dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-			                           	dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-			                           	dataGridView.BackgroundColor = SystemColors.Control;
-			                           	dataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
-                                        dataGridView.CellFormatting += (s, a) =>
-                                        {
-                                                a.CellStyle.BackColor = a.RowIndex % 2 == 0 ? dataGridView.DefaultCellStyle.BackColor : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
-                                        };
-                                        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-			                           	dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-			                           	dataGridViewCellStyle1.BackColor = SystemColors.ControlDark;
-			                           	dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-			                           	dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-			                           	dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-			                           	dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-			                           	dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-			                           	dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-                                        dataGridView.DefaultCellStyle.BackColor = Color.LightGray;
-                                        dataGridView.DoubleBuffer = true;
-			                           	dataGridView.EditMode = DataGridViewEditMode.EditProgrammatically;
-			                           	dataGridView.GridColor = SystemColors.ControlDarkDark;
-			                           	dataGridView.Location = Point.Empty;
-			                           	dataGridView.Name = "dataGridView";
-			                           	dataGridView.RowHeadersVisible = false;
-			                           	dataGridView.RowTemplate.Resizable = DataGridViewTriState.True;
-			                           	dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
-			                           	dataGridView.ShowEditingIcon = false;
-			                           	dataGridView.Size = new Size(showSitesPerTechForm.ClientRectangle.Width, 183);
-			                           	dataGridView.SelectionChanged += (s, a) => {
-			                           		int[] counts = new int[dataGridView.Columns.Count];
-			                           		foreach(DataGridViewCell cell in dataGridView.SelectedCells)
-			                           		{
-                                                if(!string.IsNullOrEmpty(cell.Value.ToString()))
-			                           			    counts[cell.ColumnIndex]++;
-			                           		}
-			                           		foreach(DataGridViewColumn col in dataGridView.Columns)
-                                            {
-                                                if (col.HeaderText.IndexOf(" (") > -1)
-                                                    col.HeaderText = col.HeaderText.Substring(0, col.HeaderText.IndexOf(" ("));
+			        col.HeaderText += " (" + counts[col.Index] + ")";
+			    }
+			};
 
-			                           			col.HeaderText += " (" + counts[col.Index] + ")";
-			                           		}
-			                           	};
+            CheckBox sitesFullNameCheckBox = new CheckBox
+            {
+                Text = "View Sites full ID",
+                Width = 150,
+                Location = new Point(5, dataGridView.Bottom + 5),
+                Anchor = (AnchorStyles.Bottom | AnchorStyles.Left)
+            };
 
-                                        CheckBox sitesFullNameCheckBox = new CheckBox
-                                        {
-                                            Text = "View Sites full ID",
-                                            Width = 150,
-                                            Location = new Point(5, dataGridView.Bottom + 5),
-                                            Anchor = (AnchorStyles.Bottom | AnchorStyles.Left)
-                                        };
+            DataTable dt = new DataTable("Table");
+			dt.Columns.AddRange(new DataColumn[] {
+			                        new DataColumn("2G Only Sites", typeof(string)),
+			                        new DataColumn("2G/3G Sites", typeof(string)),
+			                        new DataColumn("2G/4G Sites", typeof(string)),
+			                        new DataColumn("2G/3G/4G Sites", typeof(string)),
+			                        new DataColumn("3G Only Sites", typeof(string)),
+			                        new DataColumn("3G/4G Sites", typeof(string)),
+			                        new DataColumn("4G Only Sites", typeof(string))
+			                    });
 
-                                        DataTable dt = new DataTable("Table");
-			                           	dt.Columns.AddRange(new DataColumn[] {
-			                           	                    	new DataColumn("2G Only Sites", typeof(string)),
-			                           	                    	new DataColumn("2G/3G Sites", typeof(string)),
-			                           	                    	new DataColumn("2G/4G Sites", typeof(string)),
-			                           	                    	new DataColumn("2G/3G/4G Sites", typeof(string)),
-			                           	                    	new DataColumn("3G Only Sites", typeof(string)),
-			                           	                    	new DataColumn("3G/4G Sites", typeof(string)),
-			                           	                    	new DataColumn("4G Only Sites", typeof(string))
-			                           	                    });
+			int[] listcounts = VFReportRadioButton.Checked ?
+			    new[] {
+                        currentOutage.VfGsmOnlyAffectedSites.Count,
+                        currentOutage.VfGsmUmtsAffectedSites.Count,
+                        currentOutage.VfGsmLteAffectedSites.Count,
+                        currentOutage.VfGsmUmtsLteAffectedSites.Count,
+                        currentOutage.VfUmtsOnlyAffectedSites.Count,
+                        currentOutage.VfUmtsLteAffectedSites.Count,
+                        currentOutage.VfLteOnlyAffectedSites.Count
+                    } :
+			    new[] {
+                        currentOutage.TefGsmOnlyAffectedSites.Count,
+                        currentOutage.TefGsmUmtsAffectedSites.Count,
+                        currentOutage.TefGsmLteAffectedSites.Count,
+                        currentOutage.TefGsmUmtsLteAffectedSites.Count,
+                        currentOutage.TefUmtsOnlyAffectedSites.Count,
+                        currentOutage.TefUmtsLteAffectedSites.Count,
+                        currentOutage.TefLteOnlyAffectedSites.Count
+                    };
 
-			                           	int[] listcounts = VFReportRadioButton.Checked ?
-			                           		new[] {
-                                                   currentOutage.VfGsmOnlyAffectedSites.Count,
-                                                   currentOutage.VfGsmUmtsAffectedSites.Count,
-                                                   currentOutage.VfGsmLteAffectedSites.Count,
-                                                   currentOutage.VfGsmUmtsLteAffectedSites.Count,
-                                                   currentOutage.VfUmtsOnlyAffectedSites.Count,
-                                                   currentOutage.VfUmtsLteAffectedSites.Count,
-                                                   currentOutage.VfLteOnlyAffectedSites.Count
-                                               } :
-			                           		new[] {
-                                                   currentOutage.TefGsmOnlyAffectedSites.Count,
-                                                   currentOutage.TefGsmUmtsAffectedSites.Count,
-                                                   currentOutage.TefGsmLteAffectedSites.Count,
-                                                   currentOutage.TefGsmUmtsLteAffectedSites.Count,
-                                                   currentOutage.TefUmtsOnlyAffectedSites.Count,
-                                                   currentOutage.TefUmtsLteAffectedSites.Count,
-                                                   currentOutage.TefLteOnlyAffectedSites.Count
-                                               };
-
-			                           	int max = listcounts.Max();
-			                           	for (int c = 0; c < max; c++)
-			                           	{
-			                           		var newRow = dt.NewRow();
-			                           		if (listcounts[0] > c)
-			                           			newRow["2G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmOnlyAffectedSites[c] : currentOutage.TefGsmOnlyAffectedSites[c];
+			int max = listcounts.Max();
+			for (int c = 0; c < max; c++)
+			{
+			    var newRow = dt.NewRow();
+			    if (listcounts[0] > c)
+			        newRow["2G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmOnlyAffectedSites[c] : currentOutage.TefGsmOnlyAffectedSites[c];
                                             
-			                           		if (listcounts[1] > c)
-			                           			newRow["2G/3G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmUmtsAffectedSites[c] : currentOutage.TefGsmUmtsAffectedSites[c];
+			    if (listcounts[1] > c)
+			        newRow["2G/3G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmUmtsAffectedSites[c] : currentOutage.TefGsmUmtsAffectedSites[c];
                                             
-			                           		if (listcounts[2] > c)
-			                           			newRow["2G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmLteAffectedSites[c] : currentOutage.TefGsmLteAffectedSites[c];
+			    if (listcounts[2] > c)
+			        newRow["2G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmLteAffectedSites[c] : currentOutage.TefGsmLteAffectedSites[c];
                                             
-			                           		if (listcounts[3] > c)
-			                           			newRow["2G/3G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmUmtsLteAffectedSites[c] : currentOutage.TefGsmUmtsLteAffectedSites[c];
+			    if (listcounts[3] > c)
+			        newRow["2G/3G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfGsmUmtsLteAffectedSites[c] : currentOutage.TefGsmUmtsLteAffectedSites[c];
                                             
-			                           		if (listcounts[4] > c)
-			                           			newRow["3G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfUmtsOnlyAffectedSites[c] : currentOutage.TefUmtsOnlyAffectedSites[c];
+			    if (listcounts[4] > c)
+			        newRow["3G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfUmtsOnlyAffectedSites[c] : currentOutage.TefUmtsOnlyAffectedSites[c];
                                             
-			                           		if (listcounts[5] > c)
-			                           			newRow["3G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfUmtsLteAffectedSites[c] : currentOutage.TefUmtsLteAffectedSites[c];
+			    if (listcounts[5] > c)
+			        newRow["3G/4G Sites"] = VFReportRadioButton.Checked ? currentOutage.VfUmtsLteAffectedSites[c] : currentOutage.TefUmtsLteAffectedSites[c];
                                             
-			                           		if (listcounts[6] > c)
-			                           			newRow["4G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfLteOnlyAffectedSites[c] : currentOutage.TefLteOnlyAffectedSites[c];
-			                           		dt.Rows.Add(newRow);
-			                           	}
-			                           	sitesFullNameCheckBox.CheckedChanged += (s, a) => {
-                                               var x = currentOutage.VfGsmOnlyAffectedSites;
-			                           		if (sitesFullNameCheckBox.Checked)
-			                           		{
-			                           			dataGridView.DataSource = null;
-			                           			dataGridView.DataSource = dt;
+			    if (listcounts[6] > c)
+			        newRow["4G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfLteOnlyAffectedSites[c] : currentOutage.TefLteOnlyAffectedSites[c];
+			    dt.Rows.Add(newRow);
+			}
+			sitesFullNameCheckBox.CheckedChanged += (s, a) => {
+                    var x = currentOutage.VfGsmOnlyAffectedSites;
+			    if (sitesFullNameCheckBox.Checked)
+			    {
+			        dataGridView.DataSource = null;
+			        dataGridView.DataSource = dt;
 
-                                                for(int c = 0;c < dataGridView.Columns.Count;c++)
-                                                {
-                                                    dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
-                                                    dataGridView.Columns[c].HeaderText += " (0)";
-                                                }
-                                               }
-			                           		else
-			                           		{
-			                           			DataTable tempDT = new DataTable(dt.TableName);
-                                                foreach(DataColumn col in dt.Columns)
-                                                       tempDT.Columns.Add(col.ColumnName, col.DataType);
+                    for(int c = 0;c < dataGridView.Columns.Count;c++)
+                    {
+                        dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
+                        dataGridView.Columns[c].HeaderText += " (0)";
+                    }
+                    }
+			    else
+			    {
+			        DataTable tempDT = new DataTable(dt.TableName);
+                    foreach(DataColumn col in dt.Columns)
+                            tempDT.Columns.Add(col.ColumnName, col.DataType);
                                                 
-                                                foreach(DataRow row in dt.Rows)
-                                                {
-                                                    DataRow newRow = tempDT.NewRow();
-                                                    newRow.ItemArray = row.ItemArray;
-                                                    tempDT.Rows.Add(newRow);
-                                                }
-                                                dataGridView.DataSource = null;
+                    foreach(DataRow row in dt.Rows)
+                    {
+                        DataRow newRow = tempDT.NewRow();
+                        newRow.ItemArray = row.ItemArray;
+                        tempDT.Rows.Add(newRow);
+                    }
+                    dataGridView.DataSource = null;
 
-                                                for (int row = 0;row < tempDT.Rows.Count;row++)
-			                           			{
-			                           				for(int col = 0;col < tempDT.Rows[row].ItemArray.Length;col++)
-			                           				{
-			                           					string temp = tempDT.Rows[row][col].ToString().RemoveLetters();
-			                           					while (temp.StartsWith("0"))
-			                           						temp = temp.Substring(1);
-			                           					tempDT.Rows[row][col] = temp;
-			                           				}
-			                           			}
+                    for (int row = 0;row < tempDT.Rows.Count;row++)
+			        {
+			            for(int col = 0;col < tempDT.Rows[row].ItemArray.Length;col++)
+			            {
+			                string temp = tempDT.Rows[row][col].ToString().RemoveLetters();
+			                while (temp.StartsWith("0"))
+			                    temp = temp.Substring(1);
+			                tempDT.Rows[row][col] = temp;
+			            }
+			        }
 
-			                           			dataGridView.DataSource = tempDT;
+			        dataGridView.DataSource = tempDT;
 
-                                                for (int c = 0; c < dataGridView.Columns.Count; c++)
-                                                {
-                                                    dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
-                                                    dataGridView.Columns[c].HeaderText += " (0)";
-                                                }
-                                            }
-			                           	};
+                    for (int c = 0; c < dataGridView.Columns.Count; c++)
+                    {
+                        dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
+                        dataGridView.Columns[c].HeaderText += " (0)";
+                    }
+                }
+			};
 
-			                           	showSitesPerTechForm.Controls.AddRange(new Control[]{
-			                           	                                       	dataGridView,
-			                           	                                       	sitesFullNameCheckBox
-			                           	                                       });
-			                           	sitesFullNameCheckBox.Checked = true;
-			                           	
-			                           	showSitesPerTechForm.ShowDialog();
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.Show(action, this);
+			showSitesPerTechForm.Controls.AddRange(new Control[]{
+			                           	            dataGridView,
+			                           	            sitesFullNameCheckBox
+			                           	            });
+			sitesFullNameCheckBox.Checked = true;
+
+            showSitesPerTechForm.ShowDialog();
+			                           //});
+
+			load.Close();
 		}
 
 		void IncludeListForm_cbCheckedChanged(object sender, EventArgs e)
@@ -732,13 +771,14 @@ namespace appCore.Templates.UI
 		}
 
 		void GenerateSitesList(object sender, EventArgs e)
-		{
-			Action actionNonThreaded = new Action(delegate {
-			                                      	FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + currentOutage.SitesList + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
-			                                      	Clipboard.SetText(currentOutage.SitesList);
-			                                      });
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, actionNonThreaded, false, this.FindForm());
+        {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+
+            FlexibleMessageBox.Show("The following site list was copied to the Clipboard:" + Environment.NewLine + Environment.NewLine + currentOutage.SitesList + Environment.NewLine + Environment.NewLine + "This list can be used to enter a bulk site search on Site Lopedia.","List generated",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            Clipboard.SetText(currentOutage.SitesList);
+
+			load.Close();
 		}
 
         void CopyReportToClipboard(object sender, EventArgs e) {

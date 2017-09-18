@@ -27,11 +27,15 @@ namespace appCore.Templates.Types
 		public string TefBulkCI;
 		
 		List<Site> affectedSites = new List<Site>();
-		public List<Site> AffectedSites {
-			get {
-				if(affectedSites.Count == 0) {
+		public List<Site> AffectedSites
+        {
+			get
+            {
+				if(affectedSites.Count == 0)
+                {
 					List<string> list = new List<string>();
-					foreach(string siteStr in VfSites) {
+					foreach(string siteStr in VfSites)
+                    {
 						string tempSite = string.Empty;
 						if(siteStr.Contains(" - "))
 							tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
@@ -40,7 +44,8 @@ namespace appCore.Templates.Types
 						tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
 						list.Add(tempSite);
 					}
-					foreach(string siteStr in TefSites) {
+					foreach(string siteStr in TefSites)
+                    {
 						string tempSite = string.Empty;
 						if(siteStr.Contains(" - "))
 							tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
@@ -58,9 +63,12 @@ namespace appCore.Templates.Types
 			private set { affectedSites = value; }
 		}
 		List<Cell> affectedCells = new List<Cell>();
-		public List<Cell> AffectedCells {
-			get {
-				if(affectedCells.Count == 0) {
+		public List<Cell> AffectedCells
+        {
+			get
+            {
+				if(affectedCells.Count == 0)
+                {
                     List<string> list = new List<string>();
                     List<Cell> cellsWithoutId = new List<Cell>();
 					list.AddRange(VfGsmCells);
@@ -69,7 +77,8 @@ namespace appCore.Templates.Types
 					list.AddRange(TefGsmCells);
 					list.AddRange(TefUmtsCells);
 					list.AddRange(TefLteCells);
-					for(int c = 0;c < list.Count;c++) {
+					for(int c = 0;c < list.Count;c++)
+                    {
                         if(list[c].Contains(" - No cell description"))
                         {
                             var arr = list[c].Split(new[] { " - " }, StringSplitOptions.None);
@@ -118,7 +127,10 @@ namespace appCore.Templates.Types
 
 				return affectedLocations;
 			}
-			private set { affectedLocations = value; }
+			private set
+            {
+                affectedLocations = value;
+            }
 		}
 
 		public List<string> VfSites = new List<string>();
@@ -414,36 +426,46 @@ namespace appCore.Templates.Types
 			}
 		}
 
-		public int GsmCells {
-			get {
+		public int GsmCells
+        {
+			get
+            {
 				return !string.IsNullOrEmpty(VfOutage) ? VfGsmCells.Count : TefGsmCells.Count;
 			}
 			private set { }
 		}
 		
-		public int UmtsCells {
-			get {
+		public int UmtsCells
+        {
+			get
+            {
 				return !string.IsNullOrEmpty(VfOutage) ? VfUmtsCells.Count : TefUmtsCells.Count;
 			}
 			private set { }
 		}
 		
-		public int LteCells {
-			get {
+		public int LteCells
+        {
+			get
+            {
 				return !string.IsNullOrEmpty(VfOutage) ? VfLteCells.Count : TefLteCells.Count;
 			}
 			private set { }
 		}
 		
-		public string Summary {
+		public string Summary
+        {
 			get;
 			private set;
 		}
 		
-		public DateTime EventTime {
-			get {
+		public DateTime EventTime
+        {
+			get
+            {
 				DateTime dt;
-				if(!string.IsNullOrEmpty(VfOutage)) {
+				if(!string.IsNullOrEmpty(VfOutage))
+                {
 					dt = new DateTime(Math.Min(VfGsmTime.Ticks, VfUmtsTime.Ticks));
 					if(VfLteTime.Year < 2500)
 						dt = new DateTime(Math.Min(dt.Ticks, VfLteTime.Ticks));
@@ -459,21 +481,28 @@ namespace appCore.Templates.Types
 		}
 		
 		string sitesList;
-		public string SitesList {
-			get {
-				if(string.IsNullOrEmpty(sitesList) && (VfSites.Count > 0 || TefSites.Count > 0)) {
-					List<string> sites = VfBulkCI.Split(';').ToList();
-					sites.AddRange(TefBulkCI.Split(';'));
-					for(int c = 0;c < sites.Count;c++) {
-						sites[c] = sites[c].RemoveLetters();
-						while (sites[c].StartsWith("0"))
-							sites[c] = sites[c].Substring(1);
-					}
-					sites = sites.Distinct().Where(s => !string.IsNullOrEmpty(s)).ToList();
-					sites.Sort();
-					sitesList = string.Join(Environment.NewLine, sites);
-				}
-				return sitesList;
+		public string SitesList
+        {
+			get
+            {
+				if(string.IsNullOrEmpty(sitesList) && (VfSites.Count > 0 || TefSites.Count > 0))
+                {
+                    List<string> sites = new List<string>();
+                    if (!string.IsNullOrEmpty(VfBulkCI))
+                        sites.AddRange(VfBulkCI.Split(';'));
+                    if (!string.IsNullOrEmpty(TefBulkCI))
+                        sites.AddRange(TefBulkCI.Split(';'));
+                    sites = sites.Distinct().Where(s => !string.IsNullOrEmpty(s)).ToList();
+                    sites.Sort();
+                    for (int c = 0; c < sites.Count; c++)
+                    {
+                        sites[c] = sites[c].RemoveLetters();
+                        while (sites[c].StartsWith("0"))
+                            sites[c] = sites[c].Substring(1);
+                    }
+                    sitesList = string.Join(Environment.NewLine, sites);
+                }
+                return sitesList;
 			}
 			private set { }
 		}
@@ -496,15 +525,18 @@ namespace appCore.Templates.Types
 		
 		public Outage() { }
 		
-		public Outage(AlarmsParser alarms) {
+		public Outage(AlarmsParser alarms)
+        {
 			OutageAlarms = alarms.AlarmsList;
 			
 			List<Cell> LTEcells = new List<Cell>();
 			
-			if(alarms.lteSitesOnM.Count > 0) {
+			if(alarms.lteSitesOnM.Count > 0)
+            {
 				LTEcells = DB.SitesDB.getCells(alarms.lteSitesOnM, Bearers.LTE);
 				
-				foreach(Cell cell in LTEcells) {
+				foreach(Cell cell in LTEcells)
+                {
 					try {
 						Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
 						OutageAlarms.Add(new Alarm(cell, true, temp));
@@ -514,23 +546,28 @@ namespace appCore.Templates.Types
 				}
 			}
 			string toparse = string.Empty;
-			try {
+			try
+            {
 				var engine = new FileHelperEngine<Alarm>();
 
-				engine.BeforeWriteRecord += (eng, e) => {
+				engine.BeforeWriteRecord += (eng, e) =>
+                {
 					if(!e.Record.COOS || e.Record.Summary.Contains("FREQUENT"))
 						e.SkipThisRecord = true;
 				};
 
 				toparse = engine.WriteString(OutageAlarms);
 			}
-			catch(FileHelpersException e) {
+			catch(FileHelpersException e)
+            {
 				var m = e.Message;
 			}
 			
-			try {
+			try
+            {
 				var engine = new FileHelperEngine<Alarm>();
-				engine.AfterReadRecord += (eng, e) => {
+				engine.AfterReadRecord += (eng, e) =>
+                {
 					string temp;
 					Alarm al = e.Record;
 					if(e.Record.Bearer == Bearers.LTE)
@@ -540,10 +577,13 @@ namespace appCore.Templates.Types
 					string tempSite = e.Record.Location;
                     if (!string.IsNullOrEmpty(e.Record.POC))
                         tempSite += " - " + e.Record.POC;
-                    switch (e.Record.Operator) {
+                    switch (e.Record.Operator)
+                    {
 						case Operators.Vodafone:
-							if(string.IsNullOrEmpty(e.Record.County)) {
-								if(string.IsNullOrEmpty(e.Record.Town)) {
+							if(string.IsNullOrEmpty(e.Record.County) || e.Record.County.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                            {
+								if(string.IsNullOrEmpty(e.Record.Town) || e.Record.Town.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                                {
 									if(!VfLocations.Contains(e.Record.ParentSite.County.ToUpper()))
 										VfLocations.Add(e.Record.ParentSite.County.ToUpper());
 								}
@@ -556,7 +596,8 @@ namespace appCore.Templates.Types
 									VfLocations.Add(e.Record.County.ToUpper());
 							if(!VfSites.Contains(tempSite))
 								VfSites.Add(tempSite);
-							switch(e.Record.Bearer) {
+							switch(e.Record.Bearer)
+                            {
 								case Bearers.GSM:
 									if(!VfGsmCells.Contains(temp))
 										VfGsmCells.Add(temp);
@@ -578,8 +619,10 @@ namespace appCore.Templates.Types
 							}
 							break;
 						case Operators.Telefonica:
-							if(string.IsNullOrEmpty(e.Record.County)) {
-								if(string.IsNullOrEmpty(e.Record.Town)) {
+							if(string.IsNullOrEmpty(e.Record.County) || e.Record.County.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                            {
+								if(string.IsNullOrEmpty(e.Record.Town) || e.Record.Town.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                                {
 									if(!TefLocations.Contains(e.Record.ParentSite.County.ToUpper()))
 										TefLocations.Add(e.Record.ParentSite.County.ToUpper());
 								}
@@ -592,7 +635,8 @@ namespace appCore.Templates.Types
 									TefLocations.Add(e.Record.County.ToUpper());
 							if(!TefSites.Contains(tempSite))
 								TefSites.Add(tempSite);
-							switch(e.Record.Bearer) {
+							switch(e.Record.Bearer)
+                            {
 								case Bearers.GSM:
 									if(!TefGsmCells.Contains(temp))
 										TefGsmCells.Add(temp);
@@ -618,7 +662,8 @@ namespace appCore.Templates.Types
 				
 				OutageAlarms = engine.ReadStringAsList(toparse);
 			}
-			catch(FileHelpersException e) {
+			catch(FileHelpersException e)
+            {
 				var m = e.Message;
 			}
 			
@@ -628,13 +673,15 @@ namespace appCore.Templates.Types
 			//fullLog = generateFullLog();
 		}
 		
-		public Outage(List<string> Sites) {
+		public Outage(List<string> Sites)
+        {
 			AffectedSites = DB.SitesDB.getSites(Sites);
 			AffectedCells = new List<Cell>();
 			foreach(Site site in AffectedSites)
 				AffectedCells.AddRange(site.Cells);
 			
-			foreach (Cell cell in AffectedCells) {
+			foreach (Cell cell in AffectedCells)
+            {
 				Site tempSite = AffectedSites.Find(s => s.Id == cell.ParentSite);
 				string cellString;
 				string tempSiteString = cell.ParentSite;
@@ -645,7 +692,8 @@ namespace appCore.Templates.Types
 					cellString = cell.Name;
 				else
 					cellString = cell.BscRnc_Id + " - " + cell.Name;
-				switch(cell.Operator) {
+				switch(cell.Operator)
+                {
 					case Operators.Vodafone:
 						if(!VfSites.Contains(tempSiteString))
 							VfSites.Add(tempSiteString);
@@ -713,14 +761,16 @@ namespace appCore.Templates.Types
 			//fullLog = generateFullLog();
 		}
 		
-		public Outage(Outage existingOutage) {
+		public Outage(Outage existingOutage)
+        {
 			Toolbox.Tools.CopyProperties(this, existingOutage);
 			LogType = TemplateTypes.Outage;
 			//fullLog = generateFullLog();
 		}
 		
-		public Outage(string[] log, DateTime date) {
-            if(log[0].Contains("COOS"))
+		public Outage(string[] log, DateTime date)
+        {
+            if(log[0].Contains("COOS") || log[0].Contains("Cells down"))
             {
                 var log2 = log.ToList();
                 log2.Insert(0, date.ToLongTimeString());
@@ -734,9 +784,11 @@ namespace appCore.Templates.Types
             //    fullLog = generateFullLog();
 		}
 		
-		void generateReports() {
+		void generateReports()
+        {
 			int cellTotal = VfGsmCells.Count + VfUmtsCells.Count + VfLteCells.Count;
-			if(cellTotal > 0) {
+			if(cellTotal > 0)
+            {
 				VfLocations.Sort();
 				VfSites.Sort();
 				VfGsmCells.Sort();
@@ -778,15 +830,16 @@ namespace appCore.Templates.Types
 					int lteCells = 0;
 					for(int i = 0;i < sites.Count();i++)
                     {
-                        try
-                        {
-                            var t = sites[i].Cells.Filter(Cell.Filters.VF_2G).Any();
-                            var t2 = AffectedCells.Filter(Cell.Filters.VF_2G);
-                            var t4 = t2.Count(c => c.ParentSite == sites[i].Id);
-                        }
-                        catch(Exception e) {
-                            var t3 = e.Message;
-                        }
+                        //try
+                        //{
+                        //    var t = sites[i].Cells.Filter(Cell.Filters.VF_2G).Any();
+                        //    var t2 = AffectedCells.Filter(Cell.Filters.VF_2G);
+                        //    var t4 = t2.Count(c => c.ParentSite == sites[i].Id);
+                        //}
+                        //catch(Exception e)
+                        //{
+                        //    var t3 = e.Message;
+                        //}
                         int site2Gcells = sites[i].Cells.Filter(Cell.Filters.VF_2G).Any() ? AffectedCells.Filter(Cell.Filters.VF_2G).Count(c => c.ParentSite == sites[i].Id) : -1;
                         int site3Gcells = sites[i].Cells.Filter(Cell.Filters.VF_3G).Any() ? AffectedCells.Filter(Cell.Filters.VF_3G).Count(c => c.ParentSite == sites[i].Id) : -1;
                         int site4Gcells = sites[i].Cells.Filter(Cell.Filters.VF_4G).Any() ? AffectedCells.Filter(Cell.Filters.VF_4G).Count(c => c.ParentSite == sites[i].Id) : -1;
@@ -910,7 +963,8 @@ namespace appCore.Templates.Types
 				if ( VfLteCells.Count > 0)
 					VfOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VfLteCells.Count + ") Event Time - " + VfLteTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfLteCells);
 				
-				for(int c = 0;c < VfSites.Count;c++) {
+				for(int c = 0;c < VfSites.Count;c++)
+                {
 					string[] strToFind = { " - " };
 					string tempSite = VfSites[c].Split(strToFind, StringSplitOptions.None)[0];
 					tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
@@ -923,7 +977,8 @@ namespace appCore.Templates.Types
 			}
 			
 			cellTotal = TefGsmCells.Count + TefUmtsCells.Count + TefLteCells.Count;
-			if(cellTotal > 0) {
+			if(cellTotal > 0)
+            {
 				TefLocations.Sort();
 				TefSites.Sort();
 				TefGsmCells.Sort();
@@ -1081,7 +1136,8 @@ namespace appCore.Templates.Types
 				if ( TefLteCells.Count > 0)
 					TefOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TefLteCells.Count + ") Event Time - " + TefLteTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefLteCells);
 				
-				for(int c = 0;c < TefSites.Count;c++) {
+				for(int c = 0;c < TefSites.Count;c++)
+                {
 					string[] strToFind = { " - " };
 					string tempSite = TefSites[c].Split(strToFind, StringSplitOptions.None)[0];
 					tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
@@ -1094,15 +1150,18 @@ namespace appCore.Templates.Types
 			}
 		}
 		
-		string generateFullLog() {
+		string generateFullLog()
+        {
 			string Log = string.Empty;
-			if(!string.IsNullOrEmpty(VfOutage)) {
+			if(!string.IsNullOrEmpty(VfOutage))
+            {
 				Log += "----------VF Report----------" + Environment.NewLine;
 				Log += VfOutage + Environment.NewLine;
 				Log += "-----BulkCI-----" + Environment.NewLine;
 				Log += VfBulkCI;
 			}
-			if(!string.IsNullOrEmpty(TefOutage)) {
+			if(!string.IsNullOrEmpty(TefOutage))
+            {
 				if(!string.IsNullOrEmpty(VfBulkCI))
 					Log += Environment.NewLine;
 				Log += "----------TF Report----------" + Environment.NewLine;
@@ -1114,12 +1173,14 @@ namespace appCore.Templates.Types
 			return Log;
 		}
 		
-		public void LoadOutageReport(string[] log) {
+		public void LoadOutageReport(string[] log)
+        {
 			// Manipulate log array to make it compatible with VF/TF new logs
-			if(Array.FindIndex(log,element => element.Contains("F Report----------")) == -1) {
+			if(Array.FindIndex(log,element => element.Contains("F Report----------")) == -1)
+            {
 				List<string> log2 = log.ToList(); // Create new List with log array values
                 log2.Insert(1, "----------VF Report----------");
-    //            string Report = log2[1]; // Store outage report to string
+                //string Report = log2[1]; // Store outage report to string
 				//log2.RemoveAt(1); // Remove outage report previously stored on Report string
 				//string[] SplitReport = Report.Split('\n'); // Split Report string to new array
 				//log2.Insert(1,"----------VF Report----------"); // Insert VF Report header to match code checks
@@ -1145,7 +1206,8 @@ namespace appCore.Templates.Types
                     TefBulkCI = string.Join(Environment.NewLine, log.Slice(TefBulkCiIndex + 1, log.Length));
 			}
 
-			if (VfReportIndex > -1) {
+			if (VfReportIndex > -1)
+            {
                 string[] tempLog = log.Slice(VfReportIndex, VfBulkCiIndex);
 				int VfLocationsIndex = Array.FindIndex(tempLog, element => element.StartsWith("Locations", StringComparison.Ordinal));
 				int VfSitesListIndex = Array.FindIndex(tempLog, element => element.Equals("Site List", StringComparison.Ordinal));
@@ -1214,7 +1276,8 @@ namespace appCore.Templates.Types
                 }
             }
 			
-			if(TefReportIndex > -1) {
+			if(TefReportIndex > -1)
+            {
 				var tempLog = log.Slice(TefReportIndex, TefBulkCiIndex);
 				int TefLocationsIndex = Array.FindLastIndex(tempLog, element => element.StartsWith("Locations", StringComparison.Ordinal));
 				int TefSitesListIndex = Array.FindLastIndex(tempLog, element => element.Equals("Site List", StringComparison.Ordinal));
@@ -1389,148 +1452,153 @@ namespace appCore.Templates.Types
 		//    }
 		//}
 
-		void showIncludeListForm() {
+		void showIncludeListForm()
+        {
 			List<string[]> includeList = new List<string[]>();
 			Form form = new Form();
-			using (form) {
-				// 
-				// cb2G
-				// 
-				CheckBox cb2G = new CheckBox();
-				cb2G.Location = new System.Drawing.Point(3, 34);
-				cb2G.Name = "cb2G";
-				cb2G.Size = new System.Drawing.Size(42, 20);
-				cb2G.TabIndex = 0;
-				cb2G.Text = "2G";
-				cb2G.Enabled = VfGsmCells.Any() || TefGsmCells.Any();
-				cb2G.CheckedChanged += IncludeListForm_cbCheckedChanged;
-				// 
-				// cb3G
-				// 
-				CheckBox cb3G = new CheckBox();
-				cb3G.Location = new System.Drawing.Point(3, 60);
-				cb3G.Name = "cb3G";
-				cb3G.Size = new System.Drawing.Size(42, 20);
-				cb3G.TabIndex = 2;
-				cb3G.Text = "3G";
-				cb3G.Enabled = VfUmtsCells.Any() || TefUmtsCells.Any();
-				cb3G.CheckedChanged += IncludeListForm_cbCheckedChanged;
-				// 
-				// cb4G
-				// 
-				CheckBox cb4G = new CheckBox();
-				cb4G.Location = new System.Drawing.Point(3, 86);
-				cb4G.Name = "cb4G";
-				cb4G.Size = new System.Drawing.Size(42, 20);
-				cb4G.TabIndex = 4;
-				cb4G.Text = "4G";
-				cb4G.Enabled = VfLteCells.Any() || TefLteCells.Any();
-				cb4G.CheckedChanged += IncludeListForm_cbCheckedChanged;
-				// 
-				// continueButton
-				// 
-				Button continueButton = new Button();
-				continueButton.Location = new System.Drawing.Point(3, 112);
-				continueButton.Name = "continueButton";
-				continueButton.Size = new System.Drawing.Size(221, 23);
-				continueButton.TabIndex = 6;
-				continueButton.Text = "Continue";
-				continueButton.Click += IncludeListForm_buttonClick;
-				// 
-				// dtp2G
-				// 
-				DateTimePicker dtp2G = new DateTimePicker();
-				dtp2G.Checked = false;
-				dtp2G.CustomFormat = "dd/MM/yyyy HH:mm";
-				dtp2G.Format = DateTimePickerFormat.Custom;
-				dtp2G.Location = new System.Drawing.Point(51, 34);
-				dtp2G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
-				dtp2G.Name = "dtp2G";
-				dtp2G.Size = new System.Drawing.Size(173, 20);
-				dtp2G.TabIndex = 1;
-				dtp2G.Value = DateTime.Now;
-				dtp2G.Visible = false;
-				// 
-				// dtp3G
-				// 
-				DateTimePicker dtp3G = new DateTimePicker();
-				dtp3G.Checked = false;
-				dtp3G.CustomFormat = "dd/MM/yyyy HH:mm";
-				dtp3G.Format = DateTimePickerFormat.Custom;
-				dtp3G.Location = new System.Drawing.Point(51, 60);
-				dtp3G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
-				dtp3G.Name = "dtp3G";
-				dtp3G.Size = new System.Drawing.Size(173, 20);
-				dtp3G.TabIndex = 3;
-				dtp3G.Value = DateTime.Now;
-				dtp3G.Visible = false;
-				// 
-				// dtp4G
-				// 
-				DateTimePicker dtp4G = new DateTimePicker();
-				dtp4G.Checked = false;
-				dtp4G.CustomFormat = "dd/MM/yyyy HH:mm";
-				dtp4G.Format = DateTimePickerFormat.Custom;
-				dtp4G.Location = new System.Drawing.Point(51, 86);
-				dtp4G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
-				dtp4G.Name = "dtp4G";
-				dtp4G.Size = new System.Drawing.Size(173, 20);
-				dtp4G.TabIndex = 5;
-				dtp4G.Value = DateTime.Now;
-				dtp4G.Visible = false;
-				// 
-				// IncludeListForm_label
-				// 
-				Label IncludeListForm_label = new Label();
-				IncludeListForm_label.Location = new System.Drawing.Point(3, 2);
-				IncludeListForm_label.Name = "label";
-				IncludeListForm_label.Size = new System.Drawing.Size(221, 29);
-				IncludeListForm_label.Text = "Which Technologies do you wish to include?";
-				IncludeListForm_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-				// 
-				// Form1
-				// 
-				form.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-				form.AutoScaleMode = AutoScaleMode.Font;
-				form.ClientSize = new System.Drawing.Size(228, 137);
-				form.Icon = appCore.UI.Resources.app_icon;
-//				form.MaximizeBox = false;
-				form.ControlBox = false;
-				form.FormBorderStyle = FormBorderStyle.FixedSingle;
-				form.Controls.Add(IncludeListForm_label);
-				form.Controls.Add(dtp4G);
-				form.Controls.Add(dtp3G);
-				form.Controls.Add(dtp2G);
-				form.Controls.Add(continueButton);
-				form.Controls.Add(cb4G);
-				form.Controls.Add(cb3G);
-				form.Controls.Add(cb2G);
-				form.Name = "IncludeListForm";
-				form.Text = "Generate Outage Report";
-				form.ShowDialog();
-				
-				if(cb2G.Checked)
-					VfGsmTime = TefGsmTime = dtp2G.Value;
-				else {
-					VfGsmCells.Clear();
-					TefGsmCells.Clear();
-					AffectedCells.RemoveAll(c => c.Bearer == Bearers.GSM);
-				}
-				if(cb3G.Checked)
-					VfUmtsTime = TefUmtsTime = dtp3G.Value;
-				else {
-					VfUmtsCells.Clear();
-					TefUmtsCells.Clear();
-					AffectedCells.RemoveAll(c => c.Bearer == Bearers.UMTS);
-				}
-				if(cb4G.Checked)
-					VfLteTime = TefLteTime = dtp4G.Value;
-				else {
-					VfLteCells.Clear();
-					TefLteCells.Clear();
-					AffectedCells.RemoveAll(c => c.Bearer == Bearers.LTE);
-				}
-			}
+            using (form)
+            {
+                // 
+                // cb2G
+                // 
+                CheckBox cb2G = new CheckBox();
+                cb2G.Location = new System.Drawing.Point(3, 34);
+                cb2G.Name = "cb2G";
+                cb2G.Size = new System.Drawing.Size(42, 20);
+                cb2G.TabIndex = 0;
+                cb2G.Text = "2G";
+                cb2G.Enabled = VfGsmCells.Any() || TefGsmCells.Any();
+                cb2G.CheckedChanged += IncludeListForm_cbCheckedChanged;
+                // 
+                // cb3G
+                // 
+                CheckBox cb3G = new CheckBox();
+                cb3G.Location = new System.Drawing.Point(3, 60);
+                cb3G.Name = "cb3G";
+                cb3G.Size = new System.Drawing.Size(42, 20);
+                cb3G.TabIndex = 2;
+                cb3G.Text = "3G";
+                cb3G.Enabled = VfUmtsCells.Any() || TefUmtsCells.Any();
+                cb3G.CheckedChanged += IncludeListForm_cbCheckedChanged;
+                // 
+                // cb4G
+                // 
+                CheckBox cb4G = new CheckBox();
+                cb4G.Location = new System.Drawing.Point(3, 86);
+                cb4G.Name = "cb4G";
+                cb4G.Size = new System.Drawing.Size(42, 20);
+                cb4G.TabIndex = 4;
+                cb4G.Text = "4G";
+                cb4G.Enabled = VfLteCells.Any() || TefLteCells.Any();
+                cb4G.CheckedChanged += IncludeListForm_cbCheckedChanged;
+                // 
+                // continueButton
+                // 
+                Button continueButton = new Button();
+                continueButton.Location = new System.Drawing.Point(3, 112);
+                continueButton.Name = "continueButton";
+                continueButton.Size = new System.Drawing.Size(221, 23);
+                continueButton.TabIndex = 6;
+                continueButton.Text = "Continue";
+                continueButton.Click += IncludeListForm_buttonClick;
+                // 
+                // dtp2G
+                // 
+                DateTimePicker dtp2G = new DateTimePicker();
+                dtp2G.Checked = false;
+                dtp2G.CustomFormat = "dd/MM/yyyy HH:mm";
+                dtp2G.Format = DateTimePickerFormat.Custom;
+                dtp2G.Location = new System.Drawing.Point(51, 34);
+                dtp2G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
+                dtp2G.Name = "dtp2G";
+                dtp2G.Size = new System.Drawing.Size(173, 20);
+                dtp2G.TabIndex = 1;
+                dtp2G.Value = DateTime.Now;
+                dtp2G.Visible = false;
+                // 
+                // dtp3G
+                // 
+                DateTimePicker dtp3G = new DateTimePicker();
+                dtp3G.Checked = false;
+                dtp3G.CustomFormat = "dd/MM/yyyy HH:mm";
+                dtp3G.Format = DateTimePickerFormat.Custom;
+                dtp3G.Location = new System.Drawing.Point(51, 60);
+                dtp3G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
+                dtp3G.Name = "dtp3G";
+                dtp3G.Size = new System.Drawing.Size(173, 20);
+                dtp3G.TabIndex = 3;
+                dtp3G.Value = DateTime.Now;
+                dtp3G.Visible = false;
+                // 
+                // dtp4G
+                // 
+                DateTimePicker dtp4G = new DateTimePicker();
+                dtp4G.Checked = false;
+                dtp4G.CustomFormat = "dd/MM/yyyy HH:mm";
+                dtp4G.Format = DateTimePickerFormat.Custom;
+                dtp4G.Location = new System.Drawing.Point(51, 86);
+                dtp4G.MinDate = new DateTime(2010, 1, 1, 0, 0, 0, 0);
+                dtp4G.Name = "dtp4G";
+                dtp4G.Size = new System.Drawing.Size(173, 20);
+                dtp4G.TabIndex = 5;
+                dtp4G.Value = DateTime.Now;
+                dtp4G.Visible = false;
+                // 
+                // IncludeListForm_label
+                // 
+                Label IncludeListForm_label = new Label();
+                IncludeListForm_label.Location = new System.Drawing.Point(3, 2);
+                IncludeListForm_label.Name = "label";
+                IncludeListForm_label.Size = new System.Drawing.Size(221, 29);
+                IncludeListForm_label.Text = "Which Technologies do you wish to include?";
+                IncludeListForm_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                // 
+                // Form1
+                // 
+                form.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+                form.AutoScaleMode = AutoScaleMode.Font;
+                form.ClientSize = new System.Drawing.Size(228, 137);
+                form.Icon = appCore.UI.Resources.app_icon;
+                //				form.MaximizeBox = false;
+                form.ControlBox = false;
+                form.FormBorderStyle = FormBorderStyle.FixedSingle;
+                form.Controls.Add(IncludeListForm_label);
+                form.Controls.Add(dtp4G);
+                form.Controls.Add(dtp3G);
+                form.Controls.Add(dtp2G);
+                form.Controls.Add(continueButton);
+                form.Controls.Add(cb4G);
+                form.Controls.Add(cb3G);
+                form.Controls.Add(cb2G);
+                form.Name = "IncludeListForm";
+                form.Text = "Generate Outage Report";
+                form.ShowDialog();
+
+                if (cb2G.Checked)
+                    VfGsmTime = TefGsmTime = dtp2G.Value;
+                else
+                {
+                    VfGsmCells.Clear();
+                    TefGsmCells.Clear();
+                    AffectedCells.RemoveAll(c => c.Bearer == Bearers.GSM);
+                }
+                if (cb3G.Checked)
+                    VfUmtsTime = TefUmtsTime = dtp3G.Value;
+                else
+                {
+                    VfUmtsCells.Clear();
+                    TefUmtsCells.Clear();
+                    AffectedCells.RemoveAll(c => c.Bearer == Bearers.UMTS);
+                }
+                if (cb4G.Checked)
+                    VfLteTime = TefLteTime = dtp4G.Value;
+                else
+                {
+                    VfLteCells.Clear();
+                    TefLteCells.Clear();
+                    AffectedCells.RemoveAll(c => c.Bearer == Bearers.LTE);
+                }
+            }
 		}
 
 		void IncludeListForm_cbCheckedChanged(object sender, EventArgs e)
@@ -1538,26 +1606,33 @@ namespace appCore.Templates.Types
 			CheckBox cb = (CheckBox)sender;
 			Form form = (Form)cb.Parent;
 			
-			switch(cb.Name) {
+			switch(cb.Name)
+            {
 				case "cb2G":
-					foreach (Control ctrl in form.Controls) {
-						if(ctrl.Name == "dtp2G") {
+					foreach (Control ctrl in form.Controls)
+                    {
+						if(ctrl.Name == "dtp2G")
+                        {
 							ctrl.Visible = cb.Checked;
 							break;
 						}
 					}
 					break;
 				case "cb3G":
-					foreach (Control ctrl in form.Controls) {
-						if(ctrl.Name == "dtp3G") {
+					foreach (Control ctrl in form.Controls)
+                    {
+						if(ctrl.Name == "dtp3G")
+                        {
 							ctrl.Visible = cb.Checked;
 							break;
 						}
 					}
 					break;
 				default:
-					foreach (Control ctrl in form.Controls) {
-						if(ctrl.Name == "dtp4G") {
+					foreach (Control ctrl in form.Controls)
+                    {
+						if(ctrl.Name == "dtp4G")
+                        {
 							ctrl.Visible = cb.Checked;
 							break;
 						}

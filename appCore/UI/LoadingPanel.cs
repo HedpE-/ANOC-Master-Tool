@@ -9,7 +9,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace appCore.UI
@@ -17,120 +17,160 @@ namespace appCore.UI
 	/// <summary>
 	/// Description of LoadingPanel.
 	/// </summary>
-	public class LoadingPanel : Panel
+	public class LoadingPanel
 	{
-		BackgroundWorker backgroundWorker = new BackgroundWorker();
-		
-		int _spinnerSize = 32;
-		public int spinnerSize
-		{
-			get {
-				return _spinnerSize;
-			}
-			set {
-				_spinnerSize = value;
-			}
-		}
-		
-		double _opacity = 0.4;
+        Panel innerPanel;
+
+        PictureBox loadingBox;
+
+        Control ParentControl;
+
+        public int SpinnerSize
+        {
+            get;
+            set;
+        } = 32;
+        
 		public double Opacity
 		{
-			get {
-				return _opacity;
-			}
-			set {
-				_opacity = value;
-			}
-		}
-		
-		public bool isWorkerBusy {
-			get;
-			private set;
-		}
-		
-		/// <summary>
-		/// Show LoadingPanel with both Threaded and Non Threaded instructions.
-		/// For Threaded or Non Threaded action only, pass the other action argument as null
-		/// </summary>
-		/// <param name="actionThreaded"></param>
-		/// <param name="actionNonThreaded"></param>
-		/// <param name="showLoading"></param>
-		/// <param name="parentControl"></param>
-		public void ShowAsync(Action actionThreaded, Action actionNonThreaded, bool showLoading, Control parentControl) {
-			darkenBackgroundForm(showLoading, parentControl);
-			
-			backgroundWorker.DoWork += delegate {
-				isWorkerBusy = true;
-				if(actionThreaded != null)
-					actionThreaded();
-			};
-			
-			backgroundWorker.RunWorkerCompleted += delegate {
-				if(actionNonThreaded != null)
-					actionNonThreaded();
-//				Parent.Controls.Remove(this);
-				isWorkerBusy = false;
-				this.Dispose();
-			};
-			
-			backgroundWorker.RunWorkerAsync();
-		}
-		
-		/// <summary>
-		/// Show LoadingPanel with Non Threaded instructions.
-		/// </summary>
-		/// <param name="actionNonThreaded"></param>
-		/// <param name="parentControl"></param>
-		public void Show(Action actionNonThreaded, Control parentControl) {
-			darkenBackgroundForm(false, parentControl);
-			
-			actionNonThreaded();
-			Parent.Controls.Remove(this);
-			this.Dispose();
-		}
-		
-		void darkenBackgroundForm(bool showLoading, Control parentControl) {
-			Form parentForm = parentControl.FindForm();
-			if(!(parentControl is Form) && !(parentControl is TabPage)) {
-				parentControl.Parent.Controls.Add(this);
-				Location = parentControl.Location;
-			}
-			else {
-				parentControl.Controls.Add(this);
-				Location = Point.Empty;
-			}
-			// take a screenshot of the form and darken it
-			Bitmap bmp;
-			if(parentControl is MainForm && parentForm.WindowState == FormWindowState.Minimized)
-				bmp = ((MainForm)parentForm).ScreenshotBeforeMinimize;
-			else
-				bmp = new Bitmap(parentControl.ClientRectangle.Width, parentControl.ClientRectangle.Height);
-			using (Graphics g = Graphics.FromImage(bmp)) {
-				g.CompositingMode = CompositingMode.SourceOver;
-				g.CopyFromScreen(parentControl.PointToScreen(new Point(0, 0)), new Point(0, 0), parentControl.ClientRectangle.Size);
-				Color darken = Color.FromArgb((int)(255 * Opacity), Color.Black);
-				using (Brush brsh = new SolidBrush(darken))
-					g.FillRectangle(brsh, parentControl.ClientRectangle);
-			}
-			
-			Size = parentControl.ClientRectangle.Size;
-			BackgroundImage = bmp;
-			
-			BringToFront();
-			if(showLoading) {
-				Point loc = PointToScreen(Point.Empty);
-				loc.X = (parentControl.Width - spinnerSize) / 2;
-				loc.Y = (parentControl.Height - spinnerSize) / 2;
-				
-				PictureBox loadingBox = new PictureBox();
-				loadingBox.BackColor = Color.Transparent;
-				loadingBox.Image = loadingBox.InitialImage = Resources.spinner1;
-				loadingBox.Size = new Size(spinnerSize, spinnerSize);
-				loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
-				loadingBox.Location = loc;
-				Controls.Add(loadingBox);
-				loadingBox.BringToFront();
-			}
-		}
-	}
+            get;
+            set;
+        } = 0.4;
+
+        public bool Visible
+        {
+            get
+            {
+                return innerPanel != null;
+            }
+        }
+
+        public bool LoadingSpinnerVisible
+        {
+            get
+            {
+                return innerPanel.Controls.Contains(loadingBox);
+            }
+        }
+
+        /// <summary>
+        /// Show LoadingPanel with both Threaded and Non Threaded instructions.
+        /// For Threaded or Non Threaded action only, pass the other action argument as null
+        /// </summary>
+        /// <param name="showLoading"></param>
+        /// <param name="parentControl"></param>
+        public void Show(bool showLoading, Control parentControl)
+        {
+            if (parentControl.Parent != null)
+            {
+                if (parentControl.Parent.Controls.Cast<Control>().Any(c => c.GetType() == typeof(LoadingPanel)))
+                    throw new Exception("Another Loading Panel already exists in Parent.");
+            }
+            else
+            {
+                if (parentControl.Controls.Cast<Control>().Any(c => c.GetType() == typeof(LoadingPanel)))
+                    throw new Exception("Another Loading Panel already exists in Control.");
+            }
+
+            ParentControl = parentControl;
+
+            innerPanel = new Panel();
+			darkenBackgroundForm(showLoading);
+        }
+
+        public void Close()
+        {
+            if (innerPanel != null)
+            {
+                if (innerPanel.Parent != null)
+                {
+                    innerPanel.Parent.Controls.Remove(innerPanel);
+                    innerPanel.Dispose();
+                }
+            }
+        }
+
+        void darkenBackgroundForm(bool showLoading)
+        {
+            Form parentForm = ParentControl.FindForm();
+            //if(!(parentControl is Form) && !(parentControl is TabPage))
+            if (!ParentControl.HasChildren)
+            {
+                if (ParentControl is AMTMenuStrip)
+                {
+                    parentForm.Controls.Add(innerPanel);
+                    innerPanel.Location = parentForm.PointToClient(ParentControl.Parent.PointToScreen(ParentControl.Location));
+                }
+                else
+                {
+                    ParentControl.Parent.Controls.Add(innerPanel);
+                    innerPanel.Location = ParentControl.Location;
+                }
+            }
+            else
+            {
+                if (ParentControl.InvokeRequired)
+                    ParentControl.Invoke((MethodInvoker)delegate
+                    {
+                        ParentControl.Controls.Add(innerPanel);
+                    });
+                else
+                    ParentControl.Controls.Add(innerPanel);
+
+                innerPanel.Location = Point.Empty;
+            }
+            // take a screenshot of the form and darken it
+            Bitmap bmp;
+            if (ParentControl is MainForm && parentForm.WindowState == FormWindowState.Minimized)
+                bmp = ((MainForm)parentForm).ScreenshotBeforeMinimize;
+            else
+                bmp = new Bitmap(ParentControl.ClientRectangle.Width, ParentControl.ClientRectangle.Height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.CompositingMode = CompositingMode.SourceOver;
+                if(ParentControl.InvokeRequired)
+                    ParentControl.Invoke((MethodInvoker)delegate
+                    {
+                        g.CopyFromScreen(ParentControl.PointToScreen(new Point(0, 0)), new Point(0, 0), bmp.Size);
+                    });
+                else
+                    g.CopyFromScreen(ParentControl.PointToScreen(new Point(0, 0)), new Point(0, 0), bmp.Size);
+
+                Color darken = Color.FromArgb((int)(255 * Opacity), Color.Black);
+                using (Brush brsh = new SolidBrush(darken))
+                    g.FillRectangle(brsh, ParentControl.ClientRectangle);
+            }
+            //bmp.Save(Settings.GlobalProperties.AppDataRootDir + "\\bmp.jpg");
+            innerPanel.Size = ParentControl.ClientRectangle.Size;
+            innerPanel.BackgroundImage = bmp;
+
+            innerPanel.BringToFront();
+            if (showLoading)
+                ToggleLoadingSpinner();
+        }
+
+        public void ToggleLoadingSpinner()
+        {
+            if (LoadingSpinnerVisible)
+            {
+                innerPanel.Controls.Remove(loadingBox);
+                loadingBox.Dispose();
+            }
+            else
+            {
+                Point loc = innerPanel.PointToScreen(Point.Empty);
+                loc.X = (ParentControl.Width - SpinnerSize) / 2;
+                loc.Y = (ParentControl.Height - SpinnerSize) / 2;
+
+                PictureBox loadingBox = new PictureBox();
+                loadingBox.BackColor = Color.Transparent;
+                loadingBox.Image = loadingBox.InitialImage = Resources.spinner1;
+                loadingBox.Size = new Size(SpinnerSize, SpinnerSize);
+                loadingBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                loadingBox.Location = loc;
+                innerPanel.Controls.Add(loadingBox);
+                loadingBox.BringToFront();
+            }
+        }
+    }
 }

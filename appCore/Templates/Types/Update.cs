@@ -31,7 +31,7 @@ namespace appCore.Templates.Types
 		public Site Site {
 			get {
 				if(site == null)
-					site = DB.SitesDB.getSite(SiteId);
+					site = DB.SitesDB.getSiteAsync(SiteId).GetAwaiter().GetResult();
 				return site;
 			}
 		}

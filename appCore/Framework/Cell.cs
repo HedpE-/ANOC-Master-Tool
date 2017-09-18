@@ -40,7 +40,7 @@ namespace appCore
 		public Vendors Vendor
         {
             get { return string.IsNullOrEmpty(VENDOR) ? Vendors.Unknown : EnumExtensions.Parse(typeof(Vendors), VENDOR); }
-            private set { VENDOR = EnumExtensions.GetDescription(value); }
+            private set { VENDOR = value.GetDescription(); }
         }
 		[FieldOrder(7)]
 		string ENODEB_ID;

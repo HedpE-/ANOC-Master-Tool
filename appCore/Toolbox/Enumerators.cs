@@ -50,7 +50,8 @@ namespace appCore
         ExternalAlarms = 4,
         Reporting = 8,
         RAN = 16,
-        Unknown = 32
+        APT = 32,
+        Unknown = 64
     }
 
     public enum Months : byte
@@ -87,5 +88,24 @@ namespace appCore
         TX = 8,
         [Description("Outage")]
         Outage = 16
+    }
+
+    public enum Departments
+    {
+        [Description("1st Line RAN Operations")]
+        RanTier1 = 1,
+        [Description("2nd Line RAN Operations")]
+        RanTier2 = 2,
+        [Description("1st Line Core&VAS Operations")]
+        CoreTier1 = 4,
+        [Description("2nd Line Core&VAS Operations")]
+        CoreTier2 = 8,
+        [Description("1st Line TX Operations")]
+        TxTier1 = 16,
+        [Description("2nd Line TX Operations")]
+        TxTier2 = 32,
+        [Description("Unknown Department")]
+        Unknown = 64
+
     }
 }

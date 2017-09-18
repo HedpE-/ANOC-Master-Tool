@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -21,6 +22,8 @@ using GMap.NET.WindowsForms.Markers;
 using appCore.UI;
 using appCore.Templates.Types;
 using appCore.OI.JSON;
+using appCore.Settings;
+using OpenWeatherAPI;
 
 namespace appCore.SiteFinder.UI
 {
@@ -35,8 +38,8 @@ namespace appCore.SiteFinder.UI
 		GMapOverlay onwardSitesOverlay = new GMapOverlay("onwardSites");
 		
 		GeoAPIs.UI.WeatherForm weatherForm;
-		bool updatingChildPosition = false;
-		Point weatherFormOffset = Point.Empty;
+        bool updatingWeatherPosition = false;
+        Point weatherFormOffset = Point.Empty;
 		
 		public Site currentSite;
 		List<Site> foundSites = new List<Site>(); // for outage and bulk sites lists
@@ -48,16 +51,20 @@ namespace appCore.SiteFinder.UI
 		ToolStripMenuItem lockedCellsPageToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem viewSiteInOiToolStripMenuItem = new ToolStripMenuItem();
 		
-		public Control parentControl {
+		public Control parentControl
+        {
 			get;
 			private set;
 		}
 		
-		string SelectedSearchItem {
-			get {
+		string SelectedSearchItem
+        {
+			get
+            {
 				Control cb = Controls["comboBox1"];
 				string item = string.Empty;
-				if(cb != null) {
+				if(cb != null)
+                {
 					if(cb.InvokeRequired)
 						cb.Invoke(new Action(() => { item = cb.Text; }));
 					else
@@ -71,11 +78,14 @@ namespace appCore.SiteFinder.UI
 		/// <summary>
 		/// Valid values: "single","single/readonly","multi",multi/readonly","outage"
 		/// </summary>
-		public string siteDetails_UIMode {
-			get {
+		public string siteDetails_UIMode
+        {
+			get
+            {
 				return _siteDetails_UIMode;
 			}
-			set {
+			set
+            {
 				string[] mode = value.Split('/');
 				MainMenu.siteFinder_Toggle(false, false);
 				MainMenu.MainMenu.DropDownItems.Clear();
@@ -87,18 +97,22 @@ namespace appCore.SiteFinder.UI
 				checkBox3.Left = filterCheckBoxesStartPosition + checkBox1.Width + checkBox2.Width;
 				checkBox6.Left = amtDataGridView1.Right - checkBox6.Width;
 				checkBox7.Left = checkBox6.Left - checkBox7.Width;
-				if(mode[0] == "single" || mode[0] == "multi") {
-					if(!value.Contains("readonly")) {
+				if(mode[0] == "single" || mode[0] == "multi")
+                {
+					if(!value.Contains("readonly"))
+                    {
 						MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
 						MainMenu.MainMenu.DropDownItems.Add("-");
 						MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
-						MainMenu.MainMenu.DropDownItems.Add("-");
-						MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
-						
-						label2.Visible = false;
+                        if (CurrentUser.Department == Departments.RanTier1 || CurrentUser.Department == Departments.RanTier2)
+                        {
+                            MainMenu.MainMenu.DropDownItems.Add("-");
+						    MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
+                        }
+
+                        label2.Visible = false;
 						
 						ComboBox comboBox1 = new ComboBox();
-//						comboBox1.BackColor = SystemColors.Control;
 						comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
 						comboBox1.FlatStyle = FlatStyle.Standard;
 						comboBox1.Items.AddRange(new object[] {
@@ -107,8 +121,10 @@ namespace appCore.SiteFinder.UI
 						comboBox1.Location = new Point(5, 30);
 						comboBox1.Name = "comboBox1";
 						comboBox1.Size = new Size(textBox1.Left - (10 + comboBox1.Left), 21);
-						comboBox1.SelectedIndexChanged += (sender, e) => {
-							switch(comboBox1.SelectedIndex) {
+						comboBox1.SelectedIndexChanged += (sender, e) =>
+                        {
+							switch(comboBox1.SelectedIndex)
+                            {
 								case 0:
 									textBox1.MaxLength = 6;
 									break;
@@ -120,7 +136,8 @@ namespace appCore.SiteFinder.UI
 						comboBox1.Text = "Site ID";
 						Controls.Add(comboBox1);
 					}
-					else {
+					else
+                    {
 						ComboBox cb = Controls["comboBox1"] as ComboBox;
 						if(cb != null)
 							Controls.Remove(cb);
@@ -130,17 +147,9 @@ namespace appCore.SiteFinder.UI
 						lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 				}
 				
-				switch(mode[0]) {
+				switch(mode[0])
+                {
 					case "single":
-//						if(!value.Contains("readonly")) {
-//							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-//							MainMenu.MainMenu.DropDownItems.Add("-");
-//							MainMenu.MainMenu.DropDownItems.Add(lockUnlockCellsToolStripMenuItem);
-//							MainMenu.MainMenu.DropDownItems.Add("-");
-//							MainMenu.MainMenu.DropDownItems.Add(lockedCellsPageToolStripMenuItem);
-//						}
-//						bulkSiteSearchMenuItem.Enabled =
-//							lockedCellsPageToolStripMenuItem.Enabled = !value.Contains("readonly");
 						label11.Visible =
 							amtDataGridView2.Visible = false;
 						amtDataGridView1.Top = amtDataGridView2.Top;
@@ -152,9 +161,6 @@ namespace appCore.SiteFinder.UI
 						label11.Visible =
 							amtDataGridView2.Visible = true;
 						amtDataGridView2.DataSource = null;
-//						if(!value.Contains("readonly"))
-//							MainMenu.MainMenu.DropDownItems.Add(bulkSiteSearchMenuItem);
-//						bulkSiteSearchMenuItem.Enabled = !value.Contains("readonly");
 						textBox1.ReadOnly = value.Contains("readonly");
 						break;
 					case "outage":
@@ -166,13 +172,15 @@ namespace appCore.SiteFinder.UI
 						textBox1.ReadOnly = true;
 						break;
 				}
-				if(!value.Contains("single")) {
+				if(!value.Contains("single"))
+                {
 					Button overview = new Button();
 					overview.Name = "OverviewButton";
 					overview.Text = "Back to map overview";
 					overview.Width = 130;
 					overview.Location = new Point(amtDataGridView2.Right - overview.Width, amtDataGridView2.Top - overview.Height - 3);
-					overview.Click += delegate {
+					overview.Click += delegate
+                    {
 						try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
 						try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 						
@@ -180,7 +188,8 @@ namespace appCore.SiteFinder.UI
 					};
 					Controls.Add(overview);
 				}
-				else {
+				else
+                {
 					if(Controls["OverviewButton"] != null)
 						Controls.Remove(Controls["OverviewButton"]);
 				}
@@ -260,69 +269,65 @@ namespace appCore.SiteFinder.UI
 			
 			lockUnlockCellsToolStripMenuItem.Enabled = false;
 			this.Shown += populateBulkForm;
-		}
-		
-		void populateSingleForm(object sender, EventArgs e)
+        }
+
+        async void populateSingleForm(object sender, EventArgs e)
 		{
-			Action action = new Action(delegate {
-			                           	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
-			                           	try { markersOverlay.Clear(); } catch (Exception) { }
-			                           	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
-			                           	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
-			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
-			                           	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+			try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			try { markersOverlay.Clear(); } catch (Exception) { }
+			try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			                           	
-			                           	selectedSiteDetailsPopulate();
-			                           });
-			
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, action,true, this);
+			await selectedSiteDetailsPopulate();
 		}
 		
-		void populateBulkForm(object sender, EventArgs e)
+		async void populateBulkForm(object sender, EventArgs e)
 		{
 			// TODO: Multi select sites and show only their markers
-			Action action = new Action(delegate {
-			                           	if(siteDetails_UIMode.Contains("outage")) {
-			                           		try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
-			                           		try { markersOverlay.Clear(); } catch (Exception) { }
-			                           		try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
-			                           		try { selectedSiteOverlay.Clear(); } catch (Exception) { }
-			                           		try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
-			                           		try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+			if(siteDetails_UIMode.Contains("outage")) {
+			    try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			    try { markersOverlay.Clear(); } catch (Exception) { }
+			    try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			    try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+			    try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			    try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			                           		
-			                           		if(currentOutage.AffectedSites.Count > 1) {
-			                           			searchResultsPopulate();
-			                           			myMap.Overlays.Add(markersOverlay);
-			                           			amtDataGridView2.Focus();
-			                           			myMap.ZoomAndCenterMarkers(markersOverlay.Id);
-			                           		}
-			                           		else {
-			                           			if(currentOutage.AffectedSites.Count == 1) {
-			                           				siteDetails_UIMode = "single";
-			                           				currentSite = currentOutage.AffectedSites[0];
-			                           				selectedSiteDetailsPopulate();
-			                           			}
-			                           		}
-			                           	}
-			                           	else
-			                           		textBox1.Select();
-			                           });
-			
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, action,true,this);
+			    if((await Task.Run(() => currentOutage.AffectedSites)).Count > 1)
+                {
+			        await searchResultsPopulate();
+			        myMap.Overlays.Add(markersOverlay);
+			        amtDataGridView2.Focus();
+			        myMap.ZoomAndCenterMarkers(markersOverlay.Id);
+			    }
+			    else
+                {
+			        if(currentOutage.AffectedSites.Count == 1)
+                    {
+			            siteDetails_UIMode = "single";
+			            currentSite = currentOutage.AffectedSites[0];
+			            await selectedSiteDetailsPopulate();
+			        }
+			    }
+			}
+			else
+			    textBox1.Select();
 		}
 		
-		GMapControl drawGMap(string mapName, bool multi) {
+		GMapControl drawGMap(string mapName, bool multi)
+        {
 			// TODO: implement weather layer if possible with GMaps
 			GMapProvider.TimeoutMs = 20*1000;
 			IWebProxy proxy;
-			try {
+			try
+            {
 				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
 					new WebProxy("http://10.74.51.1:80/", true) :
 					WebRequest.GetSystemWebProxy();
 			}
-			catch (Exception) {
+			catch (Exception)
+            {
 				proxy = WebRequest.GetSystemWebProxy();
 			}
 			
@@ -357,133 +362,174 @@ namespace appCore.SiteFinder.UI
 			return map;
 		}
 		
-		void selectedSiteDetailsPopulate()
+		async Task selectedSiteDetailsPopulate()
 		{
-			toggleSwitch1.Enabled = false;
-			toggleSwitch2.Enabled = false;
+            if (currentSite.Exists)
+            {
+                await MainMenu.ShowLoading();
 
-			if (currentSite.Exists) {
-				textBox1.Text = currentSite.Id;
-				textBox2.Text = currentSite.PowerCompany;
-				textBox3.Text = currentSite.JVCO_Id;
-				textBox4.Text = currentSite.Address.Replace(';',',');
-				textBox5.Text = currentSite.Area;
-				textBox6.Text = currentSite.Region;
-				textBox8.Text = currentSite.Host;
-				textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
-				textBox9.Text = currentSite.Priority;
-				textBox10.Text = currentSite.SharedOperator;
-				amtTextBox2.Text = currentSite.Site_Type;
-				amtTextBox3.Text = currentSite.Site_Subtype;
-				amtTextBox7.Text = currentSite.Site_Access;
-				checkBox4.Checked = currentSite.Paknet_Fitted;
-				checkBox5.Checked = currentSite.Vodapage_Fitted;
-				richTextBox1.Text = currentSite.KeyInformation;
-				amtTextBox4.Text = currentSite.CramerData != null ? currentSite.CramerData.PocType : string.Empty;
-				amtTextBox5.Text = currentSite.CramerData != null ? currentSite.CramerData.OnwardSitesCount.ToString() : string.Empty;
-				button2.Enabled = currentSite.CramerData != null ? currentSite.CramerData.OnwardSitesCount > 0 : false;
-				amtTextBox6.Text = currentSite.CramerData != null ? currentSite.CramerData.TxLastMileRef : string.Empty;
-				lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
-				
-				if(currentSite.CramerData != null) {
-					if(currentSite.CramerData.OnwardSitesCount > 0) {
-						List<Site> sitesObj = currentSite.CramerData.OnwardSitesObjects;
-						foreach(Site site in sitesObj) {
-							GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue);
-							tempMarker.Tag = site.MapMarker.Tag;
-							tempMarker.ToolTip = new GMap.NET.WindowsForms.ToolTips.GMapBaloonToolTip(tempMarker);
-							tempMarker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
-							tempMarker.ToolTip.Fill = new SolidBrush(Color.FromArgb(180, Color.Black));
-							tempMarker.ToolTip.Font  = new Font("Courier New", 9, FontStyle.Bold);
-							tempMarker.ToolTip.Foreground = new SolidBrush(Color.White);
-							tempMarker.ToolTip.Stroke = new Pen(Color.Red);
-							tempMarker.ToolTip.Offset.X -= 15;
-							tempMarker.ToolTipText = site.MapMarker.ToolTipText;
-							
-							onwardSitesOverlay.Markers.Add(tempMarker);
-						}
-						myMap.Overlays.Add(onwardSitesOverlay);
-						onwardSitesOverlay.IsVisibile = false;
-						toggleSwitch2.Enabled = true;
-					}
-				}
-				selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
-				myMap.Overlays.Add(selectedSiteOverlay);
-				if(!siteDetails_UIMode.Contains("single")) {
-					if(onwardSitesOverlay.IsVisibile)
-						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
-					else {
-						myMap.Position = markersOverlay.Markers.FirstOrDefault(m => m.Tag.ToString() == textBox1.Text).Position;
-						myMap.Zoom = 14;
-					}
-				}
-				else {
-					if(onwardSitesOverlay.IsVisibile && onwardSitesOverlay.Markers.Count > 0)
-						myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
-					else
-						myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
-				}
-				
-				toggleSwitch1.Enabled = currentSite.WeatherData != null;
-			}
-			else {
-				foreach(Control ctr in Controls) {
-					if(ctr.Name != "textBox1" && ctr.Name != "comboBox1" && !ctr.Name.StartsWith("toggleSwitch") && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name)) {
-						if(ctr.Name != "dataGridView1") {
-							TextBoxBase tb = ctr as TextBoxBase;
-							if(tb != null)
-								tb.Text = string.Empty;
-							else {
-								if(ctr.Name == "button2") {
-									Button btn = ctr as Button;
-									btn.Enabled = false;
-								}
-							}
-						}
-					}
-				}
-				textBox4.Text = !string.IsNullOrEmpty(SelectedSearchItem) ? SelectedSearchItem + " not found" : "Please select a search pattern";
-				myMap.SetPositionByKeywords("UK");
-				myMap.Zoom = 6;
-				lockUnlockCellsToolStripMenuItem.Enabled = false;
-			}
-			Control cb = Controls["comboBox1"];
-			if(cb != null)
-				cb.Text = "Site ID";
-			
-			amtDataGridView1.DataSource = null;
-			amtDataGridView1.Columns.Clear();
-			
-			amtDataGridView1.DataSource = GetCellsDV();
-			
-			int cellNameColWidth = 129 - SystemInformation.VerticalScrollBarWidth;
-			int c = 0;
-			int[] columnWidths = { 45, /*129,*/ 55, 65, 70, 70, 65, 55, 50, 50 };
-			foreach(DataGridViewColumn dgvc in amtDataGridView1.Columns) {
-				if(dgvc.Name != "Cell Name") {
-//					dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-					dgvc.Width = columnWidths[c++];
-				}
-				else
-					continue;
-				
-				if(dgvc.Name == "Tech" || dgvc.Name == "COOS" || dgvc.Name == "Locked")
-					dgvc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-			}
-			
-			
-			if(siteDetails_UIMode.Contains("outage")) {
-				addCheckBoxColumn();
-				cellNameColWidth = cellNameColWidth - amtDataGridView1.Columns["CheckBoxes"].Width + 50;
-			}
-			
-//			amtDataGridView1.Columns["Cell Name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-			amtDataGridView1.Columns["Cell Name"].Width = cellNameColWidth;
-			
-			var t = amtDataGridView1.Columns.Cast<DataGridViewColumn>().Select(col => col.Width).ToArray();
-			
-			MainMenu.siteFinder_Toggle(currentSite.Exists);
-			pictureBox1.UpdateCells(currentSite.Cells);
+                textBox1.Text = await Task.Run(() => currentSite.Id);
+                textBox3.Text = await Task.Run(() => currentSite.JVCO_Id);
+                textBox4.Text = await Task.Run(() => currentSite.Address.Replace(';', ','));
+                textBox5.Text = await Task.Run(() => currentSite.Area);
+                textBox6.Text = await Task.Run(() => currentSite.Region);
+                textBox8.Text = await Task.Run(() => currentSite.Host);
+                textBox7.Text = await Task.Run(() => currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID);
+                textBox9.Text = await Task.Run(() => currentSite.Priority);
+                textBox10.Text = await Task.Run(() => currentSite.SharedOperator);
+                amtTextBox2.Text = await Task.Run(() => currentSite.Site_Type);
+                amtTextBox3.Text = await Task.Run(() => currentSite.Site_Subtype);
+                amtTextBox7.Text = await Task.Run(() => currentSite.Site_Access);
+                checkBox4.Checked = await Task.Run(() => currentSite.Paknet_Fitted);
+                checkBox5.Checked = await Task.Run(() => currentSite.Vodapage_Fitted);
+                richTextBox1.Text = await Task.Run(() => currentSite.KeyInformation);
+                lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
+
+                await Task.Run(() => pictureBox1.BeginInvoke(new Action(() => pictureBox1.UpdateCells(currentSite.Cells))));
+
+                selectedSiteOverlay.Markers.Add(currentSite.MapMarker);
+                myMap.Overlays.Add(selectedSiteOverlay);
+                if (!siteDetails_UIMode.Contains("single"))
+                {
+                    if (onwardSitesOverlay.IsVisibile)
+                        myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
+                    else
+                    {
+                        myMap.Position = markersOverlay.Markers.FirstOrDefault(m => m.Tag.ToString() == textBox1.Text).Position;
+                        myMap.Zoom = 14;
+                    }
+                }
+                else
+                {
+                    if (onwardSitesOverlay.IsVisibile && onwardSitesOverlay.Markers.Count > 0)
+                        myMap.ZoomAndCenterMarkers(onwardSitesOverlay.Id);
+                    else
+                        myMap.ZoomAndCenterMarkers(selectedSiteOverlay.Id);
+                }
+
+                checkBox1.Enabled = currentSite.Cells.Filter(Cell.Filters.All_2G).Any();
+                checkBox2.Enabled = currentSite.Cells.Filter(Cell.Filters.All_3G).Any();
+                checkBox3.Enabled = currentSite.Cells.Filter(Cell.Filters.All_4G).Any();
+
+                if (amtDataGridView1.DataSource != null)
+                {
+                    amtDataGridView1.DataSource = null;
+                    amtDataGridView1.Columns.Clear();
+                }
+
+                amtDataGridView1.DataSource = await GetCellsDV();
+
+                await Task.Run(() =>
+                {
+                    int cellNameColWidth = 129 - SystemInformation.VerticalScrollBarWidth;
+                    int c = 0;
+                    int[] columnWidths = { 45, /*129,*/ 55, 65, 70, 70, 65, 55, 50, 50 };
+                    foreach (DataGridViewColumn dgvc in amtDataGridView1.Columns)
+                    {
+                        if (dgvc.Name != "Cell Name")
+                        {
+                            //dgvc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            amtDataGridView1.BeginInvoke(new Action(() => dgvc.Width = columnWidths[c++]));
+                        }
+                        else
+                            continue;
+
+                        if (dgvc.Name == "Tech" || dgvc.Name == "COOS" || dgvc.Name == "Locked")
+                            amtDataGridView1.BeginInvoke(new Action(() => dgvc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter));
+                    }
+
+
+                    if (siteDetails_UIMode.Contains("outage"))
+                    {
+                        amtDataGridView1.BeginInvoke(new Action(() =>
+                        {
+                            addCheckBoxColumn();
+                            cellNameColWidth = cellNameColWidth - amtDataGridView1.Columns["CheckBoxes"].Width + 50;
+                        }));
+                    }
+
+                    //amtDataGridView1.Columns["Cell Name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                    amtDataGridView1.BeginInvoke(new Action(() => amtDataGridView1.Columns["Cell Name"].Width = cellNameColWidth));
+
+                    //var t = amtDataGridView1.Columns.Cast<DataGridViewColumn>().Select(col => col.Width).ToArray();
+                });
+
+                string dataToRequest = "INCCellsState";
+                if ((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+                    dataToRequest += "CRQ";
+                if (string.IsNullOrEmpty(currentSite.PowerCompany))
+                    dataToRequest += "PWR";
+                if (currentSite.CramerData == null)
+                    dataToRequest += "Cramer";
+                await currentSite.requestOIDataAsync(dataToRequest);
+                await MainMenu.siteFinder_Toggle(currentSite.Exists);
+
+                textBox2.Text = await Task.Run(() => currentSite.PowerCompany);
+
+                amtTextBox4.Text = await Task.Run(() => currentSite.CramerData != null ? currentSite.CramerData.PocType : string.Empty);
+                amtTextBox5.Text = await Task.Run(() => currentSite.CramerData != null ? currentSite.CramerData.OnwardSitesCount.ToString() : string.Empty);
+                button2.Enabled = await Task.Run(() => currentSite.CramerData != null ? currentSite.CramerData.OnwardSitesCount > 0 : false);
+                amtTextBox6.Text = await Task.Run(() => currentSite.CramerData != null ? currentSite.CramerData.TxLastMileRef : string.Empty);
+
+                if (currentSite.CramerData != null)
+                {
+                    if (currentSite.CramerData.OnwardSitesCount > 0)
+                    {
+                        await Task.Run(() =>
+                        {
+                            List<Site> sitesObj = currentSite.CramerData.OnwardSitesObjects;
+                            foreach (Site site in sitesObj)
+                            {
+                                GMarkerGoogle tempMarker = new GMarkerGoogle(site.MapMarker.Position, GMarkerGoogleType.blue);
+                                tempMarker.Tag = site.MapMarker.Tag;
+                                tempMarker.ToolTip = new GMap.NET.WindowsForms.ToolTips.GMapBaloonToolTip(tempMarker);
+                                tempMarker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                                tempMarker.ToolTip.Fill = new SolidBrush(Color.FromArgb(180, Color.Black));
+                                tempMarker.ToolTip.Font = new Font("Courier New", 9, FontStyle.Bold);
+                                tempMarker.ToolTip.Foreground = new SolidBrush(Color.White);
+                                tempMarker.ToolTip.Stroke = new Pen(Color.Red);
+                                tempMarker.ToolTip.Offset.X -= 15;
+                                tempMarker.ToolTipText = site.MapMarker.ToolTipText;
+
+                                onwardSitesOverlay.Markers.Add(tempMarker);
+                            }
+                            onwardSitesOverlay.Markers.Add(currentSite.MapMarker);
+                            myMap.Overlays.Add(onwardSitesOverlay);
+                        });
+                        onwardSitesOverlay.IsVisibile = false;
+                        toggleSwitch2.Enabled = true;
+                    }
+                }
+
+                toggleSwitch1.Enabled = true;
+            }
+            else
+            {
+                foreach (Control ctr in Controls)
+                {
+                    if (ctr.Name != "textBox1" && ctr.Name != "comboBox1" && !ctr.Name.StartsWith("toggleSwitch") && !ctr.Name.Contains("label") && !string.IsNullOrEmpty(ctr.Name))
+                    {
+                        if (ctr.Name != "dataGridView1")
+                        {
+                            TextBoxBase tb = ctr as TextBoxBase;
+                            if (tb != null)
+                                tb.Text = string.Empty;
+                            else
+                            {
+                                if (ctr.Name == "button2")
+                                {
+                                    Button btn = ctr as Button;
+                                    btn.Enabled = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                textBox4.Text = !string.IsNullOrEmpty(SelectedSearchItem) ? SelectedSearchItem + " not found" : "Please select a search pattern";
+                myMap.SetPositionByKeywords("UK");
+                myMap.Zoom = 6;
+                lockUnlockCellsToolStripMenuItem.Enabled = false;
+            }
 		}
 
 		void toggleSwitches_EnabledChanged(object sender, EventArgs e)
@@ -493,37 +539,43 @@ namespace appCore.SiteFinder.UI
 			ts.Checked = ts.Enabled;
 		}
 
-		DataView GetCellsDV() {
-			DataTable table = new DataTable();
-			table.TableName = "Cells";
-			table.Columns.Add("Tech");
-			table.Columns.Add("Cell Name");
-			table.Columns.Add("Cell ID");
-			table.Columns.Add("LAC TAC");
-			table.Columns.Add("Switch");
-			table.Columns.Add("OSS ID");
-			table.Columns.Add("Vendor");
-			table.Columns.Add("NOC");
-			if(!siteDetails_UIMode.Contains("outage"))
-				table.Columns.Add("COOS");
-			table.Columns.Add("Locked");
+		Task<DataView> GetCellsDV()
+        {
+            return Task.Run(() =>
+            {
+                DataTable table = new DataTable();
+			    table.TableName = "Cells";
+			    table.Columns.Add("Tech");
+			    table.Columns.Add("Cell Name");
+			    table.Columns.Add("Cell ID");
+			    table.Columns.Add("LAC TAC");
+			    table.Columns.Add("Switch");
+			    table.Columns.Add("OSS ID");
+			    table.Columns.Add("Vendor");
+			    table.Columns.Add("NOC");
+			    if(!siteDetails_UIMode.Contains("outage"))
+				    table.Columns.Add("COOS");
+			    table.Columns.Add("Locked");
 			
-			foreach(Cell cell in currentSite.Cells) {
-				string ossID;
-				if(cell.Vendor == Vendors.NSN && cell.Bearer == Bearers.LTE)
-					ossID = cell.ENodeB_Id;
-				else
-					ossID = cell.WBTS_BCF;
-				var row = table.Rows.Add(EnumExtensions.GetDescription(cell.Bearer), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, ossID, cell.Vendor.ToString(), cell.Noc);
-				if(!siteDetails_UIMode.Contains("outage"))
-					row["COOS"] = cell.COOS ? "YES" : "No";
-				row["Locked"] = cell.Locked ? "YES" : "No";
-			}
+			    foreach(Cell cell in currentSite.Cells)
+                {
+				    string ossID;
+				    if(cell.Vendor == Vendors.NSN && cell.Bearer == Bearers.LTE)
+					    ossID = cell.ENodeB_Id;
+				    else
+					    ossID = cell.WBTS_BCF;
+				    var row = table.Rows.Add(cell.Bearer.GetDescription(), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, ossID, cell.Vendor.ToString(), cell.Noc);
+				    if(!siteDetails_UIMode.Contains("outage"))
+					    row["COOS"] = cell.COOS ? "YES" : "No";
+				    row["Locked"] = cell.Locked ? "YES" : "No";
+			    }
 			
-			return table.DefaultView;
-		}
+			    return table.DefaultView;
+            });
+        }
 		
-		DataGridViewCheckBoxColumn addCheckBoxColumn() {
+		DataGridViewCheckBoxColumn addCheckBoxColumn()
+        {
 			DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();
 			chkColumn.Name = "CheckBoxes";
 			chkColumn.HeaderText = "";
@@ -552,7 +604,8 @@ namespace appCore.SiteFinder.UI
 		{
 			CheckBox cb = sender as CheckBox;
 
-			foreach(DataGridViewRow dgvr in amtDataGridView1.Rows) {
+			foreach(DataGridViewRow dgvr in amtDataGridView1.Rows)
+            {
 				DataGridViewCheckBoxCell cell = dgvr.Cells[0] as DataGridViewCheckBoxCell;
 				
 				cell.Value = cb.Checked ? cell.TrueValue : cell.FalseValue;
@@ -571,12 +624,15 @@ namespace appCore.SiteFinder.UI
 			}
 		}
 		
-		void GMapSiteMarkerClick(object sender, MouseEventArgs e) {
-			if(e.Button == MouseButtons.Left) {
+		void GMapSiteMarkerClick(object sender, MouseEventArgs e)
+        {
+			if(e.Button == MouseButtons.Left)
+            {
 				GMarkerGoogle marker = (GMarkerGoogle)sender;
 				amtDataGridView2.SelectionChanged -= AmtDataGridView2SelectionChanged;
 				int markerIndex = -1;
-				foreach (DataGridViewRow item in amtDataGridView2.Rows) {
+				foreach (DataGridViewRow item in amtDataGridView2.Rows)
+                {
 					if(item.Cells["Site"].Value.ToString() == marker.Tag.ToString())
 						markerIndex = item.Index;
 					item.Selected = false;
@@ -593,13 +649,15 @@ namespace appCore.SiteFinder.UI
 			bool show3G = checkBox2.Checked;
 			bool show4G = checkBox3.Checked;
 			DataView dv = amtDataGridView1.DataSource as DataView;
-			if(dv != null) {
+			if(dv != null)
+            {
 				dv.RowFilter = null;
 				string rowFilter = string.Empty;
 				if(!show2G && !show3G && !show4G)
 					rowFilter = "(Tech = ''";
 				else {
-					if(!show2G || !show3G || !show4G) {
+					if(!show2G || !show3G || !show4G)
+                    {
 						rowFilter += "(";
 						if(show2G)
 							rowFilter += "Tech = '2G'";
@@ -617,11 +675,13 @@ namespace appCore.SiteFinder.UI
 				}
 				if(!string.IsNullOrEmpty(rowFilter))
 					rowFilter += ")";
-				if(rowFilter != "(Tech = '')" && !(checkBox7.Checked && checkBox6.Checked)) {
+				if(rowFilter != "(Tech = '')" && !(checkBox7.Checked && checkBox6.Checked))
+                {
 					rowFilter += string.IsNullOrEmpty(rowFilter) ? "(" : " and (";
 					if(checkBox7.Checked)
 						rowFilter += "[Cell Name] NOT LIKE 'T*' and [Cell Name] NOT LIKE '*W' and [Cell Name] NOT LIKE '*X' and [Cell Name] NOT LIKE '*Y'";
-					else {
+					else
+                    {
 						if(checkBox6.Checked)
 							rowFilter += "[Cell Name] LIKE 'T*' or [Cell Name] LIKE '*W' or [Cell Name] LIKE '*X' or [Cell Name] LIKE '*Y'";
 						else
@@ -639,7 +699,8 @@ namespace appCore.SiteFinder.UI
 		{
 			TextBoxBase tb = (TextBoxBase)sender;
 			Button btn = null;
-			switch(tb.Name) {
+			switch(tb.Name)
+            {
 				case "textBox4":
 					btn = (Button)button45;
 					break;
@@ -654,35 +715,37 @@ namespace appCore.SiteFinder.UI
 		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
 			Button bt = sender as Button;
-			Action action = null;
-			
-			switch(bt.Name) {
+            AMTLargeTextForm enlarge;
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(false, this);
+
+            switch (bt.Name)
+            {
 				case "button45":
-					action = new Action(delegate {
-					                    	AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox4.Text,label4.Text,true);
-					                    	enlarge.StartPosition = FormStartPosition.CenterParent;
-					                    	enlarge.ShowDialog();
-					                    });
+					enlarge = new AMTLargeTextForm(textBox4.Text,label4.Text,true);
+					enlarge.StartPosition = FormStartPosition.CenterParent;
+					enlarge.ShowDialog();
 					break;
 				case "button1":
-					action = new Action(delegate {
-					                    	AMTLargeTextForm enlarge = new AMTLargeTextForm(richTextBox1.Text,label16.Text,true);
-					                    	enlarge.StartPosition = FormStartPosition.CenterParent;
-					                    	enlarge.ShowDialog();
-					                    });
+					enlarge = new AMTLargeTextForm(richTextBox1.Text,label16.Text,true);
+					enlarge.StartPosition = FormStartPosition.CenterParent;
+					enlarge.ShowDialog();
 					break;
 			}
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, action,false,this);
+
+            loading.Close();
 		}
 		
-		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) {
-			switch(amtDataGridView1.Columns[e.ColumnIndex].Name) {
+		void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+			switch(amtDataGridView1.Columns[e.ColumnIndex].Name)
+            {
 				case "Locked": case "COOS":
 					e.CellStyle.BackColor = e.Value.ToString() == "YES" ? Color.OrangeRed : Color.LightGreen;
 					break;
 				case "Cell Name":
-					if(!string.IsNullOrEmpty(e.Value.ToString())) {
+					if(!string.IsNullOrEmpty(e.Value.ToString()))
+                    {
 						string cellPrefix = e.Value.ToString();
 						if(cellPrefix.EndsWith("W") || cellPrefix.EndsWith("X") || cellPrefix.EndsWith("Y"))
 							cellPrefix = cellPrefix.Substring(0, cellPrefix.Length - 2);
@@ -692,7 +755,8 @@ namespace appCore.SiteFinder.UI
 						string prefixDescription = string.Empty;
 						List<string> temp = Resources.Cells_Prefix.Split('\n').ToList();
 						string tempStr = temp.Find(s => s.StartsWith(cellPrefix));
-						if(!string.IsNullOrEmpty(tempStr)) {
+						if(!string.IsNullOrEmpty(tempStr))
+                        {
 							string[] strTofind = { " - " };
 							prefixDescription = tempStr.Split(strTofind, StringSplitOptions.None)[1];
 						}
@@ -703,7 +767,8 @@ namespace appCore.SiteFinder.UI
 					}
 					break;
 				case "CheckBoxes":
-					if(currentOutage.AffectedCells.FindIndex(s => s.Name == amtDataGridView1.Rows[e.RowIndex].Cells["Cell Name"].Value.ToString()) > -1) {
+					if(currentOutage.AffectedCells.FindIndex(s => s.Name == amtDataGridView1.Rows[e.RowIndex].Cells["Cell Name"].Value.ToString()) > -1)
+                    {
 						e.CellStyle.BackColor = Color.OrangeRed;
 						DataGridViewCheckBoxCell cell = amtDataGridView1[e.ColumnIndex, e.RowIndex] as DataGridViewCheckBoxCell;
 						cell.Value = cell.TrueValue;
@@ -736,86 +801,88 @@ namespace appCore.SiteFinder.UI
 //			}
 //		}
 
-		void PaknetVodapageCheckBoxesMouseUp(object sender, MouseEventArgs e) {
+		void PaknetVodapageCheckBoxesMouseUp(object sender, MouseEventArgs e)
+        {
 			CheckBox cb = sender as CheckBox;
 			cb.Checked = !cb.Checked;
 		}
 
 		void bulkSiteSearchMenuItemClick(object sender, EventArgs e)
 		{
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(false, this);
 			AMTRichTextBox sitesList_tb = new AMTRichTextBox();
-			Form form = new Form();
-			Action action = new Action(delegate {
-			                           	using (form) {
-			                           		// 
-			                           		// titleLabel
-			                           		// 
-			                           		Label titleLabel = new Label();
-			                           		titleLabel.Location = new Point(3, 5);
-			                           		titleLabel.Name = "label";
-			                           		titleLabel.AutoSize = true;
-			                           		titleLabel.Text = "Please provide list of sites to search";
-			                           		titleLabel.TextAlign = ContentAlignment.MiddleCenter;
-			                           		// 
-			                           		// sitesList_tb
-			                           		//
-			                           		sitesList_tb.Location = new Point(3, titleLabel.Top + titleLabel.Height - 2);
-			                           		sitesList_tb.Name = "sitesList_tb";
-			                           		sitesList_tb.Multiline = true;
-			                           		sitesList_tb.Size = new Size(175, 280);
-			                           		sitesList_tb.TabIndex = 111;
-			                           		// 
-			                           		// continueButton
-			                           		// 
-			                           		Button continueButton = new Button();
-			                           		continueButton.Location = new Point(3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
-			                           		continueButton.Name = "continueButton";
-			                           		continueButton.Size = new Size(86, 23);
-			                           		continueButton.TabIndex = 6;
-			                           		continueButton.Text = "Continue";
-			                           		continueButton.Click += bulkSearchForm_buttonClick;
-			                           		// 
-			                           		// cancelButton
-			                           		// 
-			                           		Button cancelButton = new Button();
-			                           		cancelButton.Location = new Point((continueButton.Left + continueButton.Width) + 3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
-			                           		cancelButton.Name = "cancelButton";
-			                           		cancelButton.Size = new Size(86, 23);
-			                           		cancelButton.TabIndex = 6;
-			                           		cancelButton.Text = "Cancel";
-			                           		cancelButton.Click += bulkSearchForm_buttonClick;
-			                           		// 
-			                           		// Form1
-			                           		// 
-			                           		form.AutoScaleDimensions = new SizeF(6F, 13F);
-			                           		form.AutoScaleMode = AutoScaleMode.Font;
-			                           		form.ClientSize = new Size(182, 337);
-			                           		form.Icon = Resources.app_icon;
-			                           		form.MaximizeBox = false;
-			                           		form.FormBorderStyle = FormBorderStyle.FixedSingle;
-			                           		form.Controls.Add(titleLabel);
-			                           		form.Controls.Add(sitesList_tb);
-			                           		form.Controls.Add(continueButton);
-			                           		form.Controls.Add(cancelButton);
-			                           		form.Name = "BulkSiteSearch";
-			                           		form.Text = "Sites Bulk Search";
-			                           		form.StartPosition = FormStartPosition.Manual;
-			                           		Point loc = PointToScreen(Point.Empty);
-			                           		loc.X = loc.X + ((this.Width - form.Width) / 2);
-			                           		loc.Y = loc.Y + ((this.Height - form.Height) / 2);
-			                           		form.Location = loc;
-			                           		sitesList_tb.Focus();
-			                           		form.ShowDialog();
-			                           	}
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.Show(action, this);
+            using (Form form = new Form())
+            {
+                // 
+                // titleLabel
+                // 
+                Label titleLabel = new Label();
+                titleLabel.Location = new Point(3, 5);
+                titleLabel.Name = "label";
+                titleLabel.AutoSize = true;
+                titleLabel.Text = "Please provide list of sites to search";
+                titleLabel.TextAlign = ContentAlignment.MiddleCenter;
+                // 
+                // sitesList_tb
+                //
+                sitesList_tb.Location = new Point(3, titleLabel.Top + titleLabel.Height - 2);
+                sitesList_tb.Name = "sitesList_tb";
+                sitesList_tb.Multiline = true;
+                sitesList_tb.Size = new Size(175, 280);
+                sitesList_tb.TabIndex = 111;
+                // 
+                // continueButton
+                // 
+                Button continueButton = new Button();
+                continueButton.Location = new Point(3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
+                continueButton.Name = "continueButton";
+                continueButton.Size = new Size(86, 23);
+                continueButton.TabIndex = 6;
+                continueButton.Text = "Continue";
+                continueButton.Click += bulkSearchForm_buttonClick;
+                // 
+                // cancelButton
+                // 
+                Button cancelButton = new Button();
+                cancelButton.Location = new Point((continueButton.Left + continueButton.Width) + 3, (sitesList_tb.Top + sitesList_tb.Height) + 4);
+                cancelButton.Name = "cancelButton";
+                cancelButton.Size = new Size(86, 23);
+                cancelButton.TabIndex = 6;
+                cancelButton.Text = "Cancel";
+                cancelButton.Click += bulkSearchForm_buttonClick;
+                // 
+                // Form1
+                // 
+                form.AutoScaleDimensions = new SizeF(6F, 13F);
+                form.AutoScaleMode = AutoScaleMode.Font;
+                form.ClientSize = new Size(182, 337);
+                form.Icon = Resources.app_icon;
+                form.MaximizeBox = false;
+                form.FormBorderStyle = FormBorderStyle.FixedSingle;
+                form.Controls.Add(titleLabel);
+                form.Controls.Add(sitesList_tb);
+                form.Controls.Add(continueButton);
+                form.Controls.Add(cancelButton);
+                form.Name = "BulkSiteSearch";
+                form.Text = "Sites Bulk Search";
+                form.StartPosition = FormStartPosition.Manual;
+                Point loc = PointToScreen(Point.Empty);
+                loc.X = loc.X + ((this.Width - form.Width) / 2);
+                loc.Y = loc.Y + ((this.Height - form.Height) / 2);
+                form.Location = loc;
+                sitesList_tb.Focus();
+                form.ShowDialog();
+            }
+			loading.Close();
+
 			if(string.IsNullOrEmpty(sitesList_tb.Text))
 				return;
 			
 			string[] input = sitesList_tb.Text.Contains(";") ? sitesList_tb.Text.Split(';') : sitesList_tb.Lines;
 
-            for (int c=0;c < input.Length;c++) {
+            for (int c=0;c < input.Length;c++)
+            {
                 input[c] = input[c].RemoveLetters();
 				input[c] = input[c].Trim();
 				while(input[c].StartsWith("0"))
@@ -827,14 +894,79 @@ namespace appCore.SiteFinder.UI
 			siteFinder(input);
 		}
 
-		void searchResultsPopulate() {
+		async Task searchResultsPopulate() {
 			if(currentOutage != null)
-				foundSites = currentOutage.AffectedSites;
+				foundSites = await Task.Run(() => currentOutage.AffectedSites);
 			
-			List<string> fetchCellDetailsList = new List<string>();
-			List<string> fetchCramerDataList = new List<string>();
-			List<string> fetchCrqList = new List<string>();
-			List<string> fetchPowerList = new List<string>();
+			amtDataGridView2.DataSource = await GetSitesData();
+
+            await Task.Run(() =>
+            {
+                foreach (DataGridViewColumn col in amtDataGridView2.Columns)
+                {
+                    switch (col.Name)
+                    {
+                        case "Site":
+                            amtDataGridView2.BeginInvoke(new Action(() =>
+                            {
+                                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                                col.Width = 40;
+                            }));
+                            break;
+                        case "JVCOID":
+                            amtDataGridView2.BeginInvoke(new Action(() =>
+                            {
+                                col.HeaderText = "JVCO ID";
+                                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                                col.Width = 65;
+                            }));
+                            break;
+                        case "Host":
+                            amtDataGridView2.BeginInvoke(new Action(() =>
+                            {
+                                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                                col.Width = 35;
+                            }));
+                            break;
+                        case "PostCode":
+                            amtDataGridView2.BeginInvoke(new Action(() =>
+                            {
+                                col.HeaderText = "Post Code";
+                                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                                col.Width = 65;
+                            }));
+                            break;
+                        case "Priority":
+                            amtDataGridView2.BeginInvoke(new Action(() =>
+                            {
+                                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                                col.Width = 50;
+                            }));
+                            break;
+                        case "TXType":
+                            amtDataGridView2.BeginInvoke(new Action(() =>
+                            {
+                                col.HeaderText = "TX Type";
+                                //col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                                //col.Width = 55;
+                            }));
+                            break;
+                        case "CRQ":
+                            amtDataGridView2.BeginInvoke(new Action(() => col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill ));
+                            break;
+                    }
+                }
+            });
+			
+			label11.Text = label11.Text.Split('(')[0] + '(' + foundSites.Count + ')';
+		}
+
+        async Task<List<dynamic>> GetSitesData()
+        {
+            List<string> fetchCellDetailsList = new List<string>();
+            List<string> fetchCramerDataList = new List<string>();
+            List<string> fetchCrqList = new List<string>();
+            List<string> fetchPowerList = new List<string>();
 			foreach(Site site in foundSites) {
 				fetchCellDetailsList.Add(site.Id);
 				if(string.IsNullOrEmpty(site.PowerCompany))
@@ -844,111 +976,79 @@ namespace appCore.SiteFinder.UI
 				if(siteDetails_UIMode.Contains("outage") && ((DateTime.Now - site.ChangesTimestamp) > new TimeSpan(0, 30, 0)))
 					fetchCrqList.Add(site.Id);
 			}
-			
-			List<Thread> threads = new List<Thread>();
-			int finishedThreadsCount = 0;
-			
-			List<AccessInformation> powerList = null;
-			if(fetchPowerList.Count > 0) {
-				Thread thread = new Thread(() => {
-				                           	powerList = appCore.Site.BulkFetchPowerCompany(fetchPowerList);
-				                           	finishedThreadsCount++;
-				                           });
-				thread.Name = "siteFinder_BulkFetchPowerCompany";
-				threads.Add(thread);
-			}
-			
-			List<OiCell> cellDetailsList = null;
-			if(fetchCellDetailsList.Count > 0) {
-				Thread thread = new Thread(() => {
-				                           	cellDetailsList = appCore.Site.BulkFetchOiCellsState(fetchCellDetailsList);
-				                           	finishedThreadsCount++;
-				                           });
-				thread.Name = "siteFinder_BulkFetchOiCellsState";
-				threads.Add(thread);
-			}
-			
-			DataTable cramerDataList = null;
-			if(fetchCramerDataList.Count > 0) {
-				Thread thread = new Thread(() => {
-				                           	cramerDataList = appCore.Site.BulkFetchCramerData(fetchCramerDataList);
-				                           	finishedThreadsCount++;
-				                           });
-				thread.Name = "siteFinder_BulkFetchCramerData";
-				threads.Add(thread);
-			}
-			
-			List<Change> crqList = null;
-			if(fetchCrqList.Count > 0) {
-				Thread thread = new Thread(() => {
-				                           	crqList = appCore.Site.BulkFetchCRQs(fetchCrqList);
-				                           	finishedThreadsCount++;
-				                           });
-				thread.Name = "siteFinder_BulkFetchCRQs";
-				threads.Add(thread);
-            }
 
-            if (currentOutage.AffectedLocations.Count > 0)
+            List<AccessInformation> powerList = null;
+			if(fetchPowerList.Count > 0)
+				powerList = await appCore.Site.BulkFetchPowerCompanyAsync(fetchPowerList);
+
+            List<OiCell> cellDetailsList = null;
+			if(fetchCellDetailsList.Count > 0)
+                cellDetailsList = await appCore.Site.BulkFetchOiCellsStateAsync(fetchCellDetailsList);
+
+            DataTable cramerDataList = null;
+			if(fetchCramerDataList.Count > 0)
+				cramerDataList = await appCore.Site.BulkFetchCramerDataAsync(fetchCramerDataList);
+
+            List<Change> crqList = null;
+			if(fetchCrqList.Count > 0)
+				crqList = await appCore.Site.BulkFetchCRQsAsync(fetchCrqList);
+
+            List<WeatherItem> weatherList = new List<WeatherItem>();
+            if(siteDetails_UIMode.Contains("outage"))
             {
-                Thread thread = new Thread(() =>
-                {
-                    var t = currentOutage.AffectedSites.Select(s => new[] { s.Id, s.Town });
-                    appCore.Site.BulkFetchWeather(currentOutage.AffectedSites.Select(s => s.Town));
-                    finishedThreadsCount++;
-                });
-                thread.Name = "siteFinder_BulkFetchWeather";
-                threads.Add(thread);
+                if (currentOutage.AffectedLocations.Count > 0)
+                    weatherList = await appCore.Site.BulkFetchWeatherAsync(currentOutage.AffectedSites.Select(s => s.Town));
             }
 
-            foreach (Thread thread in threads) {
-				thread.SetApartmentState(ApartmentState.STA);
-				thread.Start();
-			}
-			
-			while(finishedThreadsCount < threads.Count) { }
-			
-			var sitesList = new List<dynamic>();
-			foreach (Site site in foundSites) {
-				if(powerList != null) {
+            var sitesList = new List<dynamic>();
+			foreach (Site site in foundSites)
+            {
+				if(powerList != null)
+                {
 					AccessInformation filteredAccessInfo = powerList.FirstOrDefault(a => a.CI_NAME == site.Id);
 					if(filteredAccessInfo != null)
 						site.PowerCompany = filteredAccessInfo.POWER.Replace("<br>",";");
 				}
 				
 				List<OiCell> filteredOiCells = cellDetailsList.FindAll(c => c.SITE == site.Id);
-				if(filteredOiCells.Count > 0) {
-					foreach (Cell cell in site.Cells) {
+				if(filteredOiCells.Count > 0)
+                {
+					foreach (Cell cell in site.Cells)
+                    {
 						OiCell oiCell = filteredOiCells.Find(s => s.CELL_NAME == cell.Name);
-						if(oiCell != null) {
+						if(oiCell != null)
+                        {
 							cell.Locked = !string.IsNullOrEmpty(oiCell.LOCKED);
-							cell.LockedFlagTimestamp = DateTime.Now;
+                            cell.LockedFlagTimestamp = DateTime.Now;
 							cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
-							cell.CoosFlagTimestamp = DateTime.Now;
+                            cell.CoosFlagTimestamp = DateTime.Now;
 						}
 					}
 					site.CellsStateTimestamp = DateTime.Now;
 				}
 				
-				if(cramerDataList != null) {
+				if(cramerDataList != null)
+                {
 					DataRow row = cramerDataList.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == site.Id);
-					if(row != null) {
+					if(row != null)
+                    {
 						site.CramerData = new Site.CramerDetails(row);
 						site.CramerDataTimestamp = DateTime.Now;
 					}
 				}
 				
-				if(crqList != null) {
+				if(crqList != null)
+                {
 					List<Change> filteredChanges = crqList.FindAll(c => c.Site == site.Id);
-//					if(filteredChanges.Count > 0) {
-					site.Changes = filteredChanges;
+                    site.Changes = filteredChanges;
 					site.ChangesTimestamp = DateTime.Now;
-//					}
 				}
 				
 				// start populating
 				
 				string poc = string.Empty;
-				if(site.CramerData != null) {
+				if(site.CramerData != null)
+                {
 					if(site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
 						poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
 				}
@@ -962,56 +1062,24 @@ namespace appCore.SiteFinder.UI
 				              	POC = poc,
 				              	TXType = site.CramerData != null ? site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", "") : string.Empty,
 				              	CCT = site.CramerData != null ? site.CramerData.TxLastMileRef : string.Empty,
-				              	CRQ = CheckOngoingCRQ(site)
-				              });
+                                    CRQ = CheckOngoingCRQ(site)
+				                });
 				
 				markersOverlay.Markers.Add(site.MapMarker);
 			}
-			
-			amtDataGridView2.DataSource = sitesList;
-			foreach(DataGridViewColumn col in amtDataGridView2.Columns) {
-				switch(col.Name) {
-					case "Site":
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-						col.Width = 40;
-						break;
-					case "JVCOID":
-						col.HeaderText = "JVCO ID";
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-						col.Width = 65;
-						break;
-					case "Host":
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-						col.Width = 35;
-						break;
-					case "PostCode":
-						col.HeaderText = "Post Code";
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-						col.Width = 65;
-						break;
-					case "Priority":
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-						col.Width = 50;
-						break;
-					case "TXType":
-						col.HeaderText = "TX Type";
-//						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-//						col.Width = 55;
-						break;
-					case "CRQ":
-						col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-						break;
-				}
-			}
-			
-			label11.Text = label11.Text.Split('(')[0] + '(' + foundSites.Count + ')';
-		}
+
+            return sitesList;
+        }
 		
-		string CheckOngoingCRQ(Site site) {
-			if(site.Changes != null) {
+		string CheckOngoingCRQ(Site site)
+        {
+			if(site.Changes != null)
+            {
 				List<string> OngoingCRQs = new List<string>();
-				foreach(Change crq in site.Changes) {
-					if((crq.Status == "Scheduled" || crq.Status == "Implementation In Progress")) {
+				foreach(Change crq in site.Changes)
+                {
+					if((crq.Status == "Scheduled" || crq.Status == "Implementation In Progress"))
+                    {
 						if((Convert.ToDateTime(crq.Scheduled_Start) <= DateTime.Now && Convert.ToDateTime(crq.Scheduled_End) > DateTime.Now))
 							return crq.Change_Ref;
 					}
@@ -1040,13 +1108,14 @@ namespace appCore.SiteFinder.UI
 			dgv.Columns.Add("Site", "Site");
 			dgv.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 			dgv.RowHeadersVisible =
-				dgv.ColumnHeadersVisible = false;
+			dgv.ColumnHeadersVisible = false;
 			dgv.EditMode = DataGridViewEditMode.EditProgrammatically;
 			dgv.AllowUserToAddRows =
-				dgv.AllowUserToResizeRows =
-				dgv.AllowUserToResizeColumns = false;
+			dgv.AllowUserToResizeRows =
+			dgv.AllowUserToResizeColumns = false;
 			
-			foreach(string site in currentSite.CramerData.OnwardSites) {
+			foreach(string site in currentSite.CramerData.OnwardSites)
+            {
 				DataGridViewRow row = new DataGridViewRow();
 				row.CreateCells(dgv);
 				row.Cells[0].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1054,126 +1123,184 @@ namespace appCore.SiteFinder.UI
 				dgv.Rows.Add(row);
 			}
 			
-			panel.Controls.AddRange(new Control[] {
-			                        	dgv
-			                        });
+			panel.Controls.Add(dgv);
 			PopupHelper popup = new PopupHelper(panel);
 			popup.Show(this, Cursor.Position);
 		}
 
-		void siteFinder(object sender, KeyPressEventArgs e)
-		{
-			string filterProperty = ((TextBoxBase)sender).Text;
-			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
-				Action actionThreaded = new Action(delegate {
-				                                   	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
-				                                   	try { markersOverlay.Clear(); } catch (Exception) { }
-				                                   	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
-				                                   	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
-				                                   	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
-				                                   	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+//		void siteFinder(object sender, KeyPressEventArgs e)
+//		{
+//			string filterProperty = ((TextBoxBase)sender).Text;
+//			if(Convert.ToInt32(e.KeyChar) == 13 && !((TextBoxBase)sender).ReadOnly) {
+//				Action actionThreaded = new Action(delegate {
+//				                                   	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+//				                                   	try { markersOverlay.Clear(); } catch (Exception) { }
+//				                                   	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+//				                                   	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+//				                                   	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+//				                                   	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 				                                   	
-				                                   	if(SelectedSearchItem == "Site ID")
-				                                   		currentSite = DB.SitesDB.getSite(filterProperty);
-				                                   	else
-				                                   		currentSite = DB.SitesDB.getSiteWithJVCO(filterProperty);
+//				                                   	if(SelectedSearchItem == "Site ID")
+//				                                   		currentSite = DB.SitesDB.getSite(filterProperty);
+//				                                   	else
+//				                                   		currentSite = DB.SitesDB.getSiteWithJVCO(filterProperty);
 				                                   	
-				                                   	if(currentSite.Exists) {
-                                                        System.Threading.Tasks.Task.Run(() => currentSite.WeatherData);
-				                                   		string dataToRequest = "INCCellsState";
-				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
-				                                   			dataToRequest += "CRQ";
-				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
-				                                   			dataToRequest += "PWR";
-				                                   		if(currentSite.CramerData == null)
-				                                   			dataToRequest += "Cramer";
-				                                   		currentSite.requestOIData(dataToRequest);
-				                                   	}
-				                                   });
+//				                                   	if(currentSite.Exists) {
+//                                                        System.Threading.Tasks.Task.Run(() => currentSite.WeatherData);
+//				                                   		string dataToRequest = "INCCellsState";
+//				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+//				                                   			dataToRequest += "CRQ";
+//				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
+//				                                   			dataToRequest += "PWR";
+//				                                   		if(currentSite.CramerData == null)
+//				                                   			dataToRequest += "Cramer";
+//				                                   		currentSite.requestOIData(dataToRequest);
+//				                                   	}
+//				                                   });
 				
-				Action actionNonThreaded = new Action(delegate {
-				                                      	if(siteDetails_UIMode.Contains("multi"))
-				                                      		siteDetails_UIMode = "single";
-				                                      	selectedSiteDetailsPopulate();
-//				                                      	MainMenu.siteFinder_Toggle(currentSite.Exists);
-				                                      });
+//				Action actionNonThreaded = new Action(delegate {
+//				                                      	if(siteDetails_UIMode.Contains("multi"))
+//				                                      		siteDetails_UIMode = "single";
+//				                                      	selectedSiteDetailsPopulate();
+////				                                      	MainMenu.siteFinder_Toggle(currentSite.Exists);
+//				                                      });
 				
-				LoadingPanel load = new LoadingPanel();
-				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
-			}
-		}
+//				LoadingPanel load = new LoadingPanel();
+//				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+//			}
+//        }
 
-		void siteFinder(string[] src)
-		{
-			Action action = new Action(delegate {
-			                           	try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
-			                           	try { markersOverlay.Clear(); } catch (Exception) { }
-			                           	try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
-			                           	try { selectedSiteOverlay.Clear(); } catch (Exception) { }
-			                           	try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
-			                           	try { onwardSitesOverlay.Clear(); } catch (Exception) { }
-			                           	
-			                           	foundSites = DB.SitesDB.getSites(src.ToList());
-			                           	
-			                           	if(foundSites.Count > 1) {
-			                           		if(!siteDetails_UIMode.Contains("outage"))
-			                           			siteDetails_UIMode = "multi";
-			                           		searchResultsPopulate();
-			                           		amtDataGridView2.Rows[0].Selected = true;
-//			                           		listView2.Items[0].Selected = true;
-			                           		myMap.Overlays.Add(markersOverlay);
-			                           		myMap.ZoomAndCenterMarkers(markersOverlay.Id);
-			                           	}
-			                           	else {
-			                           		if(foundSites.Count == 1) {
-			                           			siteDetails_UIMode = "single";
-			                           			currentSite = foundSites[0];
-			                           			selectedSiteDetailsPopulate();
-			                           		}
-			                           	}
-			                           });
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, action,true,this);
-		}
-		
-		void AmtDataGridView2SelectionChanged(object sender, EventArgs e) {
+        async void siteFinder(object sender, KeyPressEventArgs e)
+        {
+            TextBoxBase tb = sender as TextBoxBase;
+            if (Convert.ToInt32(e.KeyChar) == 13 && !tb.ReadOnly && !string.IsNullOrWhiteSpace(tb.Text))
+            {
+                LoadingPanel loading = new LoadingPanel();
+                loading.Show(true, this);
+
+                if (siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly"))
+                    tb.ReadOnly = true;
+
+                toggleSwitch1.Enabled = false;
+                toggleSwitch2.Enabled = false;
+
+                try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+                try { markersOverlay.Clear(); } catch (Exception) { }
+                try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+                try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+                try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+                try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+
+                if (SelectedSearchItem == "Site ID")
+                    currentSite = await DB.SitesDB.getSiteAsync(tb.Text);
+                else
+                    currentSite = await DB.SitesDB.getSiteWithJVCO(tb.Text);
+                
+                if (siteDetails_UIMode.Contains("multi"))
+                    siteDetails_UIMode = "single";
+
+                loading.Close();
+
+                await selectedSiteDetailsPopulate();
+
+                Control cb = Controls["comboBox1"];
+                if (cb != null)
+                    cb.Text = "Site ID";
+
+                if (siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly"))
+                    tb.ReadOnly = false;
+            }
+        }
+
+        async void siteFinder(string[] src)
+        {
+            Refresh();
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(true, this);
+
+            try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
+			try { markersOverlay.Clear(); } catch (Exception) { }
 			try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
 			try { selectedSiteOverlay.Clear(); } catch (Exception) { }
 			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+
+            foundSites = await Task.Run(() => DB.SitesDB.getSites(src.ToList()));
+
+            loading.Close();
+
+			if(foundSites.Count > 1)
+            {
+			    if(!siteDetails_UIMode.Contains("outage"))
+			        siteDetails_UIMode = "multi";
+
+			    await searchResultsPopulate();
+
+			    amtDataGridView2.Rows[0].Selected = true;
+
+			    myMap.Overlays.Add(markersOverlay);
+			    myMap.ZoomAndCenterMarkers(markersOverlay.Id);
+			}
+			else
+            {
+			    if(foundSites.Count == 1)
+                {
+			        siteDetails_UIMode = "single";
+			        currentSite = foundSites[0];
+			        await selectedSiteDetailsPopulate();
+			    }
+			}
+		}
+		
+		async void AmtDataGridView2SelectionChanged(object sender, EventArgs e)
+        {
+            toggleSwitch1.Enabled = false;
+            toggleSwitch2.Enabled = false;
+
+            try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+			try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 			
-			if(amtDataGridView2.SelectedRows.Count > 0) {
+			if(amtDataGridView2.SelectedRows.Count > 0)
+            {
 				currentSite = foundSites[amtDataGridView2.SelectedRows[0].Index];
 				
-				selectedSiteDetailsPopulate();
-				
-//				MainMenu.siteFinder_Toggle(currentSite.Exists);
+				await selectedSiteDetailsPopulate();
 			}
 			else
 				myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 		}
 
-		void LoadDisplayOiDataTable(object sender, EventArgs e) {
+		async void LoadDisplayOiDataTable(object sender, EventArgs e)
+        {
 			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
 			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
-			if(fc.Count > 0) {
+			if(fc.Count > 0)
+            {
 				fc[0].Close();
 				fc[0].Dispose();
 			}
 			
-			if(currentSite.Exists) {
+			if(currentSite.Exists)
+            {
 				DataTable dt = new DataTable();
-				switch(dataToShow) {
+				switch(dataToShow)
+                {
 					case "INCs":
-						if(currentSite.Incidents == null) {
-							currentSite.requestOIData("INC");
-							if(currentSite.Incidents != null) {
-								if(currentSite.Incidents.Count > 0) {
+						if(currentSite.Incidents == null)
+                        {
+							await currentSite.requestOIDataAsync("INC");
+							if(currentSite.Incidents != null)
+                            {
+								if(currentSite.Incidents.Count > 0)
+                                {
 									MainMenu.INCsButton.Enabled = true;
 									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
 									MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
 								}
-								else {
+								else
+                                {
 									MainMenu.INCsButton.Enabled = false;
 									MainMenu.INCsButton.Text = "No INC history";
 								}
@@ -1182,15 +1309,19 @@ namespace appCore.SiteFinder.UI
 						}
 						break;
 					case "CRQs":
-						if(currentSite.Changes == null) {
-							currentSite.requestOIData("CRQ");
-							if(currentSite.Changes != null) {
-								if(currentSite.Changes.Count > 0) {
+						if(currentSite.Changes == null)
+                        {
+							await currentSite.requestOIDataAsync("CRQ");
+							if(currentSite.Changes != null)
+                            {
+								if(currentSite.Changes.Count > 0)
+                                {
 									MainMenu.CRQsButton.Enabled = true;
 									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
 									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
 								}
-								else {
+								else
+                                {
 									MainMenu.CRQsButton.Enabled = false;
 									MainMenu.CRQsButton.Text = "No CRQ history";
 								}
@@ -1199,15 +1330,18 @@ namespace appCore.SiteFinder.UI
 						}
 						break;
 					case "BookIns":
-						if(currentSite.Visits == null) {
-							currentSite.requestOIData("Bookins");
+						if(currentSite.Visits == null)
+                        {
+							await currentSite.requestOIDataAsync("Bookins");
 							if(currentSite.Visits != null) {
-								if(currentSite.Visits.Count > 0) {
+								if(currentSite.Visits.Count > 0)
+                                {
 									MainMenu.BookInsButton.Enabled = true;
 									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
 									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
 								}
-								else {
+								else
+                                {
 									MainMenu.BookInsButton.Enabled = false;
 									MainMenu.BookInsButton.Text = "No Book In history";
 								}
@@ -1216,15 +1350,18 @@ namespace appCore.SiteFinder.UI
 						}
 						break;
 					case "ActiveAlarms":
-						if(currentSite.Alarms == null) {
-							currentSite.requestOIData("Alarms");
+						if(currentSite.Alarms == null)
+                        {
+							await currentSite.requestOIDataAsync("Alarms");
 							if(currentSite.Alarms != null) {
-								if(currentSite.Alarms.Count > 0) {
+								if(currentSite.Alarms.Count > 0)
+                                {
 									MainMenu.ActiveAlarmsButton.Enabled = true;
 									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
 									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
 								}
-								else {
+								else
+                                {
 									MainMenu.ActiveAlarmsButton.Enabled = false;
 									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
 								}
@@ -1233,15 +1370,19 @@ namespace appCore.SiteFinder.UI
 						}
 						break;
 					case "Availability":
-						if(currentSite.Availability == null) {
-							currentSite.requestOIData("Availability");
-							if(currentSite.Availability != null) {
-								if(currentSite.Availability.Rows.Count > 0) {
+						if(currentSite.Availability == null)
+                        {
+							await currentSite.requestOIDataAsync("Availability");
+							if(currentSite.Availability != null)
+                            {
+								if(currentSite.Availability.Rows.Count > 0)
+                                {
 									MainMenu.AvailabilityButton.Enabled = true;
 									MainMenu.AvailabilityButton.ForeColor = Color.DarkGreen;
 									MainMenu.AvailabilityButton.Text = "Availability chart";
 								}
-								else {
+								else
+                                {
 									MainMenu.AvailabilityButton.Enabled = false;
 									MainMenu.AvailabilityButton.Text = "No availability chart to display";
 								}
@@ -1252,7 +1393,8 @@ namespace appCore.SiteFinder.UI
 				}
 				
 				OiSiteTablesForm OiTable = null;
-				switch(dataToShow) {
+				switch(dataToShow)
+                {
 					case "INCs":
 						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
 						break;
@@ -1271,34 +1413,43 @@ namespace appCore.SiteFinder.UI
 				}
 				OiTable.Show();
 			}
-		}
+        }
 
-		void refreshOiData(object sender, EventArgs e) {
-			currentSite.requestOIData("INCCRQBookinsAlarmsAvailability");
-			MainMenu.siteFinder_Toggle(true);
-		}
+        async void refreshOiData(object sender, EventArgs e)
+        {
+            await MainMenu.ShowLoading();
+            await currentSite.requestOIDataAsync("INCCRQBookinsAlarmsAvailability");
+            await MainMenu.siteFinder_Toggle(true);
+        }
 
 		void ViewSiteInOiButtonClick(object sender, EventArgs e) {
 			
 		}
 
-		void LockUnlockCells(object sender, EventArgs e) {
-			Action actionNonThreaded = new Action(delegate {
-			                                      	if(currentSite.Exists) {
-			                                      		LockUnlockCellsForm lucf = new LockUnlockCellsForm(this);
-			                                      		lucf.ShowDialog();
-			                                      		selectedSiteDetailsPopulate();
-			                                      	}
-			                                      });
-			
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, actionNonThreaded, false, this);
+		async void LockUnlockCells(object sender, EventArgs e)
+        {
+			if(currentSite.Exists)
+            {
+                LoadingPanel loading = new LoadingPanel();
+                loading.Show(false, this);
+
+                LockUnlockCellsForm lucf = new LockUnlockCellsForm(this);
+			    lucf.ShowDialog();
+
+                loading.ToggleLoadingSpinner();
+
+			    await selectedSiteDetailsPopulate();
+
+                loading.Close();
+            }
 		}
 
-		void OpenLockedCells(object sender, EventArgs e) {
+		void OpenLockedCells(object sender, EventArgs e)
+        {
 			var fc = Application.OpenForms.OfType<LockUnlockCellsForm>().ToList();
 			
-			if(fc.Count > 0) {
+			if(fc.Count > 0)
+            {
 				if(fc[0].WindowState == FormWindowState.Minimized)
 					fc[0].Invoke(new Action(() => { fc[0].WindowState = FormWindowState.Normal; }));;
 				fc[0].Invoke(new MethodInvoker(fc[0].Activate));
@@ -1314,7 +1465,8 @@ namespace appCore.SiteFinder.UI
 			thread.Start();
 		}
 
-		void InitializeToolStripMenuItems() {
+		void InitializeToolStripMenuItems()
+        {
 			// 
 			// bulkSiteSearchMenuItem
 			// 
@@ -1328,10 +1480,10 @@ namespace appCore.SiteFinder.UI
 			viewSiteInOiToolStripMenuItem.Text = "View on SiteLopedia";
 //			viewSiteInOiToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			viewSiteInOiToolStripMenuItem.Click += ViewSiteInOiButtonClick;
-			// 
-			// generateTaskToolStripMenuItem
-			// 
-			lockUnlockCellsToolStripMenuItem.Name = "lockUnlockCellsToolStripMenuItem";
+            // 
+            // lockUnlockCellsToolStripMenuItem
+            // 
+            lockUnlockCellsToolStripMenuItem.Name = "lockUnlockCellsToolStripMenuItem";
 			lockUnlockCellsToolStripMenuItem.Text = "Lock/Unlock Cells...";
 			lockUnlockCellsToolStripMenuItem.Click += LockUnlockCells;
 			// 
@@ -1387,31 +1539,35 @@ namespace appCore.SiteFinder.UI
 		{
 			if(weatherForm != null) {
 				// Updating child position
-				this.updatingChildPosition = true;
+				this.updatingWeatherPosition = true;
 
 				weatherForm.Location = new Point(
 					this.Location.X + weatherFormOffset.X,
 					this.Location.Y + weatherFormOffset.Y);
 
-				this.updatingChildPosition = false;
+				this.updatingWeatherPosition = false;
 			}
 		}
 		
-		void ToggleSwitchesCheckedChanged(object sender, EventArgs e) {
+		async void ToggleSwitchesCheckedChanged(object sender, EventArgs e)
+        {
 			JCS.ToggleSwitch ts = sender as JCS.ToggleSwitch;
-			switch(ts.Name) {
+			switch(ts.Name)
+            {
 				case "toggleSwitch1":
-					if(!ts.Checked) {
+					if(!ts.Checked)
+                    {
 						if(weatherForm != null) {
 							weatherForm.Close();
 							weatherForm.Dispose();
 							weatherForm = null;
 						}
 					}
-					else {
+					else
+                    {
 						if(currentSite != null)
                         {
-                            weatherForm = new GeoAPIs.UI.WeatherForm(currentSite.WeatherData);
+                            weatherForm = new GeoAPIs.UI.WeatherForm(await Task.Run(() => currentSite.WeatherData));
                             weatherForm.BackColor = Color.Black;
                             weatherForm.WeatherPanelOpacity = 60;
                             weatherForm.Owner = this; // owner;
@@ -1426,21 +1582,24 @@ namespace appCore.SiteFinder.UI
 					}
 					break;
 				case "toggleSwitch2":
-					if(ts.Checked) {
+					if(ts.Checked)
+                    {
 						if(myMap.Overlays.Contains(onwardSitesOverlay))
-							onwardSitesOverlay.IsVisibile = true;
+                        {
+                            onwardSitesOverlay.IsVisibile = true;
+                            selectedSiteOverlay.IsVisibile = false;
+                        }
 					}
-					else {
+					else
+                    {
 						if(myMap.Overlays.Contains(onwardSitesOverlay))
-							onwardSitesOverlay.IsVisibile = false;
-					}
+                        {
+                            onwardSitesOverlay.IsVisibile = false;
+                            selectedSiteOverlay.IsVisibile = true;
+                        }
+                    }
 					break;
 			}
-		}
-
-		void SiteDetailsLoad(object sender, EventArgs e)
-		{
-			
 		}
 	}
 }

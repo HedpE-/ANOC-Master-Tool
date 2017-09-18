@@ -52,7 +52,7 @@ namespace appCore.OssScripts.UI
 		Label BtsDChannelsCommandLabel = new Label();
 		Label BcfPcmLabel = new Label();
 		AMTTextBox BtsDChannelsCommandTextBox = new AMTTextBox();
-		AMTTextBox BcfPcmTextBox = new AMTTextBox();
+		public AMTTextBox BcfPcmTextBox = new AMTTextBox();
 		RadioButton BcfRadioButton = new RadioButton();
 		RadioButton PcmRadioButton = new RadioButton();
 		
@@ -107,7 +107,10 @@ namespace appCore.OssScripts.UI
 
 		void generateScripts(object sender, EventArgs e)
 		{
-			switch (SelectedEquipment) {
+            LockScriptTextBox.Text = string.Empty;
+            UnlockScriptTextBox.Text = string.Empty;
+
+            switch (SelectedEquipment) {
 				case 0: // NSN BCF
 					foreach(Control control in BtsDChannelsGroupBox.Controls)
 					{
@@ -139,9 +142,9 @@ namespace appCore.OssScripts.UI
 						}
 					}
 					if(!string.IsNullOrEmpty(UnlockScriptTextBox.Text))
-						UnlockScriptTextBox.Text = UnlockScriptTextBox.Text.Substring(0,UnlockScriptTextBox.Text.Length - 1);
+						UnlockScriptTextBox.Text = UnlockScriptTextBox.Text.Substring(0, UnlockScriptTextBox.Text.Length - 1);
 					if(!string.IsNullOrEmpty(LockScriptTextBox.Text))
-						LockScriptTextBox.Text = LockScriptTextBox.Text.Substring(0,LockScriptTextBox.Text.Length - 1);
+						LockScriptTextBox.Text = LockScriptTextBox.Text.Substring(0, LockScriptTextBox.Text.Length - 1);
 					break;
 			}
 		}
@@ -346,7 +349,7 @@ namespace appCore.OssScripts.UI
 					break;
 			}
 			
-			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
+			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl, btn.Name != "dChannelsLargeTextButton");
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;

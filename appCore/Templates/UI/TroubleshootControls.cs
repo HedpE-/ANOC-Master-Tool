@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using appCore.Settings;
 using appCore.SiteFinder;
@@ -73,7 +74,7 @@ namespace appCore.Templates.UI
 		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem generateTaskToolStripMenuItem = new ToolStripMenuItem();
 		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem sendBCPToolStripMenuItem = new ToolStripMenuItem();
+		ToolStripMenuItem sendBcpToolStripMenuItem = new ToolStripMenuItem();
 		
 		public static siteDetails SiteDetailsUI;
 		
@@ -110,8 +111,10 @@ namespace appCore.Templates.UI
 				}
 			}
 		}
-		
-		UiEnum _uiMode;
+
+        bool fromLog = false; // flag used to know if constructor was called from LogEditor
+
+        UiEnum _uiMode;
 		UiEnum UiMode {
 			get { return _uiMode; }
 			set {
@@ -153,7 +156,7 @@ namespace appCore.Templates.UI
 					COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
 					COOS3GLabel.DoubleClick += COOSLabelDoubleClick;
 					COOS4GLabel.DoubleClick += COOSLabelDoubleClick;
-					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
+                    SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 					INCTextBox.KeyPress += INCTextBoxKeyPress;
 					//TroubleshootTextBox.Height = 203;
@@ -165,7 +168,7 @@ namespace appCore.Templates.UI
 					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(generateTaskToolStripMenuItem);
-					MainMenu.MainMenu.DropDownItems.Add(sendBCPToolStripMenuItem);
+					MainMenu.MainMenu.DropDownItems.Add(sendBcpToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
 					MainMenu.MainMenu.DropDownItems.Add(SiteDetailsToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -173,7 +176,7 @@ namespace appCore.Templates.UI
 					
 					generateTemplateToolStripMenuItem.Enabled =
 						generateTaskToolStripMenuItem.Enabled =
-						sendBCPToolStripMenuItem.Enabled =
+						sendBcpToolStripMenuItem.Enabled =
 						SiteDetailsToolStripMenuItem.Enabled =
 						clearToolStripMenuItem.Enabled = false;
 				}
@@ -183,22 +186,36 @@ namespace appCore.Templates.UI
 		public TroubleshootControls()
 		{
 			UiMode = UiEnum.Template;
+
+            //fromLog = false;
+
 			if(GlobalProperties.siteFinder_mainswitch)
-				siteFinder_Toggle(false, false);
+            {
+                siteFinder_Toggle(false, false);
+                MainMenu.siteFinder_Toggle(false, false);
+            }
 		}
 		
 		public TroubleshootControls(Troubleshoot template, UiEnum uimode = UiEnum.Log)
 		{
 			UiMode = uimode;
-			currentTemplate = template;
+
+            currentTemplate = template;
 			
 			SiteIdTextBox.Text = currentTemplate.SiteId;
-			if(UiMode == UiEnum.Template)
-				SiteIdTextBoxKeyPress(SiteIdTextBox,new KeyPressEventArgs((char)Keys.Enter));
-			else
-				currentSite = currentTemplate.Site;
+
+            if (uimode == UiEnum.Template)
+            {
+                fromLog = true;
+				SiteIdTextBoxKeyPress(SiteIdTextBox, new KeyPressEventArgs((char)Keys.Enter));
+            }
+            else
+            {
+                currentSite = currentTemplate.Site;
+                PowerCompanyTextBox.Text = currentSite.PowerCompany;
+                RegionTextBox.Text = currentSite.Region;
+            }
 			INCTextBox.Text = currentTemplate.INC;
-			AddressTextBox.Text = currentTemplate.SiteAddress;
 			OtherSitesImpactedCheckBox.Checked = currentTemplate.OtherSitesImpacted;
 			COOSCheckBox.Checked = currentTemplate.COOS;
 			FullSiteOutageCheckBox.Checked = currentTemplate.FullSiteOutage;
@@ -214,19 +231,20 @@ namespace appCore.Templates.UI
 			ActiveAlarmsTextBox.Text = currentTemplate.ActiveAlarms;
 			AlarmHistoryTextBox.Text = currentTemplate.AlarmHistory != "None related" ? currentTemplate.AlarmHistory : string.Empty;
 			TroubleshootTextBox.Text = currentTemplate.TroubleShoot;
-			PowerCompanyTextBox.Text = currentSite.PowerCompany;
-			RegionTextBox.Text = currentSite.Region;
-//			currentSite.requestOIData("INCCRQ");
-//			siteFinder_Toggle(true, currentSite.Exists);
-		}
+            AddressTextBox.Text = currentTemplate.SiteAddress;
 
-		void siteFinder_Toggle(bool toggle, bool siteFound) {
-			foreach (object ctrl in Controls) {
+            //			currentSite.requestOIData("INCCRQ");
+            //			siteFinder_Toggle(true, currentSite.Exists);
+        }
+
+		async Task siteFinder_Toggle(bool toggle, bool siteFound)
+        {
+			foreach (object ctrl in Controls)
+            {
 				switch(ctrl.GetType().ToString())
 				{
-					case "appCore.UI.AMTMenuStrip":
-						MainMenu.siteFinder_Toggle(toggle, siteFound);
-						break;
+					//case "appCore.UI.AMTMenuStrip":
+					//	break;
 					case "System.Windows.Forms.Button":
 						Button btn = ctrl as Button;
 						if(btn.Text == "MTX")
@@ -251,108 +269,146 @@ namespace appCore.Templates.UI
 						break;
 				}
 			}
-			
-		}
-		
-		void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e) {
-			if (Convert.ToInt32(e.KeyChar) == 13) {
-				TextBox tb = (TextBox)sender;
-				while(tb.Text.StartsWith("0"))
-					tb.Text = tb.Text.Substring(1);
-				
-				if(currentSite != null) {
-					if(tb.Text == currentSite.Id) {
-						if(currentSite.Exists)
-							currentSite.requestOIData("INCCRQ");
-						return;
-					}
-				}
-				Action actionThreaded = new Action(delegate {
-				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
-				                                   	
-				                                   	if(currentSite.Exists) {
-				                                   		string dataToRequest = "INC";
-				                                   		if((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
-				                                   			dataToRequest += "CRQ";
-				                                   		if(string.IsNullOrEmpty(currentSite.PowerCompany))
-				                                   			dataToRequest += "PWR";
-				                                   		if(currentSite.CramerData == null)
-				                                   			dataToRequest += "Cramer";
-				                                   		currentSite.requestOIData(dataToRequest);
-				                                   	}
-				                                   });
-				
-				Action actionNonThreaded = new Action(delegate {
-				                                      	if(currentSite.Exists) {
-				                                      		AddressTextBox.Text = currentSite.Address;
-				                                      		RegionTextBox.Text = currentSite.Region;
-				                                      		PowerCompanyTextBox.Text = currentSite.PowerCompany;
-				                                      		if(currentSite.Host.Contains("TF") || currentSite.Host.Contains("O2")) {
-				                                      			SiteOwnerComboBox.Text = "TF";
-				                                      			TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
-				                                      		}
-				                                      		else {
-				                                      			SiteOwnerComboBox.Text = "VF";
-				                                      			TefSiteTextBox.Text = string.Empty;
-				                                      		}
-				                                      		if(currentSite.CramerData != null)
-				                                      			CCTRefTextBox.Text = currentSite.CramerData.TxLastMileRef;
-				                                      		
-				                                      		List<Cell> cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_2G);
-				                                      		COOS2GLabel.Text = "2G cells(" + cellsFilter.Count() + ")";
-				                                      		COOS2GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                                      		COOS2GNumericUpDown.Value = 0;
-				                                      		
-				                                      		cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_3G);
-				                                      		COOS3GLabel.Text = "3G cells(" + cellsFilter.Count() + ")";
-				                                      		COOS3GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                                      		COOS3GNumericUpDown.Value = 0;
 
-				                                      		cellsFilter = currentSite.Cells.Filter(Cell.Filters.VF_4G);
-				                                      		COOS4GLabel.Text = "4G cells(" + cellsFilter.Count() + ")";
-				                                      		COOS4GNumericUpDown.Maximum = cellsFilter.Any() ? cellsFilter.Count() : 999;
-				                                      		COOS4GNumericUpDown.Value = 0;
-				                                      		COOSCheckBox.Checked = false;
-				                                      	}
-				                                      	else {
-				                                      		AddressTextBox.Text = string.Empty;
-				                                      		PowerCompanyTextBox.Text = "No site found";
-				                                      		COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
-				                                      		COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
-				                                      		COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
-				                                      		SiteOwnerComboBox.Text = "VF";
-				                                      		MainMenu.INCsButton.Enabled = false;
-				                                      	}
-				                                      	siteFinder_Toggle(true, currentSite.Exists);
-				                                      	generateTemplateToolStripMenuItem.Enabled =
-				                                      		generateTaskToolStripMenuItem.Enabled =
-				                                      		sendBCPToolStripMenuItem.Enabled = true;
-				                                      	SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
-				                                      });
-				if(Parent != null) {
-					LoadingPanel load = new LoadingPanel();
-					load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
-				}
-				else {
-					actionThreaded();
-					actionNonThreaded();
-				}
-			}
-		}
+        }
 
-		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
+        async void SiteIdTextBoxKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)// && !tb.ReadOnly)
+            {
+                TextBox tb = (TextBox)sender;
+
+                while (tb.Text.StartsWith("0"))
+                    tb.Text = tb.Text.Substring(1);
+
+                LoadingPanel loading = null;
+                if (Parent != null)
+                {
+                    loading = new LoadingPanel();
+                    loading.Show(true, this);
+                }
+
+                if (currentSite != null)
+                {
+                    if (tb.Text == currentSite.Id)
+                    {
+                        if (currentSite.Exists)
+                        {
+                            await MainMenu.ShowLoading();
+                            await currentSite.requestOIDataAsync("INCCRQBookins");
+                            await MainMenu.siteFinder_Toggle(true);
+                        }
+                        return;
+                    }
+                }
+
+                tb.ReadOnly = true;
+
+                currentSite = await DB.SitesDB.getSiteAsync(tb.Text);
+
+                SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
+
+                if (loading != null)
+                    loading.Close();
+
+                if (currentSite.Exists)
+                {
+                    await MainMenu.ShowLoading();
+                    await siteFinder_Toggle(true, true);
+
+                    AddressTextBox.Text = await Task.Run(() => currentSite.Address);
+                    RegionTextBox.Text = await Task.Run(() => currentSite.Region);
+
+                    if (currentSite.Host.Contains("TF") || currentSite.Host.Contains("O2"))
+                    {
+                        SiteOwnerComboBox.Text = "TF";
+                        TefSiteTextBox.Text = currentSite.SharedOperatorSiteID;
+                    }
+                    else
+                    {
+                        SiteOwnerComboBox.Text = "VF";
+                        TefSiteTextBox.Text = string.Empty;
+                    }
+
+                    List<Cell> cellsFilter = await Task.Run(() => currentSite.Cells.Filter(Cell.Filters.VF_2G));
+                    COOS2GLabel.Text = await Task.Run(() => "2G cells(" + cellsFilter.Count + ")");
+                    COOS2GNumericUpDown.Maximum = await Task.Run(() => cellsFilter.Any() ? cellsFilter.Count : 999);
+                    COOS2GNumericUpDown.Value = 0;
+
+                    cellsFilter = await Task.Run(() => currentSite.Cells.Filter(Cell.Filters.VF_3G));
+                    COOS3GLabel.Text = await Task.Run(() => "3G cells(" + cellsFilter.Count + ")");
+                    COOS3GNumericUpDown.Maximum = await Task.Run(() => cellsFilter.Any() ? cellsFilter.Count : 999);
+                    COOS3GNumericUpDown.Value = 0;
+
+                    cellsFilter = await Task.Run(() => currentSite.Cells.Filter(Cell.Filters.VF_4G));
+                    COOS4GLabel.Text = await Task.Run(() => "4G cells(" + cellsFilter.Count + ")");
+                    COOS4GNumericUpDown.Maximum = await Task.Run(() => cellsFilter.Any() ? cellsFilter.Count : 999);
+                    COOS4GNumericUpDown.Value = 0;
+                    COOSCheckBox.Checked = false;
+
+                    string dataToRequest = "INCBookins";
+                    if ((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
+                        dataToRequest += "CRQ";
+                    if (string.IsNullOrEmpty(currentSite.PowerCompany))
+                        dataToRequest += "PWR";
+                    if (currentSite.CramerData == null)
+                        dataToRequest += "Cramer";
+                    await currentSite.requestOIDataAsync(dataToRequest);
+
+                    if (currentSite.CramerData != null)
+                        CCTRefTextBox.Text = await Task.Run(() => currentSite.CramerData.TxLastMileRef);
+
+                    //if (string.IsNullOrEmpty(PowerCompanyTextBox.Text))
+                    PowerCompanyTextBox.Text = currentSite.PowerCompany;
+                }
+                else
+                {
+                    if(!fromLog)
+                    {
+                        AddressTextBox.Text = string.Empty;
+                        SiteOwnerComboBox.Text = "VF";
+                    }
+                    PowerCompanyTextBox.Text = "No site found";
+                    COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
+                    COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
+                    COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
+                }
+                await siteFinder_Toggle(true, currentSite.Exists);
+                await MainMenu.siteFinder_Toggle(true, currentSite.Exists);
+
+                tb.ReadOnly = false;
+
+                generateTaskToolStripMenuItem.Enabled =
+                    sendBcpToolStripMenuItem.Enabled =
+                    generateTemplateToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        async void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
-			if(currentSite != null) {
-				currentSite.Dispose(); // = null;
-				currentSite = null;
-			}
-			siteFinder_Toggle(false, false);
-			PowerCompanyTextBox.Text =
-				RegionTextBox.Text =
-				AddressTextBox.Text =
-				CCTRefTextBox.Text = string.Empty;
+            if(GlobalProperties.siteFinder_mainswitch)
+            {
+                if (currentSite != null)
+                {
+                    currentSite.Dispose(); // = null;
+                    currentSite = null;
+                }
+			    await siteFinder_Toggle(false, false);
+                await MainMenu.siteFinder_Toggle(false, false);
+                PowerCompanyTextBox.Text =
+				    RegionTextBox.Text =
+				    AddressTextBox.Text =
+				    CCTRefTextBox.Text = string.Empty;
+            }
+            else
+            {
+                generateTemplateToolStripMenuItem.Enabled =
+                    generateTaskToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
+
+            }
 			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
-			sendBCPToolStripMenuItem.Enabled = false;
+			sendBcpToolStripMenuItem.Enabled =
+                fromLog = false;
 		}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
@@ -562,7 +618,6 @@ namespace appCore.Templates.UI
 		
 		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
 			Button btn = (Button)sender;
 			string lbl = string.Empty;
 			TextBoxBase tb = null;
@@ -584,18 +639,21 @@ namespace appCore.Templates.UI
 					lbl = TroubleshootLabel.Text;
 					break;
 			}
-			
+
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(false, this.FindForm());
 			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
+            loading.Close();
 			tb.Text = enlarge.finaltext;
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void MTXAddressButtonClick(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(false, this.FindForm());
+
 			Form form = new Form();
 			using (form)
 			{
@@ -638,8 +696,8 @@ namespace appCore.Templates.UI
 				}
 				form.ShowDialog();
 			}
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
+
+            loading.Close();
 		}
 
 		void MTXListViewDoubleClick(object sender, EventArgs e)
@@ -649,18 +707,14 @@ namespace appCore.Templates.UI
 			Form frm = lv.Parent as Form;
 			
 			if(lvItem != null)
-			{
 				AddressTextBox.Text = lvItem.SubItems[2].Text;
-			}
 			frm.Close();
 		}
 
 		void MTXListViewKeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
 				MTXListViewDoubleClick(sender, null);
-			}
 		}
 
 		void ClearAllControls(object sender, EventArgs e)
@@ -682,8 +736,9 @@ namespace appCore.Templates.UI
 			SiteDetailsToolStripMenuItem.Enabled = false;
 			generateTemplateToolStripMenuItem.Enabled = false;
 			generateTaskToolStripMenuItem.Enabled = false;
-			sendBCPToolStripMenuItem.Enabled = false;
+			sendBcpToolStripMenuItem.Enabled = false;
 			clearToolStripMenuItem.Enabled = false;
+            fromLog = false;
 			SiteIdTextBox.Focus();
 		}
 		
@@ -733,184 +788,241 @@ namespace appCore.Templates.UI
 			Tasks.Show();
 		}
 
-		void SendBCPForm(object sender, EventArgs e) {
-			Action actionNonThreaded = new Action(delegate {
-			                                      	if(prevTemp != null) {
-			                                      		if(currentTemplate == prevTemp) {
-			                                      			SendBCP bcp = new SendBCP(ref currentTemplate);
-			                                      			bcp.ShowDialog();
+		void SendBCPForm(object sender, EventArgs e)
+        {
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(false, FindForm());
+
+			if(prevTemp != null) {
+			    if(currentTemplate == prevTemp) {
+			        SendBCP bcp = new SendBCP(ref currentTemplate);
+			        bcp.ShowDialog();
 			                                      			
-//															currentTemplate.AddBcpLog(bcp.mailBody);
+//					currentTemplate.AddBcpLog(bcp.mailBody);
 			                                      			
-			                                      			MainForm.logFiles.HandleLog(currentTemplate, true);
-			                                      		}
-			                                      		else
-			                                      			FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			                                      	}
-			                                      	else
-			                                      		FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			                                      });
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, actionNonThreaded, false, this);
+			        MainForm.logFiles.HandleLog(currentTemplate, true);
+			    }
+			    else
+			        FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			else
+			    FlexibleMessageBox.Show("You must generate the Template first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+			loading.Close();
 		}
 		
-		void GenerateTemplate(object sender, EventArgs e) {
-			Action actionNonThreaded = new Action(delegate {
-			                                      	if(UiMode == UiEnum.Template) {
-			                                      		string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-			                                      		if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
-			                                      		else {
-			                                      			FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-			                                      			return;
-			                                      		}
-			                                      		string errmsg = "";
-			                                      		if (string.IsNullOrEmpty(INCTextBox.Text)) {
-			                                      			errmsg = "         - INC/Ticket Number missing\n";
-			                                      		}
-			                                      		if (string.IsNullOrEmpty(SiteIdTextBox.Text)) {
-			                                      			errmsg += "         - Site ID missing\n";
-			                                      		}
-			                                      		if (SiteOwnerComboBox.SelectedIndex == 1 && string.IsNullOrEmpty(TefSiteTextBox.Text)) {
-			                                      			errmsg += "          - TF Site ID missing\n";
-			                                      		}
-			                                      		if (string.IsNullOrEmpty(AddressTextBox.Text)) {
-			                                      			errmsg += "         - Site Address missing\n";
-			                                      		}
-			                                      		if (string.IsNullOrEmpty(ActiveAlarmsTextBox.Text)) {
-			                                      			errmsg += "         - Active alarms missing\n";
-			                                      		}
-			                                      		if (string.IsNullOrEmpty(TroubleshootTextBox.Text)) {
-			                                      			errmsg += "         - Troubleshoot missing\n";
-			                                      		}
-			                                      		if (COOSCheckBox.Checked) {
-			                                      			if ((COOS2GNumericUpDown.Value == 0) && (COOS3GNumericUpDown.Value == 0) && (COOS4GNumericUpDown.Value == 0)) {
-			                                      				errmsg += "         - COOS count missing\n";
-			                                      			}
-			                                      		}
-			                                      		if (!string.IsNullOrEmpty(errmsg)) {
-			                                      			FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			                                      			return;
-			                                      		}
-			                                      	}
-			                                      	
-			                                      	string relatedCases = string.Empty;
-			                                      	if(currentSite.Exists) {
-			                                      		CheckOngoingCRQs();
-			                                      		DataTable OngoingCases = getCurrentCases();
-			                                      		if(OngoingCases.Rows.Count > 0) {
-			                                      			OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases, currentSite.Id);
-			                                      			relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
-			                                      			relatedCasesForm.ShowDialog();
-			                                      			if(relatedCasesForm.Cancel)
-			                                      				return;
-			                                      			if(relatedCasesForm.selectedCases.Count > 0) {
-			                                      				int c = 0;
-			                                      				foreach(DataGridViewRow row in relatedCasesForm.selectedCases) {
-			                                      					relatedCases += row.Cells["Reference"].Value + " - " + row.Cells["Summary"].Value;
-			                                      					if(row.Cells[1].Value.ToString() == "INC")
-			                                      						relatedCases += " - " + row.Cells["Resolution"].Value;
-			                                      					relatedCases += " - " + row.Cells["Status"].Value;
-			                                      					if(++c < relatedCasesForm.selectedCases.Count)
-			                                      						relatedCases += Environment.NewLine;
-			                                      				}
-			                                      			}
-			                                      		}
-			                                      	}
-			                                      	
-//			if(currentTemplate != null)
-//				currentTemplate = null;
-			                                      	currentTemplate = new Troubleshoot(Controls, relatedCases);
-			                                      	
-			                                      	if(UiMode == UiEnum.Template && prevTemp != null) {
-			                                      		// No changes since the last template warning
-			                                      		string errmsg = "";
-			                                      		if(currentTemplate.ToString() != prevTemp.ToString()) {
-			                                      			if (INCTextBox.Text == prevTemp.INC) {
-			                                      				errmsg = "         - INC\n";
-			                                      			}
-			                                      			if (SiteIdTextBox.Text == prevTemp.SiteId) {
-			                                      				errmsg += "         - Site ID\n";
-			                                      			}
-			                                      			if (SiteOwnerComboBox.Text == "TF" && TefSiteTextBox.Text == prevTemp.TefSiteId) {
-			                                      				errmsg += "         - TF Site ID\n";
-			                                      			}
-			                                      			if (AddressTextBox.Text == prevTemp.SiteAddress) {
-			                                      				errmsg += "         - Site Address\n";
-			                                      			}
-			                                      			if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == prevTemp.CCTReference) {
-			                                      				errmsg += "         - CCT reference\n";
-			                                      			}
-			                                      			if (OtherSitesImpactedCheckBox.Checked && prevTemp.OtherSitesImpacted){
-			                                      				errmsg += "         - Other sites impacted\n";
-			                                      			}
-			                                      			if (COOSCheckBox.Checked) {
-			                                      				if (COOS2GNumericUpDown.Value > 0 && COOS2GNumericUpDown.Value == prevTemp.COOS2G){
-			                                      					errmsg += "         - 2G COOS count\n";
-			                                      				}
-			                                      				if (COOS3GNumericUpDown.Value > 0 && COOS3GNumericUpDown.Value == prevTemp.COOS3G) {
-			                                      					errmsg += "         - 3G COOS count\n";
-			                                      				}
-			                                      				if (COOS4GNumericUpDown.Value > 0 && COOS4GNumericUpDown.Value == prevTemp.COOS4G) {
-			                                      					errmsg += "         - 4G COOS count\n";
-			                                      				}
-			                                      				if(FullSiteOutageCheckBox.Checked && prevTemp.FullSiteOutage)
-			                                      					errmsg += "         - Full Site Outage flag\n";
-			                                      			}
-			                                      			if (PerformanceIssueCheckBox.Checked && prevTemp.PerformanceIssue) {
-			                                      				errmsg += "         - Performance issue\n";
-			                                      			}
-			                                      			if (IntermittentIssueCheckBox.Checked && prevTemp.IntermittentIssue) {
-			                                      				errmsg += "         - Intermittent issue\n";
-			                                      			}
-			                                      			if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
-			                                      				errmsg += "         - Related INC/CRQ\n";
-			                                      			}
-			                                      			if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms) {
-			                                      				errmsg += "         - Active Alarms\n";
-			                                      			}
-			                                      			if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory) {
-			                                      				errmsg += "         - Alarm History\n";
-			                                      			}
-			                                      			if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.TroubleShoot) {
-			                                      				errmsg += "         - Troubleshoot\n";
-			                                      			}
-			                                      			if (errmsg != "") {
-			                                      				DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-			                                      				if (ans == DialogResult.No)
-			                                      					return;
-			                                      			}
-			                                      		}
-			                                      	}
-			                                      	
-			                                      	try {
-			                                      		Clipboard.SetText(currentTemplate.ToString());
-			                                      	}
-			                                      	catch (Exception) {
-			                                      		try {
-			                                      			Clipboard.SetText(currentTemplate.ToString());
-			                                      		}
-			                                      		catch (Exception) {
-			                                      			FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-			                                      		}
-			                                      	}
-			                                      	
-			                                      	FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
-			                                      	
-			                                      	if(UiMode == UiEnum.Template) {
-			                                      		if(!sendBCPToolStripMenuItem.Enabled)
-			                                      			sendBCPToolStripMenuItem.Enabled = true;
-			                                      		
-			                                      		// Store this template for future warning on no changes
-			                                      		prevTemp = currentTemplate;
-			                                      		
-			                                      		MainForm.logFiles.HandleLog(currentTemplate);
-			                                      	}
-			                                      });
-			LoadingPanel load = new LoadingPanel();
-			load.ShowAsync(null, actionNonThreaded, false, this.FindForm());
+		void GenerateTemplate(object sender, EventArgs e)
+        {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+            
+            if (UiMode == UiEnum.Template)
+            {
+                string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
+                if (CompINC_CRQ != "error")
+                    INCTextBox.Text = CompINC_CRQ;
+                else
+                {
+                    FlexibleMessageBox.Show("INC number must only contain digits!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    load.Close();
+                    return;
+                }
+                string errmsg = "";
+                if (string.IsNullOrEmpty(INCTextBox.Text))
+                {
+                    errmsg = "         - INC/Ticket Number missing\n";
+                }
+                if (string.IsNullOrEmpty(SiteIdTextBox.Text))
+                {
+                    errmsg += "         - Site ID missing\n";
+                }
+                if (SiteOwnerComboBox.SelectedIndex == 1 && string.IsNullOrEmpty(TefSiteTextBox.Text))
+                {
+                    errmsg += "          - TF Site ID missing\n";
+                }
+                if (string.IsNullOrEmpty(AddressTextBox.Text))
+                {
+                    errmsg += "         - Site Address missing\n";
+                }
+                if (string.IsNullOrEmpty(ActiveAlarmsTextBox.Text))
+                {
+                    errmsg += "         - Active alarms missing\n";
+                }
+                if (string.IsNullOrEmpty(TroubleshootTextBox.Text))
+                {
+                    errmsg += "         - Troubleshoot missing\n";
+                }
+                if (COOSCheckBox.Checked)
+                {
+                    if ((COOS2GNumericUpDown.Value == 0) && (COOS3GNumericUpDown.Value == 0) && (COOS4GNumericUpDown.Value == 0))
+                    {
+                        errmsg += "         - COOS count missing\n";
+                    }
+                }
+                if (!string.IsNullOrEmpty(errmsg))
+                {
+                    FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    load.Close();
+                    return;
+                }
+            }
+
+            string relatedCases = string.Empty;
+            if (GlobalProperties.siteFinder_mainswitch)
+            {
+                if (currentSite.Exists)
+                {
+                    if(!CheckOngoingCRQs())
+                    {
+                        load.Close();
+                        return;
+                    }
+                    DataTable OngoingCases = getCurrentCases();
+                    if (OngoingCases.Rows.Count > 0)
+                    {
+                        OiSiteTablesForm relatedCasesForm = new OiSiteTablesForm(OngoingCases, currentSite.Id);
+                        relatedCasesForm.StartPosition = FormStartPosition.CenterParent;
+                        relatedCasesForm.ShowDialog();
+                        if (relatedCasesForm.Cancel)
+                        {
+                            load.Close();
+                            return;
+                        }
+                        if (relatedCasesForm.selectedCases.Count > 0)
+                        {
+                            int c = 0;
+                            foreach (DataGridViewRow row in relatedCasesForm.selectedCases)
+                            {
+                                relatedCases += row.Cells["Reference"].Value + " - " + row.Cells["Summary"].Value;
+                                if (row.Cells[1].Value.ToString() == "INC")
+                                    relatedCases += " - " + row.Cells["Resolution"].Value;
+                                relatedCases += " - " + row.Cells["Status"].Value;
+                                if (++c < relatedCasesForm.selectedCases.Count)
+                                    relatedCases += Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            currentTemplate = new Troubleshoot(Controls, relatedCases);
+
+            if (UiMode == UiEnum.Template && prevTemp != null)
+            {
+                // No changes since the last template warning
+                string errmsg = "";
+                if (currentTemplate.ToString() != prevTemp.ToString())
+                {
+                    if (INCTextBox.Text == prevTemp.INC)
+                    {
+                        errmsg = "         - INC\n";
+                    }
+                    if (SiteIdTextBox.Text == prevTemp.SiteId)
+                    {
+                        errmsg += "         - Site ID\n";
+                    }
+                    if (SiteOwnerComboBox.Text == "TF" && TefSiteTextBox.Text == prevTemp.TefSiteId)
+                    {
+                        errmsg += "         - TF Site ID\n";
+                    }
+                    if (AddressTextBox.Text == prevTemp.SiteAddress)
+                    {
+                        errmsg += "         - Site Address\n";
+                    }
+                    if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == prevTemp.CCTReference)
+                    {
+                        errmsg += "         - CCT reference\n";
+                    }
+                    if (OtherSitesImpactedCheckBox.Checked && prevTemp.OtherSitesImpacted)
+                    {
+                        errmsg += "         - Other sites impacted\n";
+                    }
+                    if (COOSCheckBox.Checked)
+                    {
+                        if (COOS2GNumericUpDown.Value > 0 && COOS2GNumericUpDown.Value == prevTemp.COOS2G)
+                        {
+                            errmsg += "         - 2G COOS count\n";
+                        }
+                        if (COOS3GNumericUpDown.Value > 0 && COOS3GNumericUpDown.Value == prevTemp.COOS3G)
+                        {
+                            errmsg += "         - 3G COOS count\n";
+                        }
+                        if (COOS4GNumericUpDown.Value > 0 && COOS4GNumericUpDown.Value == prevTemp.COOS4G)
+                        {
+                            errmsg += "         - 4G COOS count\n";
+                        }
+                        if (FullSiteOutageCheckBox.Checked && prevTemp.FullSiteOutage)
+                            errmsg += "         - Full Site Outage flag\n";
+                    }
+                    if (PerformanceIssueCheckBox.Checked && prevTemp.PerformanceIssue)
+                    {
+                        errmsg += "         - Performance issue\n";
+                    }
+                    if (IntermittentIssueCheckBox.Checked && prevTemp.IntermittentIssue)
+                    {
+                        errmsg += "         - Intermittent issue\n";
+                    }
+                    if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ)
+                    {
+                        errmsg += "         - Related INC/CRQ\n";
+                    }
+                    if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms)
+                    {
+                        errmsg += "         - Active Alarms\n";
+                    }
+                    if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory)
+                    {
+                        errmsg += "         - Alarm History\n";
+                    }
+                    if (TroubleshootTextBox.Text != "" && TroubleshootTextBox.Text == prevTemp.TroubleShoot)
+                    {
+                        errmsg += "         - Troubleshoot\n";
+                    }
+                    if (errmsg != "")
+                    {
+                        DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?", "Same INC", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                        if (ans == DialogResult.No)
+                        {
+                            load.Close();
+                            return;
+                        }
+                    }
+                }
+            }
+
+            try
+            {
+                Clipboard.SetText(currentTemplate.ToString());
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    Clipboard.SetText(currentTemplate.ToString());
+                }
+                catch (Exception)
+                {
+                    FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.", "Clipboard error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
+
+            if (UiMode == UiEnum.Template)
+            {
+                if (!sendBcpToolStripMenuItem.Enabled)
+                    sendBcpToolStripMenuItem.Enabled = true;
+
+                // Store this template for future warning on no changes
+                prevTemp = currentTemplate;
+
+                MainForm.logFiles.HandleLog(currentTemplate);
+            }
+
+			load.Close();
 		}
 		
-		void CheckOngoingCRQs() {
+		bool CheckOngoingCRQs() {
 			if(currentSite.Changes != null) {
 				List<Change> OngoingCRQs = new List<Change>();
 				foreach(Change crq in currentSite.Changes) {
@@ -928,9 +1040,11 @@ namespace appCore.Templates.UI
 					}
 					DialogResult ans = MessageBox.Show("Site has Ongoing CRQ(s):" + Environment.NewLine + Environment.NewLine + OngoingCRQsStr + Environment.NewLine + Environment.NewLine + "Generate template anyway?","Ongoing CRQs",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
 					if(ans == DialogResult.No)
-						return;
+						return false;
 				}
 			}
+
+            return true;
 		}
 		
 		//// <summary>
@@ -941,9 +1055,11 @@ namespace appCore.Templates.UI
 		DataTable getCurrentCases() {
 			List<Incident> filteredINCs = null;
 			List<Change> filteredCRQs = null;
-			if(currentSite.Incidents.Count > 0)
-				filteredINCs = currentSite.Incidents.FindAll(s => s.Incident_Ref != INCTextBox.Text);
-			if(currentSite.Changes.Count > 0) {
+
+            if (currentSite.Incidents.Count > 0)
+		        filteredINCs = currentSite.Incidents.FindAll(s => s.Incident_Ref != INCTextBox.Text);
+
+            if (currentSite.Changes.Count > 0) {
 				filteredCRQs = currentSite.Changes;
 				for(int c = 0;c < filteredCRQs.Count;c++) {
 					Change crq = filteredCRQs[c];
@@ -995,35 +1111,47 @@ namespace appCore.Templates.UI
 		
 		public void siteFinderSwitch(string toState) {
 			if (toState == "off") {
-				SiteIdTextBox.TextChanged -= SiteIdTextBoxTextChanged;
+				//SiteIdTextBox.TextChanged -= SiteIdTextBoxTextChanged;
 				SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
 				OtherSitesImpactedCheckBox.CheckedChanged -= OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged -= FullSiteOutageCheckedChanged;
 				COOS2GLabel.DoubleClick -= COOSLabelDoubleClick;
 				COOS3GLabel.DoubleClick -= COOSLabelDoubleClick;
 				COOS4GLabel.DoubleClick -= COOSLabelDoubleClick;
+                //if(MainMenu.MainMenu.DropDownItems.Contains(SiteDetailsToolStripMenuItem))
+                //{
+                //    int siteDetailsToolStripMenuItemIndex = MainMenu.MainMenu.DropDownItems.IndexOf(SiteDetailsToolStripMenuItem);
+                //    MainMenu.MainMenu.DropDownItems.RemoveAt(siteDetailsToolStripMenuItemIndex - 1); // Remove separator
+                //    MainMenu.MainMenu.DropDownItems.RemoveAt(siteDetailsToolStripMenuItemIndex); // Remove MenuItem
+                //}
 				siteFinder_Toggle(true,false);
 			}
 			else {
 				INCTextBox.KeyPress += INCTextBoxKeyPress;
-				SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
+				//SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 				SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 				OtherSitesImpactedCheckBox.CheckedChanged += OtherSitesImpactedCheckedChanged;
 				FullSiteOutageCheckBox.CheckedChanged += FullSiteOutageCheckedChanged;
 				COOS2GLabel.DoubleClick += COOSLabelDoubleClick;
 				COOS3GLabel.DoubleClick += COOSLabelDoubleClick;
 				COOS4GLabel.DoubleClick += COOSLabelDoubleClick;
-				siteFinder_Toggle(false,false);
+                //if (!MainMenu.MainMenu.DropDownItems.Contains(SiteDetailsToolStripMenuItem))
+                //{
+                //    int sendBcpToolStripMenuItemIndex = MainMenu.MainMenu.DropDownItems.IndexOf(sendBcpToolStripMenuItem);
+                //    MainMenu.MainMenu.DropDownItems.Insert(sendBcpToolStripMenuItemIndex + 1, new ToolStripMenuItem("-"));
+                //    MainMenu.MainMenu.DropDownItems.Insert(sendBcpToolStripMenuItemIndex + 2, SiteDetailsToolStripMenuItem);
+                //}
+                siteFinder_Toggle(false,false);
 			}
 			COOS2GLabel.Text = "2G cells";
 			COOS3GLabel.Text = "3G cells";
 			COOS4GLabel.Text = "4G cells";
 		}
 		
-		void LoadDisplayOiDataTable(object sender, EventArgs e) {
+		async void LoadDisplayOiDataTable(object sender, EventArgs e) {
 //			if(e.Button == MouseButtons.Left) {
 			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
-			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
+			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == this && f.Text.EndsWith(dataToShow)).ToList();
 			if(fc.Count > 0) {
 				fc[0].Close();
 				fc[0].Dispose();
@@ -1033,8 +1161,11 @@ namespace appCore.Templates.UI
 				DataTable dt = new DataTable();
 				switch(dataToShow) {
 					case "INCs":
-						if(currentSite.Incidents == null) {
-							currentSite.requestOIData("INC");
+						if(currentSite.Incidents == null)
+                        {
+                            MainMenu.INCsButton.Text = "Loading data...";
+                            MainMenu.INCsButton.Enabled = false;
+                            await currentSite.requestOIDataAsync("INC");
 							if(currentSite.Incidents != null) {
 								if(currentSite.Incidents.Count > 0) {
 									MainMenu.INCsButton.Enabled = true;
@@ -1050,8 +1181,11 @@ namespace appCore.Templates.UI
 						}
 						break;
 					case "CRQs":
-						if(currentSite.Changes == null) {
-							currentSite.requestOIData("CRQ");
+                        if (currentSite.Changes == null)
+                        {
+                            MainMenu.CRQsButton.Text = "Loading data...";
+                            MainMenu.CRQsButton.Enabled = false;
+                            await currentSite.requestOIDataAsync("CRQ");
 							if(currentSite.Changes != null) {
 								if(currentSite.Changes.Count > 0) {
 									MainMenu.CRQsButton.Enabled = true;
@@ -1067,8 +1201,11 @@ namespace appCore.Templates.UI
 						}
 						break;
 					case "BookIns":
-						if(currentSite.Visits == null) {
-							currentSite.requestOIData("Bookins");
+						if(currentSite.Visits == null)
+                        {
+                            MainMenu.BookInsButton.Text = "Loading data...";
+                            MainMenu.BookInsButton.Enabled = false;
+                            await currentSite.requestOIDataAsync("Bookins");
 							if(currentSite.Visits != null) {
 								if(currentSite.Visits.Count > 0) {
 									MainMenu.BookInsButton.Enabled = true;
@@ -1084,8 +1221,11 @@ namespace appCore.Templates.UI
 						}
 						break;
 					case "ActiveAlarms":
-						if(currentSite.Alarms == null) {
-							currentSite.requestOIData("Alarms");
+						if(currentSite.Alarms == null)
+                        {
+                            MainMenu.ActiveAlarmsButton.Text = "Loading data...";
+                            MainMenu.ActiveAlarmsButton.Enabled = false;
+                            await currentSite.requestOIDataAsync("Alarms");
 							if(currentSite.Alarms != null) {
 								if(currentSite.Alarms.Count > 0) {
 									MainMenu.ActiveAlarmsButton.Enabled = true;
@@ -1121,8 +1261,10 @@ namespace appCore.Templates.UI
 			}
 		}
 		
-		void refreshOiData(object sender, EventArgs e) {
-			currentSite.requestOIData("INCCRQBookinsAlarms");
+		async void refreshOiData(object sender, EventArgs e)
+        {
+            MainMenu.ShowLoading();
+            await currentSite.requestOIDataAsync("INCCRQBookinsAlarms");
 			MainMenu.siteFinder_Toggle(true);
 		}
 		
@@ -1209,14 +1351,12 @@ namespace appCore.Templates.UI
 			// 
 			// sendBCPToolStripMenuItem
 			// 
-			sendBCPToolStripMenuItem.Name = "sendBCPToolStripMenuItem";
-			sendBCPToolStripMenuItem.Text = "Send BCP Email...";
-			sendBCPToolStripMenuItem.Click += SendBCPForm;
+			sendBcpToolStripMenuItem.Name = "sendBCPToolStripMenuItem";
+			sendBcpToolStripMenuItem.Text = "Send BCP Email...";
+			sendBcpToolStripMenuItem.Click += SendBCPForm;
 			// 
 			// SiteIdLabel
 			// 
-//			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
-//			SiteIdLabel.Size = new Size(67, 20);
 			SiteIdLabel.Name = "SiteIdLabel";
 			SiteIdLabel.TabIndex = 56;
 			SiteIdLabel.Text = "Site ID";
@@ -1225,16 +1365,12 @@ namespace appCore.Templates.UI
 			// SiteIdTextBox
 			// 
 			SiteIdTextBox.Font = new Font("Courier New", 8.25F);
-//			SiteIdTextBox.Location = new Point(SiteIdLabel.Right + 2, MainMenu.Bottom + 4);
-//			SiteIdTextBox.Size = new Size(58, 20);
 			SiteIdTextBox.MaxLength = 6;
 			SiteIdTextBox.Name = "SiteIdTextBox";
 			SiteIdTextBox.TabIndex = 2;
 			// 
 			// RegionLabel
 			// 
-//			RegionLabel.Location = new Point(SiteIdTextBox.Right + 2, MainMenu.Bottom + 4);
-//			RegionLabel.Size = new Size(43, 20);
 			RegionLabel.Name = "RegionLabel";
 			RegionLabel.Text = "Region";
 			RegionLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -1242,8 +1378,6 @@ namespace appCore.Templates.UI
 			// RegionTextBox
 			// 
 			RegionTextBox.Font = new Font("Courier New", 8.25F);
-//			RegionTextBox.Location = new Point(RegionLabel.Right + 2, MainMenu.Bottom + 4);
-//			RegionTextBox.Size = new Size(78, 20);
 			RegionTextBox.MaxLength = 5;
 			RegionTextBox.Name = "RegionTextBox";
 			RegionTextBox.ReadOnly = true;
@@ -1251,8 +1385,6 @@ namespace appCore.Templates.UI
 			// 
 			// SiteOwnerLabel
 			// 
-//			SiteOwnerLabel.Location = new Point(PaddingLeftRight, SiteIdLabel.Bottom + 4);
-//			SiteOwnerLabel.Size = new Size(67, 20);
 			SiteOwnerLabel.Name = "SiteOwnerLabel";
 			SiteOwnerLabel.TabIndex = 59;
 			SiteOwnerLabel.Text = "Site Owner";
@@ -1265,16 +1397,12 @@ namespace appCore.Templates.UI
 			SiteOwnerComboBox.Items.AddRange(new object[] {
 			                                 	"VF",
 			                                 	"TF"});
-//			SiteOwnerComboBox.Location = new Point(SiteOwnerLabel.Right + 2, SiteOwnerLabel.Top);
-//			SiteOwnerComboBox.Size = new Size(43, 21);
 			SiteOwnerComboBox.Name = "SiteOwnerComboBox";
 			SiteOwnerComboBox.TabIndex = 3;
 			SiteOwnerComboBox.SelectedIndexChanged += SiteOwnerComboBoxSelectedIndexChanged;
 			// 
 			// TefSiteLabel
 			// 
-//			TefSiteLabel.Location = new Point(SiteOwnerComboBox.Right + 2, SiteOwnerLabel.Top);
-//			TefSiteLabel.Size = new Size(43, 20);
 			TefSiteLabel.Name = "TefSiteLabel";
 			TefSiteLabel.TabIndex = 67;
 			TefSiteLabel.Text = "TF Site";
@@ -1284,16 +1412,12 @@ namespace appCore.Templates.UI
 			// TefSiteTextBox
 			// 
 			TefSiteTextBox.Font = new Font("Courier New", 8.25F);
-//			TefSiteTextBox.Location = new Point(TefSiteLabel.Right + 2, SiteOwnerLabel.Top);
-//			TefSiteTextBox.Size = new Size(91, 20);
 			TefSiteTextBox.Name = "TefSiteTextBox";
 			TefSiteTextBox.TabIndex = 4;
 			TefSiteTextBox.Visible = false;
 			// 
 			// AddressLabel
 			// 
-//			AddressLabel.Location = new Point(PaddingLeftRight, SiteOwnerLabel.Bottom + 4);
-//			AddressLabel.Size = new Size(67, 40);
 			AddressLabel.Name = "AddressLabel";
 			AddressLabel.TabIndex = 61;
 			AddressLabel.Text = "Address";
@@ -1303,8 +1427,6 @@ namespace appCore.Templates.UI
 			// 
 			AddressTextBox.DetectUrls = false;
 			AddressTextBox.Font = new Font("Courier New", 8.25F);
-//			AddressTextBox.Location = new Point(AddressLabel.Right + 2, AddressLabel.Top);
-//			AddressTextBox.Size = new Size(157, 40);
 			AddressTextBox.Name = "AddressTextBox";
 			AddressTextBox.TabIndex = 78;
 			AddressTextBox.Text = "";
@@ -1313,8 +1435,6 @@ namespace appCore.Templates.UI
 			// AddressLargeTextButton
 			// 
 			AddressLargeTextButton.Enabled = false;
-//			AddressLargeTextButton.Location = new Point(AddressTextBox.Right, AddressTextBox.Top);
-//			AddressLargeTextButton.Size = new Size(24, 20);
 			AddressLargeTextButton.Name = "AddressLargeTextButton";
 			AddressLargeTextButton.TabIndex = 75;
 			AddressLargeTextButton.Text = "...";
@@ -1324,8 +1444,6 @@ namespace appCore.Templates.UI
 			// MTXAddressButton
 			// 
 			MTXAddressButton.Font = new Font("Microsoft Sans Serif", 3.75F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-//			MTXAddressButton.Location = new Point(AddressTextBox.Right, AddressLargeTextButton.Bottom);
-//			MTXAddressButton.Size = new Size(24, 20);
 			MTXAddressButton.Name = "MTXAddressButton";
 			MTXAddressButton.TabIndex = 6;
 			MTXAddressButton.Text = "MTX";
@@ -1334,8 +1452,6 @@ namespace appCore.Templates.UI
 			// 
 			// CCTRefLabel
 			// 
-//			CCTRefLabel.Location = new Point(PaddingLeftRight, AddressLabel.Bottom + 4);
-//			CCTRefLabel.Size = new Size(67, 20);
 			CCTRefLabel.Name = "CCTRefLabel";
 			CCTRefLabel.TabIndex = 62;
 			CCTRefLabel.Text = "CCT ref.";
@@ -1344,15 +1460,11 @@ namespace appCore.Templates.UI
 			// CCTRefTextBox
 			// 
 			CCTRefTextBox.Font = new Font("Courier New", 8.25F);
-//			CCTRefTextBox.Location = new Point(CCTRefLabel.Right + 2, CCTRefLabel.Top);
-//			CCTRefTextBox.Size = new Size(181, 20);
 			CCTRefTextBox.Name = "CCTRefTextBox";
 			CCTRefTextBox.TabIndex = 7;
 			// 
 			// PowerCompanyLabel
 			// 
-//			PowerCompanyLabel.Location = new Point(PaddingLeftRight, CCTRefLabel.Bottom + 4);
-//			PowerCompanyLabel.Size = new Size(67, 20);
 			PowerCompanyLabel.Name = "PowerCompanyLabel";
 			PowerCompanyLabel.TabIndex = 74;
 			PowerCompanyLabel.Text = "Power Comp";
@@ -1361,8 +1473,6 @@ namespace appCore.Templates.UI
 			// PowerCompanyTextBox
 			// 
 			PowerCompanyTextBox.Font = new Font("Courier New", 8.25F);
-//			PowerCompanyTextBox.Location = new Point(PowerCompanyLabel.Right + 2, PowerCompanyLabel.Top);
-//			PowerCompanyTextBox.Size = new Size(181, 20);
 			PowerCompanyTextBox.MaxLength = 5;
 			PowerCompanyTextBox.Name = "PowerCompanyTextBox";
 			PowerCompanyTextBox.ReadOnly = true;
@@ -1370,8 +1480,6 @@ namespace appCore.Templates.UI
 			// 
 			// INCLabel
 			// 
-//			INCLabel.Location = new Point(PaddingLeftRight + 250 + 10, MainMenu.Bottom + 4);
-//			INCLabel.Size = new Size(67, 20);
 			INCLabel.Name = "INCLabel";
 			INCLabel.TabIndex = 54;
 			INCLabel.Text = "INC";
@@ -1381,16 +1489,12 @@ namespace appCore.Templates.UI
 			// 
 			INCTextBox.AcceptsTab = true;
 			INCTextBox.Font = new Font("Courier New", 8.25F);
-//			INCTextBox.Location = new Point(INCLabel.Right + 2, MainMenu.Bottom + 4);
-//			INCTextBox.Size = new Size(181, 20);
 			INCTextBox.MaxLength = 15;
 			INCTextBox.Name = "INCTextBox";
 			INCTextBox.TabIndex = 1;
 			// 
 			// OtherSitesImpactedCheckBox
 			// 
-//			OtherSitesImpactedCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, INCLabel.Bottom + 2);
-//			OtherSitesImpactedCheckBox.Size = new Size(123, 23);
 			OtherSitesImpactedCheckBox.Name = "OtherSitesImpactedCheckBox";
 			OtherSitesImpactedCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			OtherSitesImpactedCheckBox.TabIndex = 8;
@@ -1400,8 +1504,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOSCheckBox
 			// 
-//			COOSCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, OtherSitesImpactedCheckBox.Bottom);
-//			COOSCheckBox.Size = new Size(123, 23);
 			COOSCheckBox.Name = "COOSCheckBox";
 			COOSCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			COOSCheckBox.TabIndex = 9;
@@ -1413,8 +1515,6 @@ namespace appCore.Templates.UI
 			// FullSiteOutageCheckBox
 			// 
 			FullSiteOutageCheckBox.CheckAlign = ContentAlignment.MiddleRight;
-//			FullSiteOutageCheckBox.Location = new Point(OtherSitesImpactedCheckBox.Right + 10, OtherSitesImpactedCheckBox.Top);
-//			FullSiteOutageCheckBox.Size = new Size(103, 23);
 			FullSiteOutageCheckBox.Name = "FullSiteOutageCheckBox";
 			FullSiteOutageCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			FullSiteOutageCheckBox.TabIndex = 80;
@@ -1425,8 +1525,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOS2GLabel
 			// 
-//			COOS2GLabel.Location = new Point(COOSCheckBox.Right + 5, FullSiteOutageCheckBox.Bottom);
-//			COOS2GLabel.Size = new Size(63, 20);
 			COOS2GLabel.Name = "COOS2GLabel";
 			COOS2GLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			COOS2GLabel.TabIndex = 68;
@@ -1436,8 +1534,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOS2GNumericUpDown
 			// 
-//			COOS2GNumericUpDown.Location = new Point(COOS2GLabel.Right + 2, COOS2GLabel.Top);
-//			COOS2GNumericUpDown.Size = new Size(59, 20);
 			COOS2GNumericUpDown.Maximum = new decimal(new int[] {
 			                                          	999,
 			                                          	0,
@@ -1449,8 +1545,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOS3GLabel
 			// 
-//			COOS3GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS2GLabel.Bottom + 4);
-//			COOS3GLabel.Size = new Size(63, 20);
 			COOS3GLabel.Name = "COOS3GLabel";
 			COOS3GLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			COOS3GLabel.TabIndex = 69;
@@ -1460,8 +1554,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOS3GNumericUpDown
 			// 
-//			COOS3GNumericUpDown.Location = new Point(COOS3GLabel.Right + 2, COOS3GLabel.Top);
-//			COOS3GNumericUpDown.Size = new Size(59, 20);
 			COOS3GNumericUpDown.Maximum = new decimal(new int[] {
 			                                          	999,
 			                                          	0,
@@ -1473,8 +1565,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOS4GLabel
 			// 
-//			COOS4GLabel.Location = new Point(COOSCheckBox.Right + 5, COOS3GLabel.Bottom + 4);
-//			COOS4GLabel.Size = new Size(63, 20);
 			COOS4GLabel.Name = "COOS4GLabel";
 			COOS4GLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			COOS4GLabel.TabIndex = 70;
@@ -1484,8 +1574,6 @@ namespace appCore.Templates.UI
 			// 
 			// COOS4GNumericUpDown
 			// 
-//			COOS4GNumericUpDown.Location = new Point(COOS4GLabel.Right + 2, COOS4GLabel.Top);
-//			COOS4GNumericUpDown.Size = new Size(59, 20);
 			COOS4GNumericUpDown.Maximum = new decimal(new int[] {
 			                                          	999,
 			                                          	0,
@@ -1497,8 +1585,6 @@ namespace appCore.Templates.UI
 			// 
 			// PerformanceIssueCheckBox
 			// 
-//			PerformanceIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, COOSCheckBox.Bottom);
-//			PerformanceIssueCheckBox.Size = new Size(123, 23);
 			PerformanceIssueCheckBox.Name = "PerformanceIssueCheckBox";
 			PerformanceIssueCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			PerformanceIssueCheckBox.TabIndex = 13;
@@ -1508,8 +1594,6 @@ namespace appCore.Templates.UI
 			// 
 			// IntermittentIssueCheckBox
 			// 
-//			IntermittentIssueCheckBox.Location = new Point(PaddingLeftRight + 250 + 10 - 2, PerformanceIssueCheckBox.Bottom);
-//			IntermittentIssueCheckBox.Size = new Size(123, 23);
 			IntermittentIssueCheckBox.Name = "IntermittentIssueCheckBox";
 			IntermittentIssueCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			IntermittentIssueCheckBox.TabIndex = 14;
@@ -1519,8 +1603,6 @@ namespace appCore.Templates.UI
 			// 
 			// RelatedINC_CRQLabel
 			// 
-//			RelatedINC_CRQLabel.Location = new Point(PaddingLeftRight + 250 + 10, IntermittentIssueCheckBox.Bottom + 2);
-//			RelatedINC_CRQLabel.Size = new Size(105, 20);
 			RelatedINC_CRQLabel.Name = "RealatedINC_CRQLabel";
 			RelatedINC_CRQLabel.TabIndex = 63;
 			RelatedINC_CRQLabel.Text = "Related INC/CRQ";
@@ -1529,16 +1611,12 @@ namespace appCore.Templates.UI
 			// RelatedINC_CRQTextBox
 			// 
 			RelatedINC_CRQTextBox.Font = new Font("Courier New", 8.25F);
-//			RelatedINC_CRQTextBox.Location = new Point(RelatedINC_CRQLabel.Right + 2, IntermittentIssueCheckBox.Bottom + 2);
-//			RelatedINC_CRQTextBox.Size = new Size(143, 20);
 			RelatedINC_CRQTextBox.Name = "RelatedINC_CRQTextBox";
 			RelatedINC_CRQTextBox.Size = new Size(143, 20);
 			RelatedINC_CRQTextBox.TabIndex = 15;
 			// 
 			// ActiveAlarmsLabel
 			// 
-//			ActiveAlarmsLabel.Location = new Point(PaddingLeftRight, PowerCompanyLabel.Bottom + 4);
-//			ActiveAlarmsLabel.Size = new Size(77, 20);
 			ActiveAlarmsLabel.Name = "ActiveAlarmsLabel";
 			ActiveAlarmsLabel.TabIndex = 64;
 			ActiveAlarmsLabel.Text = "Active Alarms";
@@ -1548,8 +1626,6 @@ namespace appCore.Templates.UI
 			// 
 			ActiveAlarmsTextBox.DetectUrls = false;
 			ActiveAlarmsTextBox.Font = new Font("Courier New", 8.25F);
-//			ActiveAlarmsTextBox.Location = new Point(PaddingLeftRight, ActiveAlarmsLabel.Bottom + 4);
-//			ActiveAlarmsTextBox.Size = new Size(250, 194);
 			ActiveAlarmsTextBox.Name = "ActiveAlarmsTextBox";
 			ActiveAlarmsTextBox.TabIndex = 16;
 			ActiveAlarmsTextBox.Text = "";
@@ -1558,8 +1634,6 @@ namespace appCore.Templates.UI
 			// ActiveAlarmsLargeTextButton
 			// 
 			ActiveAlarmsLargeTextButton.Enabled = false;
-//			ActiveAlarmsLargeTextButton.Size = new Size(24, 20);
-//			ActiveAlarmsLargeTextButton.Location = new Point(ActiveAlarmsTextBox.Right - ActiveAlarmsLargeTextButton.Width, ActiveAlarmsLabel.Top);
 			ActiveAlarmsLargeTextButton.Name = "ActiveAlarmsLargeTextButton";
 			ActiveAlarmsLargeTextButton.TabIndex = 17;
 			ActiveAlarmsLargeTextButton.Text = "...";
@@ -1568,8 +1642,6 @@ namespace appCore.Templates.UI
 			// 
 			// AlarmHistoryLabel
 			// 
-//			AlarmHistoryLabel.Location = new Point(ActiveAlarmsTextBox.Right + 10, ActiveAlarmsLabel.Top);
-//			AlarmHistoryLabel.Size = new Size(109, 20);
 			AlarmHistoryLabel.Name = "AlarmHistoryLabel";
 			AlarmHistoryLabel.TabIndex = 65;
 			AlarmHistoryLabel.Text = "Alarm History";
@@ -1579,8 +1651,6 @@ namespace appCore.Templates.UI
 			// 
 			AlarmHistoryTextBox.DetectUrls = false;
 			AlarmHistoryTextBox.Font = new Font("Courier New", 8.25F);
-//			AlarmHistoryTextBox.Location = new Point(ActiveAlarmsTextBox.Right + 10, AlarmHistoryLabel.Bottom + 3);
-//			AlarmHistoryTextBox.Size = new Size(250, 194);
 			AlarmHistoryTextBox.Name = "AlarmHistoryTextBox";
 			AlarmHistoryTextBox.TabIndex = 18;
 			AlarmHistoryTextBox.Text = "";
@@ -1589,8 +1659,6 @@ namespace appCore.Templates.UI
 			// AlarmHistoryLargeTextButton
 			// 
 			AlarmHistoryLargeTextButton.Enabled = false;
-//			AlarmHistoryLargeTextButton.Size = new Size(24, 20);
-//			AlarmHistoryLargeTextButton.Location = new Point(AlarmHistoryTextBox.Right - AlarmHistoryLargeTextButton.Width, AlarmHistoryLabel.Top);
 			AlarmHistoryLargeTextButton.Name = "AlarmHistoryLargeTextButton";
 			AlarmHistoryLargeTextButton.TabIndex = 19;
 			AlarmHistoryLargeTextButton.Text = "...";
@@ -1599,8 +1667,6 @@ namespace appCore.Templates.UI
 			// 
 			// TroubleshootLabel
 			// 
-//			TroubleshootLabel.Location = new Point(PaddingLeftRight, ActiveAlarmsTextBox.Bottom + 4);
-//			TroubleshootLabel.Size = new Size(109, 20);
 			TroubleshootLabel.Name = "TroubleshootLabel";
 			TroubleshootLabel.TabIndex = 66;
 			TroubleshootLabel.Text = "Troubleshoot";
@@ -1610,8 +1676,6 @@ namespace appCore.Templates.UI
 			// 
 			TroubleshootTextBox.DetectUrls = false;
 			TroubleshootTextBox.Font = new Font("Courier New", 8.25F);
-//			TroubleshootTextBox.Size = new Size(510, 203);
-//			TroubleshootTextBox.Location = new Point(PaddingLeftRight, TroubleshootLabel.Bottom + 3);
 			TroubleshootTextBox.Name = "TroubleshootTextBox";
 			TroubleshootTextBox.TabIndex = 20;
 			TroubleshootTextBox.Text = "";
@@ -1620,8 +1684,6 @@ namespace appCore.Templates.UI
 			// TroubleshootLargeTextButton
 			// 
 			TroubleshootLargeTextButton.Enabled = false;
-//			TroubleshootLargeTextButton.Size = new Size(24, 20);
-//			TroubleshootLargeTextButton.Location = new Point(TroubleshootTextBox.Right - TroubleshootLargeTextButton.Width, TroubleshootLabel.Top);
 			TroubleshootLargeTextButton.Name = "TroubleshootLargeTextButton";
 			TroubleshootLargeTextButton.TabIndex = 21;
 			TroubleshootLargeTextButton.Text = "...";

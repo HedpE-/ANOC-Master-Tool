@@ -54,22 +54,26 @@ namespace appCore.Logs.UI
 					WindowTitle += "th of ";
 					break;
 			}
-			WindowTitle += Logs.logFileDate.ToString("MMMM, yyyy",CultureInfo.GetCultureInfo("en-GB"));// + ", " + Logs.logFileDate.Year;
+			WindowTitle += Logs.logFileDate.ToString("MMMM, yyyy", CultureInfo.GetCultureInfo("en-GB"));// + ", " + Logs.logFileDate.Year;
 			
 			GlobalLogType = "Templates";
 			
 			this.Height = 164;
 			this.Text = "Log Editor - " + WindowTitle + " - " + GlobalLogType + " logs";
 			
+
+
 			var logsList = new List<dynamic>();
 			
-			for(int c = 0; c < Logs.Count; c++) {
-				switch (Logs[c].LogType) {
+			for(int c = 0; c < Logs.Count; c++)
+            {
+				switch (Logs[c].LogType)
+                {
 					case TemplateTypes.Troubleshoot:
 						Troubleshoot TSlog = new Troubleshoot();
 						Toolbox.Tools.CopyProperties(TSlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
+						             	LogType = Logs[c].LogType.GetDescription(),
 						             	INC = TSlog.INC,
 						             	Target = TSlog.SiteId,
 						             	Timestamp = TSlog.GenerationDate.ToString("HH:mm:ss")
@@ -79,7 +83,7 @@ namespace appCore.Logs.UI
 						FailedCRQ FCRQlog = new FailedCRQ();
 						Toolbox.Tools.CopyProperties(FCRQlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
+						             	LogType = Logs[c].LogType.GetDescription(),
 						             	INC = FCRQlog.INC,
 						             	Target = FCRQlog.SiteId,
 						             	Timestamp = FCRQlog.GenerationDate.ToString("HH:mm:ss")
@@ -89,7 +93,7 @@ namespace appCore.Logs.UI
 						TX TXlog = new TX();
 						Toolbox.Tools.CopyProperties(TXlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
+						             	LogType = Logs[c].LogType.GetDescription(),
 						             	INC = "-",
 						             	Target = TXlog.SiteIDs,
 						             	Timestamp = TXlog.GenerationDate.ToString("HH:mm:ss")
@@ -99,7 +103,7 @@ namespace appCore.Logs.UI
 						Update UPDlog = new Update();
 						Toolbox.Tools.CopyProperties(UPDlog, Logs[c]);
 						logsList.Add(new {
-						             	LogType = EnumExtensions.GetDescription(Logs[c].LogType),
+						             	LogType = Logs[c].LogType.GetDescription(),
 						             	INC = UPDlog.INC,
 						             	Target = UPDlog.SiteId,
 						             	Timestamp = UPDlog.GenerationDate.ToString("HH:mm:ss")
@@ -142,7 +146,8 @@ namespace appCore.Logs.UI
 			
 			var logsList = new List<dynamic>();
 			
-			for (int c = 0; c < OutageLogs.Count; c++) {
+			for (int c = 0; c < OutageLogs.Count; c++)
+            {
 				char VfReportExists = !string.IsNullOrEmpty(OutageLogs[c].VfOutage) ? '\u2714' : '\u2718';
 				char TefReportExists = !string.IsNullOrEmpty(OutageLogs[c].TefOutage) ? '\u2714' : '\u2718';
 				logsList.Add(new {
@@ -160,8 +165,10 @@ namespace appCore.Logs.UI
 			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 			dataGridView1.DataSource = logsList;
 			
-			for(int c = 0;c < dataGridView1.Columns.Count;c++) {
-				switch(dataGridView1.Columns[c].Name) {
+			for(int c = 0;c < dataGridView1.Columns.Count;c++)
+            {
+				switch(dataGridView1.Columns[c].Name)
+                {
 					case "Timestamp":
 						dataGridView1.Columns[c].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
 						dataGridView1.Columns[c].Width = 70;
@@ -201,9 +208,14 @@ namespace appCore.Logs.UI
 						
 				}
 			}
-		}
-		
-		void LogEditorFormClosing(object sender, FormClosingEventArgs e)
+        }
+
+        private async void LogEditor_Shown(object sender, EventArgs e)
+        {
+
+        }
+
+        void LogEditorFormClosing(object sender, FormClosingEventArgs e)
 		{
 			var fc = Application.OpenForms.OfType<LogBrowser>().ToList();
 			
@@ -229,65 +241,74 @@ namespace appCore.Logs.UI
 		
 		void DataGridView1SelectionChanged(object sender, EventArgs e)
 		{
-			if(dataGridView1.SelectedRows.Count > 0) {
-				if(dataGridView1.SelectedRows.Count == 1) {
-					Action actionNonThreaded = new Action(delegate {
-					                                      	if(TroubleshootUI != null)
-					                                      		TroubleshootUI.Dispose();
-					                                      	if(FailedCRQUI != null)
-					                                      		FailedCRQUI.Dispose();
-					                                      	if(UpdateUI != null)
-					                                      		UpdateUI.Dispose();
-					                                      	if(TXUI != null)
-					                                      		TXUI.Dispose();
-					                                      	if(OutageUI != null)
-					                                      		OutageUI.Dispose();
-					                                      	switch(GlobalLogType) {
-					                                      		case "Templates":
-					                                      			switch ((EnumExtensions.Parse(typeof(TemplateTypes), dataGridView1.SelectedRows[0].Cells["LogType"].Value.ToString()))) {
-					                                      				case TemplateTypes.Troubleshoot:
-					                                      					TroubleshootUI = new TroubleshootControls(Logs[dataGridView1.SelectedRows[0].Index].ToTroubleshootTemplate());
-					                                      					TroubleshootUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
-					                                      					this.Controls.Add(TroubleshootUI);					                                      					
-					                                      					//this.Height = TroubleshootUI.Bottom + 29;
-					                                      					break;
-					                                      				case TemplateTypes.FailedCRQ:
-					                                      					FailedCRQUI = new FailedCRQControls(Logs[dataGridView1.SelectedRows[0].Index].ToFailedCRQTemplate());
-					                                      					FailedCRQUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
-					                                      					this.Controls.Add(FailedCRQUI);
-					                                      					//this.Height = FailedCRQUI.Bottom + 29;
-					                                      					break;
-					                                      				case TemplateTypes.TX:
-					                                      					TXUI = new TxControls(Logs[dataGridView1.SelectedRows[0].Index].ToTxTemplate());
-					                                      					TXUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
-					                                      					this.Controls.Add(TXUI);
-					                                      					//this.Height = TXUI.Bottom + 29;
-					                                      					break;
-					                                      				case TemplateTypes.Update:
-					                                      					UpdateUI = new UpdateControls(Logs[dataGridView1.SelectedRows[0].Index].ToUpdateTemplate());
-					                                      					UpdateUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
-					                                      					this.Controls.Add(UpdateUI);
-                                                                            //this.Height = UpdateUI.Bottom + 29;
-					                                      					break;
-					                                      			}
-					                                      			break;
-					                                      		case "Outages":
-					                                      			OutageUI = new OutageControls(OutageLogs[dataGridView1.SelectedRows[0].Index]);
-					                                      			OutageUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
-					                                      			this.Controls.Add(OutageUI);
-                                                                    //this.Height = OutageUI.Bottom + 29;
-                                                                    break;
-                                                            }
-                                                            var ct = Controls.Cast<Control>().FirstOrDefault(c => c.Name.EndsWith("GUI"));
-                                                            this.Height = ct.Bottom + 45;
-                    });
-					appCore.UI.LoadingPanel loading = new appCore.UI.LoadingPanel();
-					loading.Show(actionNonThreaded, this);
+			if(dataGridView1.SelectedRows.Count > 0)
+            {
+				if(dataGridView1.SelectedRows.Count == 1)
+                {
+                    appCore.UI.LoadingPanel loading = new appCore.UI.LoadingPanel();
+                    loading.Show(false, this);
+
+                    if (TroubleshootUI != null)
+					    TroubleshootUI.Dispose();
+					if(FailedCRQUI != null)
+					    FailedCRQUI.Dispose();
+					if(UpdateUI != null)
+					    UpdateUI.Dispose();
+					if(TXUI != null)
+					    TXUI.Dispose();
+					if(OutageUI != null)
+					    OutageUI.Dispose();
+
+					switch(GlobalLogType) {
+					    case "Templates":
+					        switch ((EnumExtensions.Parse(typeof(TemplateTypes), dataGridView1.SelectedRows[0].Cells["LogType"].Value.ToString()))) {
+					            case TemplateTypes.Troubleshoot:
+					                TroubleshootUI = new TroubleshootControls(Logs[dataGridView1.SelectedRows[0].Index].ToTroubleshootTemplate());
+					                TroubleshootUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+					                this.Controls.Add(TroubleshootUI);					                                      					
+					                //this.Height = TroubleshootUI.Bottom + 29;
+					                break;
+					            case TemplateTypes.FailedCRQ:
+					                FailedCRQUI = new FailedCRQControls(Logs[dataGridView1.SelectedRows[0].Index].ToFailedCRQTemplate());
+					                FailedCRQUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+					                this.Controls.Add(FailedCRQUI);
+					                //this.Height = FailedCRQUI.Bottom + 29;
+					                break;
+					            case TemplateTypes.TX:
+					                TXUI = new TxControls(Logs[dataGridView1.SelectedRows[0].Index].ToTxTemplate());
+					                TXUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+					                this.Controls.Add(TXUI);
+					                //this.Height = TXUI.Bottom + 29;
+					                break;
+					            case TemplateTypes.Update:
+					                UpdateUI = new UpdateControls(Logs[dataGridView1.SelectedRows[0].Index].ToUpdateTemplate());
+					                UpdateUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+					                this.Controls.Add(UpdateUI);
+                                    //this.Height = UpdateUI.Bottom + 29;
+					                break;
+					        }
+					        break;
+					    case "Outages":
+					        OutageUI = new OutageControls(OutageLogs[dataGridView1.SelectedRows[0].Index]);
+					        OutageUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
+					        this.Controls.Add(OutageUI);
+                            //this.Height = OutageUI.Bottom + 29;
+                            break;
+                    }
+                    var ct = Controls.Cast<Control>().FirstOrDefault(c => c.Name.EndsWith("GUI"));
+                    this.Height = ct.Bottom + 45;
+					loading.Close();
 				}
 			}
-		}
-		
-		void Form_Resize(object sender, EventArgs e)
+        }
+
+        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (dataGridView1.SelectedCells.Count == 1)
+                dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Selected = true;
+        }
+
+        void Form_Resize(object sender, EventArgs e)
 		{
 			// Fire Resize event to check if the window was minimized and minimize LogBrowser as well
 //			if (WindowState == FormWindowState.Minimized)
@@ -303,5 +324,5 @@ namespace appCore.Logs.UI
 			////				Invoke(new Delegate(WindowState = FormWindowState.Minimized;
 //			}
 		}
-	}
+    }
 }

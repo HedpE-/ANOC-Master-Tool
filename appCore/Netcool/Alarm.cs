@@ -69,13 +69,12 @@ namespace appCore.Netcool
                                 }
                                 else
                                 {
-                                    //if(Identifier.Contains("Local Cell ID="))
-                                    //{
-                                    //    temp = Identifier.Substring(Identifier.IndexOf("Local Cell ID=") + "Local Cell ID=".Length);
-                                    //    element = temp.Substring(0, temp.IndexOf(','));
-                                    //}
-                                    //else
-                                        element = Location + " - No cell description on Netcool.";
+                                    if (Identifier.Contains("Local Cell ID="))
+                                    {
+                                        temp = Identifier.Substring(Identifier.IndexOf("Local Cell ID="));
+                                        temp = temp.Substring(0, temp.IndexOf(','));
+                                    }
+                                    element = Location + string.Format(" - No cell name on Netcool. ({0})", temp);
                                 }
                                 break;
 							case Vendors.NSN:
@@ -133,7 +132,7 @@ namespace appCore.Netcool
         //                                    Location + " - No cell description on Netcool.";
         //                                break;
 								//}
-                                element = Location + " - No cell description on Netcool.";
+                                element = Location + " - No cell name on Netcool.";
                                 break;
 							case Vendors.Ericsson:
 								switch(RncBsc.Substring(0,1)) {
@@ -303,20 +302,23 @@ namespace appCore.Netcool
 					}
 				}
 
-				try {
-					if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
-						return Bearers.GSM;
-				} catch { }
-				try {
-					if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
-						return Bearers.UMTS;
-				} catch { }
-				try {
-					if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
-						return Bearers.LTE;
-				} catch { }
+                if(!Element.Contains("No cell"))
+                {
+				    try {
+					    if(Element.StartsWith("D") || Element.StartsWith("G") || Element.StartsWith("I") || Element.StartsWith("P") || Element.StartsWith("S") || Element.StartsWith("U") || Element.StartsWith("TD") || Element.StartsWith("TG") || Element.StartsWith("TI") || Element.StartsWith("TP") || Element.StartsWith("TS") || Element.StartsWith("TU"))
+						    return Bearers.GSM;
+				    } catch { }
+				    try {
+					    if(Element.StartsWith("A") || Element.StartsWith("B") || Element.StartsWith("C") || Element.StartsWith("H") || Element.StartsWith("M") || (Element.StartsWith("V") && Element.Length < 15) || Element.StartsWith("W") || Element.StartsWith("TA") || Element.StartsWith("TB") || Element.StartsWith("TC") || Element.StartsWith("TH") || Element.StartsWith("TM") || (Element.StartsWith("TV") && Element.Length < 15) || Element.StartsWith("TW"))
+						    return Bearers.UMTS;
+				    } catch { }
+				    try {
+					    if(Element.StartsWith("N") || Element.StartsWith("Q") || Element.StartsWith("R") || Element.StartsWith("ZE") || Element.StartsWith("ZK") || (Element.StartsWith("V") && Element.Length == 15) || Element.StartsWith("TN") || Element.StartsWith("TQ") || Element.StartsWith("TR") || Element.StartsWith("TZE") || Element.StartsWith("TZK"))
+						    return Bearers.LTE;
+				    } catch { }
+                }
 
-				return Bearers.Unknown;
+                return Bearers.Unknown;
 			}
 		}
 		
@@ -344,8 +346,10 @@ namespace appCore.Netcool
 		
 		public Alarm() {}
 
-		public Alarm(string[] alarmArray, string[] headers) {
-			try {
+		public Alarm(string[] alarmArray, string[] headers)
+        {
+			try
+            {
 				attributes = alarmArray[Array.IndexOf(headers, "Attributes")];
 				serviceImpact = alarmArray[Array.IndexOf(headers, "Service Impact")];
 				vendor = alarmArray[Array.IndexOf(headers, "Vendor")];
@@ -363,8 +367,10 @@ namespace appCore.Netcool
 				ttStatus = alarmArray[Array.IndexOf(headers, "TT Status")];
 				rbsDetails = alarmArray[Array.IndexOf(headers, "RBS Details")];
 				town = alarmArray[Array.IndexOf(headers, "Town")];
-				county = alarmArray[Array.IndexOf(headers, "County")];
-				specialEvent = alarmArray[Array.IndexOf(headers, "Special Event")];
+				county = alarmArray[Array.IndexOf(headers, "County")].ToUpper().Replace("COUNTY ", string.Empty);
+                if (string.IsNullOrEmpty(county) || county.Equals("unknown", StringComparison.InvariantCultureIgnoreCase))
+                    county = ParentSite.County;
+                specialEvent = alarmArray[Array.IndexOf(headers, "Special Event")];
 				siteType = alarmArray[Array.IndexOf(headers, "Site Type")];
 				stateChange = alarmArray[Array.IndexOf(headers, "StateChange")];
 				site = alarmArray[Array.IndexOf(headers, "Site")];

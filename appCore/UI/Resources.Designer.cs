@@ -183,7 +183,7 @@ namespace appCore.UI {
         /// </summary>
         internal static string Cells_Prefix {
             get {
-                return ResourceManager.GetString("Cells Prefix", resourceCulture);
+                return ResourceManager.GetString("Cells_Prefix", resourceCulture);
             }
         }
         
@@ -198,18 +198,25 @@ namespace appCore.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha4 14/06/2017 #######
+        ///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha5 11/09/2017 #######
+        ///[EMERGENCY UPDATE]
         ///
-        ///- Optimized Weather Service, it should be much faster now
-        ///- Optimized startup procedure, the tool is starting much faster
-        ///- Updates on Shifts Calendar, people show divided by teams
+        ///- Fixed tool crash on startup due to share data folder having been deleted by someone... Thanks a lot!
         ///
-        ///####### ANOC Master Tool 7.1alpha4 12/06/2017 #######
+        ///####### ANOC Master Tool 7.1alpha5 17/08/2017 #######
         ///
-        ///- Optimized Alarms/Outage Parsing
-        ///- New layout on Outage reports
-        ///- Fixed NSN cell alarms without the cell on Element Column, the tool now resolves the correct cell name
-        ///- Bulk site search and generate outage f [rest of string was truncated]&quot;;.
+        ///- Fixed Site Finder crash on bulk search
+        ///
+        ///####### ANOC Master Tool 7.1alpha4 22/06/2017 #######
+        ///
+        ///- Fixed some crashes when OI is unavailable
+        ///
+        ///####### ANOC Master Tool 7.1alpha4 22/06/2017 #######
+        ///[EMERGENCY UPDATE]
+        ///
+        ///- Fixed some crashes when OI is unavailable
+        ///
+        ///## [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Changelog {
             get {
@@ -414,7 +421,7 @@ namespace appCore.UI {
         /// </summary>
         internal static string Useful_Info {
             get {
-                return ResourceManager.GetString("Useful Info", resourceCulture);
+                return ResourceManager.GetString("Useful_Info", resourceCulture);
             }
         }
         

@@ -163,146 +163,145 @@ namespace appCore.Toolbox
 				}
 			}
 			return (prefix + num);
-		}
-		
-//		public static void darkenBackgroundForm(Action action, bool showLoading, Control control)
-//		{
-//			// Resolve Parent Form if needed
-//			Form parentForm = control is Form ? control as Form : control.FindForm();
-//			// take a screenshot of the form and darken it
-//			Bitmap bmp = new Bitmap(parentForm.ClientRectangle.Width, parentForm.ClientRectangle.Height);
-//			using (Graphics G = Graphics.FromImage(bmp))
-//			{
-//				G.CompositingMode = CompositingMode.SourceOver;
-//				G.CopyFromScreen(parentForm.PointToScreen(new Point(0, 0)), new Point(0, 0), parentForm.ClientRectangle.Size);
-//				const double percent = 0.40;
-//				Color darken = Color.FromArgb((int)(255 * percent), Color.Black);
-//				using (Brush brsh = new SolidBrush(darken))
-//				{
-//					G.FillRectangle(brsh, parentForm.ClientRectangle);
-//				}
-//			}
-//
-//			// put the darkened screenshot into a Panel and bring it to the front:
-//			using (Panel p = new Panel()) {
-//				p.Location = new Point(0, 0);
-//				p.Size = parentForm.ClientRectangle.Size;
-//				p.BackgroundImage = bmp;
-//				parentForm.Controls.Add(p);
-//				p.BringToFront();
-//
-//				// display your dialog somehow:
-//				if(showLoading) {
-//					const int spinnerSize = 32;
-//					Point loc = p.PointToScreen(Point.Empty);
-//					loc.X = loc.X + ((p.Width - spinnerSize) / 2);
-//					loc.Y = loc.Y + ((p.Height - spinnerSize) / 2);
-//					PictureBox loadingBox = new PictureBox();
-//					loadingBox.Image = Resources.spinner1;
-//					loadingBox.Location = loc;
-//					loadingBox.BackColor = Color.Transparent;
-//					loadingBox.Size = new Size(spinnerSize, spinnerSize);
-//					p.Controls.Add(loadingBox);
-//					loadingBox.BringToFront();
-//					Loading.ShowLoadingForm(loc, parentForm);
-//
-		////					ProgressSpinner loadingBox = new ProgressSpinner();
-		////					loadingBox.LoadGIFImage = Resources.spinner1;
-		////					loadingBox.Location = loc;
-		////					p.Controls.Add(loadingBox);
-		////					loadingBox.Start();
-//				}
-//
-//				action();
-//
-		////				if(showLoading)
-		////					loadingBox.Stop();
-//			} // panel will be disposed and the form will "lighten" again...
-//		}
-		
-//		static string ReadSignature()
-//		{
-//			string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Microsoft\Signatures";
-//			string str = string.Empty;
-//			DirectoryInfo info = new DirectoryInfo(path);
-//			if (info.Exists)
-//			{
-//				FileInfo[] files = info.GetFiles("*.htm");
-//				if (files.Length < 1)
-//					return str;
-//				str = new StreamReader(files[0].FullName, Encoding.Default).ReadToEnd();
-//				if (!string.IsNullOrEmpty(str)) {
-//					string str2 = files[0].Name.Replace(files[0].Extension, string.Empty);
-//					str = str.Replace(str2 + "_files/", path + "/" + str2 + "_files/");
-//				}
-//			}
-//			return str;
-//		}
-		
-		//        public const int GW_HWNDNEXT = 2;
-		//        public const int GW_HWNDPREV = 3;
+        }
 
-		//        [return: MarshalAs(UnmanagedType.Bool)]
-		//        [DllImport("user32.dll")]
-		//        private static extern bool IsWindowVisible(IntPtr hWnd);
-		
-		//        [DllImport("user32.dll", EntryPoint="GetWindow", CharSet=CharSet.Auto, SetLastError=true)]
-		//        public static extern IntPtr GetNextWindow(IntPtr hwnd, [MarshalAs(UnmanagedType.U4)] int wFlag);
-		//        public static Form GetTopMostWindow(IntPtr hWnd_mainFrm)
-		//        {
-		//        	Form form = null;
-		//        	IntPtr topWindow = GetTopWindow(IntPtr.Zero);
-		//        	if (!(topWindow != IntPtr.Zero))
-		//        	{
-		//        		return form;
-		//        	}
-		//        	Label_0045:;
-		//        	if ((!IsWindowVisible(topWindow) || (form == null)) && (topWindow != hWnd_mainFrm))
-		//        	{
-		//        		topWindow = GetNextWindow(topWindow, 2);
-		//        		try
-		//        		{
-		//        			form = (Form) Control.FromHandle(topWindow);
-		//        		}
-		//        		catch
-		//        		{
-		//        		}
-		//        		goto Label_0045;
-		//        	}
-		//        	return form;
-		//        }
-//
-		//        [DllImport("user32.dll")]
-		//        private static extern IntPtr GetTopWindow(IntPtr hWnd);public static string StripTagsCharArray(string source)
-		
-//		public static string StripTagsCharArray(string source) {
-//			char[] array = new char[source.Length];
-//			int arrayIndex = 0;
-//			bool inside = false;
-//
-//			for (int i = 0; i < source.Length; i++)
-//			{
-//				char let = source[i];
-//				if (let == '<')
-//				{
-//					inside = true;
-//					continue;
-//				}
-//				if (let == '>')
-//				{
-//					inside = false;
-//					continue;
-//				}
-//				if (!inside)
-//				{
-//					array[arrayIndex] = let;
-//					arrayIndex++;
-//				}
-//			}
-//			return new string(array, 0, arrayIndex);
-//		}
-		
-		public static void CopyProperties(object dst, object src) {
+        public static Control GetControl(string controlName, Type parentType)
+        {
+            List<Form> foundForms = Application.OpenForms.Cast<Form>().ToList();
+
+            for (int c = 0; c < foundForms.Count; c++)
+            {
+                if (foundForms[c].GetType() == parentType)
+                {
+                    return findControl(foundForms[c].Controls, controlName);
+                }
+            }
+
+            return null;
+        }
+
+        private static Control findControl(Control.ControlCollection controls, string controlName)
+        {
+            foreach (Control ctrl in controls)
+            {
+                if (ctrl.Name == controlName)
+                    return ctrl;
+                else
+                {
+                    if (ctrl.Controls != null)
+                        return findControl(ctrl.Controls, controlName);
+                }
+            }
+
+            return null;
+        }
+
+        public static List<string> FindAllControls(Control.ControlCollection controls)
+        {
+            List<string> foundControls = new List<string>();
+            foreach (Control ctrl in controls)
+            {
+                foundControls.Add(ctrl.Name + "," + ctrl.Parent.Name);
+                if (ctrl.Controls != null)
+                {
+                    foundControls.AddRange(FindAllControls(ctrl.Controls));
+                    if(ctrl is UI.AMTMenuStrip)
+                    {
+                        foreach (var tsmi in ((UI.AMTMenuStrip)ctrl).Items.Cast<ToolStripMenuItem>().First().DropDownItems.OfType<ToolStripMenuItem>())
+                        {
+                            foundControls.Add(tsmi.Name + "," + ctrl.Name);
+                        }
+                    }
+
+                }
+            }
+
+            return foundControls;
+        }
+
+        //		static string ReadSignature()
+        //		{
+        //			string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Microsoft\Signatures";
+        //			string str = string.Empty;
+        //			DirectoryInfo info = new DirectoryInfo(path);
+        //			if (info.Exists)
+        //			{
+        //				FileInfo[] files = info.GetFiles("*.htm");
+        //				if (files.Length < 1)
+        //					return str;
+        //				str = new StreamReader(files[0].FullName, Encoding.Default).ReadToEnd();
+        //				if (!string.IsNullOrEmpty(str)) {
+        //					string str2 = files[0].Name.Replace(files[0].Extension, string.Empty);
+        //					str = str.Replace(str2 + "_files/", path + "/" + str2 + "_files/");
+        //				}
+        //			}
+        //			return str;
+        //		}
+
+        //        public const int GW_HWNDNEXT = 2;
+        //        public const int GW_HWNDPREV = 3;
+
+        //        [return: MarshalAs(UnmanagedType.Bool)]
+        //        [DllImport("user32.dll")]
+        //        private static extern bool IsWindowVisible(IntPtr hWnd);
+
+        //        [DllImport("user32.dll", EntryPoint="GetWindow", CharSet=CharSet.Auto, SetLastError=true)]
+        //        public static extern IntPtr GetNextWindow(IntPtr hwnd, [MarshalAs(UnmanagedType.U4)] int wFlag);
+        //        public static Form GetTopMostWindow(IntPtr hWnd_mainFrm)
+        //        {
+        //        	Form form = null;
+        //        	IntPtr topWindow = GetTopWindow(IntPtr.Zero);
+        //        	if (!(topWindow != IntPtr.Zero))
+        //        	{
+        //        		return form;
+        //        	}
+        //        	Label_0045:;
+        //        	if ((!IsWindowVisible(topWindow) || (form == null)) && (topWindow != hWnd_mainFrm))
+        //        	{
+        //        		topWindow = GetNextWindow(topWindow, 2);
+        //        		try
+        //        		{
+        //        			form = (Form) Control.FromHandle(topWindow);
+        //        		}
+        //        		catch
+        //        		{
+        //        		}
+        //        		goto Label_0045;
+        //        	}
+        //        	return form;
+        //        }
+        //
+        //        [DllImport("user32.dll")]
+        //        private static extern IntPtr GetTopWindow(IntPtr hWnd);public static string StripTagsCharArray(string source)
+
+        //		public static string StripTagsCharArray(string source) {
+        //			char[] array = new char[source.Length];
+        //			int arrayIndex = 0;
+        //			bool inside = false;
+        //
+        //			for (int i = 0; i < source.Length; i++)
+        //			{
+        //				char let = source[i];
+        //				if (let == '<')
+        //				{
+        //					inside = true;
+        //					continue;
+        //				}
+        //				if (let == '>')
+        //				{
+        //					inside = false;
+        //					continue;
+        //				}
+        //				if (!inside)
+        //				{
+        //					array[arrayIndex] = let;
+        //					arrayIndex++;
+        //				}
+        //			}
+        //			return new string(array, 0, arrayIndex);
+        //		}
+
+        public static void CopyProperties(object dst, object src) {
 			PropertyInfo[] srcProperties = src.GetType().GetProperties();
 			dynamic dstType = dst.GetType();
 
@@ -325,7 +324,7 @@ namespace appCore.Toolbox
 		/// Parse HTML tables from OI to DataTable
 		/// </summary>
 		/// <param name="html">HTML returned from OI</param>
-		/// <param name="tableName">Table Name. Valid values: "table_inc", "table_crq", "table_alarms", "table_visits", "table_checkbox_availability"</param>
+		/// <param name="tableName">Table Name. Valid values: "div_access", "table_inc", "table_crq", "table_alarms", "table_visits", "table_checkbox_availability"</param>
 		public static DataTable ConvertHtmlTableToDT(string html, string tableName) {
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
@@ -334,7 +333,7 @@ namespace appCore.Toolbox
 			dt.TableName = tableName;
 			
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
-			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
+			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : tableName == "div_access" ? doc.DocumentNode.SelectSingleNode("//div[@id='" + tableName + "']").ChildNodes.FirstOrDefault(n => n.Name == "table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
 			IEnumerable<HtmlNode> descendantNodes = null;
 			switch(tableName) {
 				case "table_checkbox_availability":
@@ -355,18 +354,19 @@ namespace appCore.Toolbox
             if(descendantNodes.Count() > 1)
             {
 			    foreach (HtmlNode node in descendantNodes) {
-				    if(node.InnerText.Contains("Date") || node.InnerText.Contains("Scheduled") || node.InnerText == "Arrived" || node.InnerText == "Planned Finish" || node.InnerText == "Departed Site" || node.InnerText == "Time")
-					    dt.Columns.Add(node.InnerText, typeof(DateTime));
+                    string nodeText = node.InnerText.Replace("&amp;", "&");
+                    if (nodeText.Contains("Date") || nodeText.Contains("Scheduled") || nodeText == "Arrived" || nodeText == "Planned Finish" || nodeText == "Departed Site" || nodeText == "Time")
+					    dt.Columns.Add(nodeText, typeof(DateTime));
 				    else {
-					    if(!dt.Columns.Contains(node.InnerText))
-						    dt.Columns.Add(node.InnerText);
+					    if(!dt.Columns.Contains(nodeText))
+						    dt.Columns.Add(nodeText);
 				    }
 			    }
 			
 			    // Build DataTable
 			
 			    descendantNodes = tableName.Contains("_cells ") || tableName.Contains("_cramer") ? table.Descendants("tbody").First().Descendants("tr") : table.Descendants("tr");
-			    descendantNodes = descendantNodes.Where(dn => dn.Name != "#text");
+			    descendantNodes = descendantNodes.Where(dn => dn.Name != "#text" && dn.ParentNode.Name != "thead");
 			    foreach(HtmlNode tr in descendantNodes) {
 				    List<string> tableRow = new List<string>();
 				    if(tr.Name != "#text" && tr.ParentNode.Name != "thead") {
@@ -389,7 +389,12 @@ namespace appCore.Toolbox
 									    tableRow.Add(string.Empty);
 							    }
 							    else
-								    tableRow.Add(node.InnerText);
+                                {
+                                    if(tableName == "div_access")
+                                        tableRow.Add(node.InnerHtml.Replace("<br>", ";"));
+                                    else
+                                        tableRow.Add(node.InnerText);
+                                }
 						    }
 					    }
 				    }
@@ -410,9 +415,11 @@ namespace appCore.Toolbox
 					    dt.Rows.Add(dataRow);
 				    }
 			    }
-			
-			    if(dt.TableName.Contains("availability") || dt.TableName == "table_ca") {
-				    for(int c = 3;c < dt.Columns.Count;c++) {
+
+                //if(dt.TableName.Contains("availability") || dt.TableName == "table_ca") {
+                if (dt.TableName == "table_ca")
+                {
+                    for (int c = 3;c < dt.Columns.Count;c++) {
 					    string colName = dt.Columns[3].ColumnName;
 					    dt.Columns[colName].SetOrdinal((dt.Columns.Count - 1) - (c - 3));
 				    }

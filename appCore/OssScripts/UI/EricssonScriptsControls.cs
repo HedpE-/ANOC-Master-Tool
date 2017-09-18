@@ -48,10 +48,9 @@ namespace appCore.OssScripts.UI
 		RadioButton GsmRadioButton = new RadioButton();
 		RadioButton UmtsRadioButton = new RadioButton();
 		RadioButton LteRadioButton = new RadioButton();
-		AMTTextBox SiteTextBox = new AMTTextBox();
+		public AMTTextBox SiteTextBox = new AMTTextBox();
 		CellDetailsPictureBox CellsSummaryPictureBox = new CellDetailsPictureBox();
 		
-//		DataView eScriptCellsGlobal = new DataView();
 		List<Cell> filteredCells;
 		Site currentSite { get; set; }
 
@@ -79,63 +78,69 @@ namespace appCore.OssScripts.UI
 			}
 		}
 		
-		int SelectedTech {
-			get;
-			set;
-		}
+		int SelectedTech { get; set; }
 		
 		public EricssonScriptsControls()
 		{
 			InitializeComponent();
 		}
 
-		public void siteFinder(object sender, KeyPressEventArgs e)
+		public async void siteFinder(object sender, KeyPressEventArgs e)
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
-				AMTTextBox tb = (AMTTextBox)sender;
-				Action actionThreaded = new Action(delegate {
-//				                           	Stopwatch sw = new Stopwatch();
-//
-//				                           	sw.Start();
-				                                   	while(tb.Text.StartsWith("0"))
-				                                   		tb.Text = tb.Text.Substring(1);
+            {
+                LoadingPanel load = new LoadingPanel();
+                load.Show(true, this);
+
+                bool ericssonSite = false;
+
+                await System.Threading.Tasks.Task.Run(() =>
+                {
+
+                    AMTTextBox tb = (AMTTextBox)sender;
+
+				    while(tb.Text.StartsWith("0"))
+				        tb.Text = tb.Text.Substring(1);
 				                                   	
-				                                   	currentSite = DB.SitesDB.getSite(tb.Text);
-				                                   });
-				
-				Action actionNonThreaded = new Action(delegate {
-				                                      	if(currentSite.Exists) {
-				                                      		filteredCells = new List<Cell>();
-				                                      		foreach(Cell cell in currentSite.Cells) {
-				                                      			if(cell.Vendor == Vendors.Ericsson)
-				                                      				filteredCells.Add(cell);
-				                                      		}
-				                                      		if(filteredCells.Count == 0){
-				                                      			MainForm.trayIcon.showBalloon("Error",String.Format("Site {0} is not E///",tb.Text));
-				                                      			return;
-				                                      		}
-				                                      		PriorityTextBox.Text = currentSite.Priority;
-				                                      		RegionTextBox.Text = currentSite.Region;
+				    currentSite = DB.SitesDB.getSiteAsync(tb.Text).GetAwaiter().GetResult();
+
+			        if(currentSite.Exists)
+                    {
+				        filteredCells = new List<Cell>();
+				        foreach(Cell cell in currentSite.Cells)
+                        {
+				            if(cell.Vendor == Vendors.Ericsson)
+				                filteredCells.Add(cell);
+				        }
+                        if (filteredCells.Count == 0)
+                        {
+                            MainForm.trayIcon.showBalloon("Error", String.Format("Site {0} is not E///", tb.Text));
+                            return;
+                        }
+                        else
+                            ericssonSite = true;
+                    }
+                });
+
+                if (currentSite.Exists && ericssonSite)
+                {
+                    PriorityTextBox.Text = currentSite.Priority;
+				    RegionTextBox.Text = currentSite.Region;
 				                                      		
-				                                      		CellsSummaryPictureBox.UpdateCells(filteredCells);
-				                                      		GsmRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_2G).Count > 0;
-				                                      		UmtsRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_3G).Count > 0;
-				                                      		LteRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_4G).Count > 0;
-				                                      	}
-				                                      	else {
-				                                      		PriorityTextBox.Text = string.Empty;
-				                                      		RegionTextBox.Text = "No site found";
-				                                      	}
-//				                           			break;
-//				                           	}
-//				                           	sw.Stop();
-//
-//				                           	FlexibleMessageBox.Show("Elapsed=" + sw.Elapsed);
-				                                      	siteFinder_Toggle(true, currentSite.Exists);
-				                                      });
-				LoadingPanel load = new LoadingPanel();
-				load.ShowAsync(actionThreaded, actionNonThreaded, true, this);
+				    CellsSummaryPictureBox.UpdateCells(filteredCells);
+				    GsmRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_2G).Count > 0;
+				    UmtsRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_3G).Count > 0;
+				    LteRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_4G).Count > 0;
+			    }
+			    else
+                {
+				    PriorityTextBox.Text = string.Empty;
+				    RegionTextBox.Text = currentSite.Exists && !ericssonSite ? "Not E/// site" : "No site found";
+			    }
+
+				siteFinder_Toggle(true, ericssonSite ? currentSite.Exists : ericssonSite);
+
+                load.Close();
 			}
 		}
 
@@ -197,7 +202,7 @@ namespace appCore.OssScripts.UI
 						break;
 				}
                 foreach (Cell cell in cells)
-                    CellsListView.Items.Add(new ListViewItem(new[] { EnumExtensions.GetDescription(cell.Bearer), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, cell.Noc }));
+                    CellsListView.Items.Add(new ListViewItem(new[] { cell.Bearer.GetDescription(), cell.Name, cell.Id, cell.LacTac, cell.BscRnc_Id, cell.Noc }));
 
 				foreach (ColumnHeader col in CellsListView.Columns)
 					col.Width = -2;
@@ -251,38 +256,38 @@ namespace appCore.OssScripts.UI
 		void generateScripts(object sender, EventArgs e)
 		{
 			int radioch = 0;
-			foreach (Control radio in TechnologyGroupBox.Controls) {
+			foreach (Control radio in TechnologyGroupBox.Controls)
+            {
 				RadioButton rb = radio as RadioButton;
 				if (rb.Checked) break;
 				radioch++;
 			}
 			string cellLock = string.Empty;
 			string cellUnlock = string.Empty;
-			switch(radioch) {
-				case 0:
-					for(int c = 0;c < CellsListView.CheckedItems.Count;c++) {
-						cellLock += "RLSTC:CELL=" + CellsListView.CheckedItems[c].SubItems[1].Text + ",STATE=HALTED;";
-						cellUnlock += "RLSTC:CELL=" + CellsListView.CheckedItems[c].SubItems[1].Text + ",STATE=ACTIVE;";
-						if(c != CellsListView.CheckedItems.Count - 1) {
-							cellLock += Environment.NewLine;
-							cellUnlock += Environment.NewLine;
-						}
-					}
-					break;
-				case 1:
-					foreach(ListViewItem cell in CellsListView.CheckedItems) {
-						cellLock += "bl UtranCell=" + cell.SubItems[2].Text + "$" + Environment.NewLine;
-						cellUnlock += "deb UtranCell=" + cell.SubItems[2].Text + "$" + Environment.NewLine;
-					}
-					break;
-				case 2:
-					foreach(ListViewItem cell in CellsListView.CheckedItems) {
-						cellLock += "bl ENodeBFunction=1,EUtranCellFDD=" + cell.SubItems[1].Text + "$" + Environment.NewLine;
-						cellUnlock += "deb ENodeBFunction=1,EUtranCellFDD=" + cell.SubItems[1].Text + "$" + Environment.NewLine;
-					}
-					break;
-			}
-			UnlockScriptTextBox.Text = cellUnlock;
+            for (int c = 0; c < CellsListView.CheckedItems.Count; c++)
+            {
+                switch (radioch)
+                {
+                    case 0:
+                        cellLock += "RLSTC:CELL=" + CellsListView.CheckedItems[c].SubItems[1].Text + ",STATE=HALTED;";
+                        cellUnlock += "RLSTC:CELL=" + CellsListView.CheckedItems[c].SubItems[1].Text + ",STATE=ACTIVE;";
+                        break;
+                    case 1:
+                        cellLock += "bl UtranCell=" + CellsListView.CheckedItems[c].SubItems[2].Text + "$";
+                        cellUnlock += "deb UtranCell=" + CellsListView.CheckedItems[c].SubItems[2].Text + "$";
+                        break;
+                    case 2:
+                        cellLock += "bl ENodeBFunction=1,EUtranCellFDD=" + CellsListView.CheckedItems[c].SubItems[1].Text + "$";
+                        cellUnlock += "deb ENodeBFunction=1,EUtranCellFDD=" + CellsListView.CheckedItems[c].SubItems[1].Text + "$";
+                        break;
+                }
+                if (c != CellsListView.CheckedItems.Count - 1)
+                {
+                    cellLock += Environment.NewLine;
+                    cellUnlock += Environment.NewLine;
+                }
+            }
+            UnlockScriptTextBox.Text = cellUnlock;
 			LockScriptTextBox.Text = cellLock;
 		}
 
@@ -298,7 +303,6 @@ namespace appCore.OssScripts.UI
 		
 		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
 			Button btn = (Button)sender;
 			string lbl = string.Empty;
 			TextBoxBase tb = null;
@@ -313,12 +317,10 @@ namespace appCore.OssScripts.UI
 					break;
 			}
 			
-			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text,lbl,false);
+			AMTLargeTextForm enlarge = new AMTLargeTextForm(tb.Text, lbl, true);
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
 		}
 
 		void copyUnlockScript(object sender, EventArgs e)

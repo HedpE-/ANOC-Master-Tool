@@ -35,8 +35,26 @@ namespace appCore.Templates
 			UniqueId = Guid.NewGuid();
 			GenerationDate = DateTime.Now;
 			try {
-				Signature = CurrentUser.FullName[1] + " " + CurrentUser.FullName[0] + Environment.NewLine + CurrentUser.Department + Environment.NewLine + "ANOC Number: +44 163 569 206";
-				Signature += CurrentUser.Department == "1st Line RAN Support" ? "7" : "9";
+				Signature = CurrentUser.FullName[1] + " " + CurrentUser.FullName[0] + Environment.NewLine + EnumExtensions.GetDescription(CurrentUser.Department);
+                switch(CurrentUser.Department)
+                {
+                    case Departments.RanTier1:
+                        Signature += Environment.NewLine + "ANOC Number: +44 163 569 2067 Op 1";
+                        break;
+                    case Departments.TxTier1:
+                        Signature += Environment.NewLine + "ANOC Number: +44 163 569 2067 Op 2";
+                        break;
+                    case Departments.CoreTier1:
+                        Signature += Environment.NewLine + "ANOC Number: +44 163 569 2067 Op 3";
+                        break;
+                    case Departments.RanTier2:
+                    case Departments.TxTier2:
+                        Signature += Environment.NewLine + "ANOC Number: +44 163 569 2069";
+                        break;
+                    //case Departments.CoreTier2:
+                    //    Signature += Environment.NewLine + "ANOC Number: +44 163 569 2069";
+                    //    break;
+                }
 			} catch (Exception) { }
 		}
 		

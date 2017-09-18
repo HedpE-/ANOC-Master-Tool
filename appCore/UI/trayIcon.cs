@@ -151,7 +151,7 @@ namespace appCore.UI
 		}
 		
 		public void toggleShareAccess() {
-			if(GlobalProperties.shareAccess) {
+			if(GlobalProperties.shareHostAccess.CanRead) {
 				DirectoryInfo SearchInFolder = new DirectoryInfo(GlobalProperties.ShareRootDir.Parent.FullName + @"\Processes");
 				FileInfo[] FoundFiles = SearchInFolder.GetFiles("ANOC UK 1st Line Processes*.docx");
 				
