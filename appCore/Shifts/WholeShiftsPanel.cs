@@ -195,8 +195,8 @@ namespace appCore.Shifts
 					    drawStringFormat.Alignment = StringAlignment.Near;
                     }
                 }
-                if (Settings.CurrentUser.UserName == "GONCARJ3")
-                    wholeShiftSnap.Save(Settings.GlobalProperties.AppDataRootDir + @"\wholeShiftSnap.png");
+                //if (Settings.CurrentUser.UserName == "GONCARJ3")
+                //    wholeShiftSnap.Save(Settings.GlobalProperties.AppDataRootDir + @"\wholeShiftSnap.png");
             }
 			PictureBox shiftsPictureBox = new PictureBox();
 			shiftsPictureBox.Parent = this;
