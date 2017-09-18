@@ -8,6 +8,7 @@
  */
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -27,6 +28,7 @@ using appCore.Shifts;
 using appCore.OssScripts.UI;
 using appCore.OI.JSON;
 using Newtonsoft.Json;
+using Microsoft.Exchange.WebServices.Data;
 
 namespace appCore
 {
@@ -53,10 +55,14 @@ namespace appCore
         NokiaScriptsControls nokiaScriptsControls = new NokiaScriptsControls();
         HuaweiScriptsControls huaweiScriptsControls = new HuaweiScriptsControls();
 
+        System.Timers.Timer OiDbFilesLastUpdatedTimer;
+        bool timerRunning = false;
+
         public MainForm(NotifyIcon tray, string[] args)
         {
             GlobalProperties.ApplicationStartTime = DateTime.Now;
-            //args = new[] { "-otherUser", "SANTOSS2" }; // HACK: force login with another user
+            //args = new[] { "-otherUser", "DALEMN" }; // HACK: force login with another user
+            //args = new[] { "-otherUser", "SILVABT" }; // HACK: force login with another user
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
             GlobalProperties.resolveOfficePath();
 
@@ -72,7 +78,7 @@ namespace appCore
 
             GlobalProperties.CheckShareAccess();
 
-            SplashForm.UpdateLabelText("Setting User Folder");
+            SplashForm.UpdateLabelText("Loading User Profile");
 
             string otherUser = string.Empty;
             if (args.Contains("-otherUser"))
@@ -80,14 +86,13 @@ namespace appCore
 
             CurrentUser.InitializeUserProperties(otherUser);
 
-            SplashForm.UpdateLabelText("Setting User Settings");
-
             logFiles.Initialize();
 
             SplashForm.UpdateLabelText("Loading UI");
 
             InitializeComponent();
-            panel1.BackColor = CurrentUser.UserName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
+
+            StartMenuPanel.BackColor = CurrentUser.UserName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
             if (!string.IsNullOrEmpty(otherUser))
             {
                 Label otherUserLabel = new Label()
@@ -97,17 +102,17 @@ namespace appCore
                     Font = new Font("Courier New", 12F, FontStyle.Bold),
                     AutoSize = true
                 };
-                otherUserLabel.Location = new Point(0, (tabPage1.Height + tabPage1.Bounds.X) - otherUserLabel.Height);
+                otherUserLabel.Location = new Point(0, (StartTabPage.Height + StartTabPage.Bounds.X) - otherUserLabel.Height);
                 otherUserLabel.BackColor = Color.FromArgb(150, Color.LightGray);
                 otherUserLabel.ForeColor = Color.Red;
-                tabPage1.Controls.Add(otherUserLabel);
+                StartTabPage.Controls.Add(otherUserLabel);
             }
 
             //			ToolsMenu toolsMenu = new ToolsMenu();
             //			toolsMenu.Location = new Point(tabPage1.Right - toolsMenu.Width, 0);
             //			tabPage1.Controls.Add(toolsMenu);
 
-            panel1.Controls.Add(SiteDetailsPictureBox);
+            StartMenuPanel.Controls.Add(SiteDetailsPictureBox);
             // 
             // SiteDetailsPictureBox
             // 
@@ -115,7 +120,7 @@ namespace appCore
             SiteDetailsPictureBox.BackColor = Color.Transparent;
             SiteDetailsPictureBox.Image = Resources.radio_tower;
             SiteDetailsPictureBox.Location = new Point(6, 49);
-            SiteDetailsPictureBox.Name = "pictureBox5";
+            SiteDetailsPictureBox.Name = "SiteDetailsPictureBox";
             SiteDetailsPictureBox.Size = new Size(40, 40);
             SiteDetailsPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             SiteDetailsPictureBox.TabIndex = 8;
@@ -124,13 +129,13 @@ namespace appCore
             SiteDetailsPictureBox.MouseLeave += PictureBoxesMouseLeave;
             SiteDetailsPictureBox.MouseHover += PictureBoxesMouseHover;
 
-            tabPage1.Controls.Add(TicketCountLabel);
+            StartTabPage.Controls.Add(TicketCountLabel);
             // 
             // TicketCountLabel
             // 
             TicketCountLabel.BackColor = Color.Transparent;
             TicketCountLabel.Size = new Size(40, 20);
-            TicketCountLabel.Location = new Point(tabPage1.Width - TicketCountLabel.Width - 5, tabPage1.Height - TicketCountLabel.Height - 5);
+            TicketCountLabel.Location = new Point(StartTabPage.Width - TicketCountLabel.Width - 5, StartTabPage.Height - TicketCountLabel.Height - 5);
             TicketCountLabel.Name = "TicketCountLabel";
             TicketCountLabel.TabIndex = 5;
             TicketCountLabel.TextAlign = ContentAlignment.MiddleRight;
@@ -138,38 +143,41 @@ namespace appCore
 
             string img = SettingsFile.BackgroundImage;
 
-            if (img != "Default")
+            if (img != string.Empty)
             {
                 if (File.Exists(img))
-                    tabPage1.BackgroundImage = Image.FromFile(img);
+                    StartTabPage.BackgroundImage = Image.FromFile(img);
                 else
                     trayIcon.showBalloon("Image file not found", "Background Image file not found, applying default");
             }
 
             if (CurrentUser.UserName != "GONCARJ3")
             {
-                tabControl1.TabPages.Remove(tabPage17); // new outage reports
-                tabControl3.TabPages.Remove(tabPage14); // Alcatel scripts tab
+                MainTabControl.TabPages.Remove(TestTabPage);
+                RAN_ScriptsTabControl.TabPages.Remove(AlcatelTabPage); // Alcatel scripts tab
             }
 
-            TroubleshootUI.Location = new Point(1, 2);
-            tabPage8.Controls.Add(TroubleshootUI);
-            FailedCRQUI.Location = new Point(1, 2);
-            tabPage10.Controls.Add(FailedCRQUI);
-            UpdateUI.Location = new Point(1, 2);
-            tabPage6.Controls.Add(UpdateUI);
-            TxUI.Location = new Point(1, 2);
-            tabPage9.Controls.Add(TxUI);
+            if (CurrentUser.Department == Departments.RanTier1 || CurrentUser.Department == Departments.RanTier2)
+            {
+                TroubleshootUI.Location = new Point(1, 2);
+                TroubleshootTabPage.Controls.Add(TroubleshootUI);
+                FailedCRQUI.Location = new Point(1, 2);
+                FailedCRQsTabPage.Controls.Add(FailedCRQUI);
+                UpdateUI.Location = new Point(1, 2);
+                UpdatesTabPage.Controls.Add(UpdateUI);
+                TxUI.Location = new Point(1, 2);
+                TxTabPage.Controls.Add(TxUI);
 
-            nokiaScriptsControls.Location = new Point(1, 2);
-            tabPage12.Controls.Add(nokiaScriptsControls);
-            huaweiScriptsControls.Location = new Point(1, 2);
-            tabPage11.Controls.Add(huaweiScriptsControls);
-            ericssonScriptsControls.Location = new Point(1, 2);
-            tabPage13.Controls.Add(ericssonScriptsControls);
+                nokiaScriptsControls.Location = new Point(1, 2);
+                NokiaTabPage.Controls.Add(nokiaScriptsControls);
+                huaweiScriptsControls.Location = new Point(1, 2);
+                HuaweiTabPage.Controls.Add(huaweiScriptsControls);
+                ericssonScriptsControls.Location = new Point(1, 2);
+                EricsonScriptTabPage.Controls.Add(ericssonScriptsControls);
 
-            OutageUI.Location = new Point(1, 2);
-            tabPage4.Controls.Add(OutageUI);
+                OutageUI.Location = new Point(1, 2);
+                RAN_OutagesTabPage.Controls.Add(OutageUI);
+            }
 
             SplashForm.UpdateLabelText("Loading Databases");
 
@@ -182,16 +190,16 @@ namespace appCore
             comboBox1.Text = closureCode;
 
             GlobalProperties.siteFinder_mainswitch = false;
-            GlobalProperties.siteFinder_mainswitch = Databases.all_sites.Exists || Databases.all_cells.Exists;
+            GlobalProperties.siteFinder_mainswitch = (Databases.all_sites.Exists && Databases.all_cells.Exists) && OI.OiConnection.Available;
 
-            if ((CurrentUser.Department.Contains("1st Line RAN") || CurrentUser.Department.Contains("First Line Operations")) && Databases.shiftsFile.Exists)
+            if (CurrentUser.Department == Departments.RanTier1 && Databases.shiftsFile.Exists)
             {
                 string[] monthShifts = Databases.shiftsFile.GetAllShiftsInMonth(CurrentUser.FullName[1] + " " + CurrentUser.FullName[0], DateTime.Now.Month);
                 
-                pictureBox6.Visible = true;
+                CalendarPictureBox.Visible = true;
                 shiftsCalendar = new ShiftsCalendar();
-                shiftsCalendar.Location = new Point((tabPage1.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
-                tabPage1.Controls.Add(shiftsCalendar);
+                shiftsCalendar.Location = new Point((StartTabPage.Width - shiftsCalendar.Width) / 2, 0 - shiftsCalendar.Height);
+                StartTabPage.Controls.Add(shiftsCalendar);
                 //				}
             }
 
@@ -203,24 +211,23 @@ namespace appCore
             //if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") {
             if (CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == Roles.ShiftLeader)
             {
-                Button butt2 = new Button();
-                butt2.Name = "butt2";
-                butt2.Text = "Update OI DB Files";
-                butt2.Size = new Size(110, 23);
-                butt2.Click += UpdateDbFilesButtonClick;
-                tabPage1.Controls.Add(butt2);
-                butt2.Location = new Point(5, tabPage1.Height - butt2.Height - 5);
-                System.Timers.Timer OiDbFilesLastUpdatedTimer = new System.Timers.Timer(60 * 1000); // fires every 60 sec.
+                Button UpdateOiFilesButton = new Button();
+                UpdateOiFilesButton.Name = "UpdateOiFilesButton";
+                UpdateOiFilesButton.Text = "Update OI DB Files";
+                UpdateOiFilesButton.Size = new Size(110, 23);
+                UpdateOiFilesButton.Click += UpdateDbFilesButtonClick;
+                StartTabPage.Controls.Add(UpdateOiFilesButton);
+                UpdateOiFilesButton.Location = new Point(5, StartTabPage.Height - UpdateOiFilesButton.Height - 5);
+                OiDbFilesLastUpdatedTimer = new System.Timers.Timer(60 * 1000); // fires every 60 sec.
                 OiDbFilesLastUpdatedTimer.Elapsed += OiDbFilesLastUpdatedTimer_Elapsed;
 
-                OiDbFilesLastUpdatedTimer.Enabled = true;
-
-                allCellsLabel.Location = new Point(5, tabPage1.Controls["butt2"].Top - 5 - allCellsLabel.Height);
+                allCellsLabel.Location = new Point(5, StartTabPage.Controls["UpdateOiFilesButton"].Top - 5 - allCellsLabel.Height);
                 allSitesLabel.Location = new Point(5, allCellsLabel.Top - allSitesLabel.Height);
                 allCellsLabel.Visible = true;
                 allSitesLabel.Visible = true;
 
-                OiDbFilesLastUpdatedTimer_Elapsed(null, null);
+                allCellsLabel.Text = "all_cells last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
+                allSitesLabel.Text = "all_sites last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
 
                 if (CurrentUser.UserName == "GONCARJ3")
                 {
@@ -228,12 +235,12 @@ namespace appCore
                     butt.Name = "butt";
                     butt.Text = "Clear SitesDB";
                     butt.AutoSize = true;
-                    butt.Location = new Point(butt2.Right + 10, butt2.Top);
+                    butt.Location = new Point(UpdateOiFilesButton.Right + 10, UpdateOiFilesButton.Top);
                     butt.Click += delegate
                     {
                         SitesDB.Clear();
 
-                        System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
+                        List<string> list = new List<string>();
                         while (list.Count < 1000000)
                             list.Add("str");
 
@@ -269,7 +276,7 @@ namespace appCore
                         //						Remedy.UI.RemedyWebBrowser wb = new appCore.Remedy.UI.RemedyWebBrowser();
                         //						wb.Show();
                     };
-                    tabPage1.Controls.Add(butt);
+                    StartTabPage.Controls.Add(butt);
 
                     Button butt3 = new Button();
                     butt3.Name = "butt3";
@@ -278,50 +285,57 @@ namespace appCore
                     butt3.Location = new Point(butt.Right + 10, butt.Top);
                     butt3.Click += delegate
                     {
-                        Form form = new Form();
-                        form.Size = new Size((int)(Screen.FromControl(this).Bounds.Width * 0.85), (int)(Screen.FromControl(this).Bounds.Height * 0.6));
-                        form.Text = SitesDB.List.Count.ToString();
-                        form.Text += SitesDB.List.Count > 1 ? " sites listed" : " site listed";
-                        //						string str = null;
-                        //						try {
-                        //							var engine = new FileHelpers.FileHelperEngine<SiteFinder.Site>();
-                        //							str = engine.WriteString(SitesDB.List);
-                        //						}
-                        //						catch(FileHelpers.FileHelpersException e) {
-                        //							string f = e.Message;
-                        //						}
-                        //						System.Data.DataTable dt = null;
-                        //						try {
-                        //							var engine = new FileHelpers.FileHelperEngine<SiteFinder.Site>();
-                        //							dt = engine.ReadStringAsDT(str);
-                        //						}
-                        //						catch(FileHelpers.FileHelpersException e) {
-                        //							string f = e.Message;
-                        //						}
+                        ExchangeService service = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
+                        service.UseDefaultCredentials = true;
+                        // Set the URL.
+                        service.Url = new Uri("https://outlook-north.vodafone.com/ews/exchange.asmx");
 
-                        DataGridView dgv = new DataGridView();
-                        dgv.Dock = DockStyle.Fill;
-                        dgv.RowHeadersVisible = false;
-                        dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                        dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                        dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-                        dgv.DataSource = SitesDB.List;
-                        //						dgv.DataSource = dt;
+                        ExpandGroupResults myGroupMembers = service.ExpandGroup("anoccsuk@internal.vodafone.com");
+                        
+                        System.Collections.Generic.List<dynamic> t = new System.Collections.Generic.List<dynamic>();
+                        foreach(var m in myGroupMembers.Members)
+                            t.Add(new { user = m.Name, email = m.Address, dep = CurrentUser.GetUserDetails(m.Name, m.Address, "Department") });
 
-                        foreach (DataGridViewColumn col in dgv.Columns)
-                        {
-                            if (col.Name == "KeyInformation" || col.Name == "HealthAndSafety" || col.Name == "Address")
-                            {
-                                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                                col.Width = col.Name == "Address" ? 100 : 300;
-                                col.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                            }
-                        }
+                        //myGroupMembers = service.ExpandGroup("anocuk2ndlinehuawei_nsn@internal.vodafone.com");
+                        //foreach (var m in myGroupMembers.Members)
+                        //    t.Add(new { user = m.Name, email = m.Address, dep = CurrentUser.GetUserDetails(m.Name, m.Address, "Department") });
 
-                        form.Controls.Add(dgv);
-                        form.ShowDialog();
+                        //System.Collections.Generic.List<string> deps = new System.Collections.Generic.List<string>();
+                        for (int c=0;c<t.Count;c++)
+                            t[c] = new { user = t[c].user, email = t[c].email, strDep = t[c].dep, resDep = EnumExtensions.GetDescription(CurrentUser.GetUserDepartment(t[c].dep)) };
+
+                        string departs = string.Join(Environment.NewLine, t.Select(u => u.user + "," + u.email + "," + u.strDep + "," + u.resDep));
+
+                        //var t2 = myGroupMembers.Members.Select(m => m.);
+
+                        //Form form = new Form();
+                        //form.Size = new Size((int)(Screen.FromControl(this).Bounds.Width * 0.85), (int)(Screen.FromControl(this).Bounds.Height * 0.6));
+                        //form.Text = SitesDB.List.Count.ToString();
+                        //form.Text += SitesDB.List.Count > 1 ? " sites listed" : " site listed";
+
+                        //DataGridView dgv = new DataGridView();
+                        //dgv.Dock = DockStyle.Fill;
+                        //dgv.RowHeadersVisible = false;
+                        //dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                        //dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                        //dgv.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+                        //dgv.DataSource = SitesDB.List;
+                        ////						dgv.DataSource = dt;
+
+                        //foreach (DataGridViewColumn col in dgv.Columns)
+                        //{
+                        //    if (col.Name == "KeyInformation" || col.Name == "HealthAndSafety" || col.Name == "Address")
+                        //    {
+                        //        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        //        col.Width = col.Name == "Address" ? 100 : 300;
+                        //        col.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                        //    }
+                        //}
+
+                        //form.Controls.Add(dgv);
+                        //form.ShowDialog();
                     };
-                    tabPage1.Controls.Add(butt3);
+                    StartTabPage.Controls.Add(butt3);
 
                     //					OutageUI.Location = new Point(1, 2);
                     //					tabPage17.Controls.Add(OutageUI);
@@ -333,6 +347,8 @@ namespace appCore
             toolTipDeploy();
 
             string thisfn = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll";
+            
+            ProcessControlPermissions();
 
             SplashForm.CloseForm();
 
@@ -341,11 +357,81 @@ namespace appCore
                 SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;
                 FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
             }
+
+            //LoadUiForDepartment();
         }
+
+        void ProcessControlPermissions()
+        {
+            if (CurrentUser.Department != Departments.RanTier1 && CurrentUser.Department != Departments.RanTier2)
+            {
+                StartMenuPanel.Controls.Remove(AMTBrowserPictureBox);
+                MainTabControl.Controls.Remove(RAN_CellsDownTabPage);
+                MainTabControl.Controls.Remove(RAN_ClosureCodeTabPage);
+                MainTabControl.Controls.Remove(RAN_OutagesTabPage);
+                MainTabControl.Controls.Remove(ScriptsTabPage);
+                //ScriptsTabPage.Controls.Remove(RAN_ScriptsTabControl);
+                MainTabControl.Controls.Remove(TemplatesTabPage);
+                //TemplatesTabPage.Controls.Remove(Ran_TemplatesTabControl);
+                StartTabPage.Controls.Remove(TicketCountLabel);
+            }
+        }
+
+        private async void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (TipOfTheDayDialog.IsShowTipsOnStartUp())
+            {
+                //TicketCountLabel.Visible = false;
+                await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+
+                LoadingPanel loading = new LoadingPanel();
+                loading.Show(false, this);
+
+                TipOfTheDayDialog dlg = new TipOfTheDayDialog();
+                dlg.ShowDialog();
+
+                if(OiDbFilesLastUpdatedTimer != null)
+                    OiDbFilesLastUpdatedTimer.Enabled = true;
+
+                loading.Close();
+            }
+        }
+
+        //void LoadUiForDepartment()
+        //{
+        //    // TODO: Hide/Unhide UI components depending on user Department
+        //    List<Control> controls = null;
+        //    string t = string.Join(Environment.NewLine, Tools.FindAllControls(Controls));
+        //    switch (CurrentUser.Department)
+        //    {
+        //        case Departments.RanTier1:
+        //        case Departments.RanTier2:
+        //            controls = MainTabControl.Controls.Cast<Control>().Where(c => c.Name.StartsWith("TX_") || c.Name.StartsWith("CORE_")).ToList();
+
+        //            foreach (Control c in controls)
+        //                c.Visible = false;
+        //            break;
+        //        case Departments.TxTier1:
+        //        case Departments.TxTier2:
+        //            controls = MainTabControl.Controls.Cast<Control>().Where(c => c.Name.StartsWith("RAN_") || c.Name.StartsWith("CORE_")).ToList();
+        //            foreach (Control c in controls)
+        //                c.Parent.Controls.Remove(c);
+        //            break;
+        //        case Departments.CoreTier1:
+        //        case Departments.CoreTier2:
+        //            controls = MainTabControl.Controls.Cast<Control>().Where(c => c.Name.StartsWith("RAN_") || c.Name.StartsWith("TX_")).ToList();
+        //            foreach (Control c in controls)
+        //                c.Visible = false;
+        //            break;
+        //    }
+        //}
 
         void OiDbFilesLastUpdatedTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if(InvokeRequired)
+            var allCellsLastUpdated = DateTime.Now - new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime;
+            var allSitesLastUpdated = DateTime.Now - new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime;
+
+            if (InvokeRequired)
             {
                 Invoke((MethodInvoker)delegate
                 {
@@ -358,67 +444,91 @@ namespace appCore
                 allCellsLabel.Text = "all_cells last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_cells.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
                 allSitesLabel.Text = "all_sites last update time: " + new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\all_sites.csv").LastWriteTime.ToString("dd/MM/yyyy HH:mm");
             }
+
+            var UpdateWarningTimeSpan = new TimeSpan(8, 0, 0);
+
+            var msgBoxForm = Application.OpenForms.Cast<Form>().FirstOrDefault(f => f.Text == "OI DB Files out of date");
+
+            FileInfo updating = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\Updating");
+            if (allCellsLastUpdated > UpdateWarningTimeSpan || allSitesLastUpdated > UpdateWarningTimeSpan)
+            {
+                if (!updating.Exists)
+                {
+                    if (msgBoxForm == null)
+                    {
+                        MainFormActivate(null, null);
+
+                        var ans = FlexibleMessageBox.Show("At least one OI DB File is more than 8h old, please consider updating the OI DB Files" + Environment.NewLine + Environment.NewLine + "Click Yes to begin updating.", "OI DB Files out of date", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        if (ans == DialogResult.Yes)
+                            UpdateDbFilesButtonClick(StartTabPage.Controls["UpdateOiFilesButton"], null);
+                    }
+                }
+            }
+            else
+            {
+                if(msgBoxForm != null)
+                    msgBoxForm.Invoke(new Action(() => { msgBoxForm.Close(); }));
+            }
         }
 
-        public void FillTemplateFromLog(Template log)
+        public async void FillTemplateFromLog(Template log)
         {
-            //			if(tabControl1.InvokeRequired)
-            //				tabControl1.Invoke((MethodInvoker)delegate {
-            //				                   	tabControl1.SelectTab(1);
-            //				                   });
-            //			else
-            tabControl1.SelectTab(1);
-            Action action = null;
-            Control parent = null;
+            LoadingPanel loading = new LoadingPanel();
+
+            MainTabControl.SelectTab(1);
             switch (log.LogType)
             {
                 case TemplateTypes.Troubleshoot:
-                    tabControl2.SelectTab(0);
-                    parent = tabPage8;
-                    action = new Action(delegate
-                    {
-                        if (TroubleshootUI != null)
-                            TroubleshootUI.Dispose();
-                        TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
-                        tabPage8.Controls.Add(TroubleshootUI);
-                    });
+                    Ran_TemplatesTabControl.SelectTab(0);
+
+                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+
+                    loading.Show(false, TroubleshootTabPage);
+
+                    if (TroubleshootUI != null)
+                        TroubleshootUI.Dispose();
+                    TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
+                    TroubleshootTabPage.Controls.Add(TroubleshootUI);
                     break;
                 case TemplateTypes.FailedCRQ:
-                    tabControl2.SelectTab(1);
-                    parent = tabPage10;
-                    action = new Action(delegate
-                    {
-                        if (FailedCRQUI != null)
-                            FailedCRQUI.Dispose();
-                        FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
-                        tabPage10.Controls.Add(FailedCRQUI);
-                    });
+                    Ran_TemplatesTabControl.SelectTab(1);
+
+                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
+
+                    loading.Show(false, FailedCRQsTabPage);
+
+                    if (FailedCRQUI != null)
+                        FailedCRQUI.Dispose();
+                    FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
+                    FailedCRQsTabPage.Controls.Add(FailedCRQUI);
                     break;
                 case TemplateTypes.Update:
-                    tabControl2.SelectTab(2);
-                    parent = tabPage6;
-                    action = new Action(delegate
-                    {
-                        if (UpdateUI != null)
-                            UpdateUI.Dispose();
-                        UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
-                        tabPage6.Controls.Add(UpdateUI);
-                    });
+                    Ran_TemplatesTabControl.SelectTab(2);
+
+                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
+
+                    loading.Show(false, UpdatesTabPage);
+
+                    if (UpdateUI != null)
+                        UpdateUI.Dispose();
+                    UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
+                    UpdatesTabPage.Controls.Add(UpdateUI);
                     break;
                 case TemplateTypes.TX:
-                    tabControl2.SelectTab(3);
-                    parent = tabPage9;
-                    action = new Action(delegate
-                    {
-                        if (TxUI != null)
-                            TxUI.Dispose();
-                        TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
-                        tabPage9.Controls.Add(TxUI);
-                    });
+                    Ran_TemplatesTabControl.SelectTab(3);
+
+                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
+
+                    loading.Show(false, TxTabPage);
+
+                    if (TxUI != null)
+                        TxUI.Dispose();
+                    TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
+                    TxTabPage.Controls.Add(TxUI);
                     break;
             }
-            LoadingPanel loading = new LoadingPanel();
-            loading.Show(action, parent);
+
+            loading.Close();
             MainFormActivate(null, null);
         }
 
@@ -432,28 +542,24 @@ namespace appCore
         {
             if (shiftsCalendar.isVisible)
                 shiftsCalendar.toggleShiftsPanel();
-            //			switch(e.Button) {
-            //				case MouseButtons.Left:
-            if (logFiles.LogFile.Exists)
+
+            if(e.Button == MouseButtons.Left)
             {
-                if (string.IsNullOrEmpty(TicketCountLabel.Text))
+                if (logFiles.LogFile.Exists)
                 {
-                    logFiles.CheckLogFileIntegrity();
-                    UpdateTicketCountLabel(true);
+                    if (string.IsNullOrEmpty(TicketCountLabel.Text))
+                    {
+                        logFiles.CheckLogFileIntegrity();
+                        UpdateTicketCountLabel(true);
+                    }
+                    else
+                        TicketCountLabel.Text = string.Empty;
                 }
                 else
-                    TicketCountLabel.Text = string.Empty;
+                {
+                    TicketCountLabel.Text = string.IsNullOrEmpty(TicketCountLabel.Text) ? 0.ToString() : string.Empty;
+                }
             }
-            else
-            {
-                TicketCountLabel.Text = string.IsNullOrEmpty(TicketCountLabel.Text) ? 0.ToString() : string.Empty;
-            }
-            //					break;
-            //				case MouseButtons.Right:
-            //					TicketCountLabel.ForeColor = TicketCountLabel.ForeColor == Color.Black ? Color.White : Color.Black;
-            //					break;
-            //			}
-
         }
 
         void TabPage1BackgroundImageChanged(object sender, EventArgs e)
@@ -466,7 +572,7 @@ namespace appCore
                 {
                     string text = ctrl.Text;
                     ctrl.Text = string.Empty;
-                    Color back = ctrl.BackColor;
+                    //Color back = ctrl.BackColor;
                     ctrl.BackColor = Color.Transparent;
                     
                     ctrl.ForeColor = Tools.GetContrastForeground(ctrl);
@@ -504,12 +610,12 @@ namespace appCore
 
             // Set up the ToolTip text for each object
 
-            toolTip.SetToolTip(pictureBox1, "Settings");
-            toolTip.SetToolTip(pictureBox2, "AMT Browser");
-            toolTip.SetToolTip(pictureBox3, "Notes");
-            toolTip.SetToolTip(pictureBox4, "Log Browser");
+            toolTip.SetToolTip(SettingsPictureBox, "Settings");
+            toolTip.SetToolTip(AMTBrowserPictureBox, "AMT Browser");
+            toolTip.SetToolTip(NotesPictureBox, "Notes");
+            toolTip.SetToolTip(LogsPictureBox, "Log Browser");
             toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
-            toolTip.SetToolTip(pictureBox6, "Shifts Calendar");
+            toolTip.SetToolTip(CalendarPictureBox, "Shifts Calendar");
         }
 
         void TextBox13TextChanged(object sender, EventArgs e)
@@ -540,25 +646,28 @@ namespace appCore
                 }
                 else
                 {
-                    Action action = new Action(delegate
-                    {
-                        FlexibleMessageBox.Show("INC/CRQ can only contain numbers", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LoadingPanel load = new LoadingPanel();
+                    load.Show(false, this);
+
+                    FlexibleMessageBox.Show("INC/CRQ can only contain numbers", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         textBox13.TextChanged -= TextBox13TextChanged;
                         textBox13.Text = "";
                         textBox13.TextChanged += TextBox13TextChanged;
-                    });
-                    LoadingPanel load = new LoadingPanel();
-                    load.ShowAsync(null, action, false, this);
+                    
+                    load.Close();
                 }
             }
             else
             {
                 label30.Visible = true;
-                if (textBox13.Text.Length > 0 && textBox13.Text.Length < 15) label30.Text = "Press ENTER key to complete INC number";
+                if (textBox13.Text.Length > 0 && textBox13.Text.Length < 15)
+                    label30.Text = "Press ENTER key to complete INC number";
                 else
                 {
-                    if (textBox13.Text.Length != 15) label30.Text = "Insert INC/CRQ number";
-                    else label30.Visible = false;
+                    if (textBox13.Text.Length != 15)
+                        label30.Text = "Insert INC/CRQ number";
+                    else
+                        label30.Visible = false;
                 }
             }
         }
@@ -575,7 +684,8 @@ namespace appCore
                 else
                 {
                     textBox14.Text = "";
-                    if (comboBox1.Text.Length < 3) label31.Visible = true;
+                    if (comboBox1.Text.Length < 3)
+                        label31.Visible = true;
                     else
                     {
                         comboBox1.TextChanged -= ComboBox1TextChanged;
@@ -613,31 +723,34 @@ namespace appCore
             t.Start();
         }
 
-        void Button6Click(object sender, EventArgs e)
+        async void Button4Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBox12.Text))
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, RAN_CellsDownTabPage);
+
+            if (string.IsNullOrEmpty(amtRichTextBox1.Text))
             {
-                Action action = new Action(delegate
-                {
-                    FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                });
-                LoadingPanel darken = new LoadingPanel();
-                darken.Show(action, this);
+                FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                load.Close();
                 return;
             }
 
+            load.ToggleLoadingSpinner();
+
             bool parsingError = false;
-            string alarms = textBox12.Text;
+            string alarms = amtRichTextBox1.Text;
             Netcool.AlarmsParser netcool = null;
-            Action actionThreaded = new Action(delegate
+
+            await System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {
-                    var st = new Stopwatch();
-                    st.Start();
-                    netcool = new Netcool.AlarmsParser(alarms);
-                    st.Stop();
-                    var t = st.Elapsed;
+                    //var st = new Stopwatch();
+                    //st.Start();
+                    netcool = new Netcool.AlarmsParser(alarms, Netcool.AlarmsParser.ParsingMode.CoosReport, false);
+                    //st.Stop();
+                    //var t = st.Elapsed;
                 }
                 catch (Exception ex)
                 {
@@ -645,23 +758,66 @@ namespace appCore
                     parsingError = true;
                 }
             });
-
-            Action actionNonThreaded = new Action(delegate
+            
+            if (!parsingError)
             {
-                if (!parsingError)
-                {
-                    textBox12.Text = netcool.ToString();
+                amtRichTextBox1.Text = netcool.GenerateCoosReport();
 
-                    textBox12.Select(0, 0);
-                    button6.Enabled = false;
-                    button5.Enabled = true;
-                    button13.Visible = true;
-                    textBox12.ReadOnly = true;
-                    label34.Text = String.Format("Parsed alarms ({0})", netcool.AlarmsList.Count);
+                amtRichTextBox1.Select(0, 0);
+                button4.Enabled = false;
+                button3.Enabled = true;
+                amtRichTextBox1.ReadOnly = true;
+                label1.Text = String.Format("Cells down report ({0})", netcool.AlarmsList.Count);
+            }
+                
+            load.Close();
+        }
+
+        async void Button6Click(object sender, EventArgs e)
+        {
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, NetcoolParserTabPage);
+
+            if (string.IsNullOrEmpty(textBox12.Text))
+            {
+                FlexibleMessageBox.Show("Please copy alarms from Netcool!", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                load.Close();
+                return;
+            }
+
+            load.ToggleLoadingSpinner();
+
+            bool parsingError = false;
+            string alarms = textBox12.Text;
+            Netcool.AlarmsParser netcool = null;
+
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    netcool = new Netcool.AlarmsParser(alarms, Netcool.AlarmsParser.ParsingMode.ParseAllAlarms);
+                }
+                catch (Exception ex)
+                {
+                    trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\n\nError message:\n" + ex.Message);
+                    parsingError = true;
                 }
             });
-            LoadingPanel load = new LoadingPanel();
-            load.ShowAsync(actionThreaded, actionNonThreaded, true, tabPage5);
+            
+            if (!parsingError)
+            {
+                textBox12.Text = netcool.ToString();
+
+                textBox12.Select(0, 0);
+                button6.Enabled = false;
+                button5.Enabled = true;
+                button13.Visible = true;
+                textBox12.ReadOnly = true;
+                label34.Text = String.Format("Parsed alarms ({0})", netcool.AlarmsList.Count);
+            }
+                
+            load.Close();
         }
 
         void Button5Click(object sender, EventArgs e)
@@ -675,28 +831,43 @@ namespace appCore
             textBox12.Focus();
         }
 
+        void Button3Click(object sender, EventArgs e)
+        {
+            label1.Text = "Paste all active alarms from Netcool";
+            button4.Enabled = true;
+            amtRichTextBox1.ReadOnly = false;
+            amtRichTextBox1.Text = "";
+            amtRichTextBox1.Focus();
+        }
+
         void TabControl1SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (tabControl1.SelectedIndex)
+            switch (MainTabControl.SelectedIndex)
             {
                 case 1:
                     TabControl2SelectedIndexChanged(null, null);
                     break;
                 case 2:
-                    textBox13.Focus();
+                    RAN_ScriptsTabControlSelectedIndexChanged(null, null);
                     break;
                 case 3:
-                    //					textBox10.Focus();
+                    textBox13.Focus();
                     break;
                 case 4:
+                    OutageUI.Alarms_ReportTextBox.Focus();
+                    break;
+                case 5:
                     textBox12.Focus();
+                    break;
+                case 6:
+                    amtRichTextBox1.Focus();
                     break;
             }
         }
 
         void TabControl2SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (tabControl2.SelectedIndex)
+            switch (Ran_TemplatesTabControl.SelectedIndex)
             {
                 case 0:
                     TroubleshootUI.SiteIdTextBox.Focus();
@@ -713,6 +884,25 @@ namespace appCore
             }
         }
 
+        void RAN_ScriptsTabControlSelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (RAN_ScriptsTabControl.SelectedIndex)
+            {
+                case 0:
+                    ericssonScriptsControls.SiteTextBox.Focus();
+                    break;
+                case 1:
+                    nokiaScriptsControls.BcfPcmTextBox.Focus();
+                    break;
+                case 2:
+                    huaweiScriptsControls.SiteTextBox.Focus();
+                    break;
+                //case 3:
+                //    TxUI.SitesTextBox.Focus();
+                //    break;
+            }
+        }
+
         void TextBox13KeyPress(object sender, KeyPressEventArgs e)
         {
 
@@ -721,16 +911,17 @@ namespace appCore
                 if (textBox13.Text.Length > 0)
                 {
                     string CompINC_CRQ = Tools.CompleteINC_CRQ_TAS(textBox13.Text, "INC");
-                    if (CompINC_CRQ != "error") textBox13.Text = CompINC_CRQ;
+                    if (CompINC_CRQ != "error")
+                        textBox13.Text = CompINC_CRQ;
                     else
                     {
-                        Action action = new Action(delegate
-                        {
-                            FlexibleMessageBox.Show("INC number must only contain digits!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        });
                         LoadingPanel load = new LoadingPanel();
-                        load.ShowAsync(null, action, false, this);
+                        load.Show(false, this);
+
+                        FlexibleMessageBox.Show("INC number must only contain digits!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        load.Close();
+                        return;
                     }
                 }
             }
@@ -739,42 +930,45 @@ namespace appCore
         void TabPage1MouseClick(object sender, MouseEventArgs e)
         {
             //FIXME:			wholeShiftsPanelDispose();
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
                 contextMenuStrip1.Show(PointToScreen(e.Location));
-            if (shiftsCalendar.isVisible)
-                shiftsCalendar.toggleShiftsPanel();
+            if(shiftsCalendar != null)
+            {
+                if (shiftsCalendar.isVisible)
+                    shiftsCalendar.toggleShiftsPanel();
+            }
         }
 
         void ToolStripMenuItem2Click(object sender, EventArgs e)
         {
-            Action action = new Action(delegate
-            {
-                OpenFileDialog fileBrowser = new OpenFileDialog();
-                fileBrowser.Filter = "All image files(*.bmp,*.gif,*.jpg,*.jpeg,*.png)|*.bmp;*.gif;*.jpg;*.jpeg;*.png";
-                fileBrowser.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-                fileBrowser.Title = "Please select a new background image";
-                if (fileBrowser.ShowDialog() == DialogResult.OK)
-                {
-                    SettingsFile.BackgroundImage = fileBrowser.FileName;
-                    tabPage1.BackgroundImage = Image.FromFile(fileBrowser.FileName);
-                }
-            });
             LoadingPanel load = new LoadingPanel();
-            load.ShowAsync(null, action, false, this);
+            load.Show(false, this);
+
+            OpenFileDialog fileBrowser = new OpenFileDialog();
+            fileBrowser.Filter = "All image files(*.bmp,*.gif,*.jpg,*.jpeg,*.png)|*.bmp;*.gif;*.jpg;*.jpeg;*.png";
+            fileBrowser.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            fileBrowser.Title = "Please select a new background image";
+            if (fileBrowser.ShowDialog() == DialogResult.OK)
+            {
+                SettingsFile.BackgroundImage = fileBrowser.FileName;
+                StartTabPage.BackgroundImage = Image.FromFile(fileBrowser.FileName);
+            }
+
+            load.Close();
         }
 
         void ToolStripMenuItem3Click(object sender, EventArgs e)
         {
-            SettingsFile.BackgroundImage = "Default";
-            tabPage1.BackgroundImage = Resources.zoozoo_wallpaper_15;
+            SettingsFile.BackgroundImage = string.Empty;
+            StartTabPage.BackgroundImage = Resources.zoozoo_wallpaper_15;
         }
 
         void Button13Click(object sender, EventArgs e)
         {
             //			Action action = new Action(delegate {
             TroubleshootUI.ActiveAlarmsTextBox.Text = textBox12.Text;
-            tabControl1.SelectTab(1);
-            tabControl2.SelectTab(0);
+            MainTabControl.SelectTab(1);
+            Ran_TemplatesTabControl.SelectTab(0);
             //			                           });
             //			LoadingPanel load = new LoadingPanel();
             //			load.Show(null, action, false, this);
@@ -786,28 +980,44 @@ namespace appCore
             else button24.Enabled = false;
         }
 
+        void AmtRichTextBox1TextChanged(object sender, EventArgs e)
+        {
+            button24.Enabled =
+                button3.Enabled = !string.IsNullOrEmpty(amtRichTextBox1.Text);
+        }
+
         void Button24Click(object sender, EventArgs e)
         {
-            Action action = new Action(delegate
-            {
-                AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox12.Text, label34.Text, false);
+            LoadingPanel load = new LoadingPanel();
+            load.Show(false, this);
+
+            AMTLargeTextForm enlarge = new AMTLargeTextForm(textBox12.Text, label34.Text, false);
                 enlarge.StartPosition = FormStartPosition.CenterParent;
                 enlarge.ShowDialog();
                 textBox12.Text = enlarge.finaltext;
-            });
+
+            load.Close();
+        }
+
+        void Button1Click(object sender, EventArgs e)
+        {
             LoadingPanel load = new LoadingPanel();
-            load.ShowAsync(null, action, false, this);
+            load.Show(false, this);
+
+            AMTLargeTextForm enlarge = new AMTLargeTextForm(amtRichTextBox1.Text, label1.Text, false);
+                enlarge.StartPosition = FormStartPosition.CenterParent;
+                enlarge.ShowDialog();
+                amtRichTextBox1.Text = enlarge.finaltext;
+
+            load.Close();
         }
 
         void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult ans = DialogResult.No;
-            Action action = new Action(delegate
-            {
-                ans = FlexibleMessageBox.Show("Are you sure you want to quit ANOC Master Tool?", "Quitting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            });
             LoadingPanel load = new LoadingPanel();
-            load.Show(action, this);
+            load.Show(false, this);
+
+            DialogResult ans = FlexibleMessageBox.Show("Are you sure you want to quit ANOC Master Tool?", "Quitting", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (ans == DialogResult.Yes)
             {
                 UserFolder.ClearTempFolder();
@@ -839,36 +1049,44 @@ namespace appCore
             }
             else
                 e.Cancel = true;
+
+            load.Close();
         }
 
         void MainFormActivate(object sender, EventArgs e)
         {
             var form = Application.OpenForms.OfType<MainForm>().First();
 
-            form.Activate();
-            form.WindowState = FormWindowState.Normal;
+            if(form.InvokeRequired)
+            {
+                form.Invoke((MethodInvoker)delegate
+                {
+                    form.Activate();
+                    form.WindowState = FormWindowState.Normal;
+                });
+            }
+            else
+            {
+                form.Activate();
+                form.WindowState = FormWindowState.Normal;
+            }
         }
 
         public static void openSettings(Control callerControl, bool fromTrayIcon = false)
         {
-            Action action = new Action(delegate
-            {
-                Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm();
-                settings.StartPosition = FormStartPosition.CenterParent;
-                settings.ShowDialog();
-
-                //if (settings.siteFinder_newSwitch != GlobalProperties.siteFinder_mainswitch)
-                //    GlobalProperties.siteFinder_mainswitch = settings.siteFinder_newSwitch;
-
-                //			                           	SetUserFolder(false);
-            });
+            LoadingPanel load = null;
             if (!fromTrayIcon)
             {
-                LoadingPanel load = new LoadingPanel();
-                load.ShowAsync(null, action, false, callerControl);
+                load = new LoadingPanel();
+                load.Show(false, callerControl);
             }
-            else
-                action();
+
+            Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm();
+            settings.StartPosition = FormStartPosition.CenterParent;
+            settings.ShowDialog();
+
+            if (load != null)
+                load.Close();
         }
 
         public static void openAMTBrowser()
@@ -972,44 +1190,48 @@ namespace appCore
         void PictureBoxesClick(object sender, EventArgs e)
         {
             PictureBox pic = (PictureBox)sender;
-            if (pic.Name != "pictureBox6")
+            if (pic.Name != "CalendarPictureBox")
             {
-                if (shiftsCalendar.isVisible)
-                    shiftsCalendar.toggleShiftsPanel();
+                if(shiftsCalendar != null)
+                {
+                    if (shiftsCalendar.isVisible)
+                        shiftsCalendar.toggleShiftsPanel();
+                }
             }
             switch (pic.Name)
             {
-                case "pictureBox1":
+                case "SettingsPictureBox":
                     //					wholeShiftsPanelDispose();
                     MainFormActivate(null, null);
-                    Action action = new Action(delegate
-                    {
-                        openSettings(this);
-                    });
+
                     LoadingPanel load = new LoadingPanel();
-                    load.ShowAsync(null, action, false, this);
+                    load.Show(false, this);
+
+                    openSettings(this);
+
+                    load.Close();
                     break;
-                case "pictureBox2":
+                case "AMTBrowserPictureBox":
                     //					wholeShiftsPanelDispose();
                     MainFormActivate(null, null);
                     openAMTBrowser();
                     break;
-                case "pictureBox3":
+                case "NotesPictureBox":
                     //					wholeShiftsPanelDispose();
                     MainFormActivate(null, null);
                     openNotes();
                     break;
-                case "pictureBox4":
+                case "LogsPictureBox":
                     //					wholeShiftsPanelDispose();
                     MainFormActivate(null, null);
                     openLogBrowser();
                     break;
-                case "pictureBox5":
+                case "SiteDetailsPictureBox":
                     //					wholeShiftsPanelDispose();
                     MainFormActivate(null, null);
                     openSiteFinder();
                     break;
-                case "pictureBox6":
+                case "CalendarPictureBox":
                     shiftsCalendar.toggleShiftsPanel();
                     break;
             }
@@ -1020,21 +1242,21 @@ namespace appCore
             PictureBox pic = (PictureBox)sender;
             switch (pic.Name)
             {
-                case "pictureBox1":
+                case "SettingsPictureBox":
                     pic.Image = Resources.Settings_normal;
                     break;
-                case "pictureBox2":
+                case "AMTBrowserPictureBox":
                     pic.Image = Resources.globe;
                     break;
-                case "pictureBox3":
+                case "LogsPictureBox":
                     pic.Image = Resources.Book_512;
                     break;
-                case "pictureBox4":
+                case "NotesPictureBox":
                     break;
-                case "pictureBox5":
+                case "SiteDetailsPictureBox":
                     pic.Image = Resources.radio_tower;
                     break;
-                case "pictureBox6":
+                case "CalendarPictureBox":
                     break;
             }
         }
@@ -1044,28 +1266,31 @@ namespace appCore
             PictureBox pic = (PictureBox)sender;
             switch (pic.Name)
             {
-                case "pictureBox1":
+                case "SettingsPictureBox":
                     pic.Image = Resources.Settings_hover;
                     break;
-                case "pictureBox2":
+                case "AMTBrowserPictureBox":
                     pic.Image = Resources.globe_hover;
                     break;
-                case "pictureBox3":
+                case "LogsPictureBox":
                     break;
-                case "pictureBox4":
+                case "NotesPictureBox":
                     break;
-                case "pictureBox5":
+                case "SiteDetailsPictureBox":
                     pic.Image = Resources.radio_tower_hover;
                     break;
-                case "pictureBox6":
+                case "CalendarPictureBox":
                     break;
             }
         }
 
         void TabControl1MouseDown(object sender, MouseEventArgs e)
         {
-            if (shiftsCalendar.isVisible)
-                shiftsCalendar.toggleShiftsPanel();
+            if (shiftsCalendar != null)
+            {
+                if (shiftsCalendar.isVisible)
+                    shiftsCalendar.toggleShiftsPanel();
+            }
         }
 
         const int WM_SYSCOMMAND = 0x0112;
