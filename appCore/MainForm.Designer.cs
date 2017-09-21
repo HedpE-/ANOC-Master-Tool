@@ -82,6 +82,8 @@ namespace appCore
             this.components = new System.ComponentModel.Container();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.StartTabPage = new System.Windows.Forms.TabPage();
+            this.NotificationsPictureBox = new System.Windows.Forms.PictureBox();
+            this.QuestionMarkPictureBox = new System.Windows.Forms.PictureBox();
             this.allCellsLabel = new System.Windows.Forms.Label();
             this.allSitesLabel = new System.Windows.Forms.Label();
             this.StartMenuPanel = new System.Windows.Forms.Panel();
@@ -132,6 +134,8 @@ namespace appCore
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.MainTabControl.SuspendLayout();
             this.StartTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NotificationsPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.QuestionMarkPictureBox)).BeginInit();
             this.StartMenuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AMTBrowserPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CalendarPictureBox)).BeginInit();
@@ -173,6 +177,8 @@ namespace appCore
             this.StartTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.StartTabPage.BackgroundImage = global::appCore.UI.Resources.zoozoo_wallpaper_15;
             this.StartTabPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.StartTabPage.Controls.Add(this.NotificationsPictureBox);
+            this.StartTabPage.Controls.Add(this.QuestionMarkPictureBox);
             this.StartTabPage.Controls.Add(this.allCellsLabel);
             this.StartTabPage.Controls.Add(this.allSitesLabel);
             this.StartTabPage.Controls.Add(this.StartMenuPanel);
@@ -184,6 +190,36 @@ namespace appCore
             this.StartTabPage.Text = "Start";
             this.StartTabPage.BackgroundImageChanged += new System.EventHandler(this.TabPage1BackgroundImageChanged);
             this.StartTabPage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabPage1MouseClick);
+            // 
+            // NotificationsPictureBox
+            // 
+            this.NotificationsPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NotificationsPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.NotificationsPictureBox.Image = global::appCore.UI.Resources.notifications;
+            this.NotificationsPictureBox.Location = new System.Drawing.Point(476, 3);
+            this.NotificationsPictureBox.Name = "NotificationsPictureBox";
+            this.NotificationsPictureBox.Size = new System.Drawing.Size(20, 20);
+            this.NotificationsPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.NotificationsPictureBox.TabIndex = 14;
+            this.NotificationsPictureBox.TabStop = false;
+            this.NotificationsPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.NotificationsPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.NotificationsPictureBox.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
+            // 
+            // QuestionMarkPictureBox
+            // 
+            this.QuestionMarkPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.QuestionMarkPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.QuestionMarkPictureBox.Image = global::appCore.UI.Resources.question_mark;
+            this.QuestionMarkPictureBox.Location = new System.Drawing.Point(502, 3);
+            this.QuestionMarkPictureBox.Name = "QuestionMarkPictureBox";
+            this.QuestionMarkPictureBox.Size = new System.Drawing.Size(20, 20);
+            this.QuestionMarkPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.QuestionMarkPictureBox.TabIndex = 13;
+            this.QuestionMarkPictureBox.TabStop = false;
+            this.QuestionMarkPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.QuestionMarkPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.QuestionMarkPictureBox.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
             // 
             // allCellsLabel
             // 
@@ -287,7 +323,7 @@ namespace appCore
             // 
             this.NotesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.NotesPictureBox.BackColor = System.Drawing.Color.Transparent;
-            this.NotesPictureBox.Image = global::appCore.UI.Resources.Book_512;
+            this.NotesPictureBox.Image = global::appCore.UI.Resources.book;
             this.NotesPictureBox.Location = new System.Drawing.Point(52, 3);
             this.NotesPictureBox.Name = "NotesPictureBox";
             this.NotesPictureBox.Size = new System.Drawing.Size(40, 40);
@@ -736,6 +772,8 @@ namespace appCore
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.MainTabControl.ResumeLayout(false);
             this.StartTabPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.NotificationsPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.QuestionMarkPictureBox)).EndInit();
             this.StartMenuPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.AMTBrowserPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CalendarPictureBox)).EndInit();
@@ -763,5 +801,7 @@ namespace appCore
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private UI.AMTRichTextBox amtRichTextBox1;
+        private System.Windows.Forms.PictureBox QuestionMarkPictureBox;
+        private System.Windows.Forms.PictureBox NotificationsPictureBox;
     }
 }
