@@ -33,7 +33,7 @@ namespace appCore.Toolbox.Notifications
         {
             InitializeComponent();
 
-            if(Settings.CurrentUser.UserName == "GONCARJ3")
+            if(Settings.CurrentUser.UserName == "GONCARJ3" || Settings.CurrentUser.UserName == "PANCHOPJ")
                 btnManage.Visible = true;
             
             _notifications = notificationsList;
