@@ -163,6 +163,11 @@
     </Compile>
     <Compile Include="OI\JSON\Tables.cs" />
     <Compile Include="OI\OIConnection.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Shifts\SingleShift.cs" />
     <Compile Include="Framework\Cell.cs" />
     <Compile Include="Framework\Site.cs" />
@@ -181,6 +186,11 @@
     <Compile Include="Toolbox\CellExtensions.cs" />
     <Compile Include="Toolbox\EnumExtensions.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
+    <Compile Include="Toolbox\Notifications\NotificationsCenter.cs" />
+    <Compile Include="Toolbox\Notifications\NotificationsManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Toolbox\Notifications\Notification.cs" />
     <Compile Include="Toolbox\NumericComparer.cs" />
     <Compile Include="Toolbox\NumericListComparer.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
@@ -1329,7 +1339,11 @@
     <Compile Include="Toolbox\StringExtensions.cs" />
     <Compile Include="Toolbox\ErrorHandling.cs" />
     <Compile Include="Toolbox\StringLogicalComparer.cs" />
-    <Compile Include="Toolbox\TipOfTheDayDialog.cs">
+    <Compile Include="Toolbox\Notifications\NotificationsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Toolbox\TipOfTheDay\Tip.cs" />
+    <Compile Include="Toolbox\TipOfTheDay\TipOfTheDayDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Toolbox\Tools.cs" />
@@ -1500,6 +1514,10 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings\UI\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -1521,7 +1539,13 @@
     <EmbeddedResource Include="Templates\UI\TasksForm.resx">
       <DependentUpon>TasksForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Toolbox\TipOfTheDayDialog.resx">
+    <EmbeddedResource Include="Toolbox\Notifications\NotificationsForm.resx">
+      <DependentUpon>NotificationsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Toolbox\Notifications\NotificationsManager.resx">
+      <DependentUpon>NotificationsManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Toolbox\TipOfTheDay\TipOfTheDayDialog.resx">
       <DependentUpon>TipOfTheDayDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\NotesForm.resx">
@@ -1529,8 +1553,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ScrollableMessageBox.resx">
       <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
