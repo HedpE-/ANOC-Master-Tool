@@ -108,4 +108,14 @@ namespace appCore
         Unknown = 64
 
     }
+
+    public enum RecurrencyType
+    {
+        [Description("Hours")]
+        Hours = 1,
+        [Description("Minutes")]
+        Minutes = 2,
+        [Description("StartUp")]
+        StartUp = 4
+    }
 }
