@@ -198,25 +198,15 @@ namespace appCore.UI {
 		}
 		
 		/// <summary>
-		///   Looks up a localized string similar to ####### ANOC Master Tool 7.1alpha5 11/09/2017 #######
-		///[EMERGENCY UPDATE]
+		///   Looks up a localized string similar to ####### ANOC Master Tool 8.0 ??/09/2017 #######
+		///Huge update focused on Performance e Responsiveness and support usage by other teams
 		///
-		///- Fixed tool crash on startup due to share data folder having been deleted by someone... Thanks a lot!
-		///
-		///####### ANOC Master Tool 7.1alpha5 17/08/2017 #######
-		///
-		///- Fixed Site Finder crash on bulk search
-		///
-		///####### ANOC Master Tool 7.1alpha4 22/06/2017 #######
-		///
-		///- Fixed some crashes when OI is unavailable
-		///
-		///####### ANOC Master Tool 7.1alpha4 22/06/2017 #######
-		///[EMERGENCY UPDATE]
-		///
-		///- Fixed some crashes when OI is unavailable
-		///
-		/// [rest of string was truncated]&quot;;.
+		///- The app is a lot more responsive and should feel a lot smoother and faster while performing long operations
+		///- Changed the way the Menu Bar works to increase responsiveness
+		///- Added Tip Of The Day (more tips will be added in time)
+		///- Added a toggle on the Settings panel to toggle Tip Of The Day on startup
+		///- Added a &quot;?&quot; icon on the Start Tab to open Tips manually
+		///- Adde [rest of string was truncated]&quot;;.
 		/// </summary>
 		internal static string Changelog {
 			get {

@@ -12080,7 +12080,39 @@ ZJ - LTE2100 Micro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 7.1alpha5 11/09/2017 #######
+    <value>####### ANOC Master Tool 8.0 ??/09/2017 #######
+Huge update focused on Performance e Responsiveness and support usage by other teams
+
+- The app is a lot more responsive and should feel a lot smoother and faster while performing long operations
+- Changed the way the Menu Bar works to increase responsiveness
+- Added Tip Of The Day (more tips will be added in time)
+- Added a toggle on the Settings panel to toggle Tip Of The Day on startup
+- Added a "?" icon on the Start Tab to open Tips manually
+- Added Notification Center, it will show notifications added by the team Manager
+- Added an icon on the Start Tab to open the Notification Center 
+- Support app usage by other ANOC-UK teams
+- The app now notifies users with permission to update the OI DB Files when they're older than 8h
+- Fixed crash opening the Shifts Calendar when the user is not on the shifts file
+- Fixed issue on all Scripts controls where clicking the "..." button for the scripts textboxes which are readonly, opened the larger textbox with write permission
+- Huawei lock &amp; unlock scripts textboxes were disabled instead of readonly making it impossible to select the text manually
+- When an alarm has County Unknown, the county will be fetched from the site information
+- Fixed some new E/// alarms like Battery Theft that weren't being parsed
+- Outages can now be generated from alarms, existing outage report and sites list
+- The User Folder won't house the DB and Shifts files anymore, for now it is only used to store logs
+- Fixed the layout issues on the panel displaying all persons in the M shift after the APT team creation
+- Fixed some ALU sites that weren't being identified as ALU
+- Improved the way the tool detects privileges on the share folder which can fix some issues for some users especially new users
+- New tab for Cells down report
+- Fixed a lot of incorrect data on affected locations and number of cells by bearer on Outage reports
+- Changed the Settings layout
+- If a site doesn't has a blank county on the address, the tool gets the correct county from http://wikishire.co.uk/
+- When generating a Monitoring task, there is a new field displaying when the monitoring will finish, based on the chosen duration which can now be on hours or days
+- Slightly changed the signature to include the option on the phone number
+- Slight adaptations after OI changes
+- Now, the book ins are also fetched automatically when searching a site
+- A lot of other minor fixes and improvements that I don't remember right now
+
+####### ANOC Master Tool 7.1alpha5 11/09/2017 #######
 [EMERGENCY UPDATE]
 
 - Fixed tool crash on startup due to share data folder having been deleted by someone... Thanks a lot!
