@@ -58,7 +58,7 @@ namespace appCore.Settings.UI
             
 			toggleSwitch1.Checked = GlobalProperties.siteFinder_mainswitch;
             toggleSwitch2.Checked = GlobalProperties.WeatherServiceEnabled;
-            toggleSwitch3.Checked = TipOfTheDayDialog.IsShowTipsOnStartUp();
+            toggleSwitch3.Checked = Toolbox.TipOfTheDay.TipOfTheDayDialog.ShowTipsOnStartUp;
 
             label7.Text += Databases.all_sites.LastWriteTime.ToString("dd/MM/yyyy HH:mm");
             label16.Text += Databases.all_cells.LastWriteTime.ToString("dd/MM/yyyy HH:mm");
@@ -152,7 +152,7 @@ namespace appCore.Settings.UI
                     GlobalProperties.WeatherServiceEnabled = ts.Checked;
                     break;
                 case "toggleSwitch3":
-                    TipOfTheDayDialog.ToggleShowTipsOnStartUp(ts.Checked);
+                    Toolbox.TipOfTheDay.TipOfTheDayDialog.ToggleShowTipsOnStartUp(ts.Checked);
                     break;
             }
         }
