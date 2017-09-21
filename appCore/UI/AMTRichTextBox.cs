@@ -140,11 +140,11 @@ namespace appCore.UI
 		
 		protected override void OnMouseDown(MouseEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
-			{
-				ContextMenu contextMenu = new ContextMenu();
+            {
+                ContextMenu contextMenu = new ContextMenu();
 				MenuItem menuItem = new MenuItem("Cut");
 				menuItem.Click += delegate { Cut(); };
-				menuItem.Enabled = SelectionLength > 0;
+				menuItem.Enabled = SelectionLength > 0 && !ReadOnly;
 				contextMenu.MenuItems.Add(menuItem);
 				menuItem = new MenuItem("Copy");
 				menuItem.Click += delegate { Copy(); };
@@ -152,11 +152,11 @@ namespace appCore.UI
 				contextMenu.MenuItems.Add(menuItem);
 				menuItem = new MenuItem("Paste");
 				menuItem.Click += delegate { Paste(); };
-				menuItem.Enabled = Clipboard.GetDataObject().GetDataPresent(DataFormats.Text);
+				menuItem.Enabled = Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) && !ReadOnly;
 				contextMenu.MenuItems.Add(menuItem);
 				menuItem = new MenuItem("Delete");
 				menuItem.Click += delegate { SelectedText = string.Empty; };
-				menuItem.Enabled = SelectionLength > 0;
+				menuItem.Enabled = SelectionLength > 0 && !ReadOnly;
 				contextMenu.MenuItems.Add(menuItem);
 				
 				contextMenu.MenuItems.Add("-");
@@ -168,7 +168,7 @@ namespace appCore.UI
 						lines[c] = lines[c].Trim();
 					Text = string.Join(Environment.NewLine, lines);
 				};
-				menuItem.Enabled = Text.Length > 0;
+				menuItem.Enabled = Text.Length > 0 && !ReadOnly;
 				contextMenu.MenuItems.Add(menuItem);
 				
 				menuItem = new MenuItem("Trim empty spaces on current line");
@@ -179,11 +179,11 @@ namespace appCore.UI
 					lines[line] = lines[line].Trim();
 					Text = string.Join(Environment.NewLine, lines);
 				};
-				menuItem.Enabled = SelectionLength < 1;
+				menuItem.Enabled = SelectionLength < 1 && !ReadOnly;
 				contextMenu.MenuItems.Add(menuItem);
 
 				ContextMenu = contextMenu;
-			}
-		}
+            }
+        }
 	}
 }
