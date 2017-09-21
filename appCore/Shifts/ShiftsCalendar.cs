@@ -94,7 +94,7 @@ namespace appCore.Shifts
 			shiftsPanel_swapShifts.BackColor = Color.Gray;
 			shiftsPanel_swapShifts.Name = "shiftsPanel_swapShifts";
 			shiftsPanel_swapShifts.Size = new Size(16, 16);
-			shiftsPanel_swapShifts.Image = Resources.Replace_64;
+			shiftsPanel_swapShifts.Image = Resources.Replace;
 			shiftsPanel_swapShifts.SizeMode = PictureBoxSizeMode.StretchImage;
 			shiftsPanel_swapShifts.Parent = this;
 			shiftsPanel_swapShifts.Location = new Point(this.Width - 21, 5);

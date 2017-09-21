@@ -307,7 +307,7 @@ namespace appCore.Web.UI
 			// pictureBox5
 			// 
 			this.pictureBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox5.Image = global::appCore.UI.Resources.Badass_browser_1;
+			this.pictureBox5.Image = global::appCore.UI.Resources.browser;
 			this.pictureBox5.Location = new System.Drawing.Point(912, 4);
 			this.pictureBox5.Name = "pictureBox5";
 			this.pictureBox5.Size = new System.Drawing.Size(80, 80);
