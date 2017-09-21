@@ -29,6 +29,8 @@ using appCore.OssScripts.UI;
 using appCore.OI.JSON;
 using Newtonsoft.Json;
 using Microsoft.Exchange.WebServices.Data;
+using appCore.Toolbox.TipOfTheDay;
+using appCore.Toolbox.Notifications;
 
 namespace appCore
 {
@@ -54,6 +56,8 @@ namespace appCore
         EricssonScriptsControls ericssonScriptsControls = new EricssonScriptsControls();
         NokiaScriptsControls nokiaScriptsControls = new NokiaScriptsControls();
         HuaweiScriptsControls huaweiScriptsControls = new HuaweiScriptsControls();
+
+        public static NotificationsCenter notificationsCenter;
 
         System.Timers.Timer OiDbFilesLastUpdatedTimer;
         bool timerRunning = false;
@@ -209,7 +213,7 @@ namespace appCore
 
             // HACK: Developer specific action
             //if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") {
-            if (CurrentUser.UserName == "GONCARJ3" || CurrentUser.Role == Roles.ShiftLeader)
+            if (CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2" || CurrentUser.Role == Roles.ShiftLeader)
             {
                 Button UpdateOiFilesButton = new Button();
                 UpdateOiFilesButton.Name = "UpdateOiFilesButton";
@@ -292,7 +296,7 @@ namespace appCore
 
                         ExpandGroupResults myGroupMembers = service.ExpandGroup("anoccsuk@internal.vodafone.com");
                         
-                        System.Collections.Generic.List<dynamic> t = new System.Collections.Generic.List<dynamic>();
+                        List<dynamic> t = new List<dynamic>();
                         foreach(var m in myGroupMembers.Members)
                             t.Add(new { user = m.Name, email = m.Address, dep = CurrentUser.GetUserDetails(m.Name, m.Address, "Department") });
 
@@ -345,10 +349,11 @@ namespace appCore
             trayIcon.toggleShareAccess();
 
             toolTipDeploy();
-
-            string thisfn = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\appCore.dll";
             
             ProcessControlPermissions();
+
+            notificationsCenter = new NotificationsCenter();
+            UpdateNotificationsIcon(NotificationsPictureBox);
 
             SplashForm.CloseForm();
 
@@ -379,22 +384,83 @@ namespace appCore
 
         private async void MainForm_Shown(object sender, EventArgs e)
         {
-            if (TipOfTheDayDialog.IsShowTipsOnStartUp())
-            {
-                //TicketCountLabel.Visible = false;
-                await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+            LoadingPanel loading = null;
 
-                LoadingPanel loading = new LoadingPanel();
-                loading.Show(false, this);
+            try
+            {
+                if (notificationsCenter.HasUnreadNotifications)
+                {
+                    loading = new LoadingPanel();
+                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+                    loading.Show(false, this);
+
+                    notificationsCenter.OpenGUI(new Point(StartTabPage.PointToScreen(Point.Empty).X + ((StartTabPage.Width - NotificationsCenter.GuiSize.Width) / 2), StartTabPage.PointToScreen(Point.Empty).Y));
+                }
+            }
+            catch (Exception ex)
+            {
+                var m = ex.Message;
+            }
+
+            if (TipOfTheDayDialog.ShowTipsOnStartUp)
+            {
+                if (loading != null)
+                {
+                    loading = new LoadingPanel();
+                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+                    loading.Show(false, this);
+                }
 
                 TipOfTheDayDialog dlg = new TipOfTheDayDialog();
+                dlg.StartPosition = FormStartPosition.Manual;
+                dlg.Location = new Point(StartTabPage.PointToScreen(Point.Empty).X + ((StartTabPage.Width - dlg.Width) / 2), StartTabPage.PointToScreen(Point.Empty).Y);
                 dlg.ShowDialog();
 
                 if(OiDbFilesLastUpdatedTimer != null)
                     OiDbFilesLastUpdatedTimer.Enabled = true;
-
-                loading.Close();
             }
+
+            if(loading != null)
+                loading.Close();
+        }
+
+        public static void UpdateNotificationsIcon(PictureBox pictureBox = null)
+        {
+            try
+            {
+                if(pictureBox == null)
+                    pictureBox = Application.OpenForms.Cast<Form>().First(f => f.GetType() == typeof(MainForm)).Controls["MainTabControl"].Controls["StartTabPage"].Controls["NotificationsPictureBox"] as PictureBox;
+
+                if (notificationsCenter.TotalNotificationsCount > 0)
+                {
+                    if (notificationsCenter.UnreadNotificationsCount > 0)
+                        pictureBox.Image = Resources.notifications_unread;
+                    else
+                        pictureBox.Image = Resources.notifications_read;
+                }
+                else
+                    pictureBox.Image = Resources.notifications;
+            }
+            catch { }            
+        }
+
+        public static async void OpenNotificationsGUI_Delegate()
+        {
+            MainForm mf = Application.OpenForms.Cast<Form>().First(f => f.GetType() == typeof(MainForm)) as MainForm;
+            Control startTabPage = mf.Controls["MainTabControl"].Controls["StartTabPage"];
+            mf.MainFormActivate(null, null);
+            //await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+
+            LoadingPanel loading = null;
+            mf.Invoke((MethodInvoker)delegate
+            {
+                loading = new LoadingPanel();
+                loading.Show(false, mf);
+
+                notificationsCenter.OpenGUI(new Point(startTabPage.PointToScreen(Point.Empty).X + ((startTabPage.Width - NotificationsCenter.GuiSize.Width) / 2), startTabPage.PointToScreen(Point.Empty).Y));
+                
+                loading.Close();
+            });
         }
 
         //void LoadUiForDepartment()
@@ -616,6 +682,7 @@ namespace appCore
             toolTip.SetToolTip(LogsPictureBox, "Log Browser");
             toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
             toolTip.SetToolTip(CalendarPictureBox, "Shifts Calendar");
+            toolTip.SetToolTip(QuestionMarkPictureBox, "Tips of the Day");
         }
 
         void TextBox13TextChanged(object sender, EventArgs e)
@@ -1198,18 +1265,19 @@ namespace appCore
                         shiftsCalendar.toggleShiftsPanel();
                 }
             }
+            LoadingPanel loading;
             switch (pic.Name)
             {
                 case "SettingsPictureBox":
                     //					wholeShiftsPanelDispose();
                     MainFormActivate(null, null);
 
-                    LoadingPanel load = new LoadingPanel();
-                    load.Show(false, this);
+                    loading = new LoadingPanel();
+                    loading.Show(false, this);
 
                     openSettings(this);
 
-                    load.Close();
+                    loading.Close();
                     break;
                 case "AMTBrowserPictureBox":
                     //					wholeShiftsPanelDispose();
@@ -1234,6 +1302,25 @@ namespace appCore
                 case "CalendarPictureBox":
                     shiftsCalendar.toggleShiftsPanel();
                     break;
+                case "QuestionMarkPictureBox":
+                    loading = new LoadingPanel();
+                    loading.Show(false, this);
+
+                    TipOfTheDayDialog dlg = new TipOfTheDayDialog();
+                    dlg.StartPosition = FormStartPosition.Manual;
+                    dlg.Location = new Point(StartTabPage.PointToScreen(Point.Empty).X + ((StartTabPage.Width - dlg.Width) / 2), StartTabPage.PointToScreen(Point.Empty).Y);
+                    dlg.ShowDialog();
+
+                    loading.Close();
+                    break;
+                case "NotificationsPictureBox":
+                    loading = new LoadingPanel();
+                    loading.Show(false, this);
+
+                    notificationsCenter.OpenGUI(new Point(StartTabPage.PointToScreen(Point.Empty).X + ((StartTabPage.Width - NotificationsCenter.GuiSize.Width) / 2), StartTabPage.PointToScreen(Point.Empty).Y));
+
+                    loading.Close();
+                    break;
             }
         }
 
@@ -1249,7 +1336,7 @@ namespace appCore
                     pic.Image = Resources.globe;
                     break;
                 case "LogsPictureBox":
-                    pic.Image = Resources.Book_512;
+                    pic.Image = Resources.book;
                     break;
                 case "NotesPictureBox":
                     break;
