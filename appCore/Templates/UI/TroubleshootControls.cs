@@ -313,8 +313,6 @@ namespace appCore.Templates.UI
 
                 if (currentSite.Exists)
                 {
-                    await MainMenu.ShowLoading();
-                    await siteFinder_Toggle(true, true);
 
                     AddressTextBox.Text = await Task.Run(() => currentSite.Address);
                     RegionTextBox.Text = await Task.Run(() => currentSite.Region);
@@ -346,6 +344,9 @@ namespace appCore.Templates.UI
                     COOS4GNumericUpDown.Value = 0;
                     COOSCheckBox.Checked = false;
 
+                    await MainMenu.ShowLoading();
+                    await siteFinder_Toggle(true, true);
+
                     string dataToRequest = "INCBookins";
                     if ((DateTime.Now - currentSite.ChangesTimestamp) > new TimeSpan(0, 30, 0))
                         dataToRequest += "CRQ";
@@ -356,9 +357,8 @@ namespace appCore.Templates.UI
                     await currentSite.requestOIDataAsync(dataToRequest);
 
                     if (currentSite.CramerData != null)
-                        CCTRefTextBox.Text = await Task.Run(() => currentSite.CramerData.TxLastMileRef);
-
-                    //if (string.IsNullOrEmpty(PowerCompanyTextBox.Text))
+                        CCTRefTextBox.Text = currentSite.CramerData.TxLastMileRef;
+                    
                     PowerCompanyTextBox.Text = currentSite.PowerCompany;
                 }
                 else
@@ -372,8 +372,10 @@ namespace appCore.Templates.UI
                     COOS2GLabel.Text = COOS2GLabel.Text.Split('(')[0];
                     COOS3GLabel.Text = COOS3GLabel.Text.Split('(')[0];
                     COOS4GLabel.Text = COOS4GLabel.Text.Split('(')[0];
+
+                    await siteFinder_Toggle(true, false);
                 }
-                await siteFinder_Toggle(true, currentSite.Exists);
+
                 await MainMenu.siteFinder_Toggle(true, currentSite.Exists);
 
                 tb.ReadOnly = false;
@@ -413,17 +415,24 @@ namespace appCore.Templates.UI
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (Convert.ToInt32(e.KeyChar) == 13) {
-				if (INCTextBox.Text.Length > 0) {
-					string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-					if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
-					else {
-//						Action action = new Action(delegate {
-						FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//						                           });
-//						Toolbox.Tools.darkenBackgroundForm(action,false,this);
-						return;
-					}
+			if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+				if (INCTextBox.Text.Length > 0)
+                {
+                    try
+                    {
+                        INCTextBox.Text = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
+                    }
+                    catch (Exception ex)
+                    {
+                        LoadingPanel loading = new LoadingPanel();
+                        loading.Show(false, this.FindForm());
+
+                        FlexibleMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        loading.Close();
+                        return;
+                    }
 				}
 			}
 		}
@@ -1127,7 +1136,7 @@ namespace appCore.Templates.UI
 				siteFinder_Toggle(true,false);
 			}
 			else {
-				INCTextBox.KeyPress += INCTextBoxKeyPress;
+				//INCTextBox.KeyPress += INCTextBoxKeyPress;
 				//SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 				SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 				OtherSitesImpactedCheckBox.CheckedChanged += OtherSitesImpactedCheckedChanged;
