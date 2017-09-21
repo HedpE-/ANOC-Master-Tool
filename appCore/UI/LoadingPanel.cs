@@ -141,7 +141,13 @@ namespace appCore.UI
                     g.FillRectangle(brsh, ParentControl.ClientRectangle);
             }
             //bmp.Save(Settings.GlobalProperties.AppDataRootDir + "\\bmp.jpg");
-            innerPanel.Size = ParentControl.ClientRectangle.Size;
+            if (ParentControl.InvokeRequired)
+                ParentControl.Invoke((MethodInvoker)delegate
+                {
+                    innerPanel.Size = ParentControl.ClientRectangle.Size;
+                });
+            else
+                innerPanel.Size = ParentControl.ClientRectangle.Size;
             innerPanel.BackgroundImage = bmp;
 
             innerPanel.BringToFront();
