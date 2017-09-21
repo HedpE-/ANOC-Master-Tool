@@ -62,7 +62,19 @@ namespace appCore.Logs
 		bool ForceOverwriteLog;
 		System.Timers.Timer timer;
 		public DateTime logFileDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-		string logSeparator = getLogSeparator();
+		string logSeparator
+        {
+            get
+            {
+                string sep = string.Empty;
+                for (int c = 1; c < 301; c++)
+                {
+                    if (c == 151) sep += "\r\n";
+                    sep += "*";
+                }
+                return sep;
+            }
+        }
 		
 //		public static bool IsFileLocked(FileInfo file)
 //		{
@@ -626,15 +638,6 @@ namespace appCore.Logs
 			}
 			
 			List.RemoveAt(index);
-		}
-
-		static string getLogSeparator() {
-			string sep = string.Empty;
-			for (int c = 1; c < 301; c++) {
-				if (c == 151) sep += "\r\n";
-				sep += "*";
-			}
-			return sep;
 		}
 
 		public T this[int index]
