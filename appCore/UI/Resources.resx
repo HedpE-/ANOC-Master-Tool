@@ -12080,54 +12080,576 @@ ZJ - LTE2100 Micro
 ZK - LTE2100 Pico</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>####### ANOC Master Tool 8.0 ??/09/2017 #######
-Huge update focused on Performance e Responsiveness and support usage by other teams
+    <value>####### ANOC Master Tool 7.1alpha5 11/09/2017 #######
+[EMERGENCY UPDATE]
 
-- The app is a lot more responsive and should feel a lot smoother and faster while performing long operations
-- Changed the way the Menu Bar works to increase responsiveness
-- Added Tip Of The Day (more tips will be added in time)
-- Added a toggle on the Settings panel to toggle Tip Of The Day on startup
-- Added a "?" icon on the Start Tab to open Tips manually
-- Added Notification Center, it will show notifications added by the team Manager
-- Added an icon on the Start Tab to open the Notification Center 
-- Support app usage by other ANOC-UK teams
-- The app now notifies users with permission to update the OI DB Files when they're older than 8h
-- Fixed crash opening the Shifts Calendar when the user is not on the shifts file
-- Fixed issue on all Scripts controls where clicking the "..." button for the scripts textboxes which are readonly, opened the larger textbox with write permission
-- Huawei lock &amp; unlock scripts textboxes were disabled instead of readonly making it impossible to select the text manually
-- When an alarm has County Unknown, the county will be fetched from the site information
-- Fixed some new E/// alarms like Battery Theft that weren't being parsed
-- Outages can now be generated from alarms, existing outage report and sites list
-- The User Folder won't house the DB and Shifts files anymore, for now it is only used to store logs
-- Fixed the layout issues on the panel displaying all persons in the M shift after the APT team creation
-- Fixed some ALU sites that weren't being identified as ALU
-- Improved the way the tool detects privileges on the share folder which can fix some issues for some users especially new users
-- New tab for Cells down report
-- Fixed a lot of incorrect data on affected locations and number of cells by bearer on Outage reports
-- Changed the Settings layout
-- If a site doesn't has a blank county on the address, the tool gets the correct county from http://wikishire.co.uk/
-- When generating a Monitoring task, there is a new field displaying when the monitoring will finish, based on the chosen duration which can now be on hours or days
-- Slightly changed the signature to include the option on the phone number
-- Slight adaptations after OI changes
-- Now, the book ins are also fetched automatically when searching a site
-- A lot of other minor fixes and improvements that I don't remember right now
+- Fixed tool crash on startup due to share data folder having been deleted by someone... Thanks a lot!
 
+####### ANOC Master Tool 7.1alpha5 17/08/2017 #######
 
-#MAINFORM
-Async programming to get more responsiveness and less lags and "hick-ups"
-Changed some control names
-Added some UI rules to support usage by other Departments
-The app now notifies users with permission to update the OI DB Files when they're older than 8h
-TicketCountLabel visibility is only toggled with a left mouse button click
-Adaptations for the new LoadingPanel
-Fixed the control that gets focused on tab change
-Fixed crash opening the Shifts Calendar when the user is not on the shifts file
-Adaptations for the recent Settings file changes
-Fixed crashes when calling MainFormActivate method from another thread
+- Fixed Site Finder crash on bulk search
 
-#*SCRIPTSCONTROLS
-AMTLargeTextForm wasn't read only when called from read only textboxes
-Huawei lock &amp; unlock scripts textboxes were disabled instead of readonly making it impossible to select the text manually</value>
+####### ANOC Master Tool 7.1alpha4 22/06/2017 #######
+
+- Fixed some crashes when OI is unavailable
+
+####### ANOC Master Tool 7.1alpha4 22/06/2017 #######
+[EMERGENCY UPDATE]
+
+- Fixed some crashes when OI is unavailable
+
+####### ANOC Master Tool 7.1alpha4 14/06/2017 #######
+
+- Optimized Weather Service, it should be much faster now
+- Optimized startup procedure, the tool is starting much faster
+- Updates on Shifts Calendar, people show divided by teams
+
+####### ANOC Master Tool 7.1alpha4 12/06/2017 #######
+
+- Optimized Alarms/Outage Parsing
+- New layout on Outage reports
+- Fixed NSN cell alarms without the cell on Element Column, the tool now resolves the correct cell name
+- Bulk site search and generate outage from sites list now support lists with RBSxxxxx format
+- Weather Service is available on Site Finder, it will show the current weather information for each site location
+- Fixed some bugs related with OI missing data
+
+####### ANOC Master Tool 7.1alpha3 05/06/2017 #######
+
+- Fixed a lot of crashes caused by changes on the OI API's returned data
+- Enhanced the view for INCs, CRQs and Book ins
+- Enhanced the alarm data for 2G E/// cell alarms that don't have BCCH affected
+- Site Finder/Outage Follow up layout changed. It's now bigger and has more info
+- Monitoring perion on "Monitoring" tasks generation may now be specified in hours or days
+- The textboxes on the templates now have Trim function option on right click
+- Added link for the "ARFCN Calculator" on the tray icon
+- Shift Leaders given permission to update OI DB files from OI, changes seen on the Start panel
+
+####### ANOC Master Tool 7.1alpha2 25/04/2017 #######
+
+- Fixed "Sites per tech" showing all sites on all techs
+- Added a new tab on the Notes window for the SMS Book In instructions
+- Site Finder Now supports searching site by JVCO ID
+- Fixed onward sites identification on Site Finder
+- Site Finder bulk search and outage follow up interfaces now include POC and CCT columns on the sites list
+- Fixed some alarms not parsing
+- Fixed crash while closing app if Log Browser, Site Finder or AMT Browser are open
+- Changes on Settings panel
+- Update NSN 2G &amp; Huawei block commands to do handover with wait time 1 min as per new process.
+- Add #SL tag on LockUnlock cells window
+
+####### ANOC Master Tool 7.1alpha1 17/04/2017 #######
+
+- Fixed "Generate Template" not becoming active on Failed CRQs
+- Tweaked the way the tool searches sites on DB to make it work faster especially on bulk searches and outages
+- New Lock/Unlock cells and Cells Locked features on Site Finder
+- Updated SiteLopedia address on AMT Browser
+- Tweaked the Shifts Calendar for better functionality
+- Almost all Tables tweaked to be able to multi select cell by cell and copy any value with CTRL+C
+- Tables containing "Cell Name" column will show a tooltip with the Cell prefix and frequency/cell type
+- Added Onward Sites count/list and markers on Site Finder
+- Added CCT ref on the Troubleshoot Template and Site Finder
+- The INCs/CRQs/BookIns/Alarms/Availability Menu buttons now allow to right click and refresh data individually
+- The tool now searches for updated DB files every 2 hours and self updates if new files found
+- Tweaked notifications
+- Added the resolution to the related INCs, on the Troubleshoot Template
+- Fixed crash whenever the OI APIs returned an error message
+- Fixed the Failed CRQ layout, entered text now contains correct line breaks
+- Outage Report now contains the affected number of cells per site/technology on the sites list
+- New Menu option "View sites per tech"
+- Site Finder cells list now contain additional filters to show/hide VF/TF cells
+- New button "Back to map overview" on Outage Follow Up to easily view all sites on the map again
+- Outage Follow Up cells list per site now gets the cells on the report back color painted on red if present on the report
+- Fixed crash for users not present on the shifts file
+- Fixed crash starting the app when the Active Directory is unavailable
+- Fixed crash getting the network access flag if the share is available but slow
+- Added all missing cells prefix on Notes
+- Fixed UI bugs on the Ericsson L/U cells script panel
+- Fixed "Copy log to new template" on LogEditor
+
+####### ANOC Master Tool 7.0alpha12 27/02/2017 #######
+
+- Adaptations for new OI APIs
+- Tweaked OI requests, now it gets the same data using less requests, turning into reduced response times and less server load
+- Removed Old OI links since they've been taken out of order
+- Site Details has a new menu button for the Availability chart
+- Tweaked site finder to get cells faster, greatly reduced time on Outages and bulk searches
+- Site Finder cells Locked column has color according to the cells locked state
+- Fixed Outage parser duplicate locations with different casing
+- Fixed crashes when a CRQ with one or both Scheduled dates empty
+- Fixed loading spinner being hanged on fixed screen point until the app is closed
+- Fixed some ALU RNC alarms being resolved as COOS alarms
+- Fixed crash when ShiftsFile is open while the tool is loading, it now requests to close the file and try again
+- Fixed outage not being generated because the alarm date format wasn't the expected
+- Fixed issue causing the WholeShifts panel to display empty lines on the bottom
+- Now the Calendar auto hides when clicking anywhere
+- Fixed issue on Generate Outage From Sites List when sites were being ignored if they had spaces before and/or after the number
+- Site Finder bulk search and Generate Outage from sites list now support bulkCI input
+
+####### ANOC Master Tool 7.0alpha11 25/01/2017 #######
+
+- Reduced application loading time
+- Reduced drastically the RAM usage, now it should be under 100Mb most of the time
+- Shifts Calendar is much faster to show single day shifts
+- Queries to all_sites &amp; all_cells DBs are much faster, mainly on bulk searches
+- Alarms Parsing time dratically reduced to about 2000 alarms per second
+- Outage Reports generation time drastically reduced
+- Outage Follow Up opens much faster now
+- INCs/CRQs/BookIns/Alarms window optimizations
+- CRQs window now shows colors depending on the CRQ status
+- Fixed issue preventing COOS to be added when a site isn't found
+- Implemented new feature to check if a CRQ is ongoing and asks user confirmation before proceeding with Template generation
+- Tweaked Menu options on all templates
+- Fixed shifts filtering to hide people with H16, B &amp; MT
+- Reworked Contacts on Notes
+- The closure code generator now pre loads each persons closure code
+- Fixed crash when generating a Troubleshoot Template for a site with no INC's or CRQ's
+- Fixed CTRL+A not working on Read Only TextBoxes(like Power Company)
+- Connectivity to OI should be more reliable as it now works on the VF-UK proxy
+- Related cases selection window now sorts the found cases
+- Optimized Parsed alarms text
+
+####### ANOC Master Tool 7.0alpha10 23/12/2016 #######
+
+##### MERRY CHRISTMAS #####
+
+- Fixed Shifts calendar issues related with the year change
+- Fixed Failed CRQ Templates on FE called to ANOC flag returning always "no" result
+- Fixed connectivity to OI issue that wasn't detecting correctly if session timed out (The browser still doesn't work though)
+- Added context menu on all big text boxes to copy, cut, paste &amp; delete functions to work with mouse
+- Fixed loading icon still visible and floating on top of other windows
+
+####### ANOC Master Tool 7.0alpha9 11/12/2016 #######
+
+- Fixed crash when site isn't found on outage report build from sites list
+- Ask if user wants to delete previous UserFolder on change
+- Site Details tweaks and optimizations
+- Fixed Cell Vendor resolver on ALU cells returning Vendor None
+- Revert Ongoing INC's &amp; Ongoing CRQ's as preparation for new feature
+
+####### ANOC Master Tool 7.0alpha8 03/12/2016 #######
+
+- Made the INCs/CRQs/BookIns/Alarms details window resizable
+- Fixed VF/TF 2G cells identification issue where W &amp; Y cells were being identified as VF and not TF
+- Fixed Outage parser crash containing alarms with empty Element column(cell name)
+- Fixed Netcool parsing alarms with empty Element column(cell name)
+
+####### ANOC Master Tool 7.0alpha7 01/12/2016 #######
+
+- Tweaked the INCs/CRQs/BookIns/Alarms details window
+- Tweaked all Scripts to include the new Menubar instead of the old buttons
+- Fixed issue with December shifts excel sheet that caused the application to crash because the month had duplicate day 1, December and January's
+
+####### ANOC Master Tool 7.0alpha6 23/11/2016 #######
+
+- New Error Handling should prevent a lot of crashes due to IO errors
+- Disabled Shifts Calendar refresh button since it was causing an unrecoverable crash
+- Tweaked the Whole Shift Popup
+- Implemented the Menu bar on all Templates, off with the old buttons
+- Ongoing CRQs on Troubleshoot Template will only display valid CRQs with status Scheduled and Implementation In Progress
+- All Message boxes have the same look now
+
+####### ANOC Master Tool 7.0alpha5 18/11/2016 #######
+
+- Fixed BCP Form
+- Fixed BCP Email subject for a more intuitive description
+- Added new field to BCP Form to choose the email recipient between EGI and TX email
+- BCP Task number accepts free text now
+- Updated EGI number on contacts
+- Menu Bar tweaks
+- Added CRQ Status on Troubleshoot Template's Ongoing CRQs 
+
+####### ANOC Master Tool 7.0alpha4 17/11/2016 #######
+
+- Fixed crashes when OI server connection is not available
+- Fixed issue related with OI session cookies that caused loss of connection after 1st request to server
+- New users without network share access will download all_cells and all_sites automatically from OI
+- Fixed Site Finder map proxy issues, for good!
+
+####### ANOC Master Tool 7.0alpha3 16/11/2016 #######
+
+- Fully working AMT Browser with auto OI login
+- Fixed a bug when UserFolder wasn't found, defining new folder wasn't updating on SettingsFile, causing the tool to search previous folder on every start.
+
+####### ANOC Master Tool 7.0alpha2 14/11/2016 #######
+
+- Fixed crash when loading Troubleshoot logs containing Ongoing INCs or CRQs
+- Ongoing INCs won't show the own INC if it was saved previously on Remedy
+- Fixed crash when connection to OI is available but no data is returned from the server, when searching site
+
+####### ANOC Master Tool 7.0alpha2 13/11/2016 #######
+
+- Fixed bug with Outlook Interop dll failing when generating Failed CRQ email
+- Added some more intelligence on SiteLopedia connectivity, fixing login issues
+
+####### ANOC Master Tool 7.0alpha1 10/11/2016 #######
+
+- This is basically a WHOLE new app
+- A lot of improvements, fixes, most old bugs should be gone, some new bugs are expected xD please be patient and help me improve as you identify them
+- Although there are some major improvements on the way AMT Browser authenticates users, it is almost deprecated but still present, it will possibly be made unavailable in the final v7 release as the Site Finder evolves.
+- The previous issues with the map not showing should now be solved as the API now connects through the correct VF proxy.
+- A lot of speed ups, the most significant are the loading times, database queries and alarms parsing
+- Now the UserFolder is used as a "cache", this means all the db files, including all_cells, all_sites and shifts file will be there and updated periodically. This prevents breakdowns when the ANOC-UK shared folder is inaccessible.
+
+DO NOT REMOVE ANY OF THESE FILES FROM YOUR USERFOLDER WHILE THE TOOL IS EXECUTING!!!!
+Or else you'll have to restart it xD
+
+You may however change your UserFolder location from the settings menu.
+
+- There were some slight changes on the templates, all standardized with the LogViewer
+- Troubleshoot Template "Related INC/CRQ" is still there for reference and task generation interactivity but, it will no longer be shown on the template, replaced by "Ongoing INCs" and "Ongoing CRQs", as requested by the Pedro Pancho. These new fields are used for reference to guarantee that no duplicate INC's are raised.
+- Now, all the INC's, CRQ's, Book Ins and Alarms info are made available on the Troubleshoot Template and the Site Finder through the new Menu Bar, which replaces the old buttons.
+- For these new features to work, you need to insert your SiteLopedia credentials on the Settings option. They will also be asked every time access to OI is denied due to invalid credentials.
+
+- Enjoy the new features!
+
+####### ANOC Master Tool 6.9 11/08/2016 #######
+
+- Did a HUGE rework on the way AMT authenticates on SiteLopedia
+- Previous bugs on OI logon page disappear as it's never displayed, instead, logon is made silently.
+- Added a read only Address bar to easily keep track of the current address
+- A lot more changes are planned for the Browser module
+- Failed CRQ fixed
+- Fixed bug on Shifts Panel when clicking on a day
+
+####### ANOC Master Tool 6.8 01/08/2016 #######
+
+--------------------- Fully reworked SHIFTS CALENDAR ---------------------
+- Now the calendar is hidden, it will no longer take a lot of time to refresh and all previous visual bugs are gone.
+- The buttons on the Start tab have been re-ordered and a 6th button was added to slide the calendar from and to the top. (If someone is not found on the shifts file, this button won't show)
+- Added new feature on Shifts Calendar that shows the whole shift when clicking a day on a pop up.
+- This pop up containing the whole shift, has a button on the bottom to export the shift to the clipboard.
+
+- Fully reworked Failed CRQ's email, it now prints the template on a table to make it less confusing.
+- Replaced CRQ contact fields "Name", "Phone #" and "Email" with a large textbox since CRQ's usually have more than 1 contact
+- Patched LogEditor to fully support the new layout.
+- Fixed a bug related with the Shifts file reading
+- Added new tab under Scripts to generate E/// cell lock commands.
+- Improved the way the DB and Shifts files were being loaded, it's much faster now
+- Due to a huge set of changes planned, AMT Browser is broken and 2nd tab should not work
+
+####### ANOC Master Tool 6.7 06/06/2016 #######
+
+--------------------- SHIFTS CALENDAR ---------------------
+- Now you can find your shifts calendar on the main screen for the current month
+- Fixed an issue with Full site outage flag that was locking the COOS count boxes even with Other sites impacted flag checked
+- Added MITIE and BRITISH GAS contacts on Notes
+
+####### ANOC Master Tool 6.5 21/05/2016 #######
+
+- Fixed some issues regarding Mitie implementations on the Troubleshoot Template
+
+####### ANOC Master Tool 6.4 16/05/2016 #######
+
+- FIXED: OI developers removed the Power Company related fields from the all_sites export causing issues on site finder
+- New SplashScreen Fade in and out effects
+- Other bug fixes and improvements
+
+####### ANOC Master Tool 6.3 10/04/2016 #######
+
+- Fixed LogEditor UI issues
+- It's now possible to launch the Outage Follow Up screen from a logged Outage Report
+- Added the old Locked Cells page
+- Some improvements and bugfixes
+
+####### ANOC Master Tool 6.2 12/03/2016 #######
+
+- Hope to have all startup crashes and auto update failed issues fixed
+- A lot of improvements on Site Finder and Outages Follow up
+- Fixed issues logging on the new SiteLopedia
+- AMT Browser now uses the new SiteLopedia
+
+####### ANOC Master Tool 6.1 29/02/2016 #######
+
+- New SiteLopedia support
+- After the last network share outage, it was necessary to patch the network access detector algorithm in order to generate a timeout response if the share becomes unresponsive for a long period
+- Patch had to be applied both on the executable file and dll lib
+
+####### ANOC Master Tool 6.0(Beta) 20/02/2016 #######
+
+- Improved Site Details page displayed information
+- Site Details now includes a map with the site location
+- The map has some connection issues due to the Vodafone proxy, try to open the map again to force connection
+- Included a new option on the main screen which allows you to open the Site Finder which works basically like SiteLopedia without the Remedy/Netcool integration
+- It is now possible to make a bulk search on Site Finder to search for multiple sites
+- All site markers on the map are clickable to display that site information
+- After generating a new Outage report, there is a new option to open the "Outage Follow-up" which is(still) basically the same as the Site Finder
+- Added Site Finder to the Tray icon
+- Added a new link on the tray icon to open the Citrix start page
+- BCP form emails will be generated to send on behalf of 1stLineANOCUKRAN@vodafone.com
+- Reworked the Adhoc tasks generation on the PWR tasks for a more intuitive summary
+- Added a new Adhoc Monitoring task
+- Added a new option under settings to Reload the DB files
+- Randon Splash screen crashes when opening app should be fixed now
+- Removed AlwaysOnTop property from Splash screen
+- Everytime the app needs to perform a long operation or a window that locks the previous window, the app main/previous window gets darkened and a loading icon should appear until the operation finishes
+- Hope to have all in built browser issues related with the new SiteLopedia DNS address fixed
+- Added "Continue" and "Cancel" buttons on the enlarged text box windows which opens with "..." buttons
+- CTRL+A to select all text on read only textboxes fixed
+- Fixed some more issues when Network share is unnavailable
+- A lot of minor fixes/improvements
+
+####### ANOC Master Tool 5.1 24/12/2015 #######
+
+- Changed the font on all textboxes
+
+####### ANOC Master Tool 5.1 18/12/2015 #######
+
+- New feature "Generate Outage Report from sites list" accessible via a button on Outages tab. Insert sites list, one per line, just like bulk search on Site Lopedia bulk search.
+- Outage parser will no longer ask to copy 4G cells list from Site Lopedia, it will get all the cells automatically if 4G down alarms are on the list
+- Fixed User Folder not updating after being changed in Settings
+- The tool will now check hourly if there are new sites and cells DB's and load them
+- Fixed some minor bugs that appeared since last update
+
+####### ANOC Master Tool 5.0 14/12/2015 #######
+
+--------------------- SITE FINDER ---------------------
+- Now when you insert a Site ID and hit ENTER key, relevant information is automatically displayed
+- Huge reworks on templates for Site Finder integration
+- Now all fields are disabled until you fill the Site ID and hit ENTER
+- Reworked LogEditor to be compatible with Site Finder
+- Number of COOS limited to the maximum possible COOS on site
+- To override the maximum cells (INC for outages), mark the "Other sites impacted" flag
+--------------------- SITE DETAILS ---------------------
+- This is accessible via a button on the Troubleshoot Template
+- New panel that shows most relevant info about the site and its cells
+- Ability to filter the cells list enablig or disabling the "2G","3G" and "4G" boxes on top of list
+--------------------- SPLASH SCREEN ---------------------
+- Nice isn't it? Just to ease the pain while waiting the app to load xD
+- The app is a lot heavier, not on size but RAM, even if it's not that much significant, it largely affects the loading time
+
+- Application quit confirmation so the tool doesn't get accidentally closed
+- Improved large textfields functionality
+- Lot's of other little improvements and bug/annoyancies fix
+
+####### ANOC Master Tool 4.1 15/11/2015 #######
+
+- [REQUEST] Changed subject on Failed CRQ email
+
+####### ANOC Master Tool 4.0 14/11/2015 #######
+
+- BCP emails - Now BCP template can be sent by email in case of Task creation failure. To enable the BCP button you must generate the Troubleshoot Template first.
+- Tool should now work for everyone with or without access to the share.
+
+####### ANOC Master Tool 3.4 08/11/2015 #######
+
+- Fixed bug on Logs Parser, now if the same template is generated 2 or more times, it won't ask to overwrite, as long as it's exactly the same
+- Improved existing logs check, no more duplicate logs on Updates and TX Templates
+- The tool now checks if Outlook is open before sending any email
+- Corrected some texts on message boxes
+- Migrated all messages that don't need user confirmation to a less intrusive Ballon Tooltip coming from the tray icon
+- Lowered tray icon's Ballon Tooltip timeout to 20s
+- MTX address window now pastes the MTX addresson manual search and ENTER to select
+
+####### ANOC Master Tool 3.3 01/11/2015 #######
+
+- Tray icon's context menu is now showing on left click
+- Improved support for users without access to the Network Share
+- Dynamically find the newest Shifts file on share folder since sometimes the name changes
+
+####### ANOC Master Tool 3.2 19/10/2015 #######
+
+- Contacts and Useful Info on Notes reworked.
+- Fixed bug on LogViewer that caused the Troubleshoot Template to be incorrectly loaded sometimes
+
+####### ANOC Master Tool 3.1 14/10/2015 #######
+
+- Added more options on the tray menu
+- Removed external sites from Browser, access them through the tray menu
+- Added Book-In website
+- Updated contacts list
+
+####### ANOC Master Tool 3.0 25/07/2015 #######
+
+--------------------- AUTO UPDATES ---------------------
+- Implemented a new updates checker and auto update function
+- The executable file "ANOC Master Tool.exe" still needs manual update, but in fact it only holds the auto updates engine so it won't be getting updates as often as the "appCore.dll" file, which actually holds the most updated parts.
+- You won't ever need to copy the dll file anymore, the app will fetch it for you
+--------------------- NEW INBUILT BROWSER ENGINE ---------------------
+- Rewrote the whole inbuilt browser with a lot of tweaks and improvements
+- The browser now works on a different proccess so now it will NEVER get locked by any other window
+- SiteLopedia autologin! When you open the browser, you'll be requested to enter OI credentials that will be stored on your Settings file. Passwords are stored properly encrypted
+- OI credentials can be changed at any time on Settings panel
+- Only 3 tabs now! 1 for Citrix, another for SiteLopedia and another with a ComboBox that let's you choose from all other sites
+--------------------- NEW SYSTEM TRAY ICON ---------------------
+- Haven't noticed yet? You can make it always visible by right clicking the taskbar -&gt; Properties -&gt; Customize Notification Area -&gt; Change ANOC Master Tool icon to "Show icon and notification"
+- Not much for now, if you double click it, it will activate the Main tool window even if it's minimized
+- Right click on the icon brings a menu with a sketch of what's to come
+- Useful documents don't work yet, I plan on having them working by the next update
+- The rest works as it should and they have all the links you have on Start screen and functional Exit Tool option
+
+- New MTX button on Troubleshoot Template let's you double click a MTX and it's address will be auto inserted
+- Removed MTX tab on Notes since it's not needed anymore
+- New button on Outage Parser to copy the affected sites list in the proper format to use on SiteLopedia's bulk search
+- Fixed a bug that prevented new users without access to \\vf-pt to use the tool due to an error generating the Settings file
+- When you click on icons on Start screen, they won't bring duplicate windows anymore, instead, they activate the existing one
+- Tweaked the Failed CRQ email, it's looking better and gets your default signature
+- [REQUEST] Failed CRQ email now contains the site reference on the subject
+- A lot of improvements and bug fixes related to the LTE on Outage Parser
+- Fixed a bug on Netcool Parser that was returning an empty alarm
+- So many minor fixes and changes I lost track of them all...
+
+####### ANOC Master Tool 2.6 14/06/2015 #######
+
+- More bugfixes and optimizations on new Outage parser
+- Readded the possibility to deny LTE cells insertion
+- Removed BT and Google Translate tabs from the inbuilt Browser as it was getting too many tabs
+- Removed the Progress bar from the inbuilt Browser for performance reasons
+
+####### ANOC Master Tool 2.5 09/06/2015 #######
+
+- Several bugfixes and optimizations on new Outage parser
+- Outages are being logged again
+- LogEditor is now compatible with the new Outage parser logs (LTE sites won't be loaded on logs before 09/06/2015)
+- Improved more texts
+
+####### ANOC Master Tool 2.0 08/06/2015 #######
+
+- FIX: Crash when no LTE sites on list, the Outage Parser was trying to log LTE event times even without LTE sites
+- Improved some texts
+- Outage Parser now fully supports 4G
+
+####### ANOC Master Tool 2.0 04/06/2015 #######
+
+- FIX: Bug on Outage Parser that was returning a 0 based VF report when just TF cells were copied
+- FIX: LogEditor is now compatible with all Outage logs
+- Added back SiteLopedia old on built in browser
+
+####### ANOC Master Tool 2.0 30/05/2015 #######
+
+- FIX: Netcool parser is copying alarms to Troubleshoot Template again
+- Implemented a Clear Cache function in order to try fixing some new SiteLopedia issues
+
+####### ANOC Master Tool 2.0 29/05/2015 #######
+
+--------------------- OUTAGE PARSER HUGE UPDATE ---------------------
+
+- Outage parser now generates 2 reports, one for VF cells and another for TF if there are any
+- TF Outage report going to logs (still not compatible with LogEditor)
+- Added new button on LogEditor to replicate selected log on respective template
+- Added template characters count on "Template copied to Clipboard" confirmation window and a warning if it has more than 4000 characters as it's the maximum characters number on Remedy
+- Removed "Sitelopedia - test" from built in browser. Test link has been taken down it's been made official
+- FIXED: TX Templates weren't going to log file
+- FIXED: Sometimes Log Exists Check was replacing the wrong log (same INC, different Log types)
+- FIXED: Bug on LogEditor prevented to see Outage logs
+
+####### ANOC Master Tool 1.9 23/05/2015 #######
+
+- Added new button on LogEditor to re-generate stored template on log file
+
+####### ANOC Master Tool 1.9 22/05/2015 #######
+
+- Fixed a bug in the code to generate 3G Huawei MML command to list cells
+- Fixed bug on NSN PCM lock/unlock script
+
+####### ANOC Master Tool 1.9 20/05/2015 #######
+
+- Added the Possibility to choose cabinet ID on Huawei site lock scripts
+- Fixed a bug in the code to generate 3G Huawei MML command to list cells
+- Added a new tab in the built in browser for Lopedia's Vendor Override Tool
+
+####### ANOC Master Tool 1.9 14/05/2015 #######
+
+- Fixed bug that prevented the outage parser to count "Local Cell Unusable" alarm on HUAWEI sites as COOS
+- Add BT contact number on Notes
+
+####### ANOC Master Tool 1.9 14/05/2015 #######
+
+- Fixed bug in bulkci that was returning only half the affected sites
+- Added MTX Information tab on Notes
+- Increased Notes window size to fit MTX Information
+- Finished Nokia PCM script
+- Fixed bug in Nokia site lock script UI
+- Fixed all Tab Indexes on all windows
+
+####### ANOC Master Tool 1.9 13/05/2015 #######
+
+- Fixed bug in bulkci that showed POC in list
+- Added support for multiple tables on Outages Parser, useful when an Outage hits more than one Netcool filter (ex. All alarms + Beacon)
+- Added support for LTE SITES count on Outage Parser (not COOS count, SITES)
+- Added new button on Outage Parser that appears when there are LTE sites in an outage. This button shows all affected LTE sites in a list compatible with new SiteLopedia, just copy&amp;paste to get Lopedia's cell count
+- Outage logs now records LTE sites
+- Added LTE sites support to LogEditor
+- Finished implementing button for enlarged text box on parsers
+- Fixed bug on LogBrowser that was showing years\months that have no Template logs inside
+- Added a new tab for Scripts Generator
+- Added Huawei lock\unlock cells script
+- Added NSN lock\unlock cells and PCM scripts
+- Added a new Template for updating INC's and get it on logs
+- Added support for Update logs on LogEditor
+- Added E/// fault codes on Useful Info on Notes
+
+####### ANOC Master Tool 1.8 06/05/2015 #######
+
+- Finished implementing button for enlarged text box on all templates, LogEditor included
+- Templates signature now changes according to Microsoft Active Directory department for the user
+- Added POC identification in Outages site list
+- Corrected bug in LogBrowser logs count
+- Minor UI adjustments
+
+####### ANOC Master Tool 1.8 05/05/2015 #######
+
+- Corrected bug in address bar on Troubleshoot Template
+- Changed Troubleshoot Template overwrite confirmation message box to scrollable
+- Task generator now auto picks BT case from Related INC/CRQ field if there is any
+- Added button to open a new enlarged textbox (Remedy-like feature)
+- Changelog is displayed in the first run after updating
+
+####### ANOC Master Tool 1.8 30/04/2015 #######
+
+- Address field in Troubleshoot Template now accepts multiline address from new SiteLopedia
+- Added new tab in built in Browser
+
+####### ANOC Master Tool 1.8 29/04/2015 #######
+
+- Corrected SCC email, Orange and UK NOC phone numbers were wrong
+- Fixed Notes window size
+- Added new output for TCH alarms on netcool parser
+
+####### ANOC Master Tool 1.8 27/04/2015 #######
+
+- Reorganized Contacts list on Notes
+- Add new button on outage parser to copy to clipboard
+- Add new button on netcool parser to copy to Alarm List field in Troubleshoot Template
+- Some code optimizations, better performance
+
+####### ANOC Master Tool 1.8 24/04/2015 #######
+
+- Outage Reports: BSC/RNC identification in cells
+- Added Gen Power in contacts
+
+####### ANOC Master Tool 1.8 19/04/2015 #######
+
+- Outage reports now have logs
+- Log Browser/Editor compatible with outage logs
+- Added some emails on the contacts
+
+####### ANOC Master Tool 1.7.5572 03/04/2015 #######
+
+- LogBrowser now sorts months by date
+- It's now possible to select data within the LogEditor
+
+####### ANOC Master Tool 1.7.5571 03/04/2015 #######
+
+- ****** The return of the CHANGELOG, try to erase this one now _|_ ******
+- Added rules to all windows within the tool to disallow 2 instances of the same window
+- Minor fixes to Log Browser/Editor, logs content can't be selected yet
+- Fixed error message when opening some logs
+- Corrections on old functionalities that were broken after major changes implemented on v1.5
+- Right click on Browser is possible again
+
+####### ANOC Master Tool 1.6.5570.41291 02/04/2015 #######
+
+- Removed blanks in the end of the Netcool/Outage Parser outputs
+- Added Alarm Count in Netcool Parser output
+- Sometimes copy text to Clipboard fails due to Windows Clipboard mishandling Exception, since this is OS problem, added a check that asks user to try again instead of showing error debugger window if Clipboard operation fails
+
+####### ANOC Master Tool 1.5 30/03/2015 #######
+
+- New Log Browser and Log Editor (still only a Log Viewer actually)
+- Grouped all templates in one "Templates" tab
+- Added "Google Translate" tab on Browser
+- Implemented a check that disallows navigating to other sites, sorry!!!
+- Browser now has a progressbar when loading pages</value>
   </data>
   <data name="Contacts" xml:space="preserve">
     <value>ANOC UK 1ª Linha,00441635692067,210950195,1stLineANOCUK@vodafone.com
