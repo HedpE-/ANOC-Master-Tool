@@ -43,6 +43,7 @@ namespace appCore.Toolbox
 			MD5 md5 = MD5.Create();
 			FileStream stream = File.OpenRead(filename.FullName);
 			byte[] hash = md5.ComputeHash(stream);
+            stream.Close();
 
 			return convertByteArrayToHex(hash);
 		}
@@ -154,7 +155,7 @@ namespace appCore.Toolbox
 			
 			num = num.Replace(prefix, string.Empty);
 			if (!num.IsAllDigits())
-				return "error";
+				throw new Exception(string.Format("The {0} number must only contain digits!", prefix));
 			
 			if (num.Length < 13) {
 				int num2 = 15 - (num.Length + 3);
