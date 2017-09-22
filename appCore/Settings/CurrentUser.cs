@@ -39,8 +39,20 @@ namespace appCore.Settings
 		public static string NetworkDomain
 		{
 			get { return GetUserDetails("NetworkDomain"); }
-		}
-		public static string ClosureCode {
+        }
+        public static string Email
+        {
+            get { return GetUserDetails("Email"); }
+        }
+        public static string VodafoneCountry
+        {
+            get
+            {
+                return GetUserDetails("VfCountry");
+            }
+        }
+
+        public static string ClosureCode {
 			get {
                 if (Department == Departments.RanTier1 || Department == Departments.RanTier2)
                     return DB.Databases.shiftsFile.GetClosureCode(FullName[1] + " " + FullName[0]);
@@ -162,6 +174,10 @@ namespace appCore.Settings
                         return CurrentUser.ActiveDirectoryUser.Surname + ", " + CurrentUser.ActiveDirectoryUser.GivenName + " " + CurrentUser.ActiveDirectoryUser.MiddleName;
                     case "Username":
                         return ActiveDirectoryUser.SamAccountName.ToUpper();
+                    case "Email":
+                        return ActiveDirectoryUser.EmailAddress;
+                    case "VfCountry":
+                        return ActiveDirectoryUser.DisplayName.Contains("Vodafone Portugal") ? "Vodafone Portugal" : "Vodafone UK";
                     case "Department":
                         if (ActiveDirectoryUser.SamAccountName.Contains("CARAMELOS"))
                             return "1st Line RAN";
