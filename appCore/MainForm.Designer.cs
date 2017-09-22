@@ -82,6 +82,7 @@ namespace appCore
             this.components = new System.ComponentModel.Container();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.StartTabPage = new System.Windows.Forms.TabPage();
+            this.BreaksPictureBox = new System.Windows.Forms.PictureBox();
             this.NotificationsPictureBox = new System.Windows.Forms.PictureBox();
             this.QuestionMarkPictureBox = new System.Windows.Forms.PictureBox();
             this.allCellsLabel = new System.Windows.Forms.Label();
@@ -111,8 +112,6 @@ namespace appCore
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.textBox14 = new appCore.UI.AMTTextBox();
-            this.textBox13 = new appCore.UI.AMTTextBox();
             this.RAN_OutagesTabPage = new System.Windows.Forms.TabPage();
             this.NetcoolParserTabPage = new System.Windows.Forms.TabPage();
             this.button24 = new System.Windows.Forms.Button();
@@ -120,20 +119,23 @@ namespace appCore
             this.label34 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
-            this.textBox12 = new appCore.UI.AMTRichTextBox();
             this.RAN_CellsDownTabPage = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.amtRichTextBox1 = new appCore.UI.AMTRichTextBox();
             this.TestTabPage = new System.Windows.Forms.TabPage();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox14 = new appCore.UI.AMTTextBox();
+            this.textBox13 = new appCore.UI.AMTTextBox();
+            this.textBox12 = new appCore.UI.AMTRichTextBox();
+            this.amtRichTextBox1 = new appCore.UI.AMTRichTextBox();
             this.MainTabControl.SuspendLayout();
             this.StartTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BreaksPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotificationsPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.QuestionMarkPictureBox)).BeginInit();
             this.StartMenuPanel.SuspendLayout();
@@ -177,6 +179,7 @@ namespace appCore
             this.StartTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.StartTabPage.BackgroundImage = global::appCore.UI.Resources.zoozoo_wallpaper_15;
             this.StartTabPage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.StartTabPage.Controls.Add(this.BreaksPictureBox);
             this.StartTabPage.Controls.Add(this.NotificationsPictureBox);
             this.StartTabPage.Controls.Add(this.QuestionMarkPictureBox);
             this.StartTabPage.Controls.Add(this.allCellsLabel);
@@ -190,6 +193,22 @@ namespace appCore
             this.StartTabPage.Text = "Start";
             this.StartTabPage.BackgroundImageChanged += new System.EventHandler(this.TabPage1BackgroundImageChanged);
             this.StartTabPage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabPage1MouseClick);
+            // 
+            // BreaksPictureBox
+            // 
+            this.BreaksPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BreaksPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.BreaksPictureBox.Image = global::appCore.UI.Resources.breaks;
+            this.BreaksPictureBox.Location = new System.Drawing.Point(450, 3);
+            this.BreaksPictureBox.Name = "BreaksPictureBox";
+            this.BreaksPictureBox.Size = new System.Drawing.Size(20, 20);
+            this.BreaksPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.BreaksPictureBox.TabIndex = 15;
+            this.BreaksPictureBox.TabStop = false;
+            this.BreaksPictureBox.Visible = false;
+            this.BreaksPictureBox.Click += new System.EventHandler(this.PictureBoxesClick);
+            this.BreaksPictureBox.MouseLeave += new System.EventHandler(this.PictureBoxesMouseLeave);
+            this.BreaksPictureBox.MouseHover += new System.EventHandler(this.PictureBoxesMouseHover);
             // 
             // NotificationsPictureBox
             // 
@@ -310,7 +329,7 @@ namespace appCore
             // 
             this.LogsPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.LogsPictureBox.BackColor = System.Drawing.Color.Transparent;
-            this.LogsPictureBox.Image = global::appCore.UI.Resources._lock;
+            this.LogsPictureBox.Image = global::appCore.UI.Resources.logs;
             this.LogsPictureBox.Location = new System.Drawing.Point(52, 49);
             this.LogsPictureBox.Name = "LogsPictureBox";
             this.LogsPictureBox.Size = new System.Drawing.Size(40, 40);
@@ -540,27 +559,6 @@ namespace appCore
             this.label18.Text = "INC";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // textBox14
-            // 
-            this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox14.Location = new System.Drawing.Point(87, 59);
-            this.textBox14.MaxLength = 9;
-            this.textBox14.Name = "textBox14";
-            this.textBox14.ReadOnly = true;
-            this.textBox14.Size = new System.Drawing.Size(76, 20);
-            this.textBox14.TabIndex = 3;
-            // 
-            // textBox13
-            // 
-            this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox13.Location = new System.Drawing.Point(87, 7);
-            this.textBox13.MaxLength = 15;
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(111, 20);
-            this.textBox13.TabIndex = 1;
-            this.textBox13.TextChanged += new System.EventHandler(this.TextBox13TextChanged);
-            this.textBox13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox13KeyPress);
-            // 
             // RAN_OutagesTabPage
             // 
             this.RAN_OutagesTabPage.BackColor = System.Drawing.SystemColors.Control;
@@ -637,17 +635,6 @@ namespace appCore
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.Button6Click);
             // 
-            // textBox12
-            // 
-            this.textBox12.DetectUrls = false;
-            this.textBox12.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.textBox12.Location = new System.Drawing.Point(8, 27);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(513, 597);
-            this.textBox12.TabIndex = 1;
-            this.textBox12.Text = "";
-            this.textBox12.TextChanged += new System.EventHandler(this.TextBox12TextChanged);
-            // 
             // RAN_CellsDownTabPage
             // 
             this.RAN_CellsDownTabPage.BackColor = System.Drawing.SystemColors.Control;
@@ -704,18 +691,6 @@ namespace appCore
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.Button4Click);
             // 
-            // amtRichTextBox1
-            // 
-            this.amtRichTextBox1.DetectUrls = false;
-            this.amtRichTextBox1.Font = new System.Drawing.Font("Courier New", 8.25F);
-            this.amtRichTextBox1.Location = new System.Drawing.Point(7, 27);
-            this.amtRichTextBox1.Name = "amtRichTextBox1";
-            this.amtRichTextBox1.Size = new System.Drawing.Size(513, 597);
-            this.amtRichTextBox1.TabIndex = 30;
-            this.amtRichTextBox1.Text = "";
-            this.amtRichTextBox1.WordWrap = false;
-            this.amtRichTextBox1.TextChanged += new System.EventHandler(this.AmtRichTextBox1TextChanged);
-            // 
             // TestTabPage
             // 
             this.TestTabPage.BackColor = System.Drawing.Color.DimGray;
@@ -756,6 +731,50 @@ namespace appCore
             this.toolStripMenuItem2.Text = "Choose from file...";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.ToolStripMenuItem2Click);
             // 
+            // textBox14
+            // 
+            this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox14.Location = new System.Drawing.Point(87, 59);
+            this.textBox14.MaxLength = 9;
+            this.textBox14.Name = "textBox14";
+            this.textBox14.ReadOnly = true;
+            this.textBox14.Size = new System.Drawing.Size(76, 20);
+            this.textBox14.TabIndex = 3;
+            // 
+            // textBox13
+            // 
+            this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox13.Location = new System.Drawing.Point(87, 7);
+            this.textBox13.MaxLength = 15;
+            this.textBox13.Name = "textBox13";
+            this.textBox13.Size = new System.Drawing.Size(111, 20);
+            this.textBox13.TabIndex = 1;
+            this.textBox13.TextChanged += new System.EventHandler(this.TextBox13TextChanged);
+            this.textBox13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox13KeyPress);
+            // 
+            // textBox12
+            // 
+            this.textBox12.DetectUrls = false;
+            this.textBox12.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.textBox12.Location = new System.Drawing.Point(8, 27);
+            this.textBox12.Name = "textBox12";
+            this.textBox12.Size = new System.Drawing.Size(513, 597);
+            this.textBox12.TabIndex = 1;
+            this.textBox12.Text = "";
+            this.textBox12.TextChanged += new System.EventHandler(this.TextBox12TextChanged);
+            // 
+            // amtRichTextBox1
+            // 
+            this.amtRichTextBox1.DetectUrls = false;
+            this.amtRichTextBox1.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.amtRichTextBox1.Location = new System.Drawing.Point(7, 27);
+            this.amtRichTextBox1.Name = "amtRichTextBox1";
+            this.amtRichTextBox1.Size = new System.Drawing.Size(513, 597);
+            this.amtRichTextBox1.TabIndex = 30;
+            this.amtRichTextBox1.Text = "";
+            this.amtRichTextBox1.WordWrap = false;
+            this.amtRichTextBox1.TextChanged += new System.EventHandler(this.AmtRichTextBox1TextChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -772,6 +791,7 @@ namespace appCore
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.MainTabControl.ResumeLayout(false);
             this.StartTabPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.BreaksPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotificationsPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.QuestionMarkPictureBox)).EndInit();
             this.StartMenuPanel.ResumeLayout(false);
@@ -803,5 +823,6 @@ namespace appCore
         private UI.AMTRichTextBox amtRichTextBox1;
         private System.Windows.Forms.PictureBox QuestionMarkPictureBox;
         private System.Windows.Forms.PictureBox NotificationsPictureBox;
+        private System.Windows.Forms.PictureBox BreaksPictureBox;
     }
 }

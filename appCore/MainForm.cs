@@ -159,6 +159,7 @@ namespace appCore
             {
                 MainTabControl.TabPages.Remove(TestTabPage);
                 RAN_ScriptsTabControl.TabPages.Remove(AlcatelTabPage); // Alcatel scripts tab
+                BreaksPictureBox.Visible = false;
             }
 
             if (CurrentUser.Department == Departments.RanTier1 || CurrentUser.Department == Departments.RanTier2)
@@ -212,7 +213,6 @@ namespace appCore
             SplashForm.UpdateLabelText("Almost finished");
 
             // HACK: Developer specific action
-            //if(CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2") {
             if (CurrentUser.UserName == "GONCARJ3" || CurrentUser.UserName == "SANTOSS2" || CurrentUser.Role == Roles.ShiftLeader)
             {
                 Button UpdateOiFilesButton = new Button();
@@ -683,6 +683,27 @@ namespace appCore
             toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
             toolTip.SetToolTip(CalendarPictureBox, "Shifts Calendar");
             toolTip.SetToolTip(QuestionMarkPictureBox, "Tips of the Day");
+
+            // Create the ToolTip and associate with the Form container.
+            ToolTip toolTip2 = new ToolTip();
+
+            // Set up the delays for the ToolTip.
+            toolTip2.AutoPopDelay = 600000;
+            toolTip2.InitialDelay = 500;
+            toolTip2.ReshowDelay = 500;
+            toolTip2.ReshowDelay = 500;
+            toolTip2.ReshowDelay = 500;
+
+            toolTip2.ShowAlways = false; // Force the ToolTip text to be displayed whether or not the form is active.
+            toolTip2.IsBalloon = true;
+            toolTip2.UseAnimation = true;
+            toolTip2.UseFading = false;
+            toolTip2.BackColor = Color.White;
+            toolTip2.ForeColor = Color.Firebrick;
+
+            // Set up the ToolTip text for each object
+
+            toolTip2.SetToolTip(BreaksPictureBox, "Breaks Planner");
         }
 
         void TextBox13TextChanged(object sender, EventArgs e)
@@ -1320,6 +1341,14 @@ namespace appCore
                     notificationsCenter.OpenGUI(new Point(StartTabPage.PointToScreen(Point.Empty).X + ((StartTabPage.Width - NotificationsCenter.GuiSize.Width) / 2), StartTabPage.PointToScreen(Point.Empty).Y));
 
                     loading.Close();
+                    break;
+                case "BreaksPictureBox":
+                    //loading = new LoadingPanel();
+                    //loading.Show(false, this);
+
+
+                    
+                    //loading.Close();
                     break;
             }
         }
