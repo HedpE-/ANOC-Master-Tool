@@ -21,39 +21,31 @@ namespace appCore.Web.UI
 	{
 		public string Username = string.Empty;
 		public string Password = string.Empty;
+
+        string application; 
 		//private string lastUserLoginAttempt = string.Empty;
 		//private int loginFailedAttempts = 0;
 		
 		public AuthForm(string app)
 		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
 			InitializeComponent();
-			
-			if(app == "OI") {
-				textBox1.Text = Settings.SettingsFile.OIUsername;
-				textBox2.Text = Settings.SettingsFile.OIPassword.DecryptText();
-				this.Text = "OI Login";
-			}
+
+            application = app;
 		}
 		
 		void Button1Click(object sender, EventArgs e)
 		{
 			label3.Text = "Login failed";
 			label3.Visible = false;
-			if(!(string.IsNullOrEmpty(textBox1.Text) && string.IsNullOrEmpty(textBox2.Text))) {				
-				//if(!validateLogin("http://195.233.194.118/SSO/?action=login")) {
-					//label3.Visible = true;
-					//return;
-				//}
-				
+			if(!(string.IsNullOrEmpty(textBox1.Text) && string.IsNullOrEmpty(textBox2.Text)))
+            {
 				Username = textBox1.Text;
-				Password = textBox2.Text.EncryptText();
+				Password = application == "OI" ? textBox2.Text.EncryptText() : textBox2.Text;
 				
-				this.Close();
+				Close();
 			}
-			else {
+			else
+            {
 				label3.Text = "No credentials entered";
 				label3.Visible = true;
 			}
@@ -63,7 +55,7 @@ namespace appCore.Web.UI
 		{
 			textBox1.Text = string.Empty;
 			textBox2.Text = string.Empty;
-			this.Close();
+			Close();
 		}
 
 		public bool validateLogin(string url)
@@ -94,5 +86,15 @@ namespace appCore.Web.UI
 			
 			return true;
 		}
-	}
+
+        private void AuthForm_Shown(object sender, EventArgs e)
+        {
+            if (application == "Confluence")
+                textBox1.ReadOnly = !string.IsNullOrEmpty(Username);
+
+            textBox1.Text = application == "OI" ? Settings.SettingsFile.OIUsername : Username;
+            textBox2.Text = application == "OI" ? Settings.SettingsFile.OIPassword.DecryptText() : string.Empty;
+            Text = application == "OI" ? "OI Login" : "Confluence Login";
+        }
+    }
 }
