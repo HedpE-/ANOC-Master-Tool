@@ -1485,6 +1485,7 @@
     <Compile Include="Web\HtmlAgilityPack\Trace.cs" />
     <Compile Include="Web\HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="Web\HtmlAgilityPack\Utilities.cs" />
+    <Compile Include="Web\ConfluenceConnection.cs" />
     <Compile Include="Web\UI\AuthForm.cs">
       <SubType>Form</SubType>
     </Compile>
