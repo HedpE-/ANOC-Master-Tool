@@ -326,7 +326,8 @@ namespace appCore.Toolbox
 		/// </summary>
 		/// <param name="html">HTML returned from OI</param>
 		/// <param name="tableName">Table Name. Valid values: "div_access", "table_inc", "table_crq", "table_alarms", "table_visits", "table_checkbox_availability"</param>
-		public static DataTable ConvertHtmlTableToDT(string html, string tableName) {
+		public static DataTable ConvertHtmlTableToDT(string html, string tableName)
+        {
 			HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 			doc.Load(new StringReader(html));
 			DataTable dt = new DataTable();
@@ -336,7 +337,8 @@ namespace appCore.Toolbox
 			// Build DataTable Headers ("table_visits" has headers inside <tr> tag, unlike the other tables)
 			HtmlNode table = tableName == string.Empty ? doc.DocumentNode.SelectSingleNode("//table") : tableName == "div_access" ? doc.DocumentNode.SelectSingleNode("//div[@id='" + tableName + "']").ChildNodes.FirstOrDefault(n => n.Name == "table") : doc.DocumentNode.SelectSingleNode("//table[@id='" + tableName + "']");
 			IEnumerable<HtmlNode> descendantNodes = null;
-			switch(tableName) {
+			switch(tableName)
+            {
 				case "table_checkbox_availability":
 					descendantNodes = table.SelectSingleNode("/table[1]/thead[1]/tr[1]").ChildNodes; // "/table[1]/thead[1]/tr[1]"
 					descendantNodes = descendantNodes.Where(item => item.Name == "td");
@@ -354,11 +356,13 @@ namespace appCore.Toolbox
 
             if(descendantNodes.Count() > 1)
             {
-			    foreach (HtmlNode node in descendantNodes) {
+			    foreach (HtmlNode node in descendantNodes)
+                {
                     string nodeText = node.InnerText.Replace("&amp;", "&");
                     if (nodeText.Contains("Date") || nodeText.Contains("Scheduled") || nodeText == "Arrived" || nodeText == "Planned Finish" || nodeText == "Departed Site" || nodeText == "Time")
 					    dt.Columns.Add(nodeText, typeof(DateTime));
-				    else {
+				    else
+                    {
 					    if(!dt.Columns.Contains(nodeText))
 						    dt.Columns.Add(nodeText);
 				    }

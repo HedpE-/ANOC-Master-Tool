@@ -35,10 +35,10 @@ namespace appCore.UI
 			
 			textBox2.Text = Resources.Cells_Prefix;
 			textBox3.Rtf = Resources.Useful_Info;
-		}
-	}
-	
-	[DelimitedRecord(",")]
+        }
+    }
+
+    [DelimitedRecord(",")]
 	public class Contact {
 		public string Name;
 		public string ContactNumber;
