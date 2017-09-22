@@ -125,6 +125,7 @@ namespace appCore.UI
 			Links.MenuItems.Add("ST Internal Citrix", (s, e) => Process.Start("https://st.internal.vodafone.co.uk/"));
 			Links.MenuItems.Add("Vodafone Application Portal", (s, e) => Process.Start("https://dealer.vodafone.co.uk/"));
 			Links.MenuItems.Add("ANOC-UK Network Share", (s, e) => Process.Start("explorer.exe", '"' + "\\\\vf-pt\\fs\\ANOC-UK" + '"'));
+            Links.MenuItems.Add("ANOC-UK IM/RAN 2nd Line On-Call", DisplayOnCall);
 			Links.MenuItems.Add("Energy Networks", (s, e) => Process.Start("http://www.energynetworks.org/info/faqs/electricity-distribution-map.html"));
 			Links.MenuItems.Add("BT Wholesale", (s, e) => Process.Start("https://www.btwholesale.com/portalzone/portalzone/homeLogin.do"));
 			Links.MenuItems.Add("ALEX", (s, e) => Process.Start("http://oprweb/alex"));
@@ -244,5 +245,77 @@ namespace appCore.UI
 //				MainForm.trayIc.ContextMenu.MenuItems[9].Enabled = false;
 			}
 		}
-	}
+
+        public void DisplayOnCall(object sender, EventArgs e)
+        {
+            
+            System.Threading.Thread thread = new System.Threading.Thread(() =>
+            {
+                Form form = new Form()
+                {
+                    Name = "On-Call",
+                    Text = "On-Call",
+                    MaximizeBox = false,
+                    FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                    Size = new System.Drawing.Size(1310, 567)
+                };
+                form.Shown += OnCallFormShown;
+                AMTBrowser browser = new AMTBrowser()
+                {
+                    Name = "browser",
+                    Location = new System.Drawing.Point(-11, -20),
+                    Size = new System.Drawing.Size(1400, 700)
+                };
+                form.Controls.Add(browser);
+
+                form.ShowDialog();
+            });
+            thread.Name = "On-Call";
+            thread.SetApartmentState(System.Threading.ApartmentState.STA);
+            thread.Start();
+        }
+
+        private async void OnCallFormShown(object sender, EventArgs e)
+        {
+            await System.Threading.Tasks.Task.Run(() => System.Threading.Thread.Sleep(300));
+            LoadingPanel loading = new LoadingPanel();
+            loading.Show(true, (Control)sender);
+
+            await System.Threading.Tasks.Task.Run(() => Web.ConfluenceConnection.InitiateConnection());
+            ((AMTBrowser)((Control)sender).Controls["browser"]).ResumeSession("https://confluence.sp.vodafone.com/plugins/viewsource/viewpagesrc.action?pageId=103718076", Web.ConfluenceConnection.cookieContainer);
+
+            loading.Close();
+
+            ((Form)sender).Opacity = .95;
+        }
+
+        //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+        //doc.Load(new StringReader(Web.ConfluenceConnection.requestHtmlSource("/display/UR1L/On+Call")));
+
+        //string css = Web.ConfluenceConnection.requestHtmlSource("/styles/colors.css?spaceKey=UR1L");
+
+        //HtmlNode table = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/div[1]/div[2]/div[2]/div[1]/div[2]/div[5]/div[1]/table[1]");
+
+        //var img = table.SelectSingleNode("/html[1]/body[1]/div[1]/div[2]/div[2]/div[1]/div[2]/div[5]/div[1]/table[1]/tbody[1]/tr[1]/th[2]/h1[1]/img[1]");
+        //string finalHtml = table.OuterHtml;
+
+        //var t = Web.ConfluenceConnection.requestImage(img.Attributes["src"].Value);
+        //string imgString = Convert.ToBase64String(t);
+        //string temp = String.Format("<img class=\"confluence-embedded-image confluence-thumbnail\" src=\"data:image/Bmp;base64,{0}\" width=\"100\">", imgString);
+        //finalHtml = finalHtml.Replace(img.OuterHtml, temp).Replace(img.ParentNode.ChildNodes[2].OuterHtml, string.Empty);
+        //finalHtml = string.Format("<!DOCTYPE html><html><head><style>{0}</style></head><body>{1}</body></html>", css, finalHtml);
+
+        //amtBrowser1.Document.OpenNew(true);
+        //amtBrowser1.Document.Write(finalHtml);
+        //}
+
+        //string findChild(HtmlAgilityPack.HtmlDocument doc, string className)
+        //{
+        //    HtmlNode parent = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/div[1]/div[2]/div[2]/div[1]/div[2]/div[5]/div[1]/table[1]");
+        //    foreach (HtmlNode child in parent.ChildNodes)
+        //    {
+        //    }
+        //    return string.Empty;
+        //}
+    }
 }
