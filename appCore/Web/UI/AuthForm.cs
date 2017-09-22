@@ -90,7 +90,10 @@ namespace appCore.Web.UI
         private void AuthForm_Shown(object sender, EventArgs e)
         {
             if (application == "Confluence")
+            {
                 textBox1.ReadOnly = !string.IsNullOrEmpty(Username);
+                textBox2.Focus();
+            }
 
             textBox1.Text = application == "OI" ? Settings.SettingsFile.OIUsername : Username;
             textBox2.Text = application == "OI" ? Settings.SettingsFile.OIPassword.DecryptText() : string.Empty;
