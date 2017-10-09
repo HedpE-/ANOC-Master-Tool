@@ -20,7 +20,7 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using appCore.UI;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.OI.JSON;
 using appCore.Settings;
 using OpenWeatherAPI;
@@ -178,14 +178,17 @@ namespace appCore.SiteFinder.UI
 					overview.Name = "OverviewButton";
 					overview.Text = "Back to map overview";
 					overview.Width = 130;
-					overview.Location = new Point(amtDataGridView2.Right - overview.Width, amtDataGridView2.Top - overview.Height - 3);
-					overview.Click += delegate
+                    //overview.Location = new Point(amtDataGridView2.Right - overview.Width, amtDataGridView2.Top - overview.Height - 3);
+                    overview.Location = new Point(myMap.Left, toggleSwitch1.Top);
+                    overview.Click += delegate
                     {
 						try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
 						try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
-						
-						amtDataGridView2.ClearSelection();
-					};
+
+
+                        myMap.ZoomAndCenterMarkers(markersOverlay.Id);
+                        //amtDataGridView2.ClearSelection();
+                    };
 					Controls.Add(overview);
 				}
 				else
@@ -322,7 +325,7 @@ namespace appCore.SiteFinder.UI
 			IWebProxy proxy;
 			try
             {
-				proxy = Settings.CurrentUser.NetworkDomain == "internal.vodafone.com" ?
+				proxy = CurrentUser.NetworkDomain == "internal.vodafone.com" ?
 					new WebProxy("http://10.74.51.1:80/", true) :
 					WebRequest.GetSystemWebProxy();
 			}
@@ -330,8 +333,8 @@ namespace appCore.SiteFinder.UI
             {
 				proxy = WebRequest.GetSystemWebProxy();
 			}
-			
 			proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+
 			GMapProvider.WebProxy = proxy;
 			
 			GMapControl map = new GMapControl();
@@ -368,21 +371,21 @@ namespace appCore.SiteFinder.UI
             {
                 await MainMenu.ShowLoading();
 
-                textBox1.Text = await Task.Run(() => currentSite.Id);
-                textBox3.Text = await Task.Run(() => currentSite.JVCO_Id);
-                textBox4.Text = await Task.Run(() => currentSite.Address.Replace(';', ','));
-                textBox5.Text = await Task.Run(() => currentSite.Area);
-                textBox6.Text = await Task.Run(() => currentSite.Region);
-                textBox8.Text = await Task.Run(() => currentSite.Host);
-                textBox7.Text = await Task.Run(() => currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID);
-                textBox9.Text = await Task.Run(() => currentSite.Priority);
-                textBox10.Text = await Task.Run(() => currentSite.SharedOperator);
-                amtTextBox2.Text = await Task.Run(() => currentSite.Site_Type);
-                amtTextBox3.Text = await Task.Run(() => currentSite.Site_Subtype);
-                amtTextBox7.Text = await Task.Run(() => currentSite.Site_Access);
-                checkBox4.Checked = await Task.Run(() => currentSite.Paknet_Fitted);
-                checkBox5.Checked = await Task.Run(() => currentSite.Vodapage_Fitted);
-                richTextBox1.Text = await Task.Run(() => currentSite.KeyInformation);
+                textBox1.Text = currentSite.Id;
+                textBox3.Text = currentSite.JVCO_Id;
+                textBox4.Text = currentSite.Address.Replace(';', ',');
+                textBox5.Text = currentSite.Area;
+                textBox6.Text = currentSite.Region;
+                textBox8.Text = currentSite.Host;
+                textBox7.Text = currentSite.SharedOperatorSiteID == string.Empty ? textBox1.Text : currentSite.SharedOperatorSiteID;
+                textBox9.Text = currentSite.Priority;
+                textBox10.Text = currentSite.SharedOperator;
+                amtTextBox2.Text = currentSite.Site_Type;
+                amtTextBox3.Text = currentSite.Site_Subtype;
+                amtTextBox7.Text = currentSite.Site_Access;
+                checkBox4.Checked = currentSite.Paknet_Fitted;
+                checkBox5.Checked = currentSite.Vodapage_Fitted;
+                richTextBox1.Text = currentSite.KeyInformation;
                 lockUnlockCellsToolStripMenuItem.Enabled = siteDetails_UIMode.Contains("single") && !siteDetails_UIMode.Contains("readonly");
 
                 await Task.Run(() => pictureBox1.BeginInvoke(new Action(() => pictureBox1.UpdateCells(currentSite.Cells))));
@@ -501,7 +504,8 @@ namespace appCore.SiteFinder.UI
                     }
                 }
 
-                toggleSwitch1.Enabled = true;
+                if(GlobalProperties.WeatherServiceEnabled)
+                    toggleSwitch1.Enabled = true;
             }
             else
             {
@@ -871,13 +875,15 @@ namespace appCore.SiteFinder.UI
                 loc.X = loc.X + ((this.Width - form.Width) / 2);
                 loc.Y = loc.Y + ((this.Height - form.Height) / 2);
                 form.Location = loc;
-                sitesList_tb.Focus();
+                form.Shown += (s, ev) => { sitesList_tb.Focus(); };
                 form.ShowDialog();
             }
-			loading.Close();
 
 			if(string.IsNullOrEmpty(sitesList_tb.Text))
-				return;
+            {
+                loading.Close();
+                return;
+            }
 			
 			string[] input = sitesList_tb.Text.Contains(";") ? sitesList_tb.Text.Split(';') : sitesList_tb.Lines;
 
@@ -894,11 +900,10 @@ namespace appCore.SiteFinder.UI
 			siteFinder(input);
 		}
 
-		async Task searchResultsPopulate() {
+		async Task searchResultsPopulate()
+        {
 			if(currentOutage != null)
 				foundSites = await Task.Run(() => currentOutage.AffectedSites);
-			
-			amtDataGridView2.DataSource = await GetSitesData();
 
             await Task.Run(() =>
             {
@@ -959,55 +964,221 @@ namespace appCore.SiteFinder.UI
             });
 			
 			label11.Text = label11.Text.Split('(')[0] + '(' + foundSites.Count + ')';
-		}
+        }
 
-        async Task<List<dynamic>> GetSitesData()
+        async Task<List<dynamic>> GenerateSitesDataTable()
         {
-            List<string> fetchCellDetailsList = new List<string>();
-            List<string> fetchCramerDataList = new List<string>();
-            List<string> fetchCrqList = new List<string>();
-            List<string> fetchPowerList = new List<string>();
-			foreach(Site site in foundSites) {
-				fetchCellDetailsList.Add(site.Id);
-				if(string.IsNullOrEmpty(site.PowerCompany))
-					fetchPowerList.Add(site.Id);
-				if(site.CramerData == null)
-					fetchCramerDataList.Add(site.Id);
-				if(siteDetails_UIMode.Contains("outage") && ((DateTime.Now - site.ChangesTimestamp) > new TimeSpan(0, 30, 0)))
-					fetchCrqList.Add(site.Id);
-			}
+            //List<string> fetchCellDetailsList = new List<string>();
+            //List<string> fetchCramerDataList = new List<string>();
+            //List<string> fetchCrqList = new List<string>();
+            //List<string> fetchPowerList = new List<string>();
+            //foreach (Site site in foundSites)
+            //{
+            //    fetchCellDetailsList.Add(site.Id);
+            //    if (string.IsNullOrEmpty(site.PowerCompany))
+            //        fetchPowerList.Add(site.Id);
+            //    if (site.CramerData == null)
+            //        fetchCramerDataList.Add(site.Id);
+            //    if (siteDetails_UIMode.Contains("outage") && ((DateTime.Now - site.ChangesTimestamp) > new TimeSpan(0, 30, 0)))
+            //        fetchCrqList.Add(site.Id);
+            //}
 
-            List<AccessInformation> powerList = null;
-			if(fetchPowerList.Count > 0)
-				powerList = await appCore.Site.BulkFetchPowerCompanyAsync(fetchPowerList);
+            //List<AccessInformation> powerList = null;
+            //if (fetchPowerList.Count > 0)
+            //    powerList = await appCore.Site.BulkFetchPowerCompanyAsync(fetchPowerList);
 
-            List<OiCell> cellDetailsList = null;
-			if(fetchCellDetailsList.Count > 0)
-                cellDetailsList = await appCore.Site.BulkFetchOiCellsStateAsync(fetchCellDetailsList);
+            //List<OiCell> cellDetailsList = null;
+            //if (fetchCellDetailsList.Count > 0)
+            //    cellDetailsList = await appCore.Site.BulkFetchOiCellsStateAsync(fetchCellDetailsList);
 
-            DataTable cramerDataList = null;
-			if(fetchCramerDataList.Count > 0)
-				cramerDataList = await appCore.Site.BulkFetchCramerDataAsync(fetchCramerDataList);
+            //DataTable cramerDataList = null;
+            //if (fetchCramerDataList.Count > 0)
+            //    cramerDataList = await appCore.Site.BulkFetchCramerDataAsync(fetchCramerDataList);
 
-            List<Change> crqList = null;
-			if(fetchCrqList.Count > 0)
-				crqList = await appCore.Site.BulkFetchCRQsAsync(fetchCrqList);
+            //List<Change> crqList = null;
+            //if (fetchCrqList.Count > 0)
+            //    crqList = await appCore.Site.BulkFetchCRQsAsync(fetchCrqList);
 
-            List<WeatherItem> weatherList = new List<WeatherItem>();
-            if(siteDetails_UIMode.Contains("outage"))
-            {
-                if (currentOutage.AffectedLocations.Count > 0)
-                    weatherList = await appCore.Site.BulkFetchWeatherAsync(currentOutage.AffectedSites.Select(s => s.Town));
-            }
+            //List<WeatherItem> weatherList = new List<WeatherItem>();
+            //if (siteDetails_UIMode.Contains("outage"))
+            //{
+            //    if (currentOutage.AffectedLocations.Count > 0)
+            //        weatherList = await appCore.Site.BulkFetchWeatherAsync(currentOutage.AffectedSites.Select(s => s.Town));
+            //}
 
             var sitesList = new List<dynamic>();
-			foreach (Site site in foundSites)
+            foreach (Site site in foundSites)
+            {
+                //if (powerList != null)
+                //{
+                //    AccessInformation filteredAccessInfo = powerList.FirstOrDefault(a => a.CI_NAME == site.Id);
+                //    if (filteredAccessInfo != null)
+                //        site.PowerCompany = filteredAccessInfo.POWER.Replace("<br>", ";");
+                //}
+
+                //List<OiCell> filteredOiCells = cellDetailsList.FindAll(c => c.SITE == site.Id);
+                //if (filteredOiCells.Count > 0)
+                //{
+                //    foreach (Cell cell in site.Cells)
+                //    {
+                //        OiCell oiCell = filteredOiCells.Find(s => s.CELL_NAME == cell.Name);
+                //        if (oiCell != null)
+                //        {
+                //            cell.Locked = !string.IsNullOrEmpty(oiCell.LOCKED);
+                //            cell.LockedFlagTimestamp = DateTime.Now;
+                //            cell.COOS = !string.IsNullOrEmpty(oiCell.COOS);
+                //            cell.CoosFlagTimestamp = DateTime.Now;
+                //        }
+                //    }
+                //    site.CellsStateTimestamp = DateTime.Now;
+                //}
+
+                //if (cramerDataList != null)
+                //{
+                //    DataRow row = cramerDataList.Rows.Cast<DataRow>().FirstOrDefault(r => r[0].ToString() == site.Id);
+                //    if (row != null)
+                //    {
+                //        site.CramerData = new Site.CramerDetails(row);
+                //        site.CramerDataTimestamp = DateTime.Now;
+                //    }
+                //}
+
+                //if (crqList != null)
+                //{
+                //    List<Change> filteredChanges = crqList.FindAll(c => c.Site == site.Id);
+                //    site.Changes = filteredChanges;
+                //    site.ChangesTimestamp = DateTime.Now;
+                //}
+
+                // start populating
+
+                string poc = string.Empty;
+                if (site.CramerData != null)
+                {
+                    if (site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
+                        poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
+                }
+
+                sitesList.Add(new
+                {
+                    Site = site.Id,
+                    JVCOID = site.JVCO_Id,
+                    Host = site.Host,
+                    PostCode = site.PostCode,
+                    Priority = site.Priority,
+                    POC = poc,
+                    TXType = site.CramerData != null ? site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", "") : string.Empty,
+                    CCT = site.CramerData != null ? site.CramerData.TxLastMileRef : string.Empty,
+                    CRQ = CheckOngoingCRQ(site)
+                });
+
+                markersOverlay.Markers.Add(site.MapMarker);
+            }
+
+            amtDataGridView2.DataSource = sitesList;
+
+            return sitesList;
+        }
+
+        async Task GetSitesData()
+        {
+            List<string> fetchCellDetailsList = new List<string>();
+            List<OiCell> cellDetailsList = null;
+            List<string> fetchCramerDataList = new List<string>();
+            DataTable cramerDataList = null;
+            List<string> fetchCrqList = new List<string>();
+            List<Change> crqList = null;
+            List<string> fetchPowerList = new List<string>();
+            List<AccessInformation> powerList = null;
+            List<WeatherItem> weatherList = new List<WeatherItem>();
+
+            foreach (Site site in foundSites)
+            {
+                fetchCellDetailsList.Add(site.Id);
+                if (string.IsNullOrEmpty(site.PowerCompany))
+                    fetchPowerList.Add(site.Id);
+                if (site.CramerData == null)
+                    fetchCramerDataList.Add(site.Id);
+                if (siteDetails_UIMode.Contains("outage") && ((DateTime.Now - site.ChangesTimestamp) > new TimeSpan(0, 30, 0)))
+                    fetchCrqList.Add(site.Id);
+            }
+
+            await Task.Run(() =>
+            {
+                List<Thread> threads = new List<Thread>();
+                int finishedThreadsCount = 0;
+
+                threads.Add(new Thread(async () => 
+                {
+                    if (fetchPowerList.Count > 0)
+                        powerList = await appCore.Site.BulkFetchPowerCompanyAsync(fetchPowerList);
+                    finishedThreadsCount++;
+                })
+                {
+                    Name = "siteFinder_BulkSearch_PowerCompany"
+                });
+
+                threads.Add(new Thread(async () =>
+                {
+                    if (fetchCellDetailsList.Count > 0)
+                        cellDetailsList = await appCore.Site.BulkFetchOiCellsStateAsync(fetchCellDetailsList);
+                    finishedThreadsCount++;
+                })
+                {
+                    Name = "siteFinder_BulkSearch_CellsState"
+                });
+
+                threads.Add(new Thread(async () =>
+                {
+                    if (fetchCramerDataList.Count > 0)
+                        cramerDataList = await appCore.Site.BulkFetchCramerDataAsync(fetchCramerDataList);
+                    finishedThreadsCount++;
+                })
+                {
+                    Name = "siteFinder_BulkSearch_CramerData"
+                });
+
+                threads.Add(new Thread(async () =>
+                {
+                    if (fetchCrqList.Count > 0)
+                        crqList = await appCore.Site.BulkFetchCRQsAsync(fetchCrqList);
+                    finishedThreadsCount++;
+                })
+                {
+                    Name = "siteFinder_BulkSearch_CRQ"
+                });
+
+                threads.Add(new Thread(async () =>
+                {
+                    if (siteDetails_UIMode.Contains("outage"))
+                    {
+                        if (currentOutage.AffectedLocations.Count > 0)
+                            weatherList = await appCore.Site.BulkFetchWeatherAsync(currentOutage.AffectedSites.Select(s => s.Town));
+                    }
+                    finishedThreadsCount++;
+                })
+                {
+                    Name = "siteFinder_BulkSearch_Weather"
+                });
+
+                foreach (Thread thread in threads)
+                {
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
+                }
+
+                while (finishedThreadsCount < threads.Count) { }
+            });
+
+            var sitesList = new List<dynamic>();
+
+            foreach (Site site in foundSites)
             {
 				if(powerList != null)
                 {
 					AccessInformation filteredAccessInfo = powerList.FirstOrDefault(a => a.CI_NAME == site.Id);
 					if(filteredAccessInfo != null)
-						site.PowerCompany = filteredAccessInfo.POWER.Replace("<br>",";");
+                        site.PowerCompany = filteredAccessInfo.POWER.Replace("<br>", ";");
 				}
 				
 				List<OiCell> filteredOiCells = cellDetailsList.FindAll(c => c.SITE == site.Id);
@@ -1052,23 +1223,33 @@ namespace appCore.SiteFinder.UI
 					if(site.CramerData.PocType != "NONE" && !string.IsNullOrEmpty(site.CramerData.PocType) && site.CramerData.OnwardSitesCount > 0)
 						poc = site.CramerData.PocType + "-" + (site.CramerData.OnwardSitesCount + 1);
 				}
-				
-				sitesList.Add(new {
-				              	Site = site.Id,
-				              	JVCOID = site.JVCO_Id,
-				              	Host = site.Host,
-				              	PostCode = site.PostCode,
-				              	Priority = site.Priority,
-				              	POC = poc,
-				              	TXType = site.CramerData != null ? site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", "") : string.Empty,
-				              	CCT = site.CramerData != null ? site.CramerData.TxLastMileRef : string.Empty,
-                                    CRQ = CheckOngoingCRQ(site)
-				                });
-				
-				markersOverlay.Markers.Add(site.MapMarker);
-			}
 
-            return sitesList;
+                int rowIndex = amtDataGridView2.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => r.Cells[0].Value.ToString() == site.Id).Index;
+
+                sitesList.Add(new
+                {
+                    Site = site.Id,
+                    JVCOID = site.JVCO_Id,
+                    Host = site.Host,
+                    PostCode = site.PostCode,
+                    Priority = site.Priority,
+                    POC = poc,
+                    TXType = site.CramerData != null ? site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", "") : string.Empty,
+                    CCT = site.CramerData != null ? site.CramerData.TxLastMileRef : string.Empty,
+                    CRQ = CheckOngoingCRQ(site)
+                });
+
+                //amtDataGridView2.Rows[rowIndex].Cells["POC"].Value = poc;
+                //var t = ((List<dynamic>)amtDataGridView2.DataSource).Where(i => i[0] == site.Id);
+                //amtDataGridView2.Rows[rowIndex].Cells["TX Type"].Value = site.CramerData != null ? site.CramerData.TxMedium.Replace("Cnull - ", "").Replace(" - Cnull", "") : string.Empty;
+                //amtDataGridView2.Rows[rowIndex].Cells["CCT"].Value = site.CramerData != null ? site.CramerData.TxLastMileRef : string.Empty;
+                //amtDataGridView2.Rows[rowIndex].Cells["CRQ"].Value = CheckOngoingCRQ(site);
+
+                markersOverlay.Markers.Add(site.MapMarker);
+            }
+
+            amtDataGridView2.DataSource = null;
+            amtDataGridView2.DataSource = sitesList;
         }
 		
 		string CheckOngoingCRQ(Site site)
@@ -1192,9 +1373,9 @@ namespace appCore.SiteFinder.UI
                 try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 
                 if (SelectedSearchItem == "Site ID")
-                    currentSite = await DB.SitesDB.getSiteAsync(tb.Text);
+                    currentSite = await DB.SitesDB.GetSiteAsync(tb.Text);
                 else
-                    currentSite = await DB.SitesDB.getSiteWithJVCO(tb.Text);
+                    currentSite = await DB.SitesDB.GetSiteWithJVCO(tb.Text);
                 
                 if (siteDetails_UIMode.Contains("multi"))
                     siteDetails_UIMode = "single";
@@ -1214,9 +1395,19 @@ namespace appCore.SiteFinder.UI
 
         async void siteFinder(string[] src)
         {
-            Refresh();
-            LoadingPanel loading = new LoadingPanel();
-            loading.Show(true, this);
+            //Refresh();
+            LoadingPanel loading = Controls.OfType<LoadingPanel>().FirstOrDefault();
+
+            if (loading == null)
+            {
+                loading = new LoadingPanel();
+                loading.Show(true, this);
+            }
+            else
+            {
+                if (!loading.IsLoadingSpinnerVisible)
+                    loading.ToggleLoadingSpinner();
+            }
 
             try { myMap.Overlays.Remove(markersOverlay); } catch (Exception) { }
 			try { markersOverlay.Clear(); } catch (Exception) { }
@@ -1225,46 +1416,55 @@ namespace appCore.SiteFinder.UI
 			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
 			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
 
-            foundSites = await Task.Run(() => DB.SitesDB.getSites(src.ToList()));
+            foundSites = await DB.SitesDB.GetSitesAsync(src.ToList());
 
-            loading.Close();
-
-			if(foundSites.Count > 1)
+            if (foundSites.Count > 1)
             {
-			    if(!siteDetails_UIMode.Contains("outage"))
-			        siteDetails_UIMode = "multi";
+                if (!siteDetails_UIMode.Contains("outage"))
+                    siteDetails_UIMode = "multi";
 
-			    await searchResultsPopulate();
+                //amtDataGridView2.DataSource = await GetSitesData();
+                amtDataGridView2.DataSource = await GenerateSitesDataTable();
 
-			    amtDataGridView2.Rows[0].Selected = true;
+                amtDataGridView2.Rows[0].Selected = true;
 
-			    myMap.Overlays.Add(markersOverlay);
+                loading.Close();
+
+                await GetSitesData();
+
+                await searchResultsPopulate();
+
+                //amtDataGridView2.Rows[0].Selected = true;
+
+                myMap.Overlays.Add(markersOverlay);
 			    myMap.ZoomAndCenterMarkers(markersOverlay.Id);
 			}
 			else
             {
-			    if(foundSites.Count == 1)
+                loading.Close();
+
+                if (foundSites.Count == 1)
                 {
 			        siteDetails_UIMode = "single";
 			        currentSite = foundSites[0];
 			        await selectedSiteDetailsPopulate();
 			    }
 			}
-		}
-		
-		async void AmtDataGridView2SelectionChanged(object sender, EventArgs e)
-        {
-            toggleSwitch1.Enabled = false;
-            toggleSwitch2.Enabled = false;
+        }
 
-            try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
-			try { selectedSiteOverlay.Clear(); } catch (Exception) { }
-			try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
-			try { onwardSitesOverlay.Clear(); } catch (Exception) { }
-			
+        async void AmtDataGridView2SelectionChanged(object sender, EventArgs e)
+        {
 			if(amtDataGridView2.SelectedRows.Count > 0)
             {
-				currentSite = foundSites[amtDataGridView2.SelectedRows[0].Index];
+                toggleSwitch1.Enabled = false;
+                toggleSwitch2.Enabled = false;
+
+                try { myMap.Overlays.Remove(selectedSiteOverlay); } catch (Exception) { }
+                try { selectedSiteOverlay.Clear(); } catch (Exception) { }
+                try { myMap.Overlays.Remove(onwardSitesOverlay); } catch (Exception) { }
+                try { onwardSitesOverlay.Clear(); } catch (Exception) { }
+
+                currentSite = foundSites[amtDataGridView2.SelectedRows[0].Index];
 				
 				await selectedSiteDetailsPopulate();
 			}
