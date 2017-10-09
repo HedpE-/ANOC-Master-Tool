@@ -9,6 +9,7 @@
 using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Linq;
 
 namespace appCore.Settings
 {
@@ -16,181 +17,347 @@ namespace appCore.Settings
 	/// Description of CurrentUser.
 	/// </summary>
 	public static class CurrentUser
-    {
-        public static bool HasOICredentials
+    {        
+        public static string UserName
 		{
-			get;
-			private set;
-		}
-		public static string UserName
-		{
-            get;
-            private set;
+            get
+            {
+                if (current == null)
+                    return UserPrincipal.Current.SamAccountName;
+
+                return current.UserName;
+            }
         }
+
 		public static string[] FullName
 		{
-			get;
-			private set;
+			get
+            {
+                return current.FullName;
+            }
 		}
+
 		public static Departments Department
 		{
-            get { return GetUserDepartment(); }
+            get
+            {
+                return current.Department;
+            }
 		}
+
 		public static string NetworkDomain
 		{
-			get { return GetUserDetails("NetworkDomain"); }
+			get
+            {
+                return current.NetworkDomain;
+            }
         }
+
         public static string Email
         {
-            get { return GetUserDetails("Email"); }
+            get
+            {
+                return current.Email;
+            }
         }
+
         public static string VodafoneCountry
         {
             get
             {
-                return GetUserDetails("VfCountry");
+                if(string.IsNullOrEmpty(OtherUser))
+                {
+                    if (UserPrincipal.Current.DisplayName.Contains("Portugal"))
+                        return "Vodafone Portugal";
+
+                    return "Vodafone UK";
+                }
+
+                if (OtherUser == PT.UserName)
+                    return "Vodafone Portugal";
+
+                return "Vodafone UK";
             }
         }
 
-        public static string ClosureCode {
-			get {
+        public static bool HasOICredentials
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(SettingsFile.OIUsername);
+            }
+        }
+
+        public static string ClosureCode
+        {
+			get
+            {
                 if (Department == Departments.RanTier1 || Department == Departments.RanTier2)
                     return DB.Databases.shiftsFile.GetClosureCode(FullName[1] + " " + FullName[0]);
                 else
                     return string.Empty;
 			}
 		}
-		public static Roles Role {
-			get {
+
+		public static Roles Role
+        {
+			get
+            {
 				return DB.Databases.shiftsFile.GetRole(FullName[1] + " " + FullName[0]);
 			}
 		}
 		
 		static string OtherUser;
-		static UserPrincipal ActiveDirectoryUser;
 
-		public static void InitializeUserProperties(string logonAsOtherUser)
-		{
-			OtherUser = logonAsOtherUser;
-			UserName = GetUserDetails("Username");
-			FullName = GetUserDetails("Name").Split(' ');
-			for (int c = 0; c < FullName.Length; c++)
-				FullName[c] = FullName[c].Replace(",", string.Empty);
-            //Department = GetUserDepartment();
-			//UserFolder.ResolveSettingsFolder();
-			SettingsFile.ResolveSettingsFile();
-			HasOICredentials = !string.IsNullOrEmpty(SettingsFile.OIUsername);
-			UserFolder.Initialize();
+		public static User PT
+        {
+            get;
+            private set;
         }
 
-        /// <summary>
-        /// Query current user's Active Directory details
-        /// Valid queries: "Name", "Username", "Department" or "NetworkDomain"
-        /// </summary>
-        public static string GetUserDetails(string detail)
+        public static User UK
         {
-            if (ActiveDirectoryUser == null)
+            get;
+            private set;
+        }
+
+        static User current
+        {
+            get
             {
-                if (string.IsNullOrEmpty(OtherUser))
-                    ActiveDirectoryUser = UserPrincipal.Current;
+                if (VodafoneCountry == "Vodafone Portugal")
+                    return PT;
+                else
+                    return UK;
+            }
+        }
+
+        public static void InitializeUserProperties(string logonAsOtherUser)
+		{
+            try
+            {
+                OtherUser = logonAsOtherUser;
+
+                ResolveUserPrincipals();
+
+                SettingsFile.ResolveSettingsFile();
+
+                UserFolder.Initialize();
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
+
+        static void ResolveUserPrincipals()
+        {
+            if (string.IsNullOrEmpty(OtherUser))
+            {
+                if (UserPrincipal.Current.DisplayName.Contains("Portugal"))
+                {
+                    PT = new User(UserPrincipal.Current);
+                    UK = new User(GetUser(UserPrincipal.Current.GivenName, UserPrincipal.Current.Surname, "UK"));
+                }
                 else
                 {
-                    using (PrincipalContext ctx = new PrincipalContext(ContextType.Domain, "internal.vodafone.com"))
+                    UK = new User(UserPrincipal.Current);
+                    PT = new User(GetUser(UserPrincipal.Current.GivenName, UserPrincipal.Current.Surname, "PT"));
+                }
+            }
+            else
+            {
+                using (PrincipalContext ctx = new PrincipalContext(ContextType.Domain, "internal.vodafone.com"))
+                {
+                    UserPrincipal temp = UserPrincipal.FindByIdentity(ctx, IdentityType.SamAccountName, OtherUser);
+                    if (temp.DisplayName.Contains("Portugal"))
                     {
-                        try
-                        {
-                            ActiveDirectoryUser = UserPrincipal.FindByIdentity(ctx, IdentityType.SamAccountName, OtherUser);
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception(e.Message);
-                        }
+                        PT = new User(temp);
+                        UK = new User(GetUser(temp.GivenName, temp.Surname, "UK"));
+                    }
+                    else
+                    {
+                        UK = new User(temp);
+                        PT = new User(GetUser(temp.GivenName, temp.Surname, "PT"));
                     }
                 }
             }
-
-            return getUserDetail(ActiveDirectoryUser, detail);
         }
 
         /// <summary>
-        /// Query given user's Active Directory details. Identify user by username and/or email
-        /// Valid queries: "Name", "Username", "Department" or "NetworkDomain"
+        /// .
         /// </summary>
-        public static string GetUserDetails(string detail, string userName, string email)
+        /// 
+        static UserPrincipal GetUser(string givenName, string surname, string vfCountry)
         {
-            UserPrincipal ADUser = null;
             using (PrincipalContext ctx = new PrincipalContext(ContextType.Domain, "internal.vodafone.com"))
             {
-                try
+                var queryFilter = new UserPrincipal(ctx) { DisplayName = surname + ", " + givenName + (vfCountry == "UK" ? "*UK*" : "*Portugal*") };
+                var searcher = new PrincipalSearcher { QueryFilter = queryFilter };
+                var results = searcher.FindAll().ToList();
+                if(results.Count > 0)
                 {
-                    if (!string.IsNullOrEmpty(userName))
-                        ADUser = UserPrincipal.FindByIdentity(ctx, IdentityType.SamAccountName, userName);
-
-                    if (ADUser == null && !string.IsNullOrEmpty(email))
+                    foreach(UserPrincipal foundUser in results)
                     {
-                        UserPrincipal qbeUser = new UserPrincipal(ctx)
-                        {
-                            EmailAddress = email
-                        };
-
-                        // create your principal searcher passing in the QBE principal    
-                        using (PrincipalSearcher srch = new PrincipalSearcher(qbeUser))
-                        {
-                            ADUser = (UserPrincipal)srch.FindOne();
-                            // find all matches
-                            //foreach (var found in srch.FindAll())
-                            //{
-                            //    ADUser = (UserPrincipal)found;
-                            //}
-                        }
+                        if (foundUser.Description.Contains("ANOC"))
+                            return foundUser;
                     }
-                }
-                catch (Exception e)
-                {
-                    ADUser = UserPrincipal.FindByIdentity(ctx, IdentityType.UserPrincipalName, userName + "@vodafone.com");
-                    //var m = e.Message;
-                    //throw new Exception(e.Message);
                 }
             }
 
-            return getUserDetail(ADUser, detail);
+            return null;
         }
-        
+
         /// <summary>
-        /// Query given UserPrincipal's Active Directory details.
+        /// .
+        /// </summary>
+        /// 
+        public static User GetUser(string givenName, string surname, string email, string userName, string vfCountry)
+        {
+            if (string.IsNullOrEmpty(vfCountry))
+                throw new Exception("vfCountry cannot be empty");
+
+            using (PrincipalContext ctx = new PrincipalContext(ContextType.Domain, "internal.vodafone.com"))
+            {
+                if (string.IsNullOrEmpty(surname))
+                    surname = "*";
+
+                var queryFilter = new UserPrincipal(ctx);
+                queryFilter.DisplayName = surname + ", " + givenName + (vfCountry == "UK" ? "*UK*" : "*Portugal*");
+                if(!string.IsNullOrEmpty(email))
+                    queryFilter.EmailAddress = email;
+                if (!string.IsNullOrEmpty(userName))
+                    queryFilter.SamAccountName = userName;
+
+                var searcher = new PrincipalSearcher { QueryFilter = queryFilter };
+
+                var result = searcher.FindOne() as UserPrincipal;
+
+                if(result == null)
+                {
+                    queryFilter = new UserPrincipal(ctx);
+                    queryFilter.DisplayName = surname + ", " + givenName + (vfCountry == "UK" ? "*UK*" : "*Portugal*");
+                    if (!string.IsNullOrEmpty(email))
+                        queryFilter.EmailAddress = email;
+                    if (!string.IsNullOrEmpty(userName))
+                        queryFilter.Name = userName;
+                    searcher = new PrincipalSearcher { QueryFilter = queryFilter };
+                    result = searcher.FindOne() as UserPrincipal;
+                }
+
+                return result != null ? new User(searcher.FindOne() as UserPrincipal) : null;
+                //var results = searcher.FindAll().ToList();
+                //if (results.Count > 0)
+                //{
+                //    foreach (UserPrincipal foundUser in results)
+                //    {
+                //        if (foundUser.Description.Contains("ANOC"))
+                //            return new User(foundUser);
+                //    }
+                //}
+            }
+        }
+    }
+
+    public class User
+    {
+        UserPrincipal activeDirectoryUser;
+
+        public string UserName
+        {
+            get
+            {
+                return GetUserDetails("Username");
+            }
+        }
+
+        public string[] FullName
+        {
+            get
+            {
+                string[] fullName = GetUserDetails("Name").Split(' ');
+                for (int c = 0; c < fullName.Length; c++)
+                    fullName[c] = fullName[c].Replace(",", string.Empty);
+                return fullName;
+            }
+        }
+
+        public Departments Department
+        {
+            get
+            {
+                return GetUserDepartment(GetUserDetails("Department"));
+            }
+        }
+
+        public string NetworkDomain
+        {
+            get
+            {
+                return GetUserDetails("NetworkDomain");
+            }
+        }
+
+        public string Email
+        {
+            get
+            {
+                return GetUserDetails("Email");
+            }
+        }
+
+        public string VodafoneCountry
+        {
+            get
+            {
+                if (activeDirectoryUser.DisplayName.Contains("Portugal"))
+                    return "Vodafone Portugal";
+
+                return "Vodafone UK";
+            }
+        }
+
+        public User(UserPrincipal userPrincipal)
+        {
+            activeDirectoryUser = userPrincipal;
+        }
+
+        /// <summary>
+        /// Query UserPrincipal's Active Directory details.
         /// Valid queries: "Name", "Username", "Department" or "NetworkDomain"
         /// </summary>
-        static string getUserDetail(UserPrincipal userPrincipal, string detail)
+        string GetUserDetails(string detail)
         {
-            if (!string.IsNullOrEmpty(detail) && ActiveDirectoryUser != null)
+            if (!string.IsNullOrEmpty(detail))
             {
+                DirectoryEntry underlyingObject = null;
                 switch (detail)
                 {
                     case "Name":
-                        if (ActiveDirectoryUser.SamAccountName.Contains("Caramelos"))
+                        if (activeDirectoryUser.SamAccountName.Contains("Caramelos"))
                             return "Gonçalves, Rui";
-                        if (ActiveDirectoryUser.SamAccountName.Contains("Hugo Gonçalves"))
+                        if (activeDirectoryUser.SamAccountName.Contains("Hugo Gonçalves"))
                             return "Gonçalves, Hugo";
-                        return CurrentUser.ActiveDirectoryUser.Surname + ", " + CurrentUser.ActiveDirectoryUser.GivenName + " " + CurrentUser.ActiveDirectoryUser.MiddleName;
+                        return activeDirectoryUser.Surname + ", " + activeDirectoryUser.GivenName + " " + activeDirectoryUser.MiddleName;
                     case "Username":
-                        return ActiveDirectoryUser.SamAccountName.ToUpper();
+                        return activeDirectoryUser.SamAccountName.ToUpper();
                     case "Email":
-                        return ActiveDirectoryUser.EmailAddress;
+                        return activeDirectoryUser.EmailAddress;
                     case "VfCountry":
-                        return ActiveDirectoryUser.DisplayName.Contains("Vodafone Portugal") ? "Vodafone Portugal" : "Vodafone UK";
+                        return activeDirectoryUser.DisplayName.Contains("Vodafone Portugal") ? "Vodafone Portugal" : "Vodafone UK";
                     case "Department":
-                        if (ActiveDirectoryUser.SamAccountName.Contains("CARAMELOS"))
+                        if (activeDirectoryUser.SamAccountName.Contains("CARAMELOS"))
                             return "1st Line RAN";
                         else
                         {
-                            DirectoryEntry underlyingObject = ActiveDirectoryUser.GetUnderlyingObject() as DirectoryEntry;
+                            underlyingObject = activeDirectoryUser.GetUnderlyingObject() as DirectoryEntry;
                             string dep = string.Empty;
                             if (underlyingObject.Properties.Contains("department"))
                             {
                                 dep = underlyingObject.Properties["department"].Value.ToString();
-                                if(string.IsNullOrEmpty(dep) || dep.ToUpper() == "FIRST LINE OPERATIONS UK" || dep.ToUpper() == "SERVICE LEVEL MANAGEMENT" || dep.ToUpper() == "TECHNOLOGY OPERATIONS")
+                                if (string.IsNullOrEmpty(dep) || dep.ToUpper() == "FIRST LINE OPERATIONS UK" || dep.ToUpper() == "SERVICE LEVEL MANAGEMENT" || dep.ToUpper() == "TECHNOLOGY OPERATIONS")
                                 {
-                                    switch(ActiveDirectoryUser.EmailAddress.ToLower())
+                                    switch (activeDirectoryUser.EmailAddress.ToLower())
                                     {
                                         case "joao.bernardo01@corp.vodafone.pt":
                                         case "luis.costa04@corp.vodafone.pt":
@@ -212,6 +379,11 @@ namespace appCore.Settings
                             }
                         }
                         break;
+                    case "EmployeeNumber":
+                        underlyingObject = activeDirectoryUser.GetUnderlyingObject() as DirectoryEntry;
+                        if (underlyingObject.Properties.Contains("employeeNumber"))
+                            return underlyingObject.Properties["employeeNumber"].Value.ToString();
+                        break;
                     case "NetworkDomain":
                         return System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
                 }
@@ -219,10 +391,8 @@ namespace appCore.Settings
             return string.Empty;
         }
 
-        public static Departments GetUserDepartment(string department = "")
+        Departments GetUserDepartment(string department = "")
         {
-            if(string.IsNullOrEmpty(department))
-                department = GetUserDetails("Department"); //.Contains("2nd Line RAN") ? "2nd Line RAN Support" : "1st Line RAN Support";
             department = department.ToUpper();
 
             if (department.Contains("RAN") || department.Contains("ERICSSON/ALU") || department.Contains("HUAWEI/NOKIA"))
@@ -234,7 +404,7 @@ namespace appCore.Settings
             }
             else
             {
-                if(department.Contains("CORE"))
+                if (department.Contains("CORE"))
                 {
                     if (department.Contains("1ST") || department.Contains("FIRST"))
                         return Departments.CoreTier1;
@@ -243,7 +413,7 @@ namespace appCore.Settings
                 }
                 else
                 {
-                    if(department.Contains("TX"))
+                    if (department.Contains("TX"))
                     {
                         if (department.Contains("1ST") || department.Contains("FIRST"))
                             return Departments.TxTier1;
@@ -255,5 +425,5 @@ namespace appCore.Settings
 
             return Departments.Unknown;
         }
-	}
+    }
 }
