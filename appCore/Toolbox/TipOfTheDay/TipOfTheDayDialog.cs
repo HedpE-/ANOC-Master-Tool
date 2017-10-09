@@ -62,7 +62,7 @@ namespace appCore.Toolbox.TipOfTheDay
         public TipOfTheDayDialog()
         {
             InitializeComponent();
-
+            
             try
             {
                 ReadTipsFile();
@@ -73,9 +73,9 @@ namespace appCore.Toolbox.TipOfTheDay
 
                 UpdateTip();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MessageBox.Show(String.Format("Trouble Creating Tip Dialog {0}", ex.ToString()));
+                MessageBox.Show(String.Format("Trouble Creating Tip Dialog {0}", e.ToString()));
             }
         }
 
@@ -130,7 +130,7 @@ namespace appCore.Toolbox.TipOfTheDay
             BinaryWriter bw = new BinaryWriter(file);
             // write the current index
             bw.Write(_tipCount); // increment count
-                                 // write the startup flag
+                                    // write the startup flag
             bw.Write(chkShowTipsOnStartup.Checked);
 
             // close the binary writer and the stream
@@ -152,6 +152,7 @@ namespace appCore.Toolbox.TipOfTheDay
 
         void ReadTipsFile()
         {
+            Retry:
             try
             {
                 StreamReader reader = new StreamReader(TipsFile);
@@ -166,9 +167,14 @@ namespace appCore.Toolbox.TipOfTheDay
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format("Could not open tips file - {0}", ex.Message.ToString()));
-                btnNextTip.Enabled = false;
-                return;
+                if (ex.Message.Contains("being used by another process"))
+                    goto Retry;
+                else
+                {
+                    MessageBox.Show(String.Format("Could not open tips file - {0}", ex.Message.ToString()));
+                    btnNextTip.Enabled = false;
+                    return;
+                }
             }
         }
 
