@@ -41,7 +41,7 @@ namespace appCore.Settings
 		{
             get
             {
-                return current.Department;
+                return PT.Department;
             }
 		}
 
@@ -199,8 +199,33 @@ namespace appCore.Settings
                 {
                     foreach(UserPrincipal foundUser in results)
                     {
-                        if (foundUser.Description.Contains("ANOC"))
+                        //System.Collections.Generic.List<string> t = new System.Collections.Generic.List<string>();
+                        //foreach (var t2 in underlyingObject.Properties.PropertyNames)
+                        //    t.Add(t2.ToString() + " - " + underlyingObject.Properties[t2.ToString()].Value.ToString());
+
+                        //var temp = string.Join(Environment.NewLine, t);
+
+                        if (foundUser.Description.Contains("ANOC", StringComparison.OrdinalIgnoreCase))
                             return foundUser;
+
+                        var underlyingObject = foundUser.GetUnderlyingObject() as DirectoryEntry;
+                        if (underlyingObject.Properties.Contains("title"))
+                        {
+                            if(underlyingObject.Properties["title"].Value.ToString().Contains("ANOC", StringComparison.OrdinalIgnoreCase))
+                                return foundUser;
+                        }
+
+                        if (underlyingObject.Properties.Contains("gweVFSubDepartment"))
+                        {
+                            if (underlyingObject.Properties["gweVFSubDepartment"].Value.ToString().Contains("ANOC", StringComparison.OrdinalIgnoreCase))
+                                return foundUser;
+                        }
+
+                        if (underlyingObject.Properties.Contains("jobTitle"))
+                        {
+                            if (underlyingObject.Properties["jobTitle"].Value.ToString().Contains("ANOC", StringComparison.OrdinalIgnoreCase))
+                                return foundUser;
+                        }
                     }
                 }
             }
