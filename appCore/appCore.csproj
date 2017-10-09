@@ -53,6 +53,14 @@
       <HintPath>Assemblies\BMC.ARSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>Assemblies\SQLite\EntityFramework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>Assemblies\SQLite\EntityFramework.SqlServer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FileHelpers">
       <HintPath>Assemblies\FileHelpers.dll</HintPath>
       <Private>False</Private>
@@ -100,12 +108,25 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>Assemblies\SQLite\System.Data.SQLite.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6">
+      <HintPath>Assemblies\SQLite\System.Data.SQLite.EF6.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>Assemblies\SQLite\System.Data.SQLite.Linq.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.DirectoryServices" />
@@ -183,7 +204,11 @@
     <Compile Include="SiteFinder\UI\OiSiteTablesForm.Designer.cs">
       <DependentUpon>OiSiteTablesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Templates\TemplateControlsBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Toolbox\CellExtensions.cs" />
+    <Compile Include="Toolbox\StringCipher.cs" />
     <Compile Include="Toolbox\EnumExtensions.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
     <Compile Include="Toolbox\Notifications\NotificationsCenter.cs" />
@@ -1302,36 +1327,36 @@
       <DependentUpon>siteDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Templates\Template.cs" />
-    <Compile Include="Templates\Types\FailedCRQ.cs" />
-    <Compile Include="Templates\Types\Outage.cs" />
-    <Compile Include="Templates\Types\Troubleshoot.cs" />
-    <Compile Include="Templates\Types\TX.cs" />
-    <Compile Include="Templates\Types\Update.cs" />
-    <Compile Include="Templates\UI\OutageControls.cs">
+    <Compile Include="Templates\RAN\Types\FailedCRQ.cs" />
+    <Compile Include="Templates\RAN\Types\Outage.cs" />
+    <Compile Include="Templates\RAN\Types\Troubleshoot.cs" />
+    <Compile Include="Templates\RAN\Types\TX.cs" />
+    <Compile Include="Templates\RAN\Types\Update.cs" />
+    <Compile Include="Templates\RAN\UI\OutageControls.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Templates\UI\TxControls.cs">
+    <Compile Include="Templates\RAN\UI\TxControls.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Templates\UI\UpdateControls.cs">
+    <Compile Include="Templates\RAN\UI\UpdateControls.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Templates\UI\FailedCRQControls.cs">
+    <Compile Include="Templates\RAN\UI\FailedCRQControls.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Templates\UI\SendBCP.cs">
+    <Compile Include="Templates\RAN\UI\SendBCP.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Templates\UI\SendBCP.Designer.cs">
+    <Compile Include="Templates\RAN\UI\SendBCP.Designer.cs">
       <DependentUpon>SendBCP.cs</DependentUpon>
     </Compile>
-    <Compile Include="Templates\UI\TasksForm.cs">
+    <Compile Include="Templates\RAN\UI\TasksForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Templates\UI\TasksForm.Designer.cs">
+    <Compile Include="Templates\RAN\UI\TasksForm.Designer.cs">
       <DependentUpon>TasksForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Templates\UI\TroubleshootControls.cs">
+    <Compile Include="Templates\RAN\UI\TroubleshootControls.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Toolbox\coordConvert.cs" />
@@ -1400,11 +1425,19 @@
     <Compile Include="UI\AMTTransparentPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\CircularProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\ErrorProviderFixed.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\FlexibleMessageBox.cs" />
     <Compile Include="UI\AMTLargeTextForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\LoadingPanel.cs" />
+    <Compile Include="UI\LoadingPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\NotesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1448,6 +1481,26 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\trayIcon.cs" />
+    <Compile Include="UI\WinFormAnimation\AnimationFunctions.cs" />
+    <Compile Include="UI\WinFormAnimation\Animator.cs" />
+    <Compile Include="UI\WinFormAnimation\Animator2D.cs" />
+    <Compile Include="UI\WinFormAnimation\Animator3D.cs" />
+    <Compile Include="UI\WinFormAnimation\AnimatorStatus.cs" />
+    <Compile Include="UI\WinFormAnimation\float2D.cs" />
+    <Compile Include="UI\WinFormAnimation\float3D.cs" />
+    <Compile Include="UI\WinFormAnimation\FloatExtensions.cs" />
+    <Compile Include="UI\WinFormAnimation\FPSLimiterKnownValues.cs" />
+    <Compile Include="UI\WinFormAnimation\IAnimator.cs" />
+    <Compile Include="UI\WinFormAnimation\KnownAnimationFunctions.cs" />
+    <Compile Include="UI\WinFormAnimation\Path.cs" />
+    <Compile Include="UI\WinFormAnimation\Path2D.cs" />
+    <Compile Include="UI\WinFormAnimation\Path2DExtensions.cs" />
+    <Compile Include="UI\WinFormAnimation\Path3D.cs" />
+    <Compile Include="UI\WinFormAnimation\Path3DExtensions.cs" />
+    <Compile Include="UI\WinFormAnimation\PathExtensions.cs" />
+    <Compile Include="UI\WinFormAnimation\SafeInvoker.cs" />
+    <Compile Include="UI\WinFormAnimation\SafeInvoker`1.cs" />
+    <Compile Include="UI\WinFormAnimation\Timer.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
     <Compile Include="Web\HtmlAgilityPack\EncodingFoundException.cs" />
@@ -1506,6 +1559,11 @@
     <Compile Include="GeoAPIs\GMap.NET\Types\Point.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assemblies\SQLite\EntityFramework.dll" />
+    <EmbeddedResource Include="Assemblies\SQLite\EntityFramework.SqlServer.dll" />
+    <EmbeddedResource Include="Assemblies\SQLite\System.Data.SQLite.dll" />
+    <EmbeddedResource Include="Assemblies\SQLite\System.Data.SQLite.EF6.dll" />
+    <EmbeddedResource Include="Assemblies\SQLite\System.Data.SQLite.Linq.dll" />
     <EmbeddedResource Include="Logs\UI\LogBrowser.resx">
       <DependentUpon>LogBrowser.cs</DependentUpon>
     </EmbeddedResource>
@@ -1534,10 +1592,10 @@
     <EmbeddedResource Include="SiteFinder\UI\siteDetails.resx">
       <DependentUpon>siteDetails.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Templates\UI\SendBCP.resx">
+    <EmbeddedResource Include="Templates\RAN\UI\SendBCP.resx">
       <DependentUpon>SendBCP.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Templates\UI\TasksForm.resx">
+    <EmbeddedResource Include="Templates\RAN\UI\TasksForm.resx">
       <DependentUpon>TasksForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Toolbox\Notifications\NotificationsForm.resx">
@@ -1592,6 +1650,12 @@
     <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
     <None Include="Toolbox\EWS\Docs\README.htm" />
     <None Include="Toolbox\EWS\Docs\Redist.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Templates\CORE\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UI\WinFormAnimation\Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

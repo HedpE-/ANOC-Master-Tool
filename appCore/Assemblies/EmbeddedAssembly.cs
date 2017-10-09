@@ -23,6 +23,12 @@ public static class EmbeddedAssemblies
 		Load("appCore.Assemblies.GMap.NET.Core.dll", "GMap.NET.Core.dll");
 		Load("appCore.Assemblies.FileHelpers.dll", "FileHelpers.dll");
 		Load("appCore.Assemblies.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
+        //Load("appCore.Assemblies.System.Data.SQLite.1.0.105.2.EntityFramework.dll", "EntityFramework.dll");
+        Load("appCore.Assemblies.SQLite.EntityFramework.dll", "EntityFramework.dll");
+        Load("appCore.Assemblies.SQLite.EntityFramework.SqlServer.dll", "EntityFramework.SqlServer.dll");
+        Load("appCore.Assemblies.SQLite.System.Data.SQLite.dll", "System.Data.SQLite.dll");
+        Load("appCore.Assemblies.SQLite.System.Data.SQLite.EF6.dll", "System.Data.SQLite.EF6.dll");
+        Load("appCore.Assemblies.SQLite.System.Data.SQLite.Linq.dll", "System.Data.SQLite.Linq.dll");
         //Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
         //Load("appCore.Assemblies.Svg2.3.0.dll", "Svg2.3.0.dll");
 
