@@ -13,7 +13,7 @@ using System.Linq;
 using System.Windows.Forms;
 using appCore.SiteFinder;
 using appCore.SiteFinder.UI;
-using appCore.Templates.UI;
+using appCore.Templates.RAN.UI;
 
 namespace appCore.UI
 {
@@ -38,13 +38,13 @@ namespace appCore.UI
 			get {
 				Site site = null;
 				switch(Parent.GetType().ToString()) {
-					case "appCore.Templates.UI.TroubleshootControls":
+					case "appCore.Templates.RAN.UI.TroubleshootControls":
 						site = ((TroubleshootControls)Parent).currentSite;
 						break;
-					case "appCore.Templates.UI.FailedCRQControls":
+					case "appCore.Templates.RAN.UI.FailedCRQControls":
 						site = ((FailedCRQControls)Parent).currentSite;
 						break;
-					case "appCore.Templates.UI.UpdateControls":
+					case "appCore.Templates.RAN.UI.UpdateControls":
 						site = ((UpdateControls)Parent).currentSite;
 						break;
 					case "appCore.SiteFinder.UI.siteDetails":
@@ -176,7 +176,7 @@ namespace appCore.UI
             tsi.Enabled = false;
             await currentSite.requestOIDataAsync(dataToRequest);
 
-            siteFinder_Toggle(true);
+            await siteFinder_Toggle(true);
         }
 
         async public System.Threading.Tasks.Task ShowLoading()
