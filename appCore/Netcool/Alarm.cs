@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using appCore.SiteFinder;
 using FileHelpers;
 
@@ -142,7 +143,7 @@ namespace appCore.Netcool
 										break;
 									case "R":
 										string UCellId = Summary.Substring(Summary.IndexOf("UtranCell=") + 10);
-										List<Cell> results = DB.SitesDB.queryAllCellsDB("CELL_ID", UCellId);
+                                        List<Cell> results = Task.Run(() => DB.SitesDB.QueryAllCellsDB("CELL_ID", UCellId)).Result;
 										foreach(Cell c2 in results)
 											if(c2.BscRnc_Id == RncBsc && c2.Vendor == Vendor)
 												element = c2.Name;
@@ -257,7 +258,7 @@ namespace appCore.Netcool
                     while (GettingParentSiteFlag) { }
 
                     GettingParentSiteFlag = true;
-                    _site = DB.SitesDB.getSite(SiteId);
+                    _site = Task.Run(() => DB.SitesDB.GetSiteAsync(SiteId)).Result;
                     GettingParentSiteFlag = false;
                 }
                 return _site;
