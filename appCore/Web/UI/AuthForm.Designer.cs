@@ -45,11 +45,11 @@ namespace appCore.Web.UI
 		{
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new appCore.UI.AMTTextBox();
-            this.textBox2 = new appCore.UI.AMTTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.textBox2 = new appCore.UI.AMTTextBox();
+            this.textBox1 = new appCore.UI.AMTTextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -68,21 +68,6 @@ namespace appCore.Web.UI
             this.label2.TabIndex = 1;
             this.label2.Text = "Password";
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(69, 29);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(123, 20);
-            this.textBox1.TabIndex = 2;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(69, 50);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.PasswordChar = '•';
-            this.textBox2.Size = new System.Drawing.Size(123, 20);
-            this.textBox2.TabIndex = 3;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(3, 76);
@@ -95,7 +80,7 @@ namespace appCore.Web.UI
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(117, 76);
+            this.button2.Location = new System.Drawing.Point(189, 76);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 5;
@@ -109,18 +94,33 @@ namespace appCore.Web.UI
             this.label3.ForeColor = System.Drawing.Color.Red;
             this.label3.Location = new System.Drawing.Point(3, 2);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(189, 21);
+            this.label3.Size = new System.Drawing.Size(282, 21);
             this.label3.TabIndex = 6;
             this.label3.Text = "Login failed";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label3.Visible = false;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(69, 50);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.PasswordChar = '•';
+            this.textBox2.Size = new System.Drawing.Size(195, 20);
+            this.textBox2.TabIndex = 3;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(69, 29);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(195, 20);
+            this.textBox1.TabIndex = 2;
             // 
             // AuthForm
             // 
             this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(196, 102);
+            this.ClientSize = new System.Drawing.Size(268, 102);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -137,5 +137,5 @@ namespace appCore.Web.UI
             this.PerformLayout();
 
 		}
-	}
+    }
 }
