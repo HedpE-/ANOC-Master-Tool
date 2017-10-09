@@ -118,13 +118,20 @@ namespace appCore.UI
 
 		protected override void OnSelectionChanged(EventArgs e)
 		{
-			if (SuppressAutoSelection)
-				return;
+			//if (SuppressAutoSelection)
+			//	return;
 
 			base.OnSelectionChanged(e);
 		}
 
-		void ClearSelectionAndResetSuppression()
+        protected override void OnDoubleClick(EventArgs e)
+        {
+            base.OnDoubleClick(e);
+            if (SelectedCells.Count == 1)
+                Rows[SelectedCells[0].RowIndex].Selected = true;
+        }
+
+        void ClearSelectionAndResetSuppression()
 		{
 			if (this.SelectedRows.Count > 0 || this.SelectedCells.Count > 0)
 			{
