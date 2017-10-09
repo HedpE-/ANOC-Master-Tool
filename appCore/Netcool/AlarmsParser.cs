@@ -10,7 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using appCore.Templates.Types;
+using System.Threading.Tasks;
+using appCore.Templates.RAN.Types;
 using FileHelpers;
 
 namespace appCore.Netcool
@@ -153,7 +154,7 @@ namespace appCore.Netcool
                 //System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
                 //st.Start();
                 var sites = AlarmsList.Where(a => alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => a.SiteId).ToList().Distinct();
-                var allSites = DB.SitesDB.getSites(sites);
+                var allSites = Task.Run(()=> DB.SitesDB.GetSitesAsync(sites)).Result;
                 var NsnAlarmsWithoutElement = AlarmsList.Where(a => a.Vendor == Vendors.NSN && alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => AlarmsList.IndexOf(a));
                 var HuaweiAlarmsWithoutElement = AlarmsList.Where(a => a.Vendor == Vendors.Huawei && alarmsWithoutElement.Contains(AlarmsList.IndexOf(a))).Select(a => AlarmsList.IndexOf(a));
 
