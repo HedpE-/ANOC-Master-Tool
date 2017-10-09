@@ -446,7 +446,8 @@ namespace appCore
 				if(Exists) {
 					UpdateTimer = new System.Timers.Timer(((siteDataTimestamp + new TimeSpan(2, 0, 0)) - DateTime.Now).TotalMilliseconds);
 					UpdateTimer.Elapsed += delegate {
-						Site newData = DB.SitesDB.getSiteAsync(Id, true).GetAwaiter().GetResult();
+                        Site newData = Task.Run(function: () => DB.SitesDB.GetSiteAsync(Id, true)).Result;
+                        //Site newData = DB.SitesDB.getSiteAsync(Id, true).GetAwaiter().GetResult();
 						OnTimerElapsed_UpdateSiteData(newData);
 						if(newData.Exists) {
 							siteDataTimestamp = DateTime.Now;
@@ -473,7 +474,7 @@ namespace appCore
 		/// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK", "Cramer"</param>
 		public void requestOIData(string dataToRequest) {
 			if(Exists) {
-				bool connected = !OiConnection.LoggedOn ? OiConnection.InitiateOiConnection() : true;
+				bool connected = !OiConnection.LoggedOn ? Task.Run(OiConnection.InitiateOiConnection).Result : true;
 				
 				if(connected) {
 					List<Thread> threads = new List<Thread>();
@@ -615,7 +616,164 @@ namespace appCore
         {
             if (Exists)
             {
-                bool connected = await Task.Run(() => !OiConnection.LoggedOn ? OiConnection.InitiateOiConnection() : true);
+                bool connected = !OiConnection.LoggedOn ? await OiConnection.InitiateOiConnection() : true;
+
+                if (connected)
+                {
+                    await Task.Run(() =>
+                    {
+                        List<Thread> threads = new List<Thread>();
+                        int finishedThreadsCount = 0;
+                        if (dataToRequest.Contains("INC"))
+                        {
+                            Thread thread = new Thread(() => {
+                                isUpdatingIncidents = true;
+                                //					                           	INCs = FetchINCs(null);
+                                Incidents = FetchINCs();
+                                isUpdatingIncidents = false;
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_INC";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("CRQ"))
+                        {
+                            Thread thread = new Thread(() => {
+                                isUpdatingChanges = true;
+                                //					                           	CRQs = FetchCRQs(null);
+                                Changes = FetchCRQs();
+                                isUpdatingChanges = false;
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_CRQ";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("Alarms"))
+                        {
+                            Thread thread = new Thread(() => {
+                                isUpdatingAlarms = true;
+                                //					                           	ActiveAlarms = FetchActiveAlarms(null);
+                                Alarms = FetchActiveAlarms();
+                                isUpdatingAlarms = false;
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_Alarms";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("Bookins"))
+                        {
+                            Thread thread = new Thread(() => {
+                                isUpdatingVisits = true;
+                                Visits = FetchBookIns();
+                                if (Visits == null)
+                                    Visits = FetchBookIns(null);
+                                isUpdatingVisits = false;
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_Bookins";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("Availability"))
+                        {
+                            Thread thread = new Thread(() => {
+                                isUpdatingAvailability = true;
+                                //						                           	Availability avail = FetchAvailability();
+                                //						                           	if(avail != null) {
+                                //						                           		if(avail.message != "Site is Offair") {
+                                //						                           			Availability = avail.ToDataTable();
+                                //						                           			updateCOOS();
+                                //						                           		}
+                                //						                           	}
+                                //						                           	else {
+                                Availability = FetchAvailability(null);
+                                updateCOOS();
+                                //						                           	}
+                                isUpdatingAvailability = false;
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_Availability";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("PWR"))
+                        {
+                            Thread thread = new Thread(() => {
+                                if (string.IsNullOrWhiteSpace(PowerCompany))
+                                    try { PowerCompany = getPowerCompany(); } catch { }
+
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_PWR";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("CellsState"))
+                        {
+                            Thread thread = new Thread(() => {
+                                getOiCellsState().Wait();
+
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_CellsState";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("LKULK"))
+                        {
+                            Thread thread = new Thread(() => {
+                                getOiLockedCellsPage().Wait();
+
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_LKULK";
+                            threads.Add(thread);
+                        }
+
+                        if (dataToRequest.Contains("Cramer"))
+                        {
+                            Thread thread = new Thread(() => {
+                                isUpdatingCramerData = true;
+                                CramerData = FetchCramerData(null).Result;
+                                isUpdatingCramerData = false;
+                                finishedThreadsCount++;
+                            });
+                            thread.Name = "requestOIData_Alarms";
+                            threads.Add(thread);
+                        }
+
+                        foreach (Thread thread in threads)
+                        {
+                            thread.SetApartmentState(ApartmentState.STA);
+                            thread.Start();
+                        }
+
+                        while (finishedThreadsCount < threads.Count) { }
+                    });
+
+                    if (Exists)
+                    {
+                        if (DbIndex > -1)
+                            DB.SitesDB.UpdateSiteData(this);
+                        else
+                            DB.SitesDB.Add(this);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populate with data pulled from OI
+        /// </summary>
+        /// <param name="dataToRequest">"INC", "CRQ", "Bookins", "Alarms", "Availability", "PWR", "CellsState", "LKULK", "Cramer"</param>
+        public async Task requestOIDataAsync2(string dataToRequest)
+        {
+            if (Exists)
+            {
+                bool connected = !OiConnection.LoggedOn ? await OiConnection.InitiateOiConnection() : true;
 
                 if (connected)
                 {
@@ -1293,7 +1451,6 @@ namespace appCore
                         AccessInformation item = jObj.ToObject<AccessInformation>();
                         if (!powerList.Contains(item))
                             powerList.Add(item);
-                        // TODO: get Power Company from old OI index.php if Access API doesn't have Power Company for any site(s)
                     }
                 }
                 catch { }
@@ -1500,11 +1657,13 @@ namespace appCore
 			}
 		}
 		
-		public void populateCells() {
-			Cells = DB.SitesDB.getCells(Id);
+		public async Task populateCells()
+        {
+			Cells = await DB.SitesDB.GetCellsAsync(Id);
 		}
 		
-		void SplitAddress() {
+		void SplitAddress()
+        {
 			string[] address = ADDRESS_ORIG.ToUpper().Split(';');
 			int addressLastIndex = address.Length - 1;
 			try { postCode = address[addressLastIndex].Trim(); } catch (Exception) { }
@@ -1604,12 +1763,14 @@ namespace appCore
 		}
 		
 
-		public void Dispose()
+		public async void Dispose()
 		{
-			if(Exists) {
+			if(Exists)
+            {
 				if(Cells.Count == 0)
-					populateCells();
-				if(Cells.Count > 0) {
+					await populateCells();
+				if(Cells.Count > 0)
+                {
 					if(DbIndex > -1)
 						DB.SitesDB.UpdateSiteData(this);
 					else
@@ -1618,31 +1779,37 @@ namespace appCore
 			}
 		}
 		
-		~Site() { // destructor
+		~Site()
+        { // destructor
 			Dispose();
 		}
 		
-		public class CramerDetails {
+		public class CramerDetails
+        {
 			public string PocType { get; private set; }
 			public int OnwardSitesCount { get; private set; }
 			public string TxMedium { get; private set; }
 			public string TxLastMileRef { get; private set; }
 			public List<string> OnwardSites { get; private set; }
 			List<Site> onwardSitesObjects;
-			public List<Site> OnwardSitesObjects {
-				get {
+			public List<Site> OnwardSitesObjects
+            {
+				get
+                {
 					if(onwardSitesObjects == null)
                         onwardSitesObjects = ResolveOnwardSites().Result;
 
 					return onwardSitesObjects;
 				}
-				private set {
+				private set
+                {
 					onwardSitesObjects = value;
 				}
 			}
 			//public string EvenflowStatus { get; private set; }
 			
-			public CramerDetails(DataRow details) {
+			public CramerDetails(DataRow details)
+            {
 				PocType = details["POC TYPE"].ToString();
 				OnwardSitesCount = Convert.ToInt16(details["EFFECTED SITE COUNT"]);
 				TxMedium = details["TX MEDIUM"].ToString();
@@ -1650,7 +1817,8 @@ namespace appCore
                 //EvenflowStatus = details["EVENFLOW STATUS"].ToString();
 				OnwardSites = new List<string>();
 				string sitesList = details["EFFECTED SITE LIST"].ToString();
-				if(!string.IsNullOrEmpty(sitesList)) {
+				if(!string.IsNullOrEmpty(sitesList))
+                {
 					OnwardSites.AddRange(sitesList.Split(','));
 					for(int c = 0;c < OnwardSites.Count; c++)
                     {
@@ -1667,15 +1835,17 @@ namespace appCore
             {
                 List<Site> temp = new List<Site>();
                 if (OnwardSites.Count > 0)
-                    temp = await Task.Run(() => DB.SitesDB.getSites(OnwardSites));
+                    temp = await DB.SitesDB.GetSitesAsync(OnwardSites);
                 return temp;
             }            
 		}
 	}
 }
 
-public static class DtTools {
-	public static DataTable ToDataTable(this Availability jSon) {
+public static class DtTools
+{
+	public static DataTable ToDataTable(this Availability jSon)
+    {
 		DataTable dataTable = new DataTable("Availability");
 
 		for(int c = 0;c < 3; c++)
@@ -1683,17 +1853,20 @@ public static class DtTools {
 		for(int c = jSon.title.Count - 4;c > 2;c--)
 			dataTable.Columns.Add(jSon.title[c]);
 		
-		foreach(AvailabilityRows cell in jSon.data) {
+		foreach(AvailabilityRows cell in jSon.data)
+        {
 			DataRow row = dataTable.NewRow();
 			int rowCol = 0;
 			row[rowCol++] = cell.CI_NAME;
 			row[rowCol++] = cell.CELL;
 			row[rowCol++] = cell.BEARER;
-			for(int c = 193; c > 0;c--) {
+			for(int c = 193; c > 0;c--)
+            {
 				var prop = cell.GetType().GetProperty("COL" + c);
 				row[rowCol++] = prop.GetValue(cell);
 				// remove HTML tags from Status
-				while(row[rowCol - 1].ToString().Contains(">")) {
+				while(row[rowCol - 1].ToString().Contains(">"))
+                {
 					int startIndex = row[rowCol - 1].ToString().IndexOf("<");
 					int endIndex = row[rowCol - 1].ToString().IndexOf(">");
 					row[rowCol - 1] = row[rowCol - 1].ToString().Remove(startIndex, (endIndex - startIndex) + 1);
