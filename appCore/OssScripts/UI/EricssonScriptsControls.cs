@@ -50,8 +50,10 @@ namespace appCore.OssScripts.UI
 		RadioButton LteRadioButton = new RadioButton();
 		public AMTTextBox SiteTextBox = new AMTTextBox();
 		CellDetailsPictureBox CellsSummaryPictureBox = new CellDetailsPictureBox();
-		
-		List<Cell> filteredCells;
+
+        ErrorProviderFixed errorProvider = new ErrorProviderFixed();
+
+        List<Cell> filteredCells;
 		Site currentSite { get; set; }
 
 		AMTMenuStrip MainMenu = new AMTMenuStrip();
@@ -83,7 +85,9 @@ namespace appCore.OssScripts.UI
 		public EricssonScriptsControls()
 		{
 			InitializeComponent();
-		}
+            errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+            errorProvider.SetIconPadding(SiteTextBox, -17);
+        }
 
 		public async void siteFinder(object sender, KeyPressEventArgs e)
 		{
@@ -92,38 +96,40 @@ namespace appCore.OssScripts.UI
                 LoadingPanel load = new LoadingPanel();
                 load.Show(true, this);
 
-                bool ericssonSite = false;
+                //bool ericssonSite = false;
 
-                await System.Threading.Tasks.Task.Run(() =>
-                {
+                //await System.Threading.Tasks.Task.Run(async() =>
+                //{
 
-                    AMTTextBox tb = (AMTTextBox)sender;
+                AMTTextBox tb = (AMTTextBox)sender;
 
-				    while(tb.Text.StartsWith("0"))
-				        tb.Text = tb.Text.Substring(1);
+				while(tb.Text.StartsWith("0"))
+				    tb.Text = tb.Text.Substring(1);
 				                                   	
-				    currentSite = DB.SitesDB.getSiteAsync(tb.Text).GetAwaiter().GetResult();
+				currentSite = await DB.SitesDB.GetSiteAsync(tb.Text);
 
-			        if(currentSite.Exists)
-                    {
-				        filteredCells = new List<Cell>();
-				        foreach(Cell cell in currentSite.Cells)
-                        {
-				            if(cell.Vendor == Vendors.Ericsson)
-				                filteredCells.Add(cell);
-				        }
-                        if (filteredCells.Count == 0)
-                        {
-                            MainForm.trayIcon.showBalloon("Error", String.Format("Site {0} is not E///", tb.Text));
-                            return;
-                        }
-                        else
-                            ericssonSite = true;
-                    }
-                });
-
-                if (currentSite.Exists && ericssonSite)
+			    if(currentSite.Exists)
                 {
+				    filteredCells = new List<Cell>();
+				    foreach(Cell cell in currentSite.Cells)
+                    {
+				        if(cell.Vendor == Vendors.Ericsson)
+				            filteredCells.Add(cell);
+				    }
+                    if (filteredCells.Count == 0)
+                    {
+                        MainForm.trayIcon.showBalloon("Error", String.Format("Site {0} is not E///", tb.Text));
+                        errorProvider.SetError(SiteTextBox, "Not E/// site");
+                        load.Close();
+                        return;
+                    }
+                    //else
+                    //    ericssonSite = true;
+                //}
+                //});
+
+                //if (currentSite.Exists && ericssonSite)
+                //{
                     PriorityTextBox.Text = currentSite.Priority;
 				    RegionTextBox.Text = currentSite.Region;
 				                                      		
@@ -133,12 +139,15 @@ namespace appCore.OssScripts.UI
 				    LteRadioButton.Enabled = filteredCells.Filter(Cell.Filters.All_4G).Count > 0;
 			    }
 			    else
-                {
-				    PriorityTextBox.Text = string.Empty;
-				    RegionTextBox.Text = currentSite.Exists && !ericssonSite ? "Not E/// site" : "No site found";
-			    }
+                //{
+                //    if (currentSite.Exists && !ericssonSite)
+                //        errorProvider.SetError(SiteTextBox, "Not E/// site");
+                //    else
+                    errorProvider.SetError(SiteTextBox, "No site found");
+                //}
 
-				siteFinder_Toggle(true, ericssonSite ? currentSite.Exists : ericssonSite);
+                //siteFinder_Toggle(true, ericssonSite ? currentSite.Exists : ericssonSite);
+                siteFinder_Toggle(true, currentSite.Exists);
 
                 load.Close();
 			}
@@ -146,7 +155,8 @@ namespace appCore.OssScripts.UI
 
 		void SiteTextBoxTextChanged(object sender, EventArgs e)
 		{
-			if(GlobalProperties.siteFinder_mainswitch)
+            errorProvider.SetError(SiteTextBox, string.Empty);
+			if(GlobalProperties.SiteFinderMainswitch)
 				siteFinder_Toggle(false, false);
 			PriorityTextBox.Text = RegionTextBox.Text = string.Empty;
 			clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteTextBox.Text);
