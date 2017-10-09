@@ -82,29 +82,53 @@ public static class StringExtensions
 			}
 		}
 		return new string(array);
-	}
-	
-	public static String EncryptText(this string str) {
-		if(!string.IsNullOrEmpty(str)) {
-			string text = string.Empty;
-			foreach (char ch in str)
-				text += Convert.ToInt32(ch).ToString("x");
-			str = text;
-		}
-		return str;
-	}
-	
-	public static String DecryptText(this string str) {
-		if(!string.IsNullOrEmpty(str)) {
-			str = str.Replace(" ", "");
-			byte[] bytes = new byte[str.Length / 2];
-			for (int i = 0; i < bytes.Length; i++)
-				bytes[i] = Convert.ToByte(str.Substring(i * 2, 2), 0x10);
-			
-			str = Encoding.ASCII.GetString(bytes);
-		}
-		return str;
-	}
+    }
+
+    //public static String EncryptText(this string str)
+    //{
+    //    if (!string.IsNullOrEmpty(str))
+    //    {
+    //        string text = string.Empty;
+    //        foreach (char ch in str)
+    //            text += Convert.ToInt32(ch).ToString("x");
+    //        str = text;
+    //    }
+    //    return str;
+    //}
+
+    public static String DecryptText(this string str)
+    {
+        if (!string.IsNullOrEmpty(str))
+        {
+            str = str.Replace(" ", "");
+            byte[] bytes = new byte[str.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+                bytes[i] = Convert.ToByte(str.Substring(i * 2, 2), 0x10);
+
+            str = Encoding.ASCII.GetString(bytes);
+        }
+        return str;
+    }
+
+    public static string Encrypt(this string str, string passPhrase)
+    {
+		return appCore.Toolbox.StringCipher.Encrypt(str, passPhrase);
+    }
+
+    public static string Encrypt(this string str)
+    {
+        return appCore.Toolbox.StringCipher.Encrypt(str);
+    }
+
+    public static string Decrypt(this string str)
+    {
+        return appCore.Toolbox.StringCipher.Decrypt(str);
+    }
+
+    public static string Decrypt(this string str, string passPhrase)
+    {
+        return appCore.Toolbox.StringCipher.Decrypt(str, passPhrase);
+    }
 
     public static bool Contains(this string str, string pattern, StringComparison stringComparison)
     {
