@@ -16,12 +16,13 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Data.SQLite;
 using appCore.DB;
 using appCore.Logs;
 using appCore.Settings;
 using appCore.SiteFinder.UI;
 using appCore.Templates;
-using appCore.Templates.UI;
+using appCore.Templates.RAN.UI;
 using appCore.Toolbox;
 using appCore.UI;
 using appCore.Shifts;
@@ -59,8 +60,9 @@ namespace appCore
 
         public static NotificationsCenter notificationsCenter;
 
+        ErrorProviderFixed errorProvider = new ErrorProviderFixed();
+
         System.Timers.Timer OiDbFilesLastUpdatedTimer;
-        bool timerRunning = false;
 
         public MainForm(NotifyIcon tray, string[] args)
         {
@@ -68,7 +70,7 @@ namespace appCore
             //args = new[] { "-otherUser", "DALEMN" }; // HACK: force login with another user
             //args = new[] { "-otherUser", "SILVABT" }; // HACK: force login with another user
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
-            GlobalProperties.resolveOfficePath();
+            GlobalProperties.ResolveOfficePath();
 
             SplashForm.ShowSplashScreen(true);
             trayIcon = new TrayIcon(tray);
@@ -76,9 +78,9 @@ namespace appCore
             //GlobalProperties.DeployExternalAssemblies();
             EmbeddedAssemblies.Init();
 
-            SplashForm.UpdateLabelText("Getting network access");
-
             // Initialize Properties
+
+            SplashForm.UpdateLabelText("Getting network access");
 
             GlobalProperties.CheckShareAccess();
 
@@ -88,13 +90,24 @@ namespace appCore
             if (args.Contains("-otherUser"))
                 try { otherUser = args[Array.FindIndex(args, str => str.Equals("-otherUser")) + 1].ToUpper(); } catch { }
 
-            CurrentUser.InitializeUserProperties(otherUser);
+            try
+            {
+                CurrentUser.InitializeUserProperties(otherUser);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + Environment.NewLine + Environment.NewLine + "This means you don't have access to the Vodafone network, which you must have in order to use this tool.", "Quitting", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0);
+            }
 
             logFiles.Initialize();
 
             SplashForm.UpdateLabelText("Loading UI");
 
             InitializeComponent();
+
+            errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+            errorProvider.SetIconPadding(textBox13, -17);
 
             StartMenuPanel.BackColor = CurrentUser.UserName == "GONCARJ3" ? Color.FromArgb(150, Color.LightGray) : Color.Transparent;
             if (!string.IsNullOrEmpty(otherUser))
@@ -194,8 +207,9 @@ namespace appCore
             comboBox1.Items.Add("CBV");
             comboBox1.Text = closureCode;
 
-            GlobalProperties.siteFinder_mainswitch = false;
-            GlobalProperties.siteFinder_mainswitch = (Databases.all_sites.Exists && Databases.all_cells.Exists) && OI.OiConnection.Available;
+            GlobalProperties.SiteFinderMainswitch = false;
+            bool OiAvailable = System.Threading.Tasks.Task.Run(OI.OiConnection.Available).Result;
+            GlobalProperties.SiteFinderMainswitch = (Databases.all_sites.Exists && Databases.all_cells.Exists) && OiAvailable; // OI.OiConnection.Available().GetAwaiter().GetResult();
 
             if (CurrentUser.Department == Departments.RanTier1 && Databases.shiftsFile.Exists)
             {
@@ -298,15 +312,15 @@ namespace appCore
                         
                         List<dynamic> t = new List<dynamic>();
                         foreach(var m in myGroupMembers.Members)
-                            t.Add(new { user = m.Name, email = m.Address, dep = CurrentUser.GetUserDetails(m.Name, m.Address, "Department") });
+                            t.Add(new { user = m.Name, email = m.Address, dep = CurrentUser.GetUser("", "", m.Address, m.Name, "Vodafone Portugal").Department });
 
                         //myGroupMembers = service.ExpandGroup("anocuk2ndlinehuawei_nsn@internal.vodafone.com");
                         //foreach (var m in myGroupMembers.Members)
                         //    t.Add(new { user = m.Name, email = m.Address, dep = CurrentUser.GetUserDetails(m.Name, m.Address, "Department") });
 
                         //System.Collections.Generic.List<string> deps = new System.Collections.Generic.List<string>();
-                        for (int c=0;c<t.Count;c++)
-                            t[c] = new { user = t[c].user, email = t[c].email, strDep = t[c].dep, resDep = EnumExtensions.GetDescription(CurrentUser.GetUserDepartment(t[c].dep)) };
+                        for (int c = 0; c < t.Count; c++)
+                            t[c] = new { user = t[c].user, email = t[c].email, strDep = t[c].dep, resDep = CurrentUser.GetUser("", "", t[c].email, t[c].user, "Vodafone Portugal").Department };
 
                         string departs = string.Join(Environment.NewLine, t.Select(u => u.user + "," + u.email + "," + u.strDep + "," + u.resDep));
 
@@ -355,6 +369,34 @@ namespace appCore
             notificationsCenter = new NotificationsCenter();
             UpdateNotificationsIcon(NotificationsPictureBox);
 
+            //SQLiteConnection.CreateFile(GlobalProperties.AppDataRootDir + "\\MyDatabase.sqlite");
+
+            //SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=" + GlobalProperties.AppDataRootDir + "\\MyDatabase.sqlite;Version=3;");
+            //m_dbConnection.Open();
+            //string sql = "CREATE TABLE highscores (name VARCHAR(20), score INT)";
+            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            //command.ExecuteNonQuery();
+
+            //sql = "insert into highscores (name, score) values ('Me', 3000)";
+            //command = new SQLiteCommand(sql, m_dbConnection);
+            //command.ExecuteNonQuery();
+            //sql = "insert into highscores (name, score) values ('Myself', 6000)";
+            //command = new SQLiteCommand(sql, m_dbConnection);
+            //command.ExecuteNonQuery();
+            //sql = "insert into highscores (name, score) values ('And I', 9001)";
+            //command = new SQLiteCommand(sql, m_dbConnection);
+            //command.ExecuteNonQuery();
+
+            //SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=" + GlobalProperties.AppDataRootDir + "\\MyDatabase.sqlite;Version=3;");
+            //m_dbConnection.Open();
+
+            //string sql = "select * from highscores order by score desc";
+            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            //SQLiteDataReader reader = command.ExecuteReader();
+            //List<string> list2 = new List<string>();
+            //while (reader.Read())
+            //   list2.Add("Name: " + reader["name"] + "\tScore: " + reader["score"]);
+
             SplashForm.CloseForm();
 
             if (SettingsFile.LastRunVersion != GlobalProperties.AssemblyFileVersionInfo.FileVersion)
@@ -362,7 +404,7 @@ namespace appCore
                 SettingsFile.LastRunVersion = GlobalProperties.AssemblyFileVersionInfo.FileVersion;
                 FlexibleMessageBox.Show(Resources.Changelog, "Changelog", MessageBoxButtons.OK);
             }
-
+            
             //LoadUiForDepartment();
         }
 
@@ -415,12 +457,12 @@ namespace appCore
                 dlg.StartPosition = FormStartPosition.Manual;
                 dlg.Location = new Point(StartTabPage.PointToScreen(Point.Empty).X + ((StartTabPage.Width - dlg.Width) / 2), StartTabPage.PointToScreen(Point.Empty).Y);
                 dlg.ShowDialog();
-
-                if(OiDbFilesLastUpdatedTimer != null)
-                    OiDbFilesLastUpdatedTimer.Enabled = true;
             }
 
-            if(loading != null)
+            if (OiDbFilesLastUpdatedTimer != null)
+                OiDbFilesLastUpdatedTimer.Enabled = true;
+
+            if (loading != null)
                 loading.Close();
         }
 
@@ -515,9 +557,9 @@ namespace appCore
 
             var msgBoxForm = Application.OpenForms.Cast<Form>().FirstOrDefault(f => f.Text == "OI DB Files out of date");
 
-            FileInfo updating = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\Updating");
             if (allCellsLastUpdated > UpdateWarningTimeSpan || allSitesLastUpdated > UpdateWarningTimeSpan)
             {
+                FileInfo updating = new FileInfo(GlobalProperties.DBFilesDefaultLocation.FullName + @"\Updating");
                 if (!updating.Exists)
                 {
                     if (msgBoxForm == null)
@@ -537,65 +579,68 @@ namespace appCore
             }
         }
 
-        public async void FillTemplateFromLog(Template log)
+        public async System.Threading.Tasks.Task FillTemplateFromLog(Template log)
         {
             LoadingPanel loading = new LoadingPanel();
+            
+            //Invoke((MethodInvoker)async delegate
+            //{
+                MainTabControl.SelectTab(1);
+                switch (log.LogType)
+                {
+                    case TemplateTypes.Troubleshoot:
+                        Ran_TemplatesTabControl.SelectTab(0);
 
-            MainTabControl.SelectTab(1);
-            switch (log.LogType)
-            {
-                case TemplateTypes.Troubleshoot:
-                    Ran_TemplatesTabControl.SelectTab(0);
+                        await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
 
-                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(150));
+                        loading.Show(false, TroubleshootTabPage);
 
-                    loading.Show(false, TroubleshootTabPage);
+                        if (TroubleshootUI != null)
+                            TroubleshootUI.Dispose();
+                        TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
+                        TroubleshootTabPage.Controls.Add(TroubleshootUI);
+                        break;
+                    case TemplateTypes.FailedCRQ:
+                        Ran_TemplatesTabControl.SelectTab(1);
 
-                    if (TroubleshootUI != null)
-                        TroubleshootUI.Dispose();
-                    TroubleshootUI = new TroubleshootControls(log.ToTroubleshootTemplate(), UiEnum.Template);
-                    TroubleshootTabPage.Controls.Add(TroubleshootUI);
-                    break;
-                case TemplateTypes.FailedCRQ:
-                    Ran_TemplatesTabControl.SelectTab(1);
+                        await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
 
-                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
+                        loading.Show(false, FailedCRQsTabPage);
 
-                    loading.Show(false, FailedCRQsTabPage);
+                        if (FailedCRQUI != null)
+                            FailedCRQUI.Dispose();
+                        FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
+                        FailedCRQsTabPage.Controls.Add(FailedCRQUI);
+                        break;
+                    case TemplateTypes.Update:
+                        Ran_TemplatesTabControl.SelectTab(2);
 
-                    if (FailedCRQUI != null)
-                        FailedCRQUI.Dispose();
-                    FailedCRQUI = new FailedCRQControls(log.ToFailedCRQTemplate(), UiEnum.Template);
-                    FailedCRQsTabPage.Controls.Add(FailedCRQUI);
-                    break;
-                case TemplateTypes.Update:
-                    Ran_TemplatesTabControl.SelectTab(2);
+                        await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
 
-                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
+                        loading.Show(false, UpdatesTabPage);
 
-                    loading.Show(false, UpdatesTabPage);
+                        if (UpdateUI != null)
+                            UpdateUI.Dispose();
+                        UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
+                        UpdatesTabPage.Controls.Add(UpdateUI);
+                        break;
+                    case TemplateTypes.TX:
+                        Ran_TemplatesTabControl.SelectTab(3);
 
-                    if (UpdateUI != null)
-                        UpdateUI.Dispose();
-                    UpdateUI = new UpdateControls(log.ToUpdateTemplate(), UiEnum.Template);
-                    UpdatesTabPage.Controls.Add(UpdateUI);
-                    break;
-                case TemplateTypes.TX:
-                    Ran_TemplatesTabControl.SelectTab(3);
+                        await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
 
-                    await System.Threading.Tasks.Task.Run(() => Thread.Sleep(50));
+                        loading.Show(false, TxTabPage);
 
-                    loading.Show(false, TxTabPage);
+                        if (TxUI != null)
+                            TxUI.Dispose();
+                        TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
+                        TxTabPage.Controls.Add(TxUI);
+                        break;
+                }
 
-                    if (TxUI != null)
-                        TxUI.Dispose();
-                    TxUI = new TxControls(log.ToTxTemplate(), UiEnum.Template);
-                    TxTabPage.Controls.Add(TxUI);
-                    break;
-            }
-
-            loading.Close();
-            MainFormActivate(null, null);
+                loading.Close();
+                MainFormActivate(null, null);
+            //});            
         }
 
         public static void UpdateTicketCountLabel(bool ignoreLabelVisibility = false)
@@ -683,6 +728,7 @@ namespace appCore
             toolTip.SetToolTip(SiteDetailsPictureBox, "Site Finder");
             toolTip.SetToolTip(CalendarPictureBox, "Shifts Calendar");
             toolTip.SetToolTip(QuestionMarkPictureBox, "Tips of the Day");
+            toolTip.SetToolTip(NotificationsPictureBox, "Notifications Center");
 
             // Create the ToolTip and associate with the Form container.
             ToolTip toolTip2 = new ToolTip();
@@ -996,21 +1042,15 @@ namespace appCore
 
             if (Convert.ToInt32(e.KeyChar) == 13)
             {
-                if (textBox13.Text.Length > 0)
+                errorProvider.SetError(textBox13, string.Empty);
+                try
                 {
-                    string CompINC_CRQ = Tools.CompleteINC_CRQ_TAS(textBox13.Text, "INC");
-                    if (CompINC_CRQ != "error")
-                        textBox13.Text = CompINC_CRQ;
-                    else
-                    {
-                        LoadingPanel load = new LoadingPanel();
-                        load.Show(false, this);
-
-                        FlexibleMessageBox.Show("INC number must only contain digits!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        load.Close();
-                        return;
-                    }
+                    textBox13.Text = Tools.CompleteRemedyReference(textBox13.Text, "INC/CRQ");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(textBox13, ex.Message);
+                    return;
                 }
             }
         }
@@ -1162,19 +1202,9 @@ namespace appCore
 
         public static void openSettings(Control callerControl, bool fromTrayIcon = false)
         {
-            LoadingPanel load = null;
-            if (!fromTrayIcon)
-            {
-                load = new LoadingPanel();
-                load.Show(false, callerControl);
-            }
-
             Settings.UI.SettingsForm settings = new Settings.UI.SettingsForm();
             settings.StartPosition = FormStartPosition.CenterParent;
             settings.ShowDialog();
-
-            if (load != null)
-                load.Close();
         }
 
         public static void openAMTBrowser()
@@ -1373,6 +1403,7 @@ namespace appCore
                     pic.Image = Resources.radio_tower;
                     break;
                 case "CalendarPictureBox":
+                    pic.Image = Resources.calendar2;
                     break;
             }
         }
@@ -1396,6 +1427,7 @@ namespace appCore
                     pic.Image = Resources.radio_tower_hover;
                     break;
                 case "CalendarPictureBox":
+                    pic.Image = Resources.calendar2_hover;
                     break;
             }
         }
