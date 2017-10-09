@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace appCore.UI
@@ -17,7 +18,30 @@ namespace appCore.UI
 	/// </summary>
 	public class AMTTextBox : TextBox
 	{
-		protected override void OnKeyDown(KeyEventArgs e) {
+        bool errorIssued;
+        public bool ErrorIssued
+        {
+            get
+            {
+                return errorIssued;
+            }
+            set
+            {
+                errorIssued = value;
+                Refresh();
+            }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if(ErrorIssued)
+            {
+                e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(0, 0, Width - 1, Height - 1));
+            }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e) {
 			// ReadOnly TextBox Ctrl+A Fix
 			if(ReadOnly) {
 				if(e.Control && e.KeyCode == Keys.A) {
