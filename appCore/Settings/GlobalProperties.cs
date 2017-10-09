@@ -44,15 +44,21 @@ namespace appCore.Settings
 		public static string OfficePath = string.Empty;
 		
 		static FileVersionInfo _assemblyFileVersionInfo;
-		public static FileVersionInfo AssemblyFileVersionInfo {
-			get {
-				if(_assemblyFileVersionInfo == null) {
+		public static FileVersionInfo AssemblyFileVersionInfo
+        {
+			get
+            {
+				if(_assemblyFileVersionInfo == null)
+                {
 					Assembly assembly = Assembly.GetExecutingAssembly();
 					_assemblyFileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 				}
 				return _assemblyFileVersionInfo;
 			}
-			private set {}
+			private set
+            {
+                _assemblyFileVersionInfo = value;
+            }
 		}
 
         static ShareAccess _shareHostAccess;
@@ -66,41 +72,50 @@ namespace appCore.Settings
             {
                 _shareHostAccess = value;
                 //if (UserFolder.FullName != null)
-                    MainForm.trayIcon.toggleShareAccess();
+                MainForm.trayIcon.toggleShareAccess();
             }
         }
 
         static bool _shareAccess = true;
-		public static bool shareAccess {
-			get {
+		public static bool shareAccess
+        {
+			get
+            {
 				return _shareAccess;
 			}
-			set {
+			set
+            {
 				_shareAccess = value;
 				//if(UserFolder.FullName != null)
 					MainForm.trayIcon.toggleShareAccess();
 			}
 		}
-		static bool _siteFinder_mainswitch = true;
-		public static bool siteFinder_mainswitch {
-			get {
-				return _siteFinder_mainswitch;
+
+		static bool siteFinderMainswitch = true;
+		public static bool SiteFinderMainswitch
+        {
+			get
+            {
+				return siteFinderMainswitch;
 			}
-			set {
-				if(_siteFinder_mainswitch == value)
+			set
+            {
+				if(siteFinderMainswitch == value)
 					return;
-				_siteFinder_mainswitch = value;
-				if (!_siteFinder_mainswitch) {
+				siteFinderMainswitch = value;
+				if (!siteFinderMainswitch)
+                {
 					MainForm.SiteDetailsPictureBox.Visible = false;
-					MainForm.TroubleshootUI.siteFinderSwitch("off");
-					MainForm.FailedCRQUI.siteFinderSwitch("off");
-					MainForm.UpdateUI.siteFinderSwitch("off");
+					MainForm.TroubleshootUI.SiteFinderSwitch("off");
+					MainForm.FailedCRQUI.SiteFinderSwitch("off");
+					MainForm.UpdateUI.SiteFinderSwitch("off");
 				}
-				else {
+				else
+                {
 					MainForm.SiteDetailsPictureBox.Visible = true;
-					MainForm.TroubleshootUI.siteFinderSwitch("on");
-					MainForm.FailedCRQUI.siteFinderSwitch("on");
-					MainForm.UpdateUI.siteFinderSwitch("on");
+					MainForm.TroubleshootUI.SiteFinderSwitch("on");
+					MainForm.FailedCRQUI.SiteFinderSwitch("on");
+					MainForm.UpdateUI.SiteFinderSwitch("on");
 				}
 			}
         }
@@ -159,9 +174,7 @@ namespace appCore.Settings
                     using (FileStream fileStream = new FileStream(Path.Combine(outputDir, file), FileMode.Create))
                     {
                         for (int i = 0; i < stream.Length; i++)
-                        {
                             fileStream.WriteByte((byte)stream.ReadByte());
-                        }
                         fileStream.Close();
                     }
                 }
@@ -208,20 +221,25 @@ namespace appCore.Settings
 		public static bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
 		{
 			bool networkAccess = false;
-			var networkAccessCheck = new Thread(() => {
-			                                    	try {
-			                                    		using(File.Create(Path.Combine(dirPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose)) { }
-			                                    		networkAccess = true;
-			                                    	}
-			                                    	catch {
-			                                    		if(throwIfFails)
-			                                    			throw;
-			                                    	}
-			                                    });
+			var networkAccessCheck = new Thread(() =>
+            {
+                try
+                {
+                    using (File.Create(Path.Combine(dirPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose)) { }
+                    networkAccess = true;
+                }
+                catch
+                {
+                    if (throwIfFails)
+                        throw;
+                }
+            });
 			networkAccessCheck.Name = "networkAccessCheck";
 			networkAccessCheck.Start();
-			if (!networkAccessCheck.Join(TimeSpan.FromSeconds(20))) {
-				try {
+			if (!networkAccessCheck.Join(TimeSpan.FromSeconds(20)))
+            {
+				try
+                {
 					networkAccessCheck.Abort();
 				}
 				catch(ThreadAbortException) { }
@@ -230,14 +248,16 @@ namespace appCore.Settings
 			return networkAccess;
 		}
 		
-		public static void resolveOfficePath() {
-			Thread thread = new Thread(() => {
-			                           	Type officeType = Type.GetTypeFromProgID("Excel.Application");
-			                           	dynamic xlApp = Activator.CreateInstance(officeType);
-			                           	xlApp.Visible = false;
-			                           	OfficePath = xlApp.Path;
-			                           	xlApp.Quit();
-			                           });
+		public static void ResolveOfficePath()
+        {
+			Thread thread = new Thread(() =>
+            {
+                Type officeType = Type.GetTypeFromProgID("Excel.Application");
+                dynamic xlApp = Activator.CreateInstance(officeType);
+                xlApp.Visible = false;
+                OfficePath = xlApp.Path;
+                xlApp.Quit();
+            });
 			thread.Name = "resolveOfficePath";
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
