@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,8 @@ namespace appCore.Toolbox.Notifications
         {
             get;
             private set;
-        } = Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + "\\notifications.bin";
+            //} = Settings.GlobalProperties.ExternalResourceFilesLocation.FullName + "\\notifications.bin";
+        } = Settings.GlobalProperties.AppDataRootDir + "\\NotificationsCenter.db";
 
         public static System.Drawing.Size GuiSize
         {
@@ -58,13 +60,17 @@ namespace appCore.Toolbox.Notifications
 
         public NotificationsCenter()
         {
+            Retry:
             try
             {
                 ReadNotificationsFile();
             }
             catch(Exception e)
             {
-                throw e;
+                if (e.Message.Contains("being used by another process"))
+                    goto Retry;
+                else
+                    throw e;
             }
 
             NewNotificationsListener.Elapsed += NewNotificationsListener_Elapsed;
@@ -119,11 +125,40 @@ namespace appCore.Toolbox.Notifications
 
         void ReadNotificationsFile()
         {
-            if(File.Exists(NotificationsFile))
+            if (File.Exists(NotificationsFile))
                 previousNotificationsFileMD5 = Tools.CalculateMD5Hash(new FileInfo(NotificationsFile));
-            
+
+            //string notificationsBlock = string.Empty;
+            //SQLiteConnection conn = null;
+
+            //if (!File.Exists(NotificationsFile))
+            //{
+            //    SQLiteConnection.CreateFile(NotificationsFile);
+
+            //    conn = new SQLiteConnection("Data Source=" + NotificationsFile + ";Version=3;");
+            //    conn.Open();
+            //    new SQLiteCommand("CREATE TABLE notifications (title TEXT, body TEXT, recurrent TEXT, recurrency INTEGER, recurrencyType TEXT)", conn).ExecuteNonQuery();
+            //}
+
+            //if(conn == null)
+            //{
+            //    conn = new SQLiteConnection("Data Source=" + NotificationsFile + ";Version=3;");
+            //    conn.Open();
+            //}
+
+            //string sql = "select * from notifications";
+            //SQLiteCommand command = new SQLiteCommand(sql, conn);
+            //SQLiteDataReader reader = command.ExecuteReader();
+            //while (reader.Read())
+            //    notificationsBlock += reader["title"] + "||" + reader["body"] + "||" + reader["recurrent"] + "||" + reader["recurrency"] + "||" + reader["recurrencyType"];
+
+            //conn.Close();
+
+            //if (File.Exists(NotificationsFile))
+            //    previousNotificationsFileMD5 = Tools.CalculateMD5Hash(new FileInfo(NotificationsFile));
+
             List<Notification> newNotifications = new List<Notification>();
-            
+
             BinaryReader br;
 
             try
@@ -139,10 +174,11 @@ namespace appCore.Toolbox.Notifications
             try
             {
                 notificationsBlock = br.ReadString();
+                notificationsBlock = notificationsBlock.Decrypt();
             }
             catch { }
             br.Close();
-            
+
             try
             {
                 var engine = new FileHelperEngine<Notification>();

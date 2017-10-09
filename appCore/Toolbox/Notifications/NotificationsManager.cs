@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Data.SQLite;
+using System.Data.SQLite.Linq;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -73,6 +75,8 @@ namespace appCore.Toolbox.Notifications
 
                         _notifications.Add(newNotification);
 
+                        //AddToDb(newNotification);
+
                         bt.Text = "Add";
                     }
                     break;
@@ -84,6 +88,9 @@ namespace appCore.Toolbox.Notifications
 
                         DialogResult ans = UI.FlexibleMessageBox.Show("Are you sure you want to remove the selected notification?" + Environment.NewLine + "This action can't be undone.", "Remove notification", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (ans == DialogResult.Yes)
+                        {
+
+                        }
                             _notifications.Remove(_notifications[listBox1.SelectedIndex]);
 
                         loading.Close();
@@ -171,27 +178,27 @@ namespace appCore.Toolbox.Notifications
             BinaryWriter bw;
 
             //open or create the file
-            try
-            {
-                bw = new BinaryWriter(new FileStream(NotificationsCenter.NotificationsFile, FileMode.OpenOrCreate));
+            //try
+            //{
+            //    bw = new BinaryWriter(new FileStream(NotificationsCenter.NotificationsFile, FileMode.OpenOrCreate));
 
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(e.Message + "\n Cannot open file.");
-                return;
-            }
+            //}
+            //catch (IOException e)
+            //{
+            //    Console.WriteLine(e.Message + "\n Cannot open file.");
+            //    return;
+            //}
 
-            try
-            {
-                bw.Write(notificationsBlock);
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(e.Message + "\n Cannot write to file.");
-                return;
-            }
-            bw.Close();
+            //try
+            //{
+            //    bw.Write(notificationsBlock.Encrypt());
+            //}
+            //catch (IOException e)
+            //{
+            //    Console.WriteLine(e.Message + "\n Cannot write to file.");
+            //    return;
+            //}
+            //bw.Close();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -236,6 +243,45 @@ namespace appCore.Toolbox.Notifications
                 }
             }
         }
+
+        void AddToDb(Notification newNotification)
+        {
+            SQLiteConnection conn = new SQLiteConnection("Data Source=" + NotificationsCenter.NotificationsFile + ";Version=3;");
+            conn.Open();
+
+            string sql = "insert into notifications (title, body, recurrent, recurrency, recurrencyType) values ";
+            sql += string.Format("('{0}', '{1}', '{2}', '{3}', '{4}')", newNotification.Title, newNotification.Body, newNotification.Recurrent.ToString(), newNotification.Recurrency, newNotification.Recurrent ? newNotification.Recurrency_Type.ToString() : string.Empty);
+            SQLiteCommand command = new SQLiteCommand(sql, conn);
+            command.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        //void ModifyOnDb(Notification newNotification)
+        //{
+        //    SQLiteConnection conn = new SQLiteConnection("Data Source=" + NotificationsCenter.NotificationsFile + ";Version=3;");
+        //    conn.Open();
+
+        //    string sql = "insert into notifications (title, body, recurrent, recurrency, recurrencyType) values ";
+        //    sql += string.Format("('{0}', '{1}', '{2}', '{3}', '{4}')", newNotification.Title, newNotification.Body, newNotification.Recurrent.ToString(), newNotification.Recurrency, newNotification.Recurrent ? newNotification.Recurrency_Type.ToString() : string.Empty);
+        //    SQLiteCommand command = new SQLiteCommand(sql, conn);
+        //    command.ExecuteNonQuery();
+
+        //    conn.Close();
+        //}
+
+        //void RemoveFromDb(Notification newNotification)
+        //{
+        //    SQLiteConnection conn = new SQLiteConnection("Data Source=" + NotificationsCenter.NotificationsFile + ";Version=3;");
+        //    conn.Open();
+
+        //    string sql = "insert into notifications (title, body, recurrent, recurrency, recurrencyType) values ";
+        //    sql += string.Format("('{0}', '{1}', '{2}', '{3}', '{4}')", newNotification.Title, newNotification.Body, newNotification.Recurrent.ToString(), newNotification.Recurrency, newNotification.Recurrent ? newNotification.Recurrency_Type.ToString() : string.Empty);
+        //    SQLiteCommand command = new SQLiteCommand(sql, conn);
+        //    command.ExecuteNonQuery();
+
+        //    conn.Close();
+        //}
 
         /// <summary>
         /// Clean up any resources being used.
