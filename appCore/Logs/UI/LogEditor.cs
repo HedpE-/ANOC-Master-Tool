@@ -12,8 +12,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using appCore.Templates;
-using appCore.Templates.Types;
-using appCore.Templates.UI;
+using appCore.Templates.RAN.Types;
+using appCore.Templates.RAN.UI;
 
 namespace appCore.Logs.UI
 {
@@ -300,12 +300,6 @@ namespace appCore.Logs.UI
 					loading.Close();
 				}
 			}
-        }
-
-        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (dataGridView1.SelectedCells.Count == 1)
-                dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Selected = true;
         }
 
         void Form_Resize(object sender, EventArgs e)
