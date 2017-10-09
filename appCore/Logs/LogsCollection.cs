@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using appCore.Templates;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.UI;
 using System.Timers;
 

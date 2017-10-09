@@ -14,7 +14,7 @@ using System.Threading;
 using System.Windows.Forms;
 using appCore.Netcool;
 using appCore.SiteFinder.UI;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.UI;
 
 namespace appCore.Netcool.UI
