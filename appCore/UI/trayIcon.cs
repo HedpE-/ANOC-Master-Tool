@@ -200,28 +200,28 @@ namespace appCore.UI
 					if(FoundFiles.Length == 1)
 						VFcontactsDoc = FoundFiles[0];
 				
-				if(CurrentUser.UserName == "GONCARJ3") {
-					string errmsg = string.Empty;
-					if(!ProcessesDoc.Exists)
-						errmsg += "Processes Document";
-					if(!Databases.shiftsFile.Exists) {
-						if(!string.IsNullOrEmpty(errmsg))
-							errmsg += Environment.NewLine;
-						errmsg += "Shifts Document";
-					}
-					if(!TeamContactsDoc.Exists) {
-						if(!string.IsNullOrEmpty(errmsg))
-							errmsg += Environment.NewLine;
-						errmsg += "Team Contacts Document";
-					}
-					if(!VFcontactsDoc.Exists) {
-						if(!string.IsNullOrEmpty(errmsg))
-							errmsg += Environment.NewLine;
-						errmsg += "Useful Contacts Document";
-					}
-					if (!string.IsNullOrEmpty(errmsg))
-						showBalloon("The following documents were not found",errmsg);
-				}
+				//if(CurrentUser.UserName == "GONCARJ3") {
+				//	string errmsg = string.Empty;
+				//	if(!ProcessesDoc.Exists)
+				//		errmsg += "Processes Document";
+				//	if(!Databases.shiftsFile.Exists) {
+				//		if(!string.IsNullOrEmpty(errmsg))
+				//			errmsg += Environment.NewLine;
+				//		errmsg += "Shifts Document";
+				//	}
+				//	if(!TeamContactsDoc.Exists) {
+				//		if(!string.IsNullOrEmpty(errmsg))
+				//			errmsg += Environment.NewLine;
+				//		errmsg += "Team Contacts Document";
+				//	}
+				//	if(!VFcontactsDoc.Exists) {
+				//		if(!string.IsNullOrEmpty(errmsg))
+				//			errmsg += Environment.NewLine;
+				//		errmsg += "Useful Contacts Document";
+				//	}
+				//	if (!string.IsNullOrEmpty(errmsg))
+				//		showBalloon("The following documents were not found",errmsg);
+				//}
 			}
 			else {
 //				FileInfo[] shiftFiles = UserFolder.GetFiles("*shift*.xlsx");
@@ -236,7 +236,7 @@ namespace appCore.UI
 //					}
 //				}
 				
-				Documents.MenuItems[0].Enabled = Databases.shiftsFile.Exists;
+				Documents.MenuItems[0].Enabled = Databases.shiftsFile != null ? Databases.shiftsFile.Exists : false;
 				Documents.MenuItems[1].Enabled = false;
 				Documents.MenuItems[3].Enabled = false;
 				Documents.MenuItems[4].Enabled = false;
@@ -257,8 +257,9 @@ namespace appCore.UI
                     Text = "On-Call",
                     MaximizeBox = false,
                     FormBorderStyle = FormBorderStyle.FixedToolWindow,
-                    Size = new System.Drawing.Size(1310, 567)
-                };
+                    Size = new System.Drawing.Size(1310, 567),
+                    Icon = Resources.app_icon
+            };
                 form.Shown += OnCallFormShown;
                 AMTBrowser browser = new AMTBrowser()
                 {
@@ -281,12 +282,29 @@ namespace appCore.UI
             LoadingPanel loading = new LoadingPanel();
             loading.Show(true, (Control)sender);
 
-            await System.Threading.Tasks.Task.Run(() => Web.ConfluenceConnection.InitiateConnection());
-            ((AMTBrowser)((Control)sender).Controls["browser"]).ResumeSession("https://confluence.sp.vodafone.com/plugins/viewsource/viewpagesrc.action?pageId=103718076", Web.ConfluenceConnection.cookieContainer);
+            string result = await System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    Web.ConfluenceConnection.InitiateConnection();
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
+                return string.Empty;
+            });
+
+            if (string.IsNullOrEmpty(result))
+                ((AMTBrowser)((Control)sender).Controls["browser"]).ResumeSession("https://confluence.sp.vodafone.com/plugins/viewsource/viewpagesrc.action?pageId=103718076", Web.ConfluenceConnection.cookieContainer);
+            else
+            {
+                FlexibleMessageBox.Show(result);
+                ((Form)sender).Close();
+            }
 
             loading.Close();
-
-            ((Form)sender).Opacity = .95;
+            //((Form)sender).Opacity = .95;
         }
 
         //HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
