@@ -56,7 +56,7 @@ namespace appCore.Settings.UI
 			else
                 label6.Text = SettingsFile.OIUsername;
             
-			toggleSwitch1.Checked = GlobalProperties.siteFinder_mainswitch;
+			toggleSwitch1.Checked = GlobalProperties.SiteFinderMainswitch;
             toggleSwitch2.Checked = GlobalProperties.WeatherServiceEnabled;
             toggleSwitch3.Checked = Toolbox.TipOfTheDay.TipOfTheDayDialog.ShowTipsOnStartUp;
 
@@ -136,9 +136,9 @@ namespace appCore.Settings.UI
                 case "toggleSwitch1":
                     if(ts.Checked)
                     {
-                        bool avail = await Task.Run(() => OI.OiConnection.Available);
+                        bool avail = await OI.OiConnection.Available();
                         if (avail)
-                            GlobalProperties.siteFinder_mainswitch = true;
+                            GlobalProperties.SiteFinderMainswitch = true;
                         else
                         {
                             MainForm.trayIcon.showBalloon("OI unavailable", "Site Finder can't be enabled due to OI unavailability.");
@@ -146,7 +146,7 @@ namespace appCore.Settings.UI
                         }
                     }
                     else
-                        GlobalProperties.siteFinder_mainswitch = false;
+                        GlobalProperties.SiteFinderMainswitch = false;
                     break;
                 case "toggleSwitch2":
                     GlobalProperties.WeatherServiceEnabled = ts.Checked;
