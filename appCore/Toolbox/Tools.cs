@@ -148,14 +148,28 @@ namespace appCore.Toolbox
 			UserFolder.ClearTempFolder(); // delete Outlook email template file on userfolder
 		}
 
-		public static string CompleteINC_CRQ_TAS(string num, string prefix)
+		public static string CompleteRemedyReference(string num, string prefix)
 		{
-			if ((num.Length < 1) || (num.Length >= 15))
-				return num;
-			
-			num = num.Replace(prefix, string.Empty);
+            if (num.Length < 1)
+                throw new Exception(string.Format("The {0} number cannot be empty!", prefix));
+
+            string finalPrefix = string.Empty;
+            if (prefix.Contains("/"))
+            {
+                finalPrefix = num.Substring(0, 3).ToUpper();
+                string[] temp = prefix.Split('/');
+                if (!temp.Contains(finalPrefix))
+                    throw new Exception(string.Format("Please provide a correct {0} reference", prefix));
+            }
+            else
+                finalPrefix = prefix;
+
+            num = num.ToUpper().Replace(finalPrefix, string.Empty);
+
+            if (num.Length > 12)
+                throw new Exception(string.Format("The {0} length cannot be larger than 12 digits without the prefix!", finalPrefix));
 			if (!num.IsAllDigits())
-				throw new Exception(string.Format("The {0} number must only contain digits!", prefix));
+				throw new Exception(string.Format("The {0} number must only contain digits!", finalPrefix));
 			
 			if (num.Length < 13) {
 				int num2 = 15 - (num.Length + 3);
@@ -163,7 +177,7 @@ namespace appCore.Toolbox
 					num = "0" + num;
 				}
 			}
-			return (prefix + num);
+			return (finalPrefix + num);
         }
 
         public static Control GetControl(string controlName, Type parentType)
