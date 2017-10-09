@@ -298,7 +298,7 @@ namespace appCore
             // 
             this.CalendarPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CalendarPictureBox.BackColor = System.Drawing.Color.Transparent;
-            this.CalendarPictureBox.Image = global::appCore.UI.Resources.Business_Planner_icon;
+            this.CalendarPictureBox.Image = global::appCore.UI.Resources.calendar2;
             this.CalendarPictureBox.Location = new System.Drawing.Point(52, 95);
             this.CalendarPictureBox.Name = "CalendarPictureBox";
             this.CalendarPictureBox.Size = new System.Drawing.Size(40, 40);
@@ -733,6 +733,7 @@ namespace appCore
             // 
             // textBox14
             // 
+            this.textBox14.ErrorIssued = false;
             this.textBox14.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.textBox14.Location = new System.Drawing.Point(87, 59);
             this.textBox14.MaxLength = 9;
@@ -743,6 +744,7 @@ namespace appCore
             // 
             // textBox13
             // 
+            this.textBox13.ErrorIssued = false;
             this.textBox13.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.textBox13.Location = new System.Drawing.Point(87, 7);
             this.textBox13.MaxLength = 15;
