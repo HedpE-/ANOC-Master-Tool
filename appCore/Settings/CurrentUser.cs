@@ -152,17 +152,20 @@ namespace appCore.Settings
 
         static void ResolveUserPrincipals()
         {
+            UserPrincipal userPrincipal = null;
             if (string.IsNullOrEmpty(OtherUser))
             {
                 if (UserPrincipal.Current.DisplayName.Contains("Portugal"))
                 {
                     PT = new User(UserPrincipal.Current);
-                    UK = new User(GetUser(UserPrincipal.Current.GivenName, UserPrincipal.Current.Surname, "UK"));
+                    userPrincipal = GetUser(UserPrincipal.Current.GivenName, UserPrincipal.Current.Surname, "UK");
+                    UK = userPrincipal == null ? null : new User(userPrincipal);
                 }
                 else
                 {
                     UK = new User(UserPrincipal.Current);
-                    PT = new User(GetUser(UserPrincipal.Current.GivenName, UserPrincipal.Current.Surname, "PT"));
+                    userPrincipal = GetUser(UserPrincipal.Current.GivenName, UserPrincipal.Current.Surname, "PT");
+                    PT = userPrincipal == null ? null : new User(userPrincipal);
                 }
             }
             else
@@ -173,12 +176,14 @@ namespace appCore.Settings
                     if (temp.DisplayName.Contains("Portugal"))
                     {
                         PT = new User(temp);
-                        UK = new User(GetUser(temp.GivenName, temp.Surname, "UK"));
+                        userPrincipal = GetUser(temp.GivenName, temp.Surname, "UK");
+                        UK = userPrincipal == null ? null : new User(userPrincipal);
                     }
                     else
                     {
                         UK = new User(temp);
-                        PT = new User(GetUser(temp.GivenName, temp.Surname, "PT"));
+                        userPrincipal = GetUser(temp.GivenName, temp.Surname, "PT");
+                        PT = userPrincipal == null ? null : new User(userPrincipal);
                     }
                 }
             }
@@ -199,12 +204,6 @@ namespace appCore.Settings
                 {
                     foreach(UserPrincipal foundUser in results)
                     {
-                        //System.Collections.Generic.List<string> t = new System.Collections.Generic.List<string>();
-                        //foreach (var t2 in underlyingObject.Properties.PropertyNames)
-                        //    t.Add(t2.ToString() + " - " + underlyingObject.Properties[t2.ToString()].Value.ToString());
-
-                        //var temp = string.Join(Environment.NewLine, t);
-
                         if (foundUser.Description.Contains("ANOC", StringComparison.OrdinalIgnoreCase))
                             return foundUser;
 
