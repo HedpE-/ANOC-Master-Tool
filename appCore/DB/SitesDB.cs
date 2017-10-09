@@ -21,34 +21,52 @@ namespace appCore.DB
 	{
 		static List<Site> SitesCache = new List<Site>();
 		
-		public static List<Site> List {
-			get { return SitesCache; }
-		}
+		public static List<Site> List
+        {
+			get
+            {
+                return SitesCache;
+            }
+        }
 
-		public static void Add(Site site) {
+        public static int Count
+        {
+            get
+            {
+                return SitesCache.Count;
+            }
+        }
+
+        public static void Add(Site site)
+        {
 			SitesCache.Add(site);
 		}
 
-		public static void AddRange(IEnumerable<Site> sites) {
+		public static void AddRange(IEnumerable<Site> sites)
+        {
 			SitesCache.AddRange(sites);
 		}
 
-		public static void Remove(Site site) {
+		public static void Remove(Site site)
+        {
 			if(site.DbIndex > -1)
 				SitesCache.RemoveAt(site.DbIndex);
 		}
 		
-		public static void Remove(string siteId) {
+		public static void Remove(string siteId)
+        {
 			int index = GetSiteIndex(siteId);
 			if(index > -1)
 				SitesCache.RemoveAt(index);
-		}
-		
-		public static void Clear() {
-			SitesCache.Clear();
-		}
-		
-		public static int GetSiteIndex(string siteID) {
+        }
+
+        public static void Clear()
+        {
+            SitesCache.Clear();
+        }
+
+        public static int GetSiteIndex(string siteID)
+        {
 //			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 //			sw.Start();
 //			int index = SitesCache.FindIndex(s => s.Id == site.Id);
@@ -57,8 +75,10 @@ namespace appCore.DB
 //			sw.Reset();
 //			sw.Start();
 			int index = -1;
-			for(int c = 0; c < SitesCache.Count;c++) {
-				if(SitesCache[c].Id == siteID) {
+			for(int c = 0; c < SitesCache.Count;c++)
+            {
+				if(SitesCache[c].Id == siteID)
+                {
 					index = c;
 					break;
 				}
@@ -68,48 +88,44 @@ namespace appCore.DB
 			return index;
 		}
 		
-		public static int GetSiteIndexWithJVCO(string JVCO) {
-			int index = -1;
-			for(int c = 0; c < SitesCache.Count;c++) {
-				if(SitesCache[c].JVCO_Id == JVCO) {
-					index = c;
-					break;
-				}
-			}
-			return index;
+		public static int GetSiteIndexWithJVCO(string JVCO)
+        {
+			return SitesCache.FindIndex(s => s.JVCO_Id == JVCO);
 		}
 		
-		public static void UpdateSiteData(Site site) {
-			if(site != null) {
+		public static void UpdateSiteData(Site site)
+        {
+			if(site != null)
+            {
 				int index = site.DbIndex;
 				if(index > -1)
 					SitesCache[index] = site;
 			}
         }
 
-        public static Site getSite(string site, bool ignoreCache = false)
-        {
-            Site foundSite = null;
-            if (!ignoreCache)
-            {
-                int index = GetSiteIndex(site);
-                foundSite = index > -1 ? SitesCache[index] : null;
-            }
+        //public static Site getSite(string site, bool ignoreCache = false)
+        //{
+        //    Site foundSite = null;
+        //    if (!ignoreCache)
+        //    {
+        //        int index = GetSiteIndex(site);
+        //        foundSite = index > -1 ? SitesCache[index] : null;
+        //    }
 
-            if (foundSite == null)
-            {
-                List<string> sitesList = new List<string>();
-                sitesList.Add(site);
+        //    if (foundSite == null)
+        //    {
+        //        List<string> sitesList = new List<string>();
+        //        sitesList.Add(site);
 
-                List<Site> res = getSites(sitesList, true);
+        //        List<Site> res = getSites(sitesList, true);
 
-                return res.Count > 0 ? res[0] : new Site(site);
-            }
+        //        return res.Count > 0 ? res[0] : new Site(site);
+        //    }
 
-            return foundSite;
-        }
+        //    return foundSite;
+        //}
 
-        public async static Task<Site> getSiteAsync(string site, bool ignoreCache = false)
+        public async static Task<Site> GetSiteAsync(string site, bool ignoreCache = false)
 		{
 			Site foundSite = null;
 			if(!ignoreCache) {
@@ -121,7 +137,7 @@ namespace appCore.DB
 				List<string> sitesList = new List<string>();
 				sitesList.Add(site);
 				
-				List<Site> res = await getSitesAsync(sitesList, true);
+				List<Site> res = await GetSitesAsync(sitesList, true);
 				
 				return res.Count > 0 ? res[0] : new Site(site);
 			}
@@ -129,7 +145,7 @@ namespace appCore.DB
 			return foundSite;
 		}
 		
-		public async static Task<Site> getSiteWithJVCO(string JVCO, bool ignoreCache = false)
+		public async static Task<Site> GetSiteWithJVCO(string JVCO, bool ignoreCache = false)
 		{
 			Site foundSite = null;
 			if(!ignoreCache) {
@@ -165,74 +181,74 @@ namespace appCore.DB
 			return foundSite;
         }
 
-        public static List<Site> getSites(IEnumerable<string> sitesToFind, bool ignoreCache = false)
-        {
-            List<string> findSites = new List<string>();
-            findSites.AddRange(sitesToFind);
-            List<string> foundSites = new List<string>();
-            List<Site> sites = new List<Site>();
-            List<Site> totalFoundSites = new List<Site>();
+        //public static List<Site> getSites(IEnumerable<string> sitesToFind, bool ignoreCache = false)
+        //{
+        //    List<string> findSites = new List<string>();
+        //    findSites.AddRange(sitesToFind);
+        //    List<string> foundSites = new List<string>();
+        //    List<Site> sites = new List<Site>();
+        //    List<Site> totalFoundSites = new List<Site>();
 
-            if (!ignoreCache)
-            {
-                foreach (string site in findSites)
-                {
-                    Site foundSite = SitesCache.Find(s => s.Id == site);
-                    if (foundSite != null)
-                    {
-                        foundSites.Add(site);
-                        totalFoundSites.Add(foundSite);
-                    }
-                }
-                foreach (string site in foundSites)
-                    findSites.Remove(site);
-                foundSites = new List<string>();
-            }
+        //    if (!ignoreCache)
+        //    {
+        //        foreach (string site in findSites)
+        //        {
+        //            Site foundSite = SitesCache.Find(s => s.Id == site);
+        //            if (foundSite != null)
+        //            {
+        //                foundSites.Add(site);
+        //                totalFoundSites.Add(foundSite);
+        //            }
+        //        }
+        //        foreach (string site in foundSites)
+        //            findSites.Remove(site);
+        //        foundSites = new List<string>();
+        //    }
 
-            if (findSites.Count > 0)
-            {
-                try
-                {
-                    var engine = new FileHelperEngine<Site>();
-                    engine.BeforeReadRecord += (eng, e) => {
-                        if (!findSites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
-                            e.SkipThisRecord = true;
-                    };
-                    engine.AfterReadRecord += (eng, e) => {
-                        if (!findSites.Contains(e.Record.Id))
-                            e.SkipThisRecord = true;
-                        else
-                        {
-                            e.Record.SiteDataTimestamp = DateTime.Now;
-                            foundSites.Add(e.Record.Id);
-                        }
-                    };
-                    sites = engine.ReadFileAsList(Databases.all_sites.FullName);
-                }
-                catch (FileHelpersException e)
-                {
-                    string f = e.Message;
-                }
+        //    if (findSites.Count > 0)
+        //    {
+        //        try
+        //        {
+        //            var engine = new FileHelperEngine<Site>();
+        //            engine.BeforeReadRecord += (eng, e) => {
+        //                if (!findSites.Contains(e.RecordLine.Substring(0, e.RecordLine.IndexOf(','))))
+        //                    e.SkipThisRecord = true;
+        //            };
+        //            engine.AfterReadRecord += (eng, e) => {
+        //                if (!findSites.Contains(e.Record.Id))
+        //                    e.SkipThisRecord = true;
+        //                else
+        //                {
+        //                    e.Record.SiteDataTimestamp = DateTime.Now;
+        //                    foundSites.Add(e.Record.Id);
+        //                }
+        //            };
+        //            sites = engine.ReadFileAsList(Databases.all_sites.FullName);
+        //        }
+        //        catch (FileHelpersException e)
+        //        {
+        //            string f = e.Message;
+        //        }
 
-                if (foundSites.Count > 0)
-                    sites = getCells(foundSites, sites);
+        //        if (foundSites.Count > 0)
+        //            sites = getCells(foundSites, sites);
 
-                totalFoundSites.AddRange(sites);
+        //        totalFoundSites.AddRange(sites);
 
-                if (!ignoreCache)
-                {
-                    foreach (Site site in totalFoundSites)
-                    {
-                        if (site.DbIndex == -1)
-                            SitesCache.Add(site);
-                    }
-                }
-            }
+        //        if (!ignoreCache)
+        //        {
+        //            foreach (Site site in totalFoundSites)
+        //            {
+        //                if (site.DbIndex == -1)
+        //                    SitesCache.Add(site);
+        //            }
+        //        }
+        //    }
 
-            return totalFoundSites;
-        }
+        //    return totalFoundSites;
+        //}
 
-        public async static Task<List<Site>> getSitesAsync(IEnumerable<string> sitesToFind, bool ignoreCache = false)
+        public async static Task<List<Site>> GetSitesAsync(IEnumerable<string> sitesToFind, bool ignoreCache = false)
 		{
 			List<string> findSites = new List<string>();
 			findSites.AddRange(sitesToFind);
@@ -276,7 +292,7 @@ namespace appCore.DB
 				}
 				
 				if(foundSites.Count > 0)
-					sites = await getCellsAsync(foundSites, sites);
+					sites = await GetCellsAsync(foundSites, sites);
 				
 				totalFoundSites.AddRange(sites);
 				
@@ -291,7 +307,7 @@ namespace appCore.DB
 			return totalFoundSites;
 		}
 		
-		public async static Task<List<Site>> getSitesWithJVCO(List<string> JVCOsToFind, bool ignoreCache = false)
+		public async static Task<List<Site>> GetSitesWithJVCO(List<string> JVCOsToFind, bool ignoreCache = false)
 		{
 			List<string> JVCOs = JVCOsToFind;
 			List<string> foundJVCOs = new List<string>();
@@ -333,7 +349,7 @@ namespace appCore.DB
 				}
 				
 				if(foundJVCOs.Count > 0)
-					sites = await getCellsWithJVCO(foundJVCOs, sites);
+					sites = await GetCellsWithJVCO(foundJVCOs, sites);
 				
 				totalFoundSites.AddRange(sites);
 				
@@ -348,55 +364,63 @@ namespace appCore.DB
 			return totalFoundSites;
 		}
 
-		public static List<Cell> getCells(List<string> cellNames)
-		{
-			List<Cell> tempCells = null;
+		//public static List<Cell> getCells(List<string> cellNames)
+		//{
+		//	List<Cell> tempCells = null;
 			
-			try {
-				var engine = new FileHelperEngine<Cell>();
-				engine.AfterReadRecord +=  (eng, e) => {
-					if(!cellNames.Contains(e.Record.Name))
-						e.SkipThisRecord = true;
-				};
-				tempCells = engine.ReadFileAsList(Databases.all_cells.FullName);
-			}
-			catch(FileHelpersException e) {
-				string f = e.Message;
-			}
+		//	try {
+		//		var engine = new FileHelperEngine<Cell>();
+		//		engine.AfterReadRecord +=  (eng, e) => {
+		//			if(!cellNames.Contains(e.Record.Name))
+		//				e.SkipThisRecord = true;
+		//		};
+		//		tempCells = engine.ReadFileAsList(Databases.all_cells.FullName);
+		//	}
+		//	catch(FileHelpersException e) {
+		//		string f = e.Message;
+		//	}
 			
-			return tempCells;
-		}
+		//	return tempCells;
+		//}
 
-		public static List<Cell> getCells(List<string> sites, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
-		{
-			List<Cell> foundCells = new List<Cell>();
-			try {
-				var engine = new FileHelperEngine<Cell>();
-				engine.AfterReadRecord +=  (eng, e) => {
-					if(!bearers.HasFlag(e.Record.Bearer))
-						e.SkipThisRecord = true;
-					else {
-						if(!sites.Contains(e.Record.ParentSite))
-							e.SkipThisRecord = true;
-					}
-				};
-				foundCells = engine.ReadFileAsList(Databases.all_cells.FullName);
-			}
-			catch(FileHelpersException e) {
-				string f = e.Message;
-			}
-			return foundCells;
-		}
+		//public static List<Cell> getCells(List<string> sites, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
+		//{
+		//	List<Cell> foundCells = new List<Cell>();
+		//	try {
+		//		var engine = new FileHelperEngine<Cell>();
+		//		engine.AfterReadRecord +=  (eng, e) => {
+		//			if(!bearers.HasFlag(e.Record.Bearer))
+		//				e.SkipThisRecord = true;
+		//			else {
+		//				if(!sites.Contains(e.Record.ParentSite))
+		//					e.SkipThisRecord = true;
+		//			}
+		//		};
+		//		foundCells = engine.ReadFileAsList(Databases.all_cells.FullName);
+		//	}
+		//	catch(FileHelpersException e) {
+		//		string f = e.Message;
+		//	}
+		//	return foundCells;
+		//}
 
-		public static List<Cell> getCells(string site, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
-		{
-			List<string> sitesList = new List<string>();
-			sitesList.Add(site);
+		//public static List<Cell> getCells(string site, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
+		//{
+		//	List<string> sitesList = new List<string>();
+		//	sitesList.Add(site);
 			
-			return getCells(sitesList, bearers);
+		//	return getCells(sitesList, bearers);
+  //      }
+
+        public static async Task<List<Cell>> GetCellsAsync(string site, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
+        {
+            List<string> sitesList = new List<string>();
+            sitesList.Add(site);
+
+            return await GetCellsWithSitesAsync(sitesList, bearers);
         }
 
-        async static Task<List<Site>> getCellsAsync(ICollection<string> sites, List<Site> Sites)
+        public async static Task<List<Site>> GetCellsAsync(ICollection<string> sites, List<Site> Sites)
         {
             try
             {
@@ -421,32 +445,80 @@ namespace appCore.DB
             return Sites;
         }
 
-        static List<Site> getCells(ICollection<string> sites, List<Site> Sites)
+        public async static Task<List<Cell>> GetCellsWithSitesAsync(List<string> sites, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
         {
+            List<Cell> foundCells = new List<Cell>();
             try
             {
                 var engine = new FileHelperEngine<Cell>();
                 engine.AfterReadRecord += (eng, e) => {
-                    if (!sites.Contains(e.Record.ParentSite))
+                    if (!bearers.HasFlag(e.Record.Bearer))
                         e.SkipThisRecord = true;
                     else
                     {
-                        Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
-                        if (tempSite != null)
-                            tempSite.Cells.Add(e.Record);
+                        if (!sites.Contains(e.Record.ParentSite))
+                            e.SkipThisRecord = true;
                     }
                 };
-                engine.ReadFileAsList(Databases.all_cells.FullName);
+                foundCells = await Task.Run(() => engine.ReadFileAsList(Databases.all_cells.FullName));
             }
             catch (FileHelpersException e)
             {
                 string f = e.Message;
             }
-
-            return Sites;
+            return foundCells;
         }
 
-        async static Task<List<Site>> getCellsWithJVCO(ICollection<string> JVCOs, List<Site> Sites)
+        public async static Task<List<Cell>> GetCellsWithCellIDAsync(List<string> cells, Bearers bearers = (Bearers.GSM | Bearers.UMTS | Bearers.LTE))
+        {
+            List<Cell> foundCells = new List<Cell>();
+            try
+            {
+                var engine = new FileHelperEngine<Cell>();
+                engine.AfterReadRecord += (eng, e) => {
+                    if (!bearers.HasFlag(e.Record.Bearer))
+                        e.SkipThisRecord = true;
+                    else
+                    {
+                        if (!cells.Contains(e.Record.Name))
+                            e.SkipThisRecord = true;
+                    }
+                };
+                foundCells = await Task.Run(() => engine.ReadFileAsList(Databases.all_cells.FullName));
+            }
+            catch (FileHelpersException e)
+            {
+                string f = e.Message;
+            }
+            return foundCells;
+        }
+
+        //static List<Site> getCells(ICollection<string> sites, List<Site> Sites)
+        //{
+        //    try
+        //    {
+        //        var engine = new FileHelperEngine<Cell>();
+        //        engine.AfterReadRecord += (eng, e) => {
+        //            if (!sites.Contains(e.Record.ParentSite))
+        //                e.SkipThisRecord = true;
+        //            else
+        //            {
+        //                Site tempSite = Sites.Find(s => s.Id == e.Record.ParentSite);
+        //                if (tempSite != null)
+        //                    tempSite.Cells.Add(e.Record);
+        //            }
+        //        };
+        //        engine.ReadFileAsList(Databases.all_cells.FullName);
+        //    }
+        //    catch (FileHelpersException e)
+        //    {
+        //        string f = e.Message;
+        //    }
+
+        //    return Sites;
+        //}
+
+        async static Task<List<Site>> GetCellsWithJVCO(ICollection<string> JVCOs, List<Site> Sites)
         {
 			try {
 				var engine = new FileHelperEngine<Cell>();
@@ -468,44 +540,54 @@ namespace appCore.DB
 			return Sites;
 		}
 		
-		public static List<Site> queryAllSitesDB(string columnName, string pattern) {
+		public static async Task<List<Site>> QueryAllSitesDB(string columnName, string pattern)
+        {
 			List<Site> filtered = new List<Site>();
-			try {
+			try
+            {
 				var engine = new FileHelperEngine<Site>();
-				engine.AfterReadRecord +=  (eng, e) => {
-					switch(columnName) {
+				engine.AfterReadRecord +=  (eng, e) =>
+                {
+					switch(columnName)
+                    {
 						case "CELL_ID":
-							if(e.Record.Id != pattern)
-								e.SkipThisRecord = true;
-							else
-								e.Record.populateCells();
+                            if (e.Record.Id != pattern)
+                                e.SkipThisRecord = true;
+                            else
+                                Task.Run(() => e.Record.populateCells()).Wait();
 							break;
 					}
 				};
-				filtered = engine.ReadFileAsList(Databases.all_sites.FullName);
+                filtered = await Task.Run(() => engine.ReadFileAsList(Databases.all_sites.FullName));
 			}
-			catch(FileHelpersException e) {
+			catch(FileHelpersException e)
+            {
 				string f = e.Message;
 			}
 			
 			return filtered;
 		}
 		
-		public static List<Cell> queryAllCellsDB(string columnName, string pattern) {
+		public static async Task<List<Cell>> QueryAllCellsDB(string columnName, string pattern)
+        {
 			List<Cell> filtered = new List<Cell>();
-			try {
+			try
+            {
 				var engine = new FileHelperEngine<Cell>();
-				engine.AfterReadRecord +=  (eng, e) => {
-					switch(columnName) {
+				engine.AfterReadRecord +=  (eng, e) =>
+                {
+					switch(columnName)
+                    {
 						case "CELL_ID":
 							if(e.Record.Id != pattern)
 								e.SkipThisRecord = true;
 							break;
 					}
 				};
-				filtered = engine.ReadFileAsList(Databases.all_cells.FullName);
+                filtered = await Task.Run(() => engine.ReadFileAsList(Databases.all_cells.FullName));
 			}
-			catch(FileHelpersException e) {
+			catch(FileHelpersException e)
+            {
 				string f = e.Message;
 			}
 			return filtered;
