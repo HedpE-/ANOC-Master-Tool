@@ -1,8 +1,8 @@
 ﻿/*
  * Created by SharpDevelop.
  * User: goncarj3
- * Date: 29-07-2016
- * Time: 16:49
+ * Date: 22-09-2017
+ * Time: 10:49
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
@@ -10,7 +10,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using RestSharp;
 using appCore.UI;
@@ -51,6 +50,7 @@ namespace appCore.Web
 		static string Username = string.Empty;
 		static string Password = string.Empty;
 		static Uri PortalUri = new Uri("https://confluence.sp.vodafone.com");
+
 		public static bool LoggedOn
         {
 			get {
@@ -105,11 +105,20 @@ namespace appCore.Web
 		
 		static void Logon()
 		{
-            Username = Settings.CurrentUser.VodafoneCountry.Contains("Portugal") ? Settings.CurrentUser.Email : string.Empty;
+            //Username = Settings.CurrentUser.VodafoneCountry.Contains("Portugal") ? Settings.CurrentUser.Email : string.Empty;
             if(string.IsNullOrEmpty(Password))
-                Password = RequestConfluenceCredentials();
+            {
+                try
+                {
+                    RequestConfluenceCredentials();
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
 
-		Retry:
+            Retry:
 			cookieContainer = new CookieContainer();
 			client.CookieContainer = cookieContainer;
 			client.BaseUrl = PortalUri;
@@ -129,10 +138,17 @@ namespace appCore.Web
 
             if (response.Headers.Any(h => h.Value.ToString() == "AUTHENTICATED_FAILED"))
             {
-				DialogResult res = FlexibleMessageBox.Show("Login failed with current credentials, do you want to change?", "Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
+				DialogResult res = FlexibleMessageBox.Show("Login failed, do you want to try again?", "Login Failed",MessageBoxButtons.YesNo,MessageBoxIcon.Error);
 				if(res == DialogResult.Yes)
                 {
-					Password = RequestConfluenceCredentials();
+                    try
+                    {
+                        RequestConfluenceCredentials();
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
 					goto Retry;
 				}
 			}
@@ -153,26 +169,47 @@ namespace appCore.Web
 			return response.StatusCode;
 		}
 		
-		static string RequestConfluenceCredentials() {
+		static void RequestConfluenceCredentials()
+        {
 			AuthForm auth = new AuthForm("Confluence");
-            auth.Username = Username;
+            //auth.Username = Username;
 			auth.StartPosition = FormStartPosition.CenterParent;
-			auth.ShowDialog();
 
-            return auth.Password;
+            DialogResult ans = auth.ShowDialog();
+
+            if (ans == DialogResult.OK)
+            {
+                Username = auth.Username;
+                Password = auth.Password;
+            }
+            else
+                throw new Exception("Login cancelled");
 		}
 		
-		public static bool InitiateConnection() {
+		public static void InitiateConnection() {
 			// Instantiate RestSharp client
 			
 			client = new RestClient();
 
-            // Check server availability			
-			if(Available)
+            // Check server availability
+            bool available = Available;
+			if(available)
+            {
 				// Check Login state
 				if(!LoggedOn)
-					Logon();
-			return Available;
+                {
+                    try
+                    {
+                        Logon();
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                }
+            }
+            else
+                throw new Exception("Confluence unavailable");
 		}
 		
 		/// <summary>
@@ -180,8 +217,15 @@ namespace appCore.Web
 		/// </summary>
 		public static string requestHtmlSource(string dataToRequest)
 		{
-			InitiateConnection();
-			if(LoggedOn) {
+            try
+            {
+                InitiateConnection();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            if (LoggedOn) {
 				client.BaseUrl = PortalUri;
 				client.CookieContainer = cookieContainer;
 				client.Proxy = Proxy;
@@ -200,7 +244,14 @@ namespace appCore.Web
         /// </summary>
         public static byte[] requestImage(string dataToRequest)
         {
-            InitiateConnection();
+            try
+            {
+                InitiateConnection();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
             if (LoggedOn)
             {
                 client.BaseUrl = PortalUri;
