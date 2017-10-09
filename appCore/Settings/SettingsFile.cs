@@ -38,15 +38,6 @@ namespace appCore.Settings
 			private set {}
 		}
 
-        //public static DirectoryInfo UserFolderPath {
-        //	get {
-        //		return new DirectoryInfo(SettingsFileHandler("UserFolderPath"));
-        //	}
-        //	set {
-        //		SettingsFileHandler("UserFolderPath", value.FullName);
-        //	}
-        //}
-
         public static DirectoryInfo UserFolderPath
         {
             get
@@ -60,38 +51,50 @@ namespace appCore.Settings
             }
         }
 
-        public static string BackgroundImage {
-			get {
+        public static string BackgroundImage
+        {
+			get
+            {
 				return SettingsFileHandler("BackgroundImage");
 			}
-			set {
+			set
+            {
 				SettingsFileHandler("BackgroundImage", value);
 			}
 		}
 		
-		public static string LastRunVersion {
-			get {
+		public static string LastRunVersion
+        {
+			get
+            {
 				return SettingsFileHandler("LastRunVersion");
 			}
-			set {
+			set
+            {
 				SettingsFileHandler("LastRunVersion", value);
 			}
 		}
 		
-		public static string OIUsername {
-			get {
+		public static string OIUsername
+        {
+			get
+            {
 				return SettingsFileHandler("OIUsername");
 			}
-			set {
+			set
+            {
 				SettingsFileHandler("OIUsername", value);
 			}
 		}
 		
-		public static string OIPassword {
-			get {
+		public static string OIPassword
+        {
+			get
+            {
 				return SettingsFileHandler("OIPassword");
 			}
-			set {
+			set
+            {
 				SettingsFileHandler("OIPassword", value);
 			}
         }
@@ -196,7 +199,7 @@ namespace appCore.Settings
                     elementsByTagName[0].ParentNode.RemoveChild(elementsByTagName[0]);
             }
 
-                elementsByTagName = document.GetElementsByTagName("StartCount");
+            elementsByTagName = document.GetElementsByTagName("StartCount");
 			if (elementsByTagName.Count > 0)
 				elementsByTagName[0].ParentNode.RemoveChild(elementsByTagName[0]);
 
@@ -207,6 +210,21 @@ namespace appCore.Settings
                 {
                     if (string.IsNullOrEmpty(node.InnerText))
                         node.ParentNode.RemoveChild(node);
+                    else
+                    {
+                        if(node.Name == "OIPassword")
+                        {
+                            string pass = string.Empty;
+                            try
+                            {
+                                pass = node.InnerText.DecryptText();
+                                string encPass = pass.Encrypt();
+                                string decPass = encPass.Decrypt();
+                                node.InnerText = encPass;
+                            }
+                            catch { }
+                        }
+                    }
                 }
             }
 
