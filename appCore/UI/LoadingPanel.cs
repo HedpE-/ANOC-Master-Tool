@@ -22,18 +22,17 @@ namespace appCore.UI
 	{
         //Panel innerPanel;
 
-        //PictureBox loadingBox;
+        Bitmap BackgroundBitmap;
+
         CircularProgressBar.CircularProgressBar loadingBox;
 
         Control ParentControl;
-
-        static System.Windows.Forms.Timer tOut = new System.Windows.Forms.Timer();
 
         public double Opacity
 		{
             get;
             set;
-        } = 0.8;
+        } = 0.6;
 
         public bool IsVisible
         {
@@ -105,13 +104,6 @@ namespace appCore.UI
             }
         }
 
-        public LoadingPanel()
-        {
-            tOut.Enabled = false;
-            tOut.Interval = 25;
-            tOut.Tick += FadeOutTimerTick;
-        }
-
         /// <summary>
         /// Show LoadingPanel with both Threaded and Non Threaded instructions.
         /// For Threaded or Non Threaded action only, pass the other action argument as null
@@ -120,6 +112,8 @@ namespace appCore.UI
         /// <param name="parentControl"></param>
         public void Show(bool showLoading, Control parentControl)
         {
+            ShowLoadingSpinner = showLoading;
+
             if (parentControl.Parent != null)
             {
                 if (parentControl.Parent.Controls.OfType<LoadingPanel>().Any())
@@ -132,16 +126,14 @@ namespace appCore.UI
             }
 
             ParentControl = parentControl;
-            
-			darkenBackgroundForm(showLoading);
+
+            darkenBackgroundForm(showLoading);
         }
 
-        public void Close()
+        public async System.Threading.Tasks.Task Close()
         {
             if (Parent != null)
             {
-                //FadeOut();
-
                 Parent.Controls.Remove(this);
                 Dispose();
             }
@@ -150,38 +142,40 @@ namespace appCore.UI
         void darkenBackgroundForm(bool showLoading)
         {
             Form parentForm = ParentControl.FindForm();
-            //if(!(parentControl is Form) && !(parentControl is TabPage))
-            if (!ParentControl.HasChildren)
-            {
-                if (ParentControl is AMTMenuStrip)
+            if (!(ParentControl is Form) && !(ParentControl is TabPage))
+                if (!ParentControl.HasChildren)
                 {
-                    parentForm.Controls.Add(this);
-                    Location = parentForm.PointToClient(ParentControl.Parent.PointToScreen(ParentControl.Location));
-                }
-                else
-                {
-                    ParentControl.Parent.Controls.Add(this);
-                    Location = ParentControl.Location;
-                }
-            }
-            else
-            {
-                if (ParentControl.InvokeRequired)
-                    ParentControl.Invoke((MethodInvoker)delegate
+                    if (ParentControl is AMTMenuStrip)
                     {
-                        ParentControl.Controls.Add(this);
-                    });
+                        parentForm.Controls.Add(this);
+                        Location = parentForm.PointToClient(ParentControl.Parent.PointToScreen(ParentControl.Location));
+                    }
+                    else
+                    {
+                        ParentControl.Parent.Controls.Add(this);
+                        Location = ParentControl.Location;
+                    }
+                }
                 else
-                    ParentControl.Controls.Add(this);
-                
-                Location = Point.Empty;
-            }
-            // take a screenshot of the form and darken it
-            Bitmap bmp;
+                {
+                    if (ParentControl.InvokeRequired)
+                        ParentControl.Invoke((MethodInvoker)delegate
+                        {
+                            ParentControl.Controls.Add(this);
+                        });
+                    else
+                        ParentControl.Controls.Add(this);
+
+                    Location = Point.Empty;
+                }
+            //take a screenshot of the form and darken it
             if (ParentControl is MainForm && parentForm.WindowState == FormWindowState.Minimized)
-                bmp = ((MainForm)parentForm).ScreenshotBeforeMinimize;
+                BackgroundBitmap = ((MainForm)parentForm).ScreenshotBeforeMinimize;
             else
-                bmp = new Bitmap(ParentControl.ClientRectangle.Width, ParentControl.ClientRectangle.Height);
+                BackgroundBitmap = new Bitmap(ParentControl.ClientRectangle.Width, ParentControl.ClientRectangle.Height);
+
+            Bitmap bmp = BackgroundBitmap;
+
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.CompositingMode = CompositingMode.SourceOver;
@@ -323,21 +317,6 @@ namespace appCore.UI
             }
 
             return 0;
-        }
-
-        void FadeOutTimerTick(object sender, EventArgs e)
-        {
-            if (this.Opacity > 0)
-                this.Opacity -= 0.075;
-            else
-                tOut.Enabled = false;
-        }
-
-        void FadeOut()
-        {
-            tOut.Enabled = true;
-
-            //while (tOut.Enabled) { }
         }
     }
 }
