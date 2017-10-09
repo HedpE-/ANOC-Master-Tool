@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace appCore.Templates.Types
+namespace appCore.Templates.RAN.Types
 {
 	/// <summary>
 	/// Description of Update.
@@ -31,7 +31,8 @@ namespace appCore.Templates.Types
 		public Site Site {
 			get {
 				if(site == null)
-					site = DB.SitesDB.getSiteAsync(SiteId).GetAwaiter().GetResult();
+                    site = System.Threading.Tasks.Task.Run(function:() => DB.SitesDB.GetSiteAsync(SiteId)).Result;
+                //site = DB.SitesDB.getSiteAsync(SiteId).GetAwaiter().GetResult();
 				return site;
 			}
 		}

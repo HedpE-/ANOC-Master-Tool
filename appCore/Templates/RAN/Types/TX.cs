@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace appCore.Templates.Types
+namespace appCore.Templates.RAN.Types
 {
 	/// <summary>
 	/// Description of TX.

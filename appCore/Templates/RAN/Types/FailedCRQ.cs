@@ -8,10 +8,11 @@
  */
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using appCore.Toolbox;
 
-namespace appCore.Templates.Types
+namespace appCore.Templates.RAN.Types
 {
 	/// <summary>
 	/// Description of FailedCRQ.
@@ -53,8 +54,8 @@ namespace appCore.Templates.Types
 		Site site;
 		public Site Site {
 			get {
-				if(site == null)
-					site = DB.SitesDB.getSite(SiteId);
+                if (site == null)
+                    site = Task.Run(() => DB.SitesDB.GetSiteAsync(SiteId)).Result;
 				return site;
 			}
 		}

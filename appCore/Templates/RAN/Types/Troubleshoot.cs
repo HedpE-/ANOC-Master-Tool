@@ -11,8 +11,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace appCore.Templates.Types
+namespace appCore.Templates.RAN.Types
 {
 	/// <summary>
 	/// Description of Troubleshoot.
@@ -65,7 +66,7 @@ namespace appCore.Templates.Types
 		public Site Site {
 			get {
 				if(site == null)
-					site = DB.SitesDB.getSite(SiteId);
+					site = Task.Run(() => DB.SitesDB.GetSiteAsync(SiteId)).Result;
 				return site;
 			}
 		}

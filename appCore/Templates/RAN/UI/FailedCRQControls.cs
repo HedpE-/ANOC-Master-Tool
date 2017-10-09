@@ -13,15 +13,15 @@ using System.Windows.Forms;
 using appCore.Settings;
 using appCore.SiteFinder;
 using appCore.SiteFinder.UI;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.UI;
 
-namespace appCore.Templates.UI
+namespace appCore.Templates.RAN.UI
 {
 	/// <summary>
 	/// Description of FailedCRQControls.
 	/// </summary>
-	public class FailedCRQControls : Panel
+	public class FailedCRQControls : Templates.UI.TemplateControlsBase
 	{
 		public GroupBox FEBookedInGroupBox = new GroupBox();
 		public CheckBox FEBookedIn_CalledANOCCheckBox = new CheckBox();
@@ -61,55 +61,63 @@ namespace appCore.Templates.UI
 		Label SiteIdLabel = new Label();
 		Label PriorityLabel = new Label();
 		Label RegionLabel = new Label();
+        
+        //ErrorProviderFixed errorProvider = new ErrorProviderFixed();
+
+        //public AMTMenuStrip MainMenu = new AMTMenuStrip();
+		//ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		
-		public AMTMenuStrip MainMenu = new AMTMenuStrip();
-		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
+		//public static siteDetails SiteDetailsUI;
 		
-		public static siteDetails SiteDetailsUI;
+		//public Site currentSite { get; set; }
+		//FailedCRQ currentTemplate;
+		//FailedCRQ previousTemplate = new FailedCRQ();
 		
-		public Site currentSite { get; set; }
-		FailedCRQ currentTemplate;
-		FailedCRQ prevTemp = new FailedCRQ();
+		//int paddingLeftRight = 1;
+		//public int PaddingLeftRight {
+		//	get { return paddingLeftRight; }
+		//	set {
+		//		paddingLeftRight = value;
+		//		DynamicControlsSizesLocations();
+		//	}
+		//}
 		
-		int paddingLeftRight = 1;
-		public int PaddingLeftRight {
-			get { return paddingLeftRight; }
-			set {
-				paddingLeftRight = value;
-				DynamicControlsSizesLocations();
-			}
-		}
+		//int paddingTopBottom = 1;
+		//public int PaddingTopBottom {
+		//	get { return paddingTopBottom; }
+		//	set {
+		//		paddingTopBottom = value;
+		//		DynamicControlsSizesLocations();
+		//	}
+		//}
 		
-		int paddingTopBottom = 1;
-		public int PaddingTopBottom {
-			get { return paddingTopBottom; }
-			set {
-				paddingTopBottom = value;
-				DynamicControlsSizesLocations();
-			}
-		}
+		//bool toggle;
+		//public bool ToggledState {
+		//	get {
+		//		return toggle;
+		//	}
+		//	set {
+		//		if(value != toggle){
+		//			toggle = value;
+		//		}
+		//	}
+		//}
 		
-		bool toggle;
-		public bool ToggledState {
-			get {
-				return toggle;
-			}
-			set {
-				if(value != toggle){
-					toggle = value;
-				}
-			}
-		}
-		
-		UiEnum _uiMode;
-		UiEnum UiMode {
-			get { return _uiMode; }
-			set {
+		//UiEnum _uiMode;
+		protected override UiEnum UiMode
+        {
+			get
+            {
+                return _uiMode;
+            }
+			set
+            {
 				_uiMode = value;
-				if(value == UiEnum.Log) {
+				if(value == UiEnum.Log)
+                {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
@@ -131,9 +139,20 @@ namespace appCore.Templates.UI
 					                                         	generateTemplateToolStripMenuItem,
 					                                         	copyToNewTemplateToolStripMenuItem});
 				}
-				else {
+				else
+                {
 					InitializeComponent();
-					INCTextBox.KeyPress += INCTextBoxKeyPress;
+                    errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+                    errorProvider.SetIconPadding(INCTextBox, -17);
+                    errorProvider.SetIconPadding(CRQTextBox, -17);
+                    errorProvider.SetIconPadding(SiteIdTextBox, -17);
+                    errorProvider.SetIconPadding(FEBookedIn_NameTextBox, -17);
+                    errorProvider.SetIconPadding(FEBookedIn_PhoneNumberTextBox, -17);
+                    errorProvider.SetIconPadding(CRQContactsTextBox, -18);
+                    errorProvider.SetIconPadding(ContractorToFixFault_PhoneNumberTextBox, -17);
+                    errorProvider.SetIconPadding(ContractorToFixFault_NameTextBox, -17);
+                    errorProvider.SetIconPadding(ContractorToFixFault_WillReturnDateTimePicker, -45);
+                    INCTextBox.KeyPress += INCTextBoxKeyPress;
 					CRQTextBox.KeyPress += CRQTextBoxKeyPress;
 					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					CRQContactsTextBox.TextChanged += TextBoxesTextChanged_LargeTextButtons;
@@ -149,7 +168,7 @@ namespace appCore.Templates.UI
 					
 					MainMenu.InitializeTroubleshootMenu();
 					MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
-					MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+					MainMenu.RefreshButtonOnClickDelegate += RefreshOiData;
 					
 					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -167,8 +186,8 @@ namespace appCore.Templates.UI
 		public FailedCRQControls()
 		{
 			UiMode = UiEnum.Template;
-			if(GlobalProperties.siteFinder_mainswitch)
-				siteFinder_Toggle(false, false);
+			if(GlobalProperties.SiteFinderMainswitch)
+				SiteFinder_Toggle(false, false);
 		}
 		
 		public FailedCRQControls(FailedCRQ template, UiEnum uimode = UiEnum.Log)
@@ -176,145 +195,163 @@ namespace appCore.Templates.UI
 			UiMode = uimode;
 			currentTemplate = template;
 			
-			SiteIdTextBox.Text = currentTemplate.SiteId;
+			SiteIdTextBox.Text = ((FailedCRQ)currentTemplate).SiteId;
 			if(UiMode == UiEnum.Template)
 			    SiteIdTextBoxKeyPress(SiteIdTextBox, new KeyPressEventArgs((char)Keys.Enter));
 			else
-				currentSite = currentTemplate.Site;
-			INCTextBox.Text = currentTemplate.INC;
-			CRQTextBox.Text = currentTemplate.CRQ;
-			CRQContactsTextBox.Text = currentTemplate.CrqContacts;
-			WorkPerformedByFETextBox.Text = currentTemplate.WorkPerformed == "N/A" ? string.Empty : currentTemplate.WorkPerformed;
-			TroubleshootingDoneTextBox.Text = currentTemplate.TroubleshootingDone == "N/A" ? string.Empty : currentTemplate.TroubleshootingDone;
-			ObservationsTextBox.Text = currentTemplate.Observations;
-			FEBookedIn_CalledANOCCheckBox.Checked = currentTemplate.FECalledANOC;
-			FEBookedIn_PhoneNumberTextBox.Text = currentTemplate.FEBookedInTel;
-			FEBookedIn_NameTextBox.Text = currentTemplate.FEBookedInName;
-			ContractorToFixFault_WillReturnCheckBox.Checked = currentTemplate.ContractorToFixFault_Date != new DateTime(1753, 1, 1);
-			ContractorToFixFault_WillReturnDateTimePicker.Value = currentTemplate.ContractorToFixFault_Date;
-			ContractorToFixFault_PhoneNumberTextBox.Text = currentTemplate.ContractorToFixFault_Tel;
-			ContractorToFixFault_NameTextBox.Text = currentTemplate.ContractorToFixFault_Name == "None provided" ? string.Empty : currentTemplate.ContractorToFixFault_Name;
+				currentSite = ((FailedCRQ)currentTemplate).Site;
+			INCTextBox.Text = ((FailedCRQ)currentTemplate).INC;
+			CRQTextBox.Text = ((FailedCRQ)currentTemplate).CRQ;
+			CRQContactsTextBox.Text = ((FailedCRQ)currentTemplate).CrqContacts;
+			WorkPerformedByFETextBox.Text = ((FailedCRQ)currentTemplate).WorkPerformed == "N/A" ? string.Empty : ((FailedCRQ)currentTemplate).WorkPerformed;
+			TroubleshootingDoneTextBox.Text = ((FailedCRQ)currentTemplate).TroubleshootingDone == "N/A" ? string.Empty : ((FailedCRQ)currentTemplate).TroubleshootingDone;
+			ObservationsTextBox.Text = ((FailedCRQ)currentTemplate).Observations;
+			FEBookedIn_CalledANOCCheckBox.Checked = ((FailedCRQ)currentTemplate).FECalledANOC;
+			FEBookedIn_PhoneNumberTextBox.Text = ((FailedCRQ)currentTemplate).FEBookedInTel;
+			FEBookedIn_NameTextBox.Text = ((FailedCRQ)currentTemplate).FEBookedInName;
+			ContractorToFixFault_WillReturnCheckBox.Checked = ((FailedCRQ)currentTemplate).ContractorToFixFault_Date != new DateTime(1753, 1, 1);
+			ContractorToFixFault_WillReturnDateTimePicker.Value = ((FailedCRQ)currentTemplate).ContractorToFixFault_Date;
+			ContractorToFixFault_PhoneNumberTextBox.Text = ((FailedCRQ)currentTemplate).ContractorToFixFault_Tel;
+			ContractorToFixFault_NameTextBox.Text = ((FailedCRQ)currentTemplate).ContractorToFixFault_Name == "None provided" ? string.Empty : ((FailedCRQ)currentTemplate).ContractorToFixFault_Name;
 		}
 		
-		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == UiEnum.Template) {
-				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-				if (CompINC_CRQ != "error")
-					INCTextBox.Text = CompINC_CRQ;
-				else {
-					FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(CRQTextBox.Text, "CRQ");
-				if (CompINC_CRQ != "error")
-					CRQTextBox.Text = CompINC_CRQ;
-				else {
-					FlexibleMessageBox.Show("CRQ number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				string errmsg = "";
-				if (string.IsNullOrEmpty(INCTextBox.Text)) {
-					errmsg = "         - INC missing\n";
-				}
-				if (string.IsNullOrEmpty(CRQTextBox.Text)) {
-					errmsg += "         - CRQ missing\n";
-				}
+		protected override void GenerateTemplate(object sender, EventArgs e)
+        {
+			if(UiMode == UiEnum.Template)
+            {
+                errorProvider.SetError(INCTextBox, string.Empty);
+                errorProvider.SetError(CRQTextBox, string.Empty);
+                errorProvider.SetError(SiteIdTextBox, string.Empty);
+                errorProvider.SetError(FEBookedIn_NameTextBox, string.Empty);
+                errorProvider.SetError(FEBookedIn_PhoneNumberTextBox, string.Empty);
+                errorProvider.SetError(CRQContactsTextBox, string.Empty);
+                errorProvider.SetError(ContractorToFixFault_PhoneNumberTextBox, string.Empty);
+                errorProvider.SetError(ContractorToFixFault_NameTextBox, string.Empty);
+                errorProvider.SetError(ContractorToFixFault_WillReturnDateTimePicker, string.Empty);
+
+                bool error = false;
+
+                try
+                {
+                    INCTextBox.Text = Toolbox.Tools.CompleteRemedyReference(INCTextBox.Text, "INC");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(INCTextBox, ex.Message);
+                    error = true;
+                }
+                try
+                {
+                    CRQTextBox.Text = Toolbox.Tools.CompleteRemedyReference(CRQTextBox.Text, "CRQ");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(CRQTextBox, ex.Message);
+                    error = true;
+                }
 				if (string.IsNullOrEmpty(SiteIdTextBox.Text)) {
-					errmsg += "         - Site missing\n";
-				}
+                    errorProvider.SetError(SiteIdTextBox, "Site missing");
+                    error = true;
+                }
 				if (string.IsNullOrEmpty(FEBookedIn_NameTextBox.Text)) {
-					errmsg += "         - FE booked in name missing\n";
-				}
+                    errorProvider.SetError(FEBookedIn_NameTextBox, "FE booked in name missing");
+                    error = true;
+                }
 				if (string.IsNullOrEmpty(FEBookedIn_PhoneNumberTextBox.Text)) {
-					errmsg += "         - FE phone number missing\n";
-				}
+                    errorProvider.SetError(FEBookedIn_PhoneNumberTextBox, "FE phone number missing");
+                    error = true;
+                }
 				if (string.IsNullOrEmpty(CRQContactsTextBox.Text)) {
-					errmsg += "         - CRQ contacts missing\n";
-				}
+                    errorProvider.SetError(CRQContactsTextBox, "CRQ contacts missing");
+                    error = true;
+                }
 				if (!string.IsNullOrEmpty(ContractorToFixFault_NameTextBox.Text) || !string.IsNullOrEmpty(ContractorToFixFault_PhoneNumberTextBox.Text) || ContractorToFixFault_WillReturnCheckBox.Checked) {
 					if (string.IsNullOrEmpty(ContractorToFixFault_PhoneNumberTextBox.Text)) {
-						errmsg += "         - Contractor to fix the fault phone number missing\n";
-					}
+                        errorProvider.SetError(ContractorToFixFault_PhoneNumberTextBox, "Contractor to fix the fault phone number missing");
+                        error = true;
+                    }
 					if (string.IsNullOrEmpty(ContractorToFixFault_NameTextBox.Text)) {
-						errmsg += "         - Contractor to fix the fault name missing\n";
-					}
+                        errorProvider.SetError(ContractorToFixFault_NameTextBox, "Contractor to fix the fault name missing");
+                        error = true;
+                    }
 					if (ContractorToFixFault_WillReturnCheckBox.Checked && ContractorToFixFault_WillReturnDateTimePicker.Value < DateTime.Now) {
-						errmsg += "         - Invalid date: When will the contractor return to fix the fault\n";
-					}
-				}
-				if (!string.IsNullOrEmpty(errmsg)) {
-					FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				errmsg = "";
-				
-				// No changes since the last template warning
-				
-				// UNDONE: FailedCRQControls prevTemp check
-				
-//				if(currentTemplate.fullLog != prevTemp.fullLog) {
-//					if (INCTextBox.Text == prevTemp.INC) {
-//						errmsg = "         - INC\n";
-//					}
-//					if (SiteIdTextBox.Text == prevTemp.SiteId) {
-//						errmsg += "         - Site ID\n";
-//					}
-//					if (SiteOwnerComboBox.Text == "TF" && TefSiteTextBox.Text == prevTemp.TefSiteId) {
-//						errmsg += "         - TF Site ID\n";
-//					}
-//					if (AddressTextBox.Text == prevTemp.SiteAddress) {
-//						errmsg += "         - Site Address\n";
-//					}
-//					if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == prevTemp.CCTReference) {
-//						errmsg += "         - CCT reference\n";
-//					}
-//					if (OtherSitesImpactedCheckBox.Checked && OtherSitesImpactedCheckBox.Checked == prevTemp.OtherSitesImpacted){
-//						errmsg += "         - Other sites impacted\n";
-//					}
-//					if (COOSCheckBox.Checked) {
-//						if (COOS2GNumericUpDown.Value == prevTemp.COOS2G){
-//							errmsg += "         - 2G COOS count\n";
-//						}
-//						if (COOS3GNumericUpDown.Value == prevTemp.COOS3G) {
-//							errmsg += "         - 3G COOS count\n";
-//						}
-//						if (COOS4GNumericUpDown.Value == prevTemp.COOS4G) {
-//							errmsg += "         - 4G COOS count\n";
-//						}
-//						if(FullSiteOutageCheckBox.Checked && FullSiteOutageCheckBox.Checked == prevTemp.FullSiteOutage)
-//							errmsg += "         - Full Site Outage flag\n";
-//					}
-//					if (PerformanceIssueCheckBox.Checked && PerformanceIssueCheckBox.Checked == prevTemp.PerformanceIssue) {
-//						errmsg += "         - Performance issue\n";
-//					}
-//					if (IntermittentIssueCheckBox.Checked && IntermittentIssueCheckBox.Checked == prevTemp.IntermittentIssue) {
-//						errmsg += "         - Intermittent issue\n";
-//					}
-//					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == prevTemp.RelatedINC_CRQ) {
-//						errmsg += "         - Related INC/CRQ\n";
-//					}
-//					if (ActiveAlarmsTextBox.Text == prevTemp.ActiveAlarms) {
-//						errmsg += "         - Active Alarms\n";
-//					}
-//					if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == prevTemp.AlarmHistory) {
-//						errmsg += "         - Alarm History\n";
-//					}
-//					if (TroubleshootTextBox.Text == prevTemp.Troubleshoot) {
-//						errmsg += "         - Troubleshoot\n";
-//					}
-//					if (errmsg != "") {
-//						DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
-//						if (ans == DialogResult.No)
-//							return;
-//					}
-//				}
-			}
+                        errorProvider.SetError(ContractorToFixFault_WillReturnDateTimePicker, "Invalid date: When will the contractor return to fix the fault");
+                        error = true;
+                    }
+                }
+                if (error)
+                {
+                    MainForm.trayIcon.showBalloon("Template generation errors", "Place the mouse over the error icon(s) for more info");
+                    return;
+                }
+
+                // No changes since the last template warning
+
+                // UNDONE: FailedCRQControls previousTemplate check
+
+                //				if(currentTemplate.fullLog != previousTemplate.fullLog) {
+                //					if (INCTextBox.Text == previousTemplate.INC) {
+                //						errmsg = "         - INC\n";
+                //					}
+                //					if (SiteIdTextBox.Text == previousTemplate.SiteId) {
+                //						errmsg += "         - Site ID\n";
+                //					}
+                //					if (SiteOwnerComboBox.Text == "TF" && TefSiteTextBox.Text == previousTemplate.TefSiteId) {
+                //						errmsg += "         - TF Site ID\n";
+                //					}
+                //					if (AddressTextBox.Text == previousTemplate.SiteAddress) {
+                //						errmsg += "         - Site Address\n";
+                //					}
+                //					if (CCTRefTextBox.Text != "" && CCTRefTextBox.Text == previousTemplate.CCTReference) {
+                //						errmsg += "         - CCT reference\n";
+                //					}
+                //					if (OtherSitesImpactedCheckBox.Checked && OtherSitesImpactedCheckBox.Checked == previousTemplate.OtherSitesImpacted){
+                //						errmsg += "         - Other sites impacted\n";
+                //					}
+                //					if (COOSCheckBox.Checked) {
+                //						if (COOS2GNumericUpDown.Value == previousTemplate.COOS2G){
+                //							errmsg += "         - 2G COOS count\n";
+                //						}
+                //						if (COOS3GNumericUpDown.Value == previousTemplate.COOS3G) {
+                //							errmsg += "         - 3G COOS count\n";
+                //						}
+                //						if (COOS4GNumericUpDown.Value == previousTemplate.COOS4G) {
+                //							errmsg += "         - 4G COOS count\n";
+                //						}
+                //						if(FullSiteOutageCheckBox.Checked && FullSiteOutageCheckBox.Checked == previousTemplate.FullSiteOutage)
+                //							errmsg += "         - Full Site Outage flag\n";
+                //					}
+                //					if (PerformanceIssueCheckBox.Checked && PerformanceIssueCheckBox.Checked == previousTemplate.PerformanceIssue) {
+                //						errmsg += "         - Performance issue\n";
+                //					}
+                //					if (IntermittentIssueCheckBox.Checked && IntermittentIssueCheckBox.Checked == previousTemplate.IntermittentIssue) {
+                //						errmsg += "         - Intermittent issue\n";
+                //					}
+                //					if (RelatedINC_CRQTextBox.Text != "" && RelatedINC_CRQTextBox.Text == previousTemplate.RelatedINC_CRQ) {
+                //						errmsg += "         - Related INC/CRQ\n";
+                //					}
+                //					if (ActiveAlarmsTextBox.Text == previousTemplate.ActiveAlarms) {
+                //						errmsg += "         - Active Alarms\n";
+                //					}
+                //					if (AlarmHistoryTextBox.Text != "" && AlarmHistoryTextBox.Text == previousTemplate.AlarmHistory) {
+                //						errmsg += "         - Alarm History\n";
+                //					}
+                //					if (TroubleshootTextBox.Text == previousTemplate.Troubleshoot) {
+                //						errmsg += "         - Troubleshoot\n";
+                //					}
+                //					if (errmsg != "") {
+                //						DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+                //						if (ans == DialogResult.No)
+                //							return;
+                //					}
+                //				}
+            }
 			currentTemplate = new FailedCRQ(Controls);
 			
-			Toolbox.Tools.CreateMailItem("A-NOC-UK1stLineRANSL@internal.vodafone.com", string.Empty, currentTemplate.EmailSubject, currentTemplate.EmailBody, true);
+			Toolbox.Tools.CreateMailItem("A-NOC-UK1stLineRANSL@internal.vodafone.com", string.Empty, ((FailedCRQ)currentTemplate).EmailSubject, ((FailedCRQ)currentTemplate).EmailBody, true);
 			
 			if(UiMode == UiEnum.Template) {
-				prevTemp = currentTemplate;
+				previousTemplate = currentTemplate;
 				
 				MainForm.logFiles.HandleLog(currentTemplate);
 			}
@@ -350,7 +387,7 @@ namespace appCore.Templates.UI
 
                 tb.ReadOnly = true;
 
-                currentSite = await DB.SitesDB.getSiteAsync(tb.Text);
+                currentSite = await DB.SitesDB.GetSiteAsync(tb.Text);
 
                 SiteDetailsToolStripMenuItem.Enabled = currentSite.Exists;
 
@@ -360,7 +397,7 @@ namespace appCore.Templates.UI
                 if (currentSite.Exists)
                 {
                     await MainMenu.ShowLoading();
-                    await siteFinder_Toggle(true, true);
+                    SiteFinder_Toggle(true, true);
 
 				    PriorityTextBox.Text = currentSite.Priority;
 				    RegionTextBox.Text = currentSite.Region;
@@ -375,7 +412,7 @@ namespace appCore.Templates.UI
 				    PriorityTextBox.Text = string.Empty;
 				    SiteDetailsToolStripMenuItem.Enabled = false;
                 }
-                await siteFinder_Toggle(true, currentSite.Exists);
+                SiteFinder_Toggle(true, currentSite.Exists);
                 await MainMenu.siteFinder_Toggle(true, currentSite.Exists);
 
                 tb.ReadOnly = false;
@@ -386,10 +423,10 @@ namespace appCore.Templates.UI
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
 		{
-            if(GlobalProperties.siteFinder_mainswitch)
+            if(GlobalProperties.SiteFinderMainswitch)
             {
                 currentSite = null;
-                siteFinder_Toggle(false, false);
+                SiteFinder_Toggle(false, false);
 
                 SiteDetailsToolStripMenuItem.Enabled = false;
             }
@@ -399,7 +436,7 @@ namespace appCore.Templates.UI
             clearToolStripMenuItem.Enabled = !string.IsNullOrEmpty(SiteIdTextBox.Text);
 		}
 
-		async System.Threading.Tasks.Task siteFinder_Toggle(bool toggle, bool siteFound)
+        protected override void SiteFinder_Toggle(bool toggle, bool siteFound)
 		{
 			foreach (object ctrl in Controls) {
 				switch(ctrl.GetType().ToString())
@@ -444,64 +481,59 @@ namespace appCore.Templates.UI
 				}
 			}
 		}
-		
-		public void siteFinderSwitch(string toState) {
+
+        public override void SiteFinderSwitch(string toState) {
 			if (toState == "off") {
 				SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
-				siteFinder_Toggle(true,false);
+				SiteFinder_Toggle(true,false);
 			}
 			else
             {
                 SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
-                siteFinder_Toggle(false,false);
+                SiteFinder_Toggle(false,false);
 			}
 		}
 
-		void SiteDetailsButtonClick(object sender, EventArgs e)
-		{
-			if(SiteDetailsUI != null) {
-				SiteDetailsUI.Close();
-				SiteDetailsUI.Dispose();
-			}
-			SiteDetailsUI = new siteDetails(currentSite);
-			SiteDetailsUI.Show();
-		}
+		//void SiteDetailsButtonClick(object sender, EventArgs e)
+		//{
+		//	if(SiteDetailsUI != null) {
+		//		SiteDetailsUI.Close();
+		//		SiteDetailsUI.Dispose();
+		//	}
+		//	SiteDetailsUI = new siteDetails(currentSite);
+		//	SiteDetailsUI.Show();
+		//}
 
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
-				if (INCTextBox.Text.Length > 0) {
-					string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-					if (CompINC_CRQ != "error")
-						INCTextBox.Text = CompINC_CRQ;
-					else {
-//						Action action = new Action(delegate {
-						FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//						                           });
-//						Toolbox.Tools.darkenBackgroundForm(action,false,this);
-						return;
-					}
-				}
-			}
+            {
+                errorProvider.SetError(INCTextBox, string.Empty);
+                try
+                {
+                    INCTextBox.Text = Toolbox.Tools.CompleteRemedyReference(INCTextBox.Text, "INC");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(INCTextBox, ex.Message);
+                }
+            }
 		}
 
 		void CRQTextBoxKeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
-				if (CRQTextBox.Text.Length > 0) {
-					string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(CRQTextBox.Text, "CRQ");
-					if (CompINC_CRQ != "error") CRQTextBox.Text = CompINC_CRQ;
-					else {
-//						Action action = new Action(delegate {
-						FlexibleMessageBox.Show("CRQ number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//						                           });
-//						Toolbox.Tools.darkenBackgroundForm(action,false,this);
-						return;
-					}
-				}
-			}
+            {
+                errorProvider.SetError(CRQTextBox, string.Empty);
+                try
+                {
+                    CRQTextBox.Text = Toolbox.Tools.CompleteRemedyReference(CRQTextBox.Text, "INC");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(CRQTextBox, ex.Message);
+                }
+            }
 		}
 		
 		void ContractorToFixFault_WillReturnCheckBoxCheckedChanged(object sender, EventArgs e)
@@ -536,25 +568,24 @@ namespace appCore.Templates.UI
 		
 		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
 			Button btn = (Button)sender;
 			string lbl = string.Empty;
 			TextBoxBase tb = null;
 			switch(btn.Name) {
 				case "CRQContactsLargeTextButton":
-					tb = (TextBoxBase)CRQContactsTextBox;
+					tb = CRQContactsTextBox;
 					lbl = CRQContactsLabel.Text;
 					break;
 				case "WorkPerformedByFELargeTextButton":
-					tb = (TextBoxBase)WorkPerformedByFETextBox;
+					tb = WorkPerformedByFETextBox;
 					lbl = WorkPerformedByFELabel.Text;
 					break;
 				case "TroubleshootingDoneLargeTextButton":
-					tb = (TextBoxBase)TroubleshootingDoneTextBox;
+					tb = TroubleshootingDoneTextBox;
 					lbl = TroubleshootingDoneLabel.Text;
 					break;
 				case "ObservationsLargeTextButton":
-					tb = (TextBoxBase)ObservationsTextBox;
+					tb = ObservationsTextBox;
 					lbl = ObservationsLabel.Text;
 					break;
 			}
@@ -563,16 +594,14 @@ namespace appCore.Templates.UI
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
 		}
 		
-		void LoadTemplateFromLog(object sender, EventArgs e) {
-			var form = Application.OpenForms.OfType<MainForm>().First();
-			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
-		}
+		//void LoadTemplateFromLog(object sender, EventArgs e) {
+		//	var form = Application.OpenForms.OfType<MainForm>().First();
+		//	form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
+		//}
 
-		void ClearAllControls(object sender, EventArgs e)
+		protected override void ClearAllControls(object sender, EventArgs e)
 		{
 			SiteIdTextBox.Text = string.Empty;
 			INCTextBox.Text = string.Empty;
@@ -597,120 +626,120 @@ namespace appCore.Templates.UI
 			SiteIdTextBox.Focus();
 		}
 		
-		void LoadDisplayOiDataTable(object sender, EventArgs e) {
-//			if(e.Button == MouseButtons.Left) {
-			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
-			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
-			if(fc.Count > 0) {
-				fc[0].Close();
-				fc[0].Dispose();
-			}
+//		void LoadDisplayOiDataTable(object sender, EventArgs e) {
+////			if(e.Button == MouseButtons.Left) {
+//			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
+//			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
+//			if(fc.Count > 0) {
+//				fc[0].Close();
+//				fc[0].Dispose();
+//			}
 			
-			if(currentSite.Exists) {
-				var dt = new System.Data.DataTable();
-				switch(dataToShow) {
-					case "INCs":
-						if(currentSite.Incidents == null) {
-							currentSite.requestOIData("INC");
-							if(currentSite.Incidents != null) {
-								if(currentSite.Incidents.Count > 0) {
-									MainMenu.INCsButton.Enabled = true;
-									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
-									MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
-								}
-								else {
-									MainMenu.INCsButton.Enabled = false;
-									MainMenu.INCsButton.Text = "No INC history";
-								}
-							}
-							return;
-						}
-						break;
-					case "CRQs":
-						if(currentSite.Changes == null) {
-							currentSite.requestOIData("CRQ");
-							if(currentSite.Changes != null) {
-								if(currentSite.Changes.Count > 0) {
-									MainMenu.CRQsButton.Enabled = true;
-									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
-									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
-								}
-								else {
-									MainMenu.CRQsButton.Enabled = false;
-									MainMenu.CRQsButton.Text = "No CRQ history";
-								}
-							}
-							return;
-						}
-						break;
-					case "BookIns":
-						if(currentSite.Visits == null) {
-							currentSite.requestOIData("Bookins");
-							if(currentSite.Visits != null) {
-								if(currentSite.Visits.Count > 0) {
-									MainMenu.BookInsButton.Enabled = true;
-									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
-									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
-								}
-								else {
-									MainMenu.BookInsButton.Enabled = false;
-									MainMenu.BookInsButton.Text = "No Book In history";
-								}
-							}
-							return;
-						}
-						break;
-					case "ActiveAlarms":
-						if(currentSite.Alarms == null) {
-							currentSite.requestOIData("Alarms");
-							if(currentSite.Alarms != null) {
-								if(currentSite.Alarms.Count > 0) {
-									MainMenu.ActiveAlarmsButton.Enabled = true;
-									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
-									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
-								}
-								else {
-									MainMenu.ActiveAlarmsButton.Enabled = false;
-									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
-								}
-							}
-							return;
-						}
-						break;
-				}
+//			if(currentSite.Exists) {
+//				var dt = new System.Data.DataTable();
+//				switch(dataToShow) {
+//					case "INCs":
+//						if(currentSite.Incidents == null) {
+//							currentSite.requestOIData("INC");
+//							if(currentSite.Incidents != null) {
+//								if(currentSite.Incidents.Count > 0) {
+//									MainMenu.INCsButton.Enabled = true;
+//									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+//									MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
+//								}
+//								else {
+//									MainMenu.INCsButton.Enabled = false;
+//									MainMenu.INCsButton.Text = "No INC history";
+//								}
+//							}
+//							return;
+//						}
+//						break;
+//					case "CRQs":
+//						if(currentSite.Changes == null) {
+//							currentSite.requestOIData("CRQ");
+//							if(currentSite.Changes != null) {
+//								if(currentSite.Changes.Count > 0) {
+//									MainMenu.CRQsButton.Enabled = true;
+//									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+//									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
+//								}
+//								else {
+//									MainMenu.CRQsButton.Enabled = false;
+//									MainMenu.CRQsButton.Text = "No CRQ history";
+//								}
+//							}
+//							return;
+//						}
+//						break;
+//					case "BookIns":
+//						if(currentSite.Visits == null) {
+//							currentSite.requestOIData("Bookins");
+//							if(currentSite.Visits != null) {
+//								if(currentSite.Visits.Count > 0) {
+//									MainMenu.BookInsButton.Enabled = true;
+//									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+//									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
+//								}
+//								else {
+//									MainMenu.BookInsButton.Enabled = false;
+//									MainMenu.BookInsButton.Text = "No Book In history";
+//								}
+//							}
+//							return;
+//						}
+//						break;
+//					case "ActiveAlarms":
+//						if(currentSite.Alarms == null) {
+//							currentSite.requestOIData("Alarms");
+//							if(currentSite.Alarms != null) {
+//								if(currentSite.Alarms.Count > 0) {
+//									MainMenu.ActiveAlarmsButton.Enabled = true;
+//									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+//									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+//								}
+//								else {
+//									MainMenu.ActiveAlarmsButton.Enabled = false;
+//									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+//								}
+//							}
+//							return;
+//						}
+//						break;
+//				}
 				
-				OiSiteTablesForm OiTable = null;
-				switch(dataToShow) {
-					case "INCs":
-						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
-						break;
-					case "CRQs":
-						OiTable = new OiSiteTablesForm(currentSite.Changes, currentSite.Id, this);
-						break;
-					case "BookIns":
-						OiTable = new OiSiteTablesForm(currentSite.Visits, currentSite.Id, this);
-						break;
-					case "ActiveAlarms":
-						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
-						break;
-				}
-				OiTable.Show();
-			}
-		}
+//				OiSiteTablesForm OiTable = null;
+//				switch(dataToShow) {
+//					case "INCs":
+//						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
+//						break;
+//					case "CRQs":
+//						OiTable = new OiSiteTablesForm(currentSite.Changes, currentSite.Id, this);
+//						break;
+//					case "BookIns":
+//						OiTable = new OiSiteTablesForm(currentSite.Visits, currentSite.Id, this);
+//						break;
+//					case "ActiveAlarms":
+//						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
+//						break;
+//				}
+//				OiTable.Show();
+//			}
+//		}
 		
-		void refreshOiData(object sender, EventArgs e) {
-			currentSite.requestOIData("INCCRQBookinsAlarms");
-			MainMenu.siteFinder_Toggle(true);
-		}
+//		void refreshOiData(object sender, EventArgs e) {
+//			currentSite.requestOIData("INCCRQBookinsAlarms");
+//			MainMenu.siteFinder_Toggle(true);
+//		}
 		
-		void InitializeComponent()
+		protected override void InitializeComponent()
 		{
-			BackColor = SystemColors.Control;
-			Name = "Failed CRQ Template GUI";
+            BackColor = SystemColors.Control;
+            Name = "Failed CRQ Template GUI";
 			Size = new Size(519, 629);
 			Text = "Failed CRQ";
-			Controls.Add(MainMenu);
-			Controls.Add(INCLabel);
+            Controls.Add(MainMenu);
+            Controls.Add(INCLabel);
 			Controls.Add(INCTextBox);
 			Controls.Add(CRQLabel);
 			Controls.Add(CRQTextBox);
@@ -736,14 +765,14 @@ namespace appCore.Templates.UI
 			Controls.Add(ObservationsTextBox);
 			ContractorToFixFaultGroupBox.SuspendLayout();
 			FEBookedInGroupBox.SuspendLayout();
-			// 
-			// MainMenu
-			// 
-			MainMenu.Location = new Point(paddingLeftRight, 0);
-			// 
-			// SiteDetailsToolStripMenuItem
-			// 
-			SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
+            // 
+            // MainMenu
+            // 
+            MainMenu.Location = new Point(paddingLeftRight, 0);
+            // 
+            // SiteDetailsToolStripMenuItem
+            // 
+            SiteDetailsToolStripMenuItem.Name = "SiteDetailsToolStripMenuItem";
 			SiteDetailsToolStripMenuItem.Text = "Site Details";
 //			SiteDetailsToolStripMenuItem.Font = new Font("Arial Unicode MS", 8F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 			SiteDetailsToolStripMenuItem.Click += SiteDetailsButtonClick;
@@ -1106,11 +1135,12 @@ namespace appCore.Templates.UI
 			FEBookedInGroupBox.PerformLayout();
 			SuspendLayout();
 			ResumeLayout(false);
-			
-			DynamicControlsSizesLocations();
-		}
+
+            DynamicControlsSizesLocations();
+            //base.InitializeComponent();
+        }
 		
-		void DynamicControlsSizesLocations() {
+		protected override void DynamicControlsSizesLocations() {
 			INCLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
 			INCLabel.Size = new Size(50, 20);
 			

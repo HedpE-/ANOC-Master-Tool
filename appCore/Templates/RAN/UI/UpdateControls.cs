@@ -13,16 +13,16 @@ using System.Windows.Forms;
 using appCore.Settings;
 using appCore.SiteFinder;
 using appCore.SiteFinder.UI;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.UI;
 
-namespace appCore.Templates.UI
+namespace appCore.Templates.RAN.UI
 {
 	/// <summary>
 	/// Description of UpdateControls.
 	/// </summary>
-	public class UpdateControls : Panel
-	{
+	public class UpdateControls : Templates.UI.TemplateControlsBase
+    {
 		public Button NextActionsLargeTextButton = new Button();
 		public Button UpdateLargeTextButton = new Button();
 		Label NextActionsLabel = new Label();
@@ -39,76 +39,107 @@ namespace appCore.Templates.UI
 		public AMTTextBox PowerCompanyTextBox = new AMTTextBox();
 		public AMTRichTextBox NextActionsTextBox = new AMTRichTextBox();
 		public AMTRichTextBox UpdateTextBox = new AMTRichTextBox();
+
+  //      ErrorProviderFixed errorProvider = new ErrorProviderFixed();
+
+  //      public AMTMenuStrip MainMenu = new AMTMenuStrip();
+		//ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
 		
-		public AMTMenuStrip MainMenu = new AMTMenuStrip();
-		ToolStripMenuItem SiteDetailsToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
+		//public static siteDetails SiteDetailsUI;
 		
-		public static siteDetails SiteDetailsUI;
+		//public Site currentSite
+  //      {
+  //          get;
+  //          private set;
+  //      }
+		//Update currentTemplate;
+		//Update prevTemp = new Update();
 		
-		public Site currentSite { get; set; }
-		Update currentTemplate;
-		Update prevTemp = new Update();
+		//int paddingLeftRight = 1;
+		//public int PaddingLeftRight
+  //      {
+		//	get
+  //          {
+  //              return paddingLeftRight;
+  //          }
+		//	set
+  //          {
+		//		paddingLeftRight = value;
+		//		DynamicControlsSizesLocations();
+		//	}
+		//}
 		
-		int paddingLeftRight = 1;
-		public int PaddingLeftRight {
-			get { return paddingLeftRight; }
-			set {
-				paddingLeftRight = value;
-				DynamicControlsSizesLocations();
-			}
-		}
+		//int paddingTopBottom = 1;
+		//public int PaddingTopBottom
+  //      {
+		//	get
+  //          {
+  //              return paddingTopBottom;
+  //          }
+		//	set
+  //          {
+		//		paddingTopBottom = value;
+		//		DynamicControlsSizesLocations();
+		//	}
+		//}
 		
-		int paddingTopBottom = 1;
-		public int PaddingTopBottom {
-			get { return paddingTopBottom; }
-			set {
-				paddingTopBottom = value;
-				DynamicControlsSizesLocations();
-			}
-		}
+		//bool toggle;
+		//public bool ToggledState
+  //      {
+		//	get
+  //          {
+		//		return toggle;
+		//	}
+		//	set
+  //          {
+		//		if(value != toggle)
+  //              {
+		//			toggle = value;
+		//		}
+		//	}
+		//}
 		
-		bool toggle;
-		public bool ToggledState {
-			get {
-				return toggle;
-			}
-			set {
-				if(value != toggle){
-					toggle = value;
-				}
-			}
-		}
-		
-		UiEnum _uiMode;
-		UiEnum UiMode {
-			get { return _uiMode; }
-			set {
+		//UiEnum _uiMode;
+		protected override UiEnum UiMode
+        {
+			get
+            {
+                return _uiMode;
+            }
+			set
+            {
 				_uiMode = value;
-				if(value == UiEnum.Log) {
+				if(value == UiEnum.Log)
+                {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SiteIdTextBox.ReadOnly = true;
 					INCTextBox.ReadOnly = true;
 					NextActionsTextBox.ReadOnly = true;
 					UpdateTextBox.ReadOnly = true;
-					
-					MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
-					                                         	generateTemplateToolStripMenuItem,
-					                                         	copyToNewTemplateToolStripMenuItem});
+
+                    MainMenu.MainMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                                                                 generateTemplateToolStripMenuItem,
+                                                                 copyToNewTemplateToolStripMenuItem});
 				}
-				else {
+				else
+                {
 					InitializeComponent();
-					SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
+                    errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+                    errorProvider.SetIconPadding(INCTextBox, -17);
+                    errorProvider.SetIconPadding(SiteIdTextBox, -17);
+                    errorProvider.SetIconPadding(UpdateTextBox, -18);
+                    SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
 					SiteIdTextBox.TextChanged += SiteIdTextBoxTextChanged;
 					INCTextBox.KeyPress += INCTextBoxKeyPress;
 					SiteIdTextBox.Size = new Size(67, 20);
 					
 					MainMenu.InitializeTroubleshootMenu();
 					MainMenu.OiButtonsOnClickDelegate += LoadDisplayOiDataTable;
-					MainMenu.RefreshButtonOnClickDelegate += refreshOiData;
+					MainMenu.RefreshButtonOnClickDelegate += RefreshOiData;
 					
 					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -126,8 +157,8 @@ namespace appCore.Templates.UI
 		public UpdateControls()
 		{
 			UiMode = UiEnum.Template;
-			if(GlobalProperties.siteFinder_mainswitch)
-				siteFinder_Toggle(false, false);
+			if(GlobalProperties.SiteFinderMainswitch)
+				SiteFinder_Toggle(false, false);
 		}
 		
 		public UpdateControls(Update template, UiEnum uimode = UiEnum.Log)
@@ -137,18 +168,19 @@ namespace appCore.Templates.UI
 //			if(GlobalProperties.siteFinder_mainswitch)
 //				siteFinder_Toggle(false, false);
 			
-			SiteIdTextBox.Text = currentTemplate.SiteId;
+			SiteIdTextBox.Text = ((Update)currentTemplate).SiteId;
 			if(UiMode == UiEnum.Template)
 				SiteIdTextBoxKeyPress(SiteIdTextBox,new KeyPressEventArgs((char)Keys.Enter));
-			INCTextBox.Text = currentTemplate.INC;
-			UpdateTextBox.Text = currentTemplate.update;
-			NextActionsTextBox.Text = currentTemplate.NextActions;
+			INCTextBox.Text = ((Update)currentTemplate).INC;
+			UpdateTextBox.Text = ((Update)currentTemplate).update;
+			NextActionsTextBox.Text = ((Update)currentTemplate).NextActions;
 //			Dispose();
 		}
 
-		void siteFinder_Toggle(bool toggle, bool siteFound)
+        protected override void SiteFinder_Toggle(bool toggle, bool siteFound)
 		{
-			foreach (object ctrl in Controls) {
+			foreach (object ctrl in Controls)
+            {
 				switch(ctrl.GetType().ToString())
 				{
 					case "appCore.UI.AMTMenuStrip":
@@ -156,9 +188,8 @@ namespace appCore.Templates.UI
 						break;
 					case "System.Windows.Forms.Button":
 						Button btn = ctrl as Button;
-						if(btn.Text.Contains("Generate") || btn.Text == "Clear") {
+						if(btn.Text.Contains("Generate") || btn.Text == "Clear")
 							btn.Enabled = toggle;
-						}
 						break;
 					case "appCore.UI.AMTRichTextBox": case "appCore.UI.AMTTextBox":
 						TextBoxBase tb = ctrl as TextBoxBase;
@@ -167,7 +198,8 @@ namespace appCore.Templates.UI
 						break;
 					case "System.Windows.Forms.NumericUpDown":
 						NumericUpDown nup = ctrl as NumericUpDown;
-						if(toggle) {
+						if(toggle)
+                        {
 							if(nup.Maximum < 999 || !siteFound)
 								nup.Enabled = true;
 							else
@@ -199,9 +231,9 @@ namespace appCore.Templates.UI
 				while(tb.Text.StartsWith("0"))
 					tb.Text = tb.Text.Substring(1);
 
-                await System.Threading.Tasks.Task.Run(() =>
-                {
-				    currentSite = DB.SitesDB.getSiteAsync(tb.Text).GetAwaiter().GetResult();
+                //await System.Threading.Tasks.Task.Run(() =>
+                //{
+				    currentSite = await DB.SitesDB.GetSiteAsync(tb.Text);
 				                                   	
 				    if(currentSite.Exists)
                     {
@@ -211,11 +243,11 @@ namespace appCore.Templates.UI
 				        if(string.IsNullOrEmpty(currentSite.PowerCompany))
 				            dataToRequest += "PWR";
 				        currentSite.requestOIData(dataToRequest);
-				    }
-                });
+				    //}
+                //});
                 
-                if (currentSite.Exists)
-                {
+                //if (currentSite.Exists)
+                //{
 				    PriorityTextBox.Text = currentSite.Priority;
 				    PowerCompanyTextBox.Text = currentSite.PowerCompany;
 				    RegionTextBox.Text = currentSite.Region;
@@ -229,7 +261,7 @@ namespace appCore.Templates.UI
 				    SiteDetailsToolStripMenuItem.Enabled = false;
 				}
 				generateTemplateToolStripMenuItem.Enabled = true;
-				siteFinder_Toggle(true, currentSite.Exists);
+				SiteFinder_Toggle(true, currentSite.Exists);
 
 				load.Close();
 			}
@@ -237,10 +269,10 @@ namespace appCore.Templates.UI
 
 		void SiteIdTextBoxTextChanged(object sender, EventArgs e)
         {
-            if (GlobalProperties.siteFinder_mainswitch)
+            if (GlobalProperties.SiteFinderMainswitch)
             {
                 currentSite = null;
-                siteFinder_Toggle(false, false);
+                SiteFinder_Toggle(false, false);
 
                 SiteDetailsToolStripMenuItem.Enabled = false;
             }
@@ -253,31 +285,31 @@ namespace appCore.Templates.UI
 		void INCTextBoxKeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (Convert.ToInt32(e.KeyChar) == 13)
-			{
-				if (INCTextBox.Text.Length > 0) {
-					string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-					if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
-					else {
-//						Action action = new Action(delegate {
-						FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-//						                           });
-//						Toolbox.Tools.darkenBackgroundForm(action,false,this);
-						return;
-					}
-				}
-			}
+            {
+                errorProvider.SetError(INCTextBox, string.Empty);
+                try
+                {
+                    INCTextBox.Text = Toolbox.Tools.CompleteRemedyReference(INCTextBox.Text, "INC");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(INCTextBox, ex.Message);
+                    return;
+                }
+            }
 		}
 
 		void TextBoxesTextChanged_LargeTextButtons(object sender, EventArgs e)
 		{
 			TextBoxBase tb = (TextBoxBase)sender;
 			Button btn = null;
-			switch(tb.Name) {
+			switch(tb.Name)
+            {
 				case "NextActionsTextBox":
-					btn = (Button)NextActionsLargeTextButton;
+					btn = NextActionsLargeTextButton;
 					break;
 				case "UpdateTextBox":
-					btn = (Button)UpdateLargeTextButton;
+					btn = UpdateLargeTextButton;
 					break;
 			}
 			
@@ -286,7 +318,6 @@ namespace appCore.Templates.UI
 		
 		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
 			Button btn = (Button)sender;
 			string lbl = string.Empty;
 			TextBoxBase tb = null;
@@ -305,11 +336,9 @@ namespace appCore.Templates.UI
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
 		}
 
-		void ClearAllControls(object sender, EventArgs e)
+        protected override void ClearAllControls(object sender, EventArgs e)
 		{
 			SiteIdTextBox.Text = string.Empty;
 			INCTextBox.Text = string.Empty;
@@ -320,48 +349,66 @@ namespace appCore.Templates.UI
 			UpdateTextBox.Text = string.Empty;
 			SiteIdTextBox.Focus();
 		}
-		
-		void LoadTemplateFromLog(object sender, EventArgs e) {
-			var form = Application.OpenForms.OfType<MainForm>().First();
-			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
-		}
-		
-		void GenerateTemplate(object sender, EventArgs e) {
-			if(UiMode == UiEnum.Template) {
-				string CompINC_CRQ = Toolbox.Tools.CompleteINC_CRQ_TAS(INCTextBox.Text, "INC");
-				if (CompINC_CRQ != "error") INCTextBox.Text = CompINC_CRQ;
-				else {
-					FlexibleMessageBox.Show("INC number must only contain digits!","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				string errmsg = "";
-				if (string.IsNullOrEmpty(INCTextBox.Text)) {
-					errmsg = "         - INC/Ticket Number missing\n";
-				}
-				if (string.IsNullOrEmpty(SiteIdTextBox.Text)) {
-					errmsg += "         - Site ID missing\n";
-				}
-				if (string.IsNullOrEmpty(UpdateTextBox.Text)) {
-					errmsg += "         - Update text missing\n";
-				}
-				if (!string.IsNullOrEmpty(errmsg)) {
-					FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				errmsg = "";
-				
-				// No changes since the last template warning
-				if(currentTemplate != prevTemp) {
-					if (INCTextBox.Text == prevTemp.INC) {
+
+        //void LoadTemplateFromLog(object sender, EventArgs e)
+        //      {
+        //	var form = Application.OpenForms.OfType<MainForm>().First();
+        //	form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
+        //}
+
+        protected override void GenerateTemplate(object sender, EventArgs e)
+        {
+			if(UiMode == UiEnum.Template)
+            {
+                errorProvider.SetError(INCTextBox, string.Empty);
+                errorProvider.SetError(SiteIdTextBox, string.Empty);
+                errorProvider.SetError(UpdateTextBox, string.Empty);
+
+                bool error = false;
+
+                try
+                {
+                    INCTextBox.Text = Toolbox.Tools.CompleteRemedyReference(INCTextBox.Text, "INC");
+                }
+                catch (Exception ex)
+                {
+                    errorProvider.SetError(INCTextBox, ex.Message);
+                    error = true;
+                }
+				if (string.IsNullOrEmpty(SiteIdTextBox.Text))
+                {
+                    errorProvider.SetError(SiteIdTextBox, "Site ID missing");
+                    error = true;
+                }
+				if (string.IsNullOrEmpty(UpdateTextBox.Text))
+                {
+                    errorProvider.SetError(UpdateTextBox, "Update text missing");
+                    error = true;
+                }
+                if (error)
+                {
+                    MainForm.trayIcon.showBalloon("Template generation errors", "Place the mouse over the error icon(s) for more info");
+                    return;
+                }
+
+                string errmsg = string.Empty;
+                // No changes since the last template warning
+                if (currentTemplate != previousTemplate)
+                {
+					if (INCTextBox.Text == ((Update)previousTemplate).INC)
+                    {
 						errmsg = "         - INC\n";
 					}
-					if (SiteIdTextBox.Text == prevTemp.SiteId) {
+					if (SiteIdTextBox.Text == ((Update)previousTemplate).SiteId)
+                    {
 						errmsg += "         - Site ID\n";
 					}
-					if (UpdateTextBox.Text == prevTemp.update) {
+					if (UpdateTextBox.Text == ((Update)previousTemplate).update)
+                    {
 						errmsg += "         - Update text\n";
 					}
-					if (errmsg != "") {
+					if (errmsg != "")
+                    {
 						DialogResult ans = FlexibleMessageBox.Show("You haven't changed the following fields in the template:\n\n" + errmsg + "\nDo you want to continue anyway?","Same INC",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
 						if (ans == DialogResult.No)
 							return;
@@ -371,159 +418,188 @@ namespace appCore.Templates.UI
 			
 			currentTemplate = new Update(Controls);
 			
-			try {
+			try
+            {
 				Clipboard.SetText(currentTemplate.ToString());
 			}
-			catch (Exception) {
-				try {
+			catch (Exception)
+            {
+				try
+                {
 					Clipboard.SetText(currentTemplate.ToString());
 				}
-				catch (Exception) {
+				catch (Exception)
+                {
 					FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 				}
 			}
 			
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
-			if(UiMode == UiEnum.Template) {
-				// Store this template for future warning on no changes
-				
-				prevTemp = currentTemplate;
+			if(UiMode == UiEnum.Template)
+            {
+                // Store this template for future warning on no changes
+
+                previousTemplate = currentTemplate;
 				
 				MainForm.logFiles.HandleLog(currentTemplate);
 			}
 		}
 		
-		public void siteFinderSwitch(string toState) {
+		public override void SiteFinderSwitch(string toState)
+        {
 			if (toState == "off")
             {
                 SiteIdTextBox.KeyPress -= SiteIdTextBoxKeyPress;
-                siteFinder_Toggle(true,false);
+                SiteFinder_Toggle(true,false);
 			}
 			else
             {
                 SiteIdTextBox.KeyPress += SiteIdTextBoxKeyPress;
-                siteFinder_Toggle(false,false);
+                SiteFinder_Toggle(false,false);
 			}
 		}
 
-		void SiteDetailsButtonClick(object sender, EventArgs e)
-		{
-			if(SiteDetailsUI != null) {
-				SiteDetailsUI.Close();
-				SiteDetailsUI.Dispose();
-			}
-			SiteDetailsUI = new siteDetails(currentSite);
-			SiteDetailsUI.Show();
-		}
-		
-		void LoadDisplayOiDataTable(object sender, EventArgs e) {
-//			if(e.Button == MouseButtons.Left) {
-			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
-			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
-			if(fc.Count > 0) {
-				fc[0].Close();
-				fc[0].Dispose();
-			}
-			
-			if(currentSite.Exists) {
-				var dt = new System.Data.DataTable();
-				switch(dataToShow) {
-					case "INCs":
-						if(currentSite.Incidents == null) {
-							currentSite.requestOIData("INC");
-							if(currentSite.Incidents != null) {
-								if(currentSite.Incidents.Count > 0) {
-									MainMenu.INCsButton.Enabled = true;
-									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
-									MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
-								}
-								else {
-									MainMenu.INCsButton.Enabled = false;
-									MainMenu.INCsButton.Text = "No INC history";
-								}
-							}
-							return;
-						}
-						break;
-					case "CRQs":
-						if(currentSite.Changes == null) {
-							currentSite.requestOIData("CRQ");
-							if(currentSite.Changes != null) {
-								if(currentSite.Changes.Count > 0) {
-									MainMenu.CRQsButton.Enabled = true;
-									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
-									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
-								}
-								else {
-									MainMenu.CRQsButton.Enabled = false;
-									MainMenu.CRQsButton.Text = "No CRQ history";
-								}
-							}
-							return;
-						}
-						break;
-					case "BookIns":
-						if(currentSite.Visits == null) {
-							currentSite.requestOIData("Bookins");
-							if(currentSite.Visits != null) {
-								if(currentSite.Visits.Count > 0) {
-									MainMenu.BookInsButton.Enabled = true;
-									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
-									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
-								}
-								else {
-									MainMenu.BookInsButton.Enabled = false;
-									MainMenu.BookInsButton.Text = "No Book In history";
-								}
-							}
-							return;
-						}
-						break;
-					case "ActiveAlarms":
-						if(currentSite.Alarms == null) {
-							currentSite.requestOIData("Alarms");
-							if(currentSite.Alarms != null) {
-								if(currentSite.Alarms.Count > 0) {
-									MainMenu.ActiveAlarmsButton.Enabled = true;
-									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
-									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
-								}
-								else {
-									MainMenu.ActiveAlarmsButton.Enabled = false;
-									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
-								}
-							}
-							return;
-						}
-						break;
-				}
-				
-				OiSiteTablesForm OiTable = null;
-				switch(dataToShow) {
-					case "INCs":
-						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
-						break;
-					case "CRQs":
-						OiTable = new OiSiteTablesForm(currentSite.Changes, currentSite.Id, this);
-						break;
-					case "BookIns":
-						OiTable = new OiSiteTablesForm(currentSite.Visits, currentSite.Id, this);
-						break;
-					case "ActiveAlarms":
-						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
-						break;
-				}
-				OiTable.Show();
-			}
-		}
-		
-		void refreshOiData(object sender, EventArgs e) {
-			currentSite.requestOIData("INCCRQBookinsAlarms");
-			MainMenu.siteFinder_Toggle(true);
-		}
-		
-		void InitializeComponent()
+        //void SiteDetailsButtonClick(object sender, EventArgs e)
+        //{
+        //	if(SiteDetailsUI != null)
+        //          {
+        //		SiteDetailsUI.Close();
+        //		SiteDetailsUI.Dispose();
+        //	}
+        //	SiteDetailsUI = new siteDetails(currentSite);
+        //	SiteDetailsUI.Show();
+        //}
+
+        //		void LoadDisplayOiDataTable(object sender, EventArgs e)
+        //        {
+        ////			if(e.Button == MouseButtons.Left) {
+        //			string dataToShow = ((ToolStripMenuItem)sender).Name.Replace("Button", string.Empty);
+        //			var fc = Application.OpenForms.OfType<OiSiteTablesForm>().Where(f => f.OwnerControl == (Control)this && f.Text.EndsWith(dataToShow)).ToList();
+        //			if(fc.Count > 0)
+        //            {
+        //				fc[0].Close();
+        //				fc[0].Dispose();
+        //			}
+
+        //			if(currentSite.Exists)
+        //            {
+        //				var dt = new System.Data.DataTable();
+        //				switch(dataToShow)
+        //                {
+        //					case "INCs":
+        //						if(currentSite.Incidents == null)
+        //                        {
+        //							currentSite.requestOIData("INC");
+        //							if(currentSite.Incidents != null)
+        //                            {
+        //								if(currentSite.Incidents.Count > 0)
+        //                                {
+        //									MainMenu.INCsButton.Enabled = true;
+        //									MainMenu.INCsButton.ForeColor = Color.DarkGreen;
+        //									MainMenu.INCsButton.Text = "INCs (" + currentSite.Incidents.Count + ")";
+        //								}
+        //								else
+        //                                {
+        //									MainMenu.INCsButton.Enabled = false;
+        //									MainMenu.INCsButton.Text = "No INC history";
+        //								}
+        //							}
+        //							return;
+        //						}
+        //						break;
+        //					case "CRQs":
+        //						if(currentSite.Changes == null)
+        //                        {
+        //							currentSite.requestOIData("CRQ");
+        //							if(currentSite.Changes != null)
+        //                            {
+        //								if(currentSite.Changes.Count > 0)
+        //                                {
+        //									MainMenu.CRQsButton.Enabled = true;
+        //									MainMenu.CRQsButton.ForeColor = Color.DarkGreen;
+        //									MainMenu.CRQsButton.Text = "CRQs (" + currentSite.Changes.Count + ")";
+        //								}
+        //								else
+        //                                {
+        //									MainMenu.CRQsButton.Enabled = false;
+        //									MainMenu.CRQsButton.Text = "No CRQ history";
+        //								}
+        //							}
+        //							return;
+        //						}
+        //						break;
+        //					case "BookIns":
+        //						if(currentSite.Visits == null)
+        //                        {
+        //							currentSite.requestOIData("Bookins");
+        //							if(currentSite.Visits != null)
+        //                            {
+        //								if(currentSite.Visits.Count > 0)
+        //                                {
+        //									MainMenu.BookInsButton.Enabled = true;
+        //									MainMenu.BookInsButton.ForeColor = Color.DarkGreen;
+        //									MainMenu.BookInsButton.Text = "Book Ins List (" + currentSite.Visits.Count + ")";
+        //								}
+        //								else
+        //                                {
+        //									MainMenu.BookInsButton.Enabled = false;
+        //									MainMenu.BookInsButton.Text = "No Book In history";
+        //								}
+        //							}
+        //							return;
+        //						}
+        //						break;
+        //					case "ActiveAlarms":
+        //						if(currentSite.Alarms == null)
+        //                        {
+        //							currentSite.requestOIData("Alarms");
+        //							if(currentSite.Alarms != null)
+        //                            {
+        //								if(currentSite.Alarms.Count > 0)
+        //                                {
+        //									MainMenu.ActiveAlarmsButton.Enabled = true;
+        //									MainMenu.ActiveAlarmsButton.ForeColor = Color.DarkGreen;
+        //									MainMenu.ActiveAlarmsButton.Text = "Active alarms (" + currentSite.Alarms.Count + ")";
+        //								}
+        //								else
+        //                                {
+        //									MainMenu.ActiveAlarmsButton.Enabled = false;
+        //									MainMenu.ActiveAlarmsButton.Text = "No alarms to display";
+        //								}
+        //							}
+        //							return;
+        //						}
+        //						break;
+        //				}
+
+        //				OiSiteTablesForm OiTable = null;
+        //				switch(dataToShow)
+        //                {
+        //					case "INCs":
+        //						OiTable = new OiSiteTablesForm(currentSite.Incidents, currentSite.Id, this);
+        //						break;
+        //					case "CRQs":
+        //						OiTable = new OiSiteTablesForm(currentSite.Changes, currentSite.Id, this);
+        //						break;
+        //					case "BookIns":
+        //						OiTable = new OiSiteTablesForm(currentSite.Visits, currentSite.Id, this);
+        //						break;
+        //					case "ActiveAlarms":
+        //						OiTable = new OiSiteTablesForm(currentSite.Alarms, currentSite.Id, this);
+        //						break;
+        //				}
+        //				OiTable.Show();
+        //			}
+        //		}
+
+        //		void refreshOiData(object sender, EventArgs e)
+        //        {
+        //			currentSite.requestOIData("INCCRQBookinsAlarms");
+        //			MainMenu.siteFinder_Toggle(true);
+        //		}
+
+        protected override void InitializeComponent()
 		{
 			BackColor = SystemColors.Control;
 			Name = "Update Template GUI";
@@ -725,8 +801,9 @@ namespace appCore.Templates.UI
 			
 			DynamicControlsSizesLocations();
 		}
-		
-		void DynamicControlsSizesLocations() {
+
+        protected override void DynamicControlsSizesLocations()
+        {
 			SiteIdLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
 			SiteIdLabel.Size = new Size(90, 20);
 			

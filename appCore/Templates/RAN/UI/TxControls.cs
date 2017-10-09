@@ -10,15 +10,15 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.UI;
 
-namespace appCore.Templates.UI
+namespace appCore.Templates.RAN.UI
 {
 	/// <summary>
 	/// Description of TxControls.
 	/// </summary>
-	public class TxControls : Panel
+	public class TxControls : Templates.UI.TemplateControlsBase
 	{
 		Button SitesLargeTextButton = new Button();
 		Button DetailedRanTroubleshootLargeTextButton = new Button();
@@ -36,38 +36,56 @@ namespace appCore.Templates.UI
 		public CheckBox Repeat_IntermittentCheckBox = new CheckBox();
 		public ComboBox ServiceAffectedComboBox = new ComboBox();
 		public ComboBox TxTypeComboBox = new ComboBox();
-		
-		AMTMenuStrip MainMenu = new AMTMenuStrip();
-		ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
-		ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
-		
-		TX currentTemplate;
-		TX prevTemp = new TX();
-		int paddingLeftRight = 1;
-		public int PaddingLeftRight {
-			get { return paddingLeftRight; }
-			set {
-				paddingLeftRight = value;
-				DynamicControlsSizesLocations();
-			}
-		}
-		
-		int paddingTopBottom = 1;
-		public int PaddingTopBottom {
-			get { return paddingTopBottom; }
-			set {
-				paddingTopBottom = value;
-				DynamicControlsSizesLocations();
-			}
-		}
-		
-		UiEnum _uiMode;
-		UiEnum UiMode {
-			get { return _uiMode; }
-			set {
+
+        //ErrorProviderFixed errorProvider = new ErrorProviderFixed();
+
+        //AMTMenuStrip MainMenu = new AMTMenuStrip();
+		//ToolStripMenuItem generateTemplateToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem clearToolStripMenuItem = new ToolStripMenuItem();
+		//ToolStripMenuItem copyToNewTemplateToolStripMenuItem = new ToolStripMenuItem();
+
+        //TX currentTemplate;
+        //TX prevTemp = new TX();
+        //int paddingLeftRight = 1;
+        //public int PaddingLeftRight
+        //      {
+        //	get
+        //          {
+        //              return paddingLeftRight;
+        //          }
+        //	set
+        //          {
+        //		paddingLeftRight = value;
+        //		DynamicControlsSizesLocations();
+        //	}
+        //}
+
+        //int paddingTopBottom = 1;
+        //public int PaddingTopBottom
+        //      {
+        //	get
+        //          {
+        //              return paddingTopBottom;
+        //          }
+        //	set
+        //          {
+        //		paddingTopBottom = value;
+        //		DynamicControlsSizesLocations();
+        //	}
+        //}
+
+        //UiEnum _uiMode;
+        protected override UiEnum UiMode
+        {
+			get
+            {
+                return _uiMode;
+            }
+			set
+            {
 				_uiMode = value;
-				if(value == UiEnum.Log) {
+				if(value == UiEnum.Log)
+                {
 					PaddingLeftRight = 7;
 					InitializeComponent();
 					SitesTextBox.ReadOnly = true;
@@ -84,7 +102,15 @@ namespace appCore.Templates.UI
 				}
 				else {
 					InitializeComponent();
-					TxTypeComboBox.SelectedIndexChanged += TxTypeComboBoxSelectedIndexChanged;
+                    errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+                    errorProvider.SetIconPadding(SitesTextBox, -17);
+                    errorProvider.SetIconPadding(TxTypeComboBox, -17);
+                    errorProvider.SetIconPadding(IpRanPortConfigTextBox, -17);
+                    errorProvider.SetIconPadding(ServiceAffectedComboBox, -17);
+                    errorProvider.SetIconPadding(PerformanceOutageDetailsTextBox, -17);
+                    errorProvider.SetIconPadding(DetailedRanTroubleshootTextBox, -17);
+
+                    TxTypeComboBox.SelectedIndexChanged += TxTypeComboBoxSelectedIndexChanged;
 					
 					MainMenu.MainMenu.DropDownItems.Add(generateTemplateToolStripMenuItem);
 					MainMenu.MainMenu.DropDownItems.Add("-");
@@ -103,86 +129,107 @@ namespace appCore.Templates.UI
 			UiMode = uimode;
 			currentTemplate = template;
 			
-			SitesTextBox.Text = currentTemplate.SiteIDs;
-			ServiceAffectedComboBox.Text = currentTemplate.ServiceAffected;
-			Repeat_IntermittentCheckBox.Checked = currentTemplate.Repeat_Intermittent;
-			TxTypeComboBox.Text = currentTemplate.TxType;
-			IpRanPortConfigTextBox.Text = currentTemplate.IpRanPortConfig;
-			PerformanceOutageDetailsTextBox.Text = currentTemplate.PerformanceOutageDetails;
-			DetailedRanTroubleshootTextBox.Text = currentTemplate.DetailedRanTroubleshoot;
+			SitesTextBox.Text = ((TX)currentTemplate).SiteIDs;
+			ServiceAffectedComboBox.Text = ((TX)currentTemplate).ServiceAffected;
+			Repeat_IntermittentCheckBox.Checked = ((TX)currentTemplate).Repeat_Intermittent;
+			TxTypeComboBox.Text = ((TX)currentTemplate).TxType;
+			IpRanPortConfigTextBox.Text = ((TX)currentTemplate).IpRanPortConfig;
+			PerformanceOutageDetailsTextBox.Text = ((TX)currentTemplate).PerformanceOutageDetails;
+			DetailedRanTroubleshootTextBox.Text = ((TX)currentTemplate).DetailedRanTroubleshoot;
 		}
 
-		void GenerateTemplate(object sender, EventArgs e)
+        protected override void GenerateTemplate(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
-			if(UiMode == UiEnum.Template) {
-				string errmsg = string.Empty;
-				if (string.IsNullOrEmpty(SitesTextBox.Text)) {
-					errmsg = "         - Site(s) reference(s) missing\n";
-				}
-				if (string.IsNullOrEmpty(TxTypeComboBox.Text)) {
-					errmsg += "         - TX type missing\n";
-				}
-				else{
-					if (TxTypeComboBox.Text == "IPRAN") {
-						if (string.IsNullOrEmpty(IpRanPortConfigTextBox.Text)) {
-							errmsg += "         - IPRAN port configuration missing\n";
-						}
+			if(UiMode == UiEnum.Template)
+            {
+                errorProvider.SetError(SitesTextBox, string.Empty);
+                errorProvider.SetError(TxTypeComboBox, string.Empty);
+                errorProvider.SetError(IpRanPortConfigTextBox, string.Empty);
+                errorProvider.SetError(ServiceAffectedComboBox, string.Empty);
+                errorProvider.SetError(PerformanceOutageDetailsTextBox, string.Empty);
+                errorProvider.SetError(DetailedRanTroubleshootTextBox, string.Empty);
+
+                bool error = false;
+
+                if (string.IsNullOrEmpty(SitesTextBox.Text))
+                {
+                    errorProvider.SetError(SitesTextBox, "Site(s) reference(s) missing");
+                    error = true;
+                }
+				if (string.IsNullOrEmpty(TxTypeComboBox.Text))
+                {
+                    errorProvider.SetError(TxTypeComboBox, "TX type missing");
+                    error = true;
+                }
+				else
+                {
+					if (TxTypeComboBox.Text == "IPRAN")
+                    {
+						if (string.IsNullOrEmpty(IpRanPortConfigTextBox.Text))
+                        {
+                            errorProvider.SetError(IpRanPortConfigTextBox, "IPRAN port configuration missing");
+                            error = true;
+                        }
 					}
 				}
-				if (string.IsNullOrEmpty(ServiceAffectedComboBox.Text)) {
-					errmsg += "         - Service affected missing\n";
-				}
-				if (string.IsNullOrEmpty(PerformanceOutageDetailsTextBox.Text)) {
-					errmsg += "         - Performance/Outage detailed issue missing\n";
-				}
-				if (string.IsNullOrEmpty(DetailedRanTroubleshootTextBox.Text)) {
-					errmsg += "         - Detailed RAN troubleshooting missing\n";
-				}
-				if (!string.IsNullOrEmpty(errmsg)) {
-					FlexibleMessageBox.Show("The following errors were detected\n\n" + errmsg + "\nPlease fill the required fields and try again.", "Data missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				errmsg = string.Empty;
-			}
+				if (string.IsNullOrEmpty(ServiceAffectedComboBox.Text))
+                {
+                    errorProvider.SetError(ServiceAffectedComboBox, "Service affected missing");
+                    error = true;
+                }
+				if (string.IsNullOrEmpty(PerformanceOutageDetailsTextBox.Text))
+                {
+                    errorProvider.SetError(PerformanceOutageDetailsTextBox, "Performance / Outage detailed issue missing");
+                    error = true;
+                }
+				if (string.IsNullOrEmpty(DetailedRanTroubleshootTextBox.Text))
+                {
+                    errorProvider.SetError(DetailedRanTroubleshootTextBox, "Detailed RAN troubleshooting missing");
+                    error = true;
+                }
+                if (error)
+                {
+                    MainForm.trayIcon.showBalloon("Template generation errors", "Place the mouse over the error icon(s) for more info");
+                    return;
+                }
+            }
 			
 			currentTemplate = new TX(Controls);
 			
-			try {
+			try
+            {
 				Clipboard.SetText(currentTemplate.ToString());
 			}
-			catch (Exception) {
-				try {
+			catch
+            {
+				try
+                {
 					Clipboard.SetText(currentTemplate.ToString());
 				}
-				catch (Exception) {
+				catch
+                {
 					FlexibleMessageBox.Show("An error occurred while copying template to the clipboard, please try again.","Clipboard error",MessageBoxButtons.OK,MessageBoxIcon.Error);
 				}
 			}
 			
 			FlexibleMessageBox.Show(currentTemplate.ToString(), "Template copied to Clipboard", MessageBoxButtons.OK);
 			
-			if(UiMode == UiEnum.Template) {
+			if(UiMode == UiEnum.Template)
+            {
 				// Store this template for future warning on no changes
 				
-				prevTemp = currentTemplate;
+				previousTemplate = currentTemplate;
 				
 				MainForm.logFiles.HandleLog(currentTemplate);
 			}
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,true,this);
-		}
-		
-		void LoadTemplateFromLog(object sender, EventArgs e) {
-			var form = Application.OpenForms.OfType<MainForm>().First();
-			form.Invoke((MethodInvoker)delegate { form.FillTemplateFromLog(currentTemplate); });
 		}
 
 		void TxTypeComboBoxSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (TxTypeComboBox.SelectedIndex == 0)
 				IpRanPortConfigTextBox.ReadOnly = false;
-			else {
+			else
+            {
 				IpRanPortConfigTextBox.ReadOnly = true;
 				IpRanPortConfigTextBox.Text = string.Empty;
 			}
@@ -192,15 +239,16 @@ namespace appCore.Templates.UI
 		{
 			TextBoxBase tb = (TextBoxBase)sender;
 			Button btn = null;
-			switch(tb.Name) {
+			switch(tb.Name)
+            {
 				case "SitesTextBox":
-					btn = (Button)SitesLargeTextButton;
+					btn = SitesLargeTextButton;
 					break;
 				case "DetailedRanTroubleshootTextBox":
-					btn = (Button)DetailedRanTroubleshootLargeTextButton;
+					btn = DetailedRanTroubleshootLargeTextButton;
 					break;
 				case "PerformanceOutageDetailsTextBox":
-					btn = (Button)PerformanceOutageDetailsLargeTextButton;
+					btn = PerformanceOutageDetailsLargeTextButton;
 					break;
 			}
 			
@@ -209,11 +257,11 @@ namespace appCore.Templates.UI
 		
 		void LargeTextButtonsClick(object sender, EventArgs e)
 		{
-//			Action action = new Action(delegate {
 			Button btn = (Button)sender;
 			string lbl = string.Empty;
 			TextBoxBase tb = null;
-			switch(btn.Name) {
+			switch(btn.Name)
+            {
 				case "SitesLargeTextButton":
 					tb = (TextBoxBase)SitesTextBox;
 					lbl = SitesLabel.Text;
@@ -232,11 +280,9 @@ namespace appCore.Templates.UI
 			enlarge.StartPosition = FormStartPosition.CenterParent;
 			enlarge.ShowDialog();
 			tb.Text = enlarge.finaltext;
-//			                           });
-//			Toolbox.Tools.darkenBackgroundForm(action,false,this);
 		}
 
-		void ClearAllControls(object sender, EventArgs e)
+        protected override void ClearAllControls(object sender, EventArgs e)
 		{
 			SitesTextBox.Text = string.Empty;
 			ServiceAffectedComboBox.Text = string.Empty;
@@ -248,8 +294,8 @@ namespace appCore.Templates.UI
 			IpRanPortConfigTextBox.ReadOnly = true;
 			IpRanPortConfigTextBox.Text = string.Empty;
 		}
-		
-		void InitializeComponent()
+
+        protected override void InitializeComponent()
 		{
 			BackColor = SystemColors.Control;
 			Name = "TX Template GUI";
@@ -447,8 +493,8 @@ namespace appCore.Templates.UI
 			
 			DynamicControlsSizesLocations();
 		}
-		
-		void DynamicControlsSizesLocations() {
+
+        protected override void DynamicControlsSizesLocations() {
 			SitesLabel.Location = new Point(PaddingLeftRight, MainMenu.Bottom + 4);
 			SitesLabel.Size = new Size(245, 20);
 			

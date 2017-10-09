@@ -9,12 +9,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using appCore.Netcool;
 using appCore.SiteFinder;
 using FileHelpers;
 
-namespace appCore.Templates.Types
+namespace appCore.Templates.RAN.Types
 {
 	/// <summary>
 	/// Description of Outage.
@@ -31,36 +33,94 @@ namespace appCore.Templates.Types
         {
 			get
             {
-				if(affectedSites.Count == 0)
+                int finishedThreads = 0;
+                List<Thread> threads = new List<Thread>();
+                if (affectedSites.Count == 0)
                 {
-					List<string> list = new List<string>();
-					foreach(string siteStr in VfSites)
+                    //int finishedThreads = 0;
+                    //List<Thread> threads = new List<Thread>();
+
+                    threads.Add(new Thread(async () =>
                     {
-						string tempSite = string.Empty;
-						if(siteStr.Contains(" - "))
-							tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
-						else
-							tempSite = siteStr.Split(new []{ " (" }, StringSplitOptions.None)[0];
-						tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
-						list.Add(tempSite);
-					}
-					foreach(string siteStr in TefSites)
+                        List<string> list = new List<string>();
+                        //if (list.Count == 0)
+                        //{
+                        foreach (string siteStr in VfSites)
+                        {
+                            string tempSite = string.Empty;
+                            if (siteStr.Contains(" - "))
+                                tempSite = siteStr.Split(new[] { " - " }, StringSplitOptions.None)[0];
+                            else
+                                tempSite = siteStr.Split(new[] { " (" }, StringSplitOptions.None)[0];
+                            tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
+                            list.Add(tempSite);
+                        }
+                        foreach (string siteStr in TefSites)
+                        {
+                            string tempSite = string.Empty;
+                            if (siteStr.Contains(" - "))
+                                tempSite = siteStr.Split(new[] { " - " }, StringSplitOptions.None)[0];
+                            else
+                                tempSite = siteStr.Split(new[] { " (" }, StringSplitOptions.None)[0];
+                            tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
+                            list.Add(tempSite);
+                        }
+                        list = list.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToList();
+
+                        affectedSites = await DB.SitesDB.GetSitesAsync(list);
+
+                        finishedThreads++;
+                        //}
+                    }));
+                }
+                    
+                threads.Add(new Thread(async () =>
+                {
+                    List<string> fetchCramerDataList = new List<string>();
+
+                    while (finishedThreads < threads.Count - 1) { }
+
+                    foreach (Site site in affectedSites)
                     {
-						string tempSite = string.Empty;
-						if(siteStr.Contains(" - "))
-							tempSite = siteStr.Split(new []{ " - " }, StringSplitOptions.None)[0];
-						else
-							tempSite = siteStr.Split(new []{ " (" }, StringSplitOptions.None)[0];
-						tempSite = Convert.ToInt32(tempSite.RemoveLetters()).ToString();
-						list.Add(tempSite);
-					}
-					list = list.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToList();
-					affectedSites = DB.SitesDB.getSites(list);
-				}
-				
-				return affectedSites;
+                        if (site.CramerData == null)
+                            fetchCramerDataList.Add(site.Id);
+                    }
+
+                    System.Data.DataTable cramerDataList = null;
+                    if (fetchCramerDataList.Count > 0)
+                        cramerDataList = await Site.BulkFetchCramerDataAsync(fetchCramerDataList);
+
+                    foreach (Site site in affectedSites)
+                    {
+                        if (cramerDataList != null)
+                        {
+                            System.Data.DataRow row = cramerDataList.Rows.Cast<System.Data.DataRow>().FirstOrDefault(r => r[0].ToString() == site.Id);
+                            if (row != null)
+                            {
+                                site.CramerData = new Site.CramerDetails(row);
+                                site.CramerDataTimestamp = DateTime.Now;
+                            }
+                        }
+                    }
+
+                    finishedThreads++;
+                }));
+
+                foreach (Thread thread in threads)
+                {
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
+                }
+
+                while (finishedThreads < threads.Count) { }
+                //}
+
+                return affectedSites;
 			}
-			private set { affectedSites = value; }
+			private set
+            {
+                affectedSites = value;
+            }
 		}
 		List<Cell> affectedCells = new List<Cell>();
 		public List<Cell> AffectedCells
@@ -71,15 +131,16 @@ namespace appCore.Templates.Types
                 {
                     List<string> list = new List<string>();
                     List<Cell> cellsWithoutId = new List<Cell>();
-					list.AddRange(VfGsmCells);
-					list.AddRange(VfUmtsCells);
-					list.AddRange(VfLteCells);
-					list.AddRange(TefGsmCells);
-					list.AddRange(TefUmtsCells);
-					list.AddRange(TefLteCells);
-					for(int c = 0;c < list.Count;c++)
+                    list.AddRange(VfGsmCells);
+                    list.AddRange(VfUmtsCells);
+                    list.AddRange(VfLteCells);
+                    list.AddRange(TefGsmCells);
+                    list.AddRange(TefUmtsCells);
+                    list.AddRange(TefLteCells);
+
+                    for (int c = 0; c < list.Count; c++)
                     {
-                        if(list[c].Contains(" - No cell description"))
+                        if (list[c].Contains(" - No cell description"))
                         {
                             var arr = list[c].Split(new[] { " - " }, StringSplitOptions.None);
                             cellsWithoutId.Add(new Cell(arr[1], arr[0], Operators.Vodafone));
@@ -87,16 +148,26 @@ namespace appCore.Templates.Types
                         }
                         else
                         {
-						    string[] temp = { " - " };
-						    temp = list[c].Split(temp, StringSplitOptions.None);
-						    list[c] = temp.Length > 1 ? temp[1] : temp[0];
+                            string[] temp = { " - " };
+                            temp = list[c].Split(temp, StringSplitOptions.None);
+                            list[c] = temp.Length > 1 ? temp[1] : temp[0];
                         }
                     }
 
-					affectedCells = DB.SitesDB.getCells(list);
+                    if (affectedSites.Count > 0)
+                    {
+                        List<Cell> allCells = new List<Cell>();
+                        foreach(Site site in AffectedSites)
+                            allCells.AddRange(site.Cells);
+
+                        affectedCells = allCells.Where(c => list.Contains(c.Name)).ToList();
+                    }
+                    else
+                        affectedCells = Task.Run(() => DB.SitesDB.GetCellsWithCellIDAsync(list)).Result;
+
                     if (cellsWithoutId.Any())
                         affectedCells.AddRange(cellsWithoutId);
-				}
+                }
 				
 				return affectedCells;
 			}
@@ -528,146 +599,10 @@ namespace appCore.Templates.Types
 		public Outage(AlarmsParser alarms)
         {
 			OutageAlarms = alarms.AlarmsList;
-			
-			List<Cell> LTEcells = new List<Cell>();
-			
-			if(alarms.lteSitesOnM.Count > 0)
-            {
-				LTEcells = DB.SitesDB.getCells(alarms.lteSitesOnM, Bearers.LTE);
-				
-				foreach(Cell cell in LTEcells)
-                {
-					try {
-						Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
-						OutageAlarms.Add(new Alarm(cell, true, temp));
-					} catch(Exception e) {
-						var m = e.Message;
-					}
-				}
-			}
-			string toparse = string.Empty;
-			try
-            {
-				var engine = new FileHelperEngine<Alarm>();
 
-				engine.BeforeWriteRecord += (eng, e) =>
-                {
-					if(!e.Record.COOS || e.Record.Summary.Contains("FREQUENT"))
-						e.SkipThisRecord = true;
-				};
+            Task.Run(() => CollectOutageData(alarms)).Wait();
 
-				toparse = engine.WriteString(OutageAlarms);
-			}
-			catch(FileHelpersException e)
-            {
-				var m = e.Message;
-			}
-			
-			try
-            {
-				var engine = new FileHelperEngine<Alarm>();
-				engine.AfterReadRecord += (eng, e) =>
-                {
-					string temp;
-					Alarm al = e.Record;
-					if(e.Record.Bearer == Bearers.LTE)
-						temp = e.Record.Element;
-					else
-						temp = e.Record.RncBsc + " - " + e.Record.Element;
-					string tempSite = e.Record.Location;
-                    if (!string.IsNullOrEmpty(e.Record.POC))
-                        tempSite += " - " + e.Record.POC;
-                    switch (e.Record.Operator)
-                    {
-						case Operators.Vodafone:
-							if(string.IsNullOrEmpty(e.Record.County) || e.Record.County.Equals("unknown", StringComparison.OrdinalIgnoreCase))
-                            {
-								if(string.IsNullOrEmpty(e.Record.Town) || e.Record.Town.Equals("unknown", StringComparison.OrdinalIgnoreCase))
-                                {
-									if(!VfLocations.Contains(e.Record.ParentSite.County.ToUpper()))
-										VfLocations.Add(e.Record.ParentSite.County.ToUpper());
-								}
-								else
-									if(!VfLocations.Contains(e.Record.Town.ToUpper()))
-										VfLocations.Add(e.Record.Town.ToUpper());
-							}
-							else
-								if(!VfLocations.Contains(e.Record.County.ToUpper()))
-									VfLocations.Add(e.Record.County.ToUpper());
-							if(!VfSites.Contains(tempSite))
-								VfSites.Add(tempSite);
-							switch(e.Record.Bearer)
-                            {
-								case Bearers.GSM:
-									if(!VfGsmCells.Contains(temp))
-										VfGsmCells.Add(temp);
-									if(e.Record.LastOccurrence < VfGsmTime)
-										VfGsmTime = e.Record.LastOccurrence;
-									break;
-								case Bearers.UMTS:
-									if(!VfUmtsCells.Contains(temp))
-										VfUmtsCells.Add(temp);
-									if(e.Record.LastOccurrence < VfUmtsTime)
-										VfUmtsTime = e.Record.LastOccurrence;
-									break;
-								case Bearers.LTE:
-									if(!VfLteCells.Contains(temp))
-										VfLteCells.Add(temp);
-									if(e.Record.LastOccurrence < VfLteTime)
-										VfLteTime = e.Record.LastOccurrence;
-									break;
-							}
-							break;
-						case Operators.Telefonica:
-							if(string.IsNullOrEmpty(e.Record.County) || e.Record.County.Equals("unknown", StringComparison.OrdinalIgnoreCase))
-                            {
-								if(string.IsNullOrEmpty(e.Record.Town) || e.Record.Town.Equals("unknown", StringComparison.OrdinalIgnoreCase))
-                                {
-									if(!TefLocations.Contains(e.Record.ParentSite.County.ToUpper()))
-										TefLocations.Add(e.Record.ParentSite.County.ToUpper());
-								}
-								else
-									if(!TefLocations.Contains(e.Record.Town.ToUpper()))
-										TefLocations.Add(e.Record.Town.ToUpper());
-							}
-							else
-								if(!TefLocations.Contains(e.Record.County.ToUpper()))
-									TefLocations.Add(e.Record.County.ToUpper());
-							if(!TefSites.Contains(tempSite))
-								TefSites.Add(tempSite);
-							switch(e.Record.Bearer)
-                            {
-								case Bearers.GSM:
-									if(!TefGsmCells.Contains(temp))
-										TefGsmCells.Add(temp);
-									if(e.Record.LastOccurrence < TefGsmTime)
-										TefGsmTime = e.Record.LastOccurrence;
-									break;
-								case Bearers.UMTS:
-									if(!TefUmtsCells.Contains(temp))
-										TefUmtsCells.Add(temp);
-									if(e.Record.LastOccurrence < TefUmtsTime)
-										TefUmtsTime = e.Record.LastOccurrence;
-									break;
-								case Bearers.LTE:
-									if(!TefLteCells.Contains(temp))
-										TefLteCells.Add(temp);
-									if(e.Record.LastOccurrence < TefLteTime)
-										TefLteTime = e.Record.LastOccurrence;
-									break;
-							}
-							break;
-					}
-				};
-				
-				OutageAlarms = engine.ReadStringAsList(toparse);
-			}
-			catch(FileHelpersException e)
-            {
-				var m = e.Message;
-			}
-			
-			generateReports();
+            GenerateReports();
 			
 			LogType = TemplateTypes.Outage;
 			//fullLog = generateFullLog();
@@ -675,7 +610,7 @@ namespace appCore.Templates.Types
 		
 		public Outage(List<string> Sites)
         {
-			AffectedSites = DB.SitesDB.getSites(Sites);
+            affectedSites = Task.Run(() => DB.SitesDB.GetSitesAsync(Sites)).Result;
 			AffectedCells = new List<Cell>();
 			foreach(Site site in AffectedSites)
 				AffectedCells.AddRange(site.Cells);
@@ -755,7 +690,7 @@ namespace appCore.Templates.Types
 			
 			showIncludeListForm();
 			
-			generateReports();
+			GenerateReports();
 			
 			LogType = TemplateTypes.Outage;
 			//fullLog = generateFullLog();
@@ -768,7 +703,7 @@ namespace appCore.Templates.Types
 			//fullLog = generateFullLog();
 		}
 		
-		public Outage(string[] log, DateTime date)
+		public Outage(string[] log, DateTime date, bool forceRecount = false)
         {
             if(log[0].Contains("COOS") || log[0].Contains("Cells down"))
             {
@@ -777,14 +712,193 @@ namespace appCore.Templates.Types
                 log = log2.ToArray();
             }
 			LoadOutageReport(log);
-			string[] time = log[0].Split(':');
+
+            if(forceRecount)
+            {
+                VfLocations = new List<string>();
+                TefLocations = new List<string>();
+
+                if (VfSites.Count + TefSites.Count > 0)
+                {
+                    foreach (string site in VfSites)
+                    {
+                        Site tempSite = AffectedSites.FirstOrDefault(s => s.Id == site || s.FullId == site);
+                        if (tempSite != null)
+                            VfLocations.Add(tempSite.County);
+                    }
+                    VfLocations = VfLocations.Distinct().ToList();
+                    foreach (string site in TefSites)
+                    {
+                        Site tempSite = AffectedSites.FirstOrDefault(s => s.Id == site || s.FullId == site);
+                        if (tempSite != null)
+                            TefLocations.Add(tempSite.County);
+                    }
+                    TefLocations.Distinct();
+                }
+
+                GenerateReports();
+            }
+
+            string[] time = log[0].Split(':');
 			GenerationDate = new DateTime(date.Year, date.Month, date.Day, Convert.ToInt16(time[0]), Convert.ToInt16(time[1]), Convert.ToInt16(time[2]));
 			LogType = TemplateTypes.Outage;
             //if (!fromLog)
             //    fullLog = generateFullLog();
 		}
+
+        async Task CollectOutageData(AlarmsParser alarms)
+        {
+
+            List<Cell> LTEcells = new List<Cell>();
+
+            if (alarms.lteSitesOnM.Count > 0)
+            {
+                LTEcells = await DB.SitesDB.GetCellsWithSitesAsync(alarms.lteSitesOnM, Bearers.LTE);
+
+                foreach (Cell cell in LTEcells)
+                {
+                    try
+                    {
+                        Alarm temp = OutageAlarms.Find(a => a.SiteId == cell.ParentSite);
+                        OutageAlarms.Add(new Alarm(cell, true, temp));
+                    }
+                    catch (Exception e)
+                    {
+                        var m = e.Message;
+                    }
+                }
+            }
+            string toparse = string.Empty;
+            try
+            {
+                var engine = new FileHelperEngine<Alarm>();
+
+                engine.BeforeWriteRecord += (eng, e) =>
+                {
+                    if (!e.Record.COOS || e.Record.Summary.Contains("FREQUENT"))
+                        e.SkipThisRecord = true;
+                };
+
+                toparse = engine.WriteString(OutageAlarms);
+            }
+            catch (FileHelpersException e)
+            {
+                var m = e.Message;
+            }
+
+            try
+            {
+                var engine = new FileHelperEngine<Alarm>();
+                engine.AfterReadRecord += (eng, e) =>
+                {
+                    switch (e.Record.Operator)
+                    {
+                        case Operators.Vodafone:
+                            //if(string.IsNullOrEmpty(e.Record.County) || e.Record.County.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                            //                     {
+                            //	if(string.IsNullOrEmpty(e.Record.Town) || e.Record.Town.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                            //                         {
+                            //		if(!VfLocations.Contains(e.Record.ParentSite.County.ToUpper()))
+                            //			VfLocations.Add(e.Record.ParentSite.County.ToUpper());
+                            //	}
+                            //	else
+                            //		if(!VfLocations.Contains(e.Record.Town.ToUpper()))
+                            //			VfLocations.Add(e.Record.Town.ToUpper());
+                            //}
+                            //else
+                            //	if(!VfLocations.Contains(e.Record.County.ToUpper()))
+                            //		VfLocations.Add(e.Record.County.ToUpper());
+                            if (!VfSites.Contains(e.Record.Location))
+                                VfSites.Add(e.Record.Location);
+                            switch (e.Record.Bearer)
+                            {
+                                case Bearers.GSM:
+                                    if (!VfGsmCells.Contains(e.Record.Element))
+                                        VfGsmCells.Add(e.Record.Element);
+                                    if (e.Record.LastOccurrence < VfGsmTime)
+                                        VfGsmTime = e.Record.LastOccurrence;
+                                    break;
+                                case Bearers.UMTS:
+                                    if (!VfUmtsCells.Contains(e.Record.Element))
+                                        VfUmtsCells.Add(e.Record.Element);
+                                    if (e.Record.LastOccurrence < VfUmtsTime)
+                                        VfUmtsTime = e.Record.LastOccurrence;
+                                    break;
+                                case Bearers.LTE:
+                                    if (!VfLteCells.Contains(e.Record.Element))
+                                        VfLteCells.Add(e.Record.Element);
+                                    if (e.Record.LastOccurrence < VfLteTime)
+                                        VfLteTime = e.Record.LastOccurrence;
+                                    break;
+                            }
+                            break;
+                        case Operators.Telefonica:
+                            //if(string.IsNullOrEmpty(e.Record.County) || e.Record.County.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                            //                     {
+                            //	if(string.IsNullOrEmpty(e.Record.Town) || e.Record.Town.Equals("unknown", StringComparison.OrdinalIgnoreCase))
+                            //                         {
+                            //		if(!TefLocations.Contains(e.Record.ParentSite.County.ToUpper()))
+                            //			TefLocations.Add(e.Record.ParentSite.County.ToUpper());
+                            //	}
+                            //	else
+                            //		if(!TefLocations.Contains(e.Record.Town.ToUpper()))
+                            //			TefLocations.Add(e.Record.Town.ToUpper());
+                            //}
+                            //else
+                            //	if(!TefLocations.Contains(e.Record.County.ToUpper()))
+                            //		TefLocations.Add(e.Record.County.ToUpper());
+                            if (!TefSites.Contains(e.Record.Location))
+                                TefSites.Add(e.Record.Location);
+                            switch (e.Record.Bearer)
+                            {
+                                case Bearers.GSM:
+                                    if (!TefGsmCells.Contains(e.Record.Element))
+                                        TefGsmCells.Add(e.Record.Element);
+                                    if (e.Record.LastOccurrence < TefGsmTime)
+                                        TefGsmTime = e.Record.LastOccurrence;
+                                    break;
+                                case Bearers.UMTS:
+                                    if (!TefUmtsCells.Contains(e.Record.Element))
+                                        TefUmtsCells.Add(e.Record.Element);
+                                    if (e.Record.LastOccurrence < TefUmtsTime)
+                                        TefUmtsTime = e.Record.LastOccurrence;
+                                    break;
+                                case Bearers.LTE:
+                                    if (!TefLteCells.Contains(e.Record.Element))
+                                        TefLteCells.Add(e.Record.Element);
+                                    if (e.Record.LastOccurrence < TefLteTime)
+                                        TefLteTime = e.Record.LastOccurrence;
+                                    break;
+                            }
+                            break;
+                    }
+                };
+
+                OutageAlarms = await Task.Run(() => engine.ReadStringAsList(toparse));
+            }
+            catch (FileHelpersException e)
+            {
+                var m = e.Message;
+            }
+
+            foreach (string site in VfSites)
+            {
+                var tempSite = await Task.Run(() => AffectedSites.FirstOrDefault(s => s.FullId == site));
+                if (tempSite != null)
+                    VfLocations.Add(tempSite.County);
+            }
+            VfLocations = VfLocations.Distinct().ToList();
+
+            foreach (string site in TefSites)
+            {
+                var tempSite = await Task.Run(() => AffectedSites.FirstOrDefault(s => s.FullId == site));
+                if (tempSite != null)
+                    TefLocations.Add(tempSite.County);
+            }
+            TefLocations = TefLocations.Distinct().ToList();
+        }
 		
-		void generateReports()
+		void GenerateReports()
         {
 			int cellTotal = VfGsmCells.Count + VfUmtsCells.Count + VfLteCells.Count;
 			if(cellTotal > 0)
@@ -824,8 +938,9 @@ namespace appCore.Templates.Types
                     if (!string.IsNullOrEmpty(locationDetails))
                         locationDetails += Environment.NewLine;
                     locationDetails += location + Environment.NewLine;
-                    var sites = AffectedSites.Where(s => s.County.Equals(location, StringComparison.OrdinalIgnoreCase) || s.Town.Equals(location, StringComparison.OrdinalIgnoreCase)).ToList();
-					int gsmCells = 0;
+                    //var sites = AffectedSites.Where(s => s.County.Equals(location, StringComparison.OrdinalIgnoreCase) || s.Town.Equals(location, StringComparison.OrdinalIgnoreCase)).ToList();
+                    var sites = AffectedSites.Where(s => s.County.Equals(location, StringComparison.OrdinalIgnoreCase)).ToList();
+                    int gsmCells = 0;
 					int umtsCells = 0;
 					int lteCells = 0;
 					for(int i = 0;i < sites.Count();i++)
@@ -840,6 +955,8 @@ namespace appCore.Templates.Types
                         //{
                         //    var t3 = e.Message;
                         //}
+                        var totalVf2gCells = sites[i].Cells.Filter(Cell.Filters.VF_2G).Count;
+                        var affected2gCount = AffectedCells.Filter(Cell.Filters.VF_2G).Count(c => c.ParentSite == sites[i].Id);
                         int site2Gcells = sites[i].Cells.Filter(Cell.Filters.VF_2G).Any() ? AffectedCells.Filter(Cell.Filters.VF_2G).Count(c => c.ParentSite == sites[i].Id) : -1;
                         int site3Gcells = sites[i].Cells.Filter(Cell.Filters.VF_3G).Any() ? AffectedCells.Filter(Cell.Filters.VF_3G).Count(c => c.ParentSite == sites[i].Id) : -1;
                         int site4Gcells = sites[i].Cells.Filter(Cell.Filters.VF_4G).Any() ? AffectedCells.Filter(Cell.Filters.VF_4G).Count(c => c.ParentSite == sites[i].Id) : -1;
@@ -901,66 +1018,52 @@ namespace appCore.Templates.Types
                     affectation += " affected " + sites.Count + (sites.Count > 1 ? " sites " : " site ") + cellsCount + (cellsCount > 1 ? " cells" : " cell") + Environment.NewLine;
                     VfOutage += affectation;
 				}
-                VfOutage += Environment.NewLine + locationDetails + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine, VfSites);
+                VfOutage += Environment.NewLine + locationDetails + Environment.NewLine + "Site List" + Environment.NewLine/* + string.Join(Environment.NewLine, VfSites)*/;
 
-                //if(AffectedSites.Count > 0) {
-                //	foreach(string siteStr in VfSites) {
-                //		VfOutage += Environment.NewLine;
-                //		string[] siteArr = siteStr.Split(new[]{ " - " }, StringSplitOptions.None);
-                //		siteArr[0] = siteArr[0].RemoveLetters();
-                //		while(siteArr[0].StartsWith("0"))
-                //			siteArr[0] = siteArr[0].Substring(1);
-                //		Site site = AffectedSites.Find(s => s.Id == siteArr[0]);
-                //		List<Cell> cells = AffectedCells.FindAll(c => c.ParentSite == siteArr[0]);
-                //		VfOutage += siteStr + " (";
-                //		if(site.Cells.Filter(Cell.Filters.VF_2G).Count > 0) {
-                //			//if(VfGsmAffectedSites == null)
-                //			//	VfGsmAffectedSites = new List<string>();
-                //			//VfGsmAffectedSites.Add(site.FullId);
-                //			VfOutage += "2G: ";
-                //			List<Cell> outageCells = cells.Filter(Cell.Filters.VF_2G);
-                //			if(outageCells.Count > 0)
-                //				VfOutage += outageCells.Count > 9 ? outageCells.Count.ToString() : "0" + outageCells.Count;
-                //			else
-                //				VfOutage += "UP";
-                //		}
-                //		if(site.Cells.Filter(Cell.Filters.VF_3G).Count > 0) {
-                //			//if(VfUmtsAffectedSites == null)
-                //			//	VfUmtsAffectedSites = new List<string>();
-                //			//VfUmtsAffectedSites.Add(site.FullId);
-                //			if(!VfOutage.EndsWith("("))
-                //				VfOutage += " | ";
-                //			VfOutage += "3G: ";
-                //			List<Cell> outageCells = cells.Filter(Cell.Filters.VF_3G);
-                //			if(outageCells.Count > 0)
-                //				VfOutage += outageCells.Count > 9 ? outageCells.Count.ToString() : "0" + outageCells.Count;
-                //			else
-                //				VfOutage += "UP";
-                //		}
-                //		if(site.Cells.Filter(Cell.Filters.VF_4G).Count > 0) {
-                //			//if(VfLteAffectedSites == null)
-                //			//	VfLteAffectedSites = new List<string>();
-                //			//VfLteAffectedSites.Add(site.FullId);
-                //			if(!VfOutage.EndsWith("("))
-                //				VfOutage += " | ";
-                //			VfOutage += "4G: ";
-                //			List<Cell> outageCells = cells.Filter(Cell.Filters.VF_4G);
-                //			if(outageCells.Count > 0)
-                //				VfOutage += outageCells.Count > 9 ? outageCells.Count.ToString() : "0" + outageCells.Count;
-                //			else
-                //				VfOutage += "UP";
-                //		}
-                //		VfOutage += ")";
-                //	}
-                //}
-                //else
-                //VfOutage += Environment.NewLine + string.Join(Environment.NewLine, VfSites);
+                var tempSites = VfSites;
+                for(int c = 0; c < tempSites.Count; c++)
+                {
+                    Site tempSite = AffectedSites.FirstOrDefault(s => s.FullId == tempSites[c]);
+                    if(tempSite != null)
+                    {
+                        if(tempSite.CramerData != null)
+                        {
+                            if (!string.IsNullOrEmpty(tempSite.CramerData.PocType) && !tempSite.CramerData.PocType.Equals("NONE",StringComparison.OrdinalIgnoreCase))
+                                tempSites[c] += " - " + tempSite.CramerData.PocType + "-" + (tempSite.CramerData.OnwardSitesCount + 1);
+                        }
+                    }
+                }
+                VfOutage += string.Join(Environment.NewLine, tempSites);
 
                 if ( VfGsmCells.Count > 0 )
-					VfOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + VfGsmCells.Count + ") Event Time - " + VfGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfGsmCells);
+                {
+                    VfOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + VfGsmCells.Count + ") Event Time - " + VfGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine;
+
+                    var tempCells = VfGsmCells;
+                    for (int c = 0; c < tempCells.Count; c++)
+                    {
+                        Cell tempCell = AffectedCells.FirstOrDefault(s => s.Name == tempCells[c]);
+                        if (tempCell != null)
+                            tempCells[c] = tempCell.BscRnc_Id + " - " + tempCells[c];
+                    }
+
+                    VfOutage += string.Join(Environment.NewLine, tempCells);
+                }
 				if ( VfUmtsCells.Count > 0)
-					VfOutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + VfUmtsCells.Count + ") Event Time - " + VfUmtsTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfUmtsCells);
-				if ( VfLteCells.Count > 0)
+                {
+                    VfOutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + VfUmtsCells.Count + ") Event Time - " + VfUmtsTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine;
+
+                    var tempCells = VfUmtsCells;
+                    for (int c = 0; c < tempCells.Count; c++)
+                    {
+                        Cell tempCell = AffectedCells.FirstOrDefault(s => s.Name == tempCells[c]);
+                        if (tempCell != null)
+                            tempCells[c] = tempCell.BscRnc_Id + " - " + tempCells[c];
+                    }
+
+                    VfOutage += string.Join(Environment.NewLine, tempCells);
+                }
+                if ( VfLteCells.Count > 0)
 					VfOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + VfLteCells.Count + ") Event Time - " + VfLteTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, VfLteCells);
 				
 				for(int c = 0;c < VfSites.Count;c++)
@@ -1082,58 +1185,52 @@ namespace appCore.Templates.Types
                     affectation += " affected " + sites.Count + (sites.Count > 1 ? " sites " : " site ") + cellsCount + (cellsCount > 1 ? " cells" : " cell") + Environment.NewLine;
                     TefOutage += affectation;
                 }
-                TefOutage += Environment.NewLine + locationDetails + Environment.NewLine + "Site List" + Environment.NewLine + string.Join(Environment.NewLine, TefSites);
+                TefOutage += Environment.NewLine + locationDetails + Environment.NewLine + "Site List" + Environment.NewLine/* + string.Join(Environment.NewLine, TefSites)*/;
 
+                var tempSites = TefSites;
+                for (int c = 0; c < tempSites.Count; c++)
+                {
+                    Site tempSite = AffectedSites.FirstOrDefault(s => s.FullId == tempSites[c]);
+                    if (tempSite != null)
+                    {
+                        if (tempSite.CramerData != null)
+                        {
+                            if (!string.IsNullOrEmpty(tempSite.CramerData.PocType) && !tempSite.CramerData.PocType.Equals("NONE", StringComparison.OrdinalIgnoreCase))
+                                tempSites[c] += " - " + tempSite.CramerData.PocType + "-" + (tempSite.CramerData.OnwardSitesCount + 1);
+                        }
+                    }
+                }
+                TefOutage += string.Join(Environment.NewLine, tempSites);
 
-                //            if (AffectedSites.Count > 0) {
-                //	foreach(string siteStr in TefSites) {
-                //		TefOutage += Environment.NewLine;
-                //		string[] siteArr = siteStr.Split(new[]{ " - " }, StringSplitOptions.None);
-                //		siteArr[0] = siteArr[0].RemoveLetters();
-                //		while(siteArr[0].StartsWith("0"))
-                //			siteArr[0] = siteArr[0].Substring(1);
-                //		Site site = AffectedSites.Find(s => s.Id == siteArr[0]);
-                //		List<Cell> cells = AffectedCells.FindAll(c => c.ParentSite == siteArr[0]);
-                //		TefOutage += siteStr + " (";
-                //		if(site.Cells.Filter(Cell.Filters.TF_2G).Count > 0) {
-                //			TefOutage += "2G: ";
-                //			List<Cell> outageCells = cells.Filter(Cell.Filters.TF_2G);
-                //			if(outageCells.Count > 0)
-                //				TefOutage += outageCells.Count > 9 ? outageCells.Count.ToString() : "0" + outageCells.Count;
-                //			else
-                //				TefOutage += "UP";
-                //		}
-                //		if(site.Cells.Filter(Cell.Filters.TF_3G).Count > 0) {
-                //			if(!TefOutage.EndsWith("("))
-                //				TefOutage += " | ";
-                //			TefOutage += "3G: ";
-                //			List<Cell> outageCells = cells.Filter(Cell.Filters.TF_3G);
-                //			if(outageCells.Count > 0)
-                //				TefOutage += outageCells.Count > 9 ? outageCells.Count.ToString() : "0" + outageCells.Count;
-                //			else
-                //				TefOutage += "UP";
-                //		}
-                //		if(site.Cells.Filter(Cell.Filters.TF_4G).Count > 0) {
-                //			if(!TefOutage.EndsWith("("))
-                //				TefOutage += " | ";
-                //			TefOutage += "4G: ";
-                //			List<Cell> outageCells = cells.Filter(Cell.Filters.TF_4G);
-                //			if(outageCells.Count > 0)
-                //				TefOutage += outageCells.Count > 9 ? outageCells.Count.ToString() : "0" + outageCells.Count;
-                //			else
-                //				TefOutage += "UP";
-                //		}
-                //		TefOutage += ")";
-                //	}
-                //}
-                //else
-                //	TefOutage += Environment.NewLine + string.Join(Environment.NewLine, TefSites);
+                if ( TefGsmCells.Count > 0)
+                {
+                    TefOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TefGsmCells.Count + ") Event Time - " + TefGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine;
 
-                if ( TefGsmCells.Count > 0 )
-					TefOutage += Environment.NewLine + Environment.NewLine + "2G Cells (" + TefGsmCells.Count + ") Event Time - " + TefGsmTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefGsmCells);
-				if ( TefUmtsCells.Count > 0)
-					TefOutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + TefUmtsCells.Count + ") Event Time - " + TefUmtsTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefUmtsCells);
-				if ( TefLteCells.Count > 0)
+                    var tempCells = TefGsmCells;
+                    for (int c = 0; c < tempCells.Count; c++)
+                    {
+                        Cell tempCell = AffectedCells.FirstOrDefault(s => s.Name == tempCells[c]);
+                        if (tempCell != null)
+                            tempCells[c] = tempCell.BscRnc_Id + " - " + tempCells[c];
+                    }
+
+                    TefOutage += string.Join(Environment.NewLine, tempCells);
+                }
+                if ( TefUmtsCells.Count > 0)
+                {
+                    TefOutage += Environment.NewLine + Environment.NewLine + "3G Cells (" + TefUmtsCells.Count + ") Event Time - " + TefUmtsTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine;
+
+                    var tempCells = TefUmtsCells;
+                    for (int c = 0; c < tempCells.Count; c++)
+                    {
+                        Cell tempCell = AffectedCells.FirstOrDefault(s => s.Name == tempCells[c]);
+                        if (tempCell != null)
+                            tempCells[c] = tempCell.BscRnc_Id + " - " + tempCells[c];
+                    }
+
+                    TefOutage += string.Join(Environment.NewLine, tempCells);
+                }
+                if ( TefLteCells.Count > 0)
 					TefOutage += Environment.NewLine + Environment.NewLine + "4G Cells (" + TefLteCells.Count + ") Event Time - " + TefLteTime.ToString("dd/MM/yyyy HH:mm") + Environment.NewLine + string.Join(Environment.NewLine, TefLteCells);
 				
 				for(int c = 0;c < TefSites.Count;c++)
@@ -1215,9 +1312,9 @@ namespace appCore.Templates.Types
 				int VfUmtsCellsIndex = Array.FindIndex(tempLog, element => element.StartsWith("3G Cells", StringComparison.Ordinal));
                 int VfLteCellsIndex = Array.FindIndex(tempLog, element => element.StartsWith("4G Cells", StringComparison.Ordinal));
 
-                var temp = log.Slice(VfLocationsIndex + 1, VfSitesListIndex - 1);
-                int locationsEmptySeparatorIndex = Array.FindIndex(temp, element => string.IsNullOrEmpty(element));
-                VfLocations = locationsEmptySeparatorIndex == -1 ? temp.ToList() : temp.Slice(0, locationsEmptySeparatorIndex).Select(s => s.Split(strToFind, StringSplitOptions.None)[0]).ToList();
+                //var temp = log.Slice(VfLocationsIndex + 1, VfSitesListIndex - 1);
+                //int locationsEmptySeparatorIndex = Array.FindIndex(temp, element => string.IsNullOrEmpty(element));
+                //VfLocations = locationsEmptySeparatorIndex == -1 ? temp.ToList() : temp.Slice(0, locationsEmptySeparatorIndex).Select(s => s.Split(strToFind, StringSplitOptions.None)[0]).ToList();
 
 				int endIndex = VfGsmCellsIndex > -1 ? VfGsmCellsIndex - 1 : (VfUmtsCellsIndex > -1 ? VfUmtsCellsIndex - 1 : (VfLteCellsIndex > -1 ? VfLteCellsIndex - 1 : tempLog.Length));
 				VfSites = tempLog.Slice(VfSitesListIndex + 1, endIndex)
@@ -1285,9 +1382,9 @@ namespace appCore.Templates.Types
 				int TefUmtsCellsIndex = Array.FindLastIndex(tempLog, element => element.StartsWith("3G Cells", StringComparison.Ordinal));
 				int TefLteCellsIndex = Array.FindLastIndex(tempLog, element => element.StartsWith("4G Cells", StringComparison.Ordinal));
 
-                var temp = log.Slice(TefLocationsIndex + 1, TefSitesListIndex - 1);
-                int locationsEmptySeparatorIndex = Array.FindIndex(temp, element => string.IsNullOrEmpty(element));
-                TefLocations = locationsEmptySeparatorIndex == -1 ? temp.ToList() : temp.Slice(0, locationsEmptySeparatorIndex).Select(s => s.Split(strToFind, StringSplitOptions.None)[0]).ToList();
+                //var temp = log.Slice(TefLocationsIndex + 1, TefSitesListIndex - 1);
+                //int locationsEmptySeparatorIndex = Array.FindIndex(temp, element => string.IsNullOrEmpty(element));
+                //TefLocations = locationsEmptySeparatorIndex == -1 ? temp.ToList() : temp.Slice(0, locationsEmptySeparatorIndex).Select(s => s.Split(strToFind, StringSplitOptions.None)[0]).ToList();
 
                 int endIndex = TefGsmCellsIndex > -1 ? TefGsmCellsIndex - 1 : (TefUmtsCellsIndex > -1 ? TefUmtsCellsIndex - 1 : (TefLteCellsIndex > -1 ? TefLteCellsIndex - 1 : TefBulkCiIndex));
                 TefSites = log.Slice(TefSitesListIndex + 1, endIndex)

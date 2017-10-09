@@ -15,10 +15,10 @@ using System.Threading;
 using System.Windows.Forms;
 using appCore.Netcool;
 using appCore.SiteFinder.UI;
-using appCore.Templates.Types;
+using appCore.Templates.RAN.Types;
 using appCore.UI;
 
-namespace appCore.Templates.UI
+namespace appCore.Templates.RAN.UI
 {
 	/// <summary>
 	/// Description of OutageControls.
@@ -149,19 +149,28 @@ namespace appCore.Templates.UI
         async void GenerateFromAlarms()
         {
             LoadingPanel loading = new LoadingPanel();
+            loading.LoadingSpinnerStyle = ProgressBarStyle.Continuous;
+            loading.LoadingSpinnerProgressValue = 0;
             loading.Show(true, this);
 
             bool parsingError = false;
             string textBoxContent = Alarms_ReportTextBox.Text;
+
+            loading.LoadingSpinnerProgressValue = 10;
 
             await System.Threading.Tasks.Task.Run(() =>
             {
 			    try
                 {
 			        AlarmsParser alarms = new AlarmsParser(textBoxContent, AlarmsParser.ParsingMode.Outage, false);
-			        currentOutage = alarms.GenerateOutage();
-			    }
-			    catch(Exception ex)
+                    loading.LoadingSpinnerProgressValue = 50;
+                    currentOutage = alarms.GenerateOutage();
+                    loading.LoadingSpinnerProgressValue = 90;
+                    Thread.Sleep(1000);
+                    loading.LoadingSpinnerProgressValue = 100;
+                    Thread.Sleep(800);
+                }
+                catch (Exception ex)
                 {
 			        MainForm.trayIcon.showBalloon("Error parsing alarms","An error occurred while parsing the alarms.\nError message:\n" + ex.Message);
                     parsingError = true;
@@ -170,8 +179,10 @@ namespace appCore.Templates.UI
             });
 
             if (parsingError)
+            {
+                loading.Close();
                 return;
-
+            }
             loading.ToggleLoadingSpinner();
 
             if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
@@ -216,23 +227,33 @@ namespace appCore.Templates.UI
 			    MainForm.logFiles.HandleOutageLog(currentOutage);
 			}
 
+            //loading.LoadingSpinnerProgressValue = 100;
+            //Thread.Sleep(10000);
             loading.Close();
 		}
 
         async void GenerateFromExistingReport()
         {
-            LoadingPanel load = new LoadingPanel();
-            load.Show(false, this);
+            LoadingPanel loading = new LoadingPanel();
+            loading.LoadingSpinnerStyle = ProgressBarStyle.Continuous;
+            loading.LoadingSpinnerProgressValue = 0;
+            loading.Show(true, this);
 
             bool parsingError = false;
             string[] textBoxContent = Alarms_ReportTextBox.Lines;
             string err = string.Empty;
 
+            loading.LoadingSpinnerProgressValue = 35;
+
             await System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {
-                    currentOutage = new Outage(textBoxContent, DateTime.Now);
+                    currentOutage = new Outage(textBoxContent, DateTime.Now, true);
+                    loading.LoadingSpinnerProgressValue = 80;
+                    Thread.Sleep(1500);
+                    loading.LoadingSpinnerProgressValue = 100;
+                    Thread.Sleep(800);
                 }
                 catch (Exception ex)
                 {
@@ -245,7 +266,7 @@ namespace appCore.Templates.UI
                 MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nError message:\n" + err);
             else
             {
-                load.ToggleLoadingSpinner();
+                loading.ToggleLoadingSpinner();
 
                 if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
                     VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
@@ -256,6 +277,7 @@ namespace appCore.Templates.UI
                         MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
                         Alarms_ReportTextBox.Text = string.Empty;
                         VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                        loading.Close();
                         return;
                     }
                     if (!string.IsNullOrEmpty(currentOutage.VfOutage))
@@ -275,7 +297,7 @@ namespace appCore.Templates.UI
                 if (!string.IsNullOrEmpty(currentOutage.VfOutage) || !string.IsNullOrEmpty(currentOutage.TefOutage))
                 {
                     GenerationSourceContainer.Visible =
-                        generateReportToolStripMenuItem.Enabled =false;
+                        generateReportToolStripMenuItem.Enabled = false;
                     Alarms_ReportTextBox.ReadOnly =
                         BulkCITextBox.ReadOnly = true;
                     outageFollowUpToolStripMenuItem.Enabled =
@@ -288,17 +310,21 @@ namespace appCore.Templates.UI
                     MainForm.logFiles.HandleOutageLog(currentOutage);
                 }
             }
-            
-            load.Close();
+
+            loading.Close();
         }
 
         async void GenerateFromSitesList()
         {
-            LoadingPanel load = new LoadingPanel();
-            load.Show(false, this);
+            LoadingPanel loading = new LoadingPanel();
+            loading.LoadingSpinnerStyle = ProgressBarStyle.Continuous;
+            loading.LoadingSpinnerProgressValue = 0;
+            loading.Show(true, this);
 
             bool parsingError = false;
             string[] textBoxContent = Alarms_ReportTextBox.Lines;
+
+            loading.LoadingSpinnerProgressValue = 10;
 
             await System.Threading.Tasks.Task.Run(() =>
             {
@@ -313,7 +339,13 @@ namespace appCore.Templates.UI
                             input[c] = input[c].Substring(1);
                     }
 
+                    loading.LoadingSpinnerProgressValue = 25;
+
                     currentOutage = new Outage(input);
+                    loading.LoadingSpinnerProgressValue = 90;
+                    Thread.Sleep(1000);
+                    loading.LoadingSpinnerProgressValue = 100;
+                    Thread.Sleep(800);
                 }
                 catch (Exception ex)
                 {
@@ -326,7 +358,7 @@ namespace appCore.Templates.UI
                 MainForm.trayIcon.showBalloon("Error parsing alarms", "An error occurred while parsing the alarms.\nMake sure you're pasting alarms from Netcool");
             else
             {
-                load.ToggleLoadingSpinner();
+                loading.ToggleLoadingSpinner();
                 
                 if (!string.IsNullOrEmpty(currentOutage.VfOutage) && !string.IsNullOrEmpty(currentOutage.TefOutage))
                     VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = VFReportRadioButton.Checked = true;
@@ -337,6 +369,7 @@ namespace appCore.Templates.UI
                         MainForm.trayIcon.showBalloon("Empty report", "The alarms inserted have no COOS in its content, output is blank");
                         Alarms_ReportTextBox.Text = string.Empty;
                         VFReportRadioButton.Enabled = TFReportRadioButton.Enabled = false;
+                        loading.Close();
                         return;
                     }
                     if (!string.IsNullOrEmpty(currentOutage.VfOutage))
@@ -368,7 +401,7 @@ namespace appCore.Templates.UI
                 }
             }
 
-            load.Close();
+            loading.Close();
         }
 
         void OutageFollowUp(object sender, EventArgs e)
@@ -542,8 +575,9 @@ namespace appCore.Templates.UI
 			        newRow["4G Only Sites"] = VFReportRadioButton.Checked ? currentOutage.VfLteOnlyAffectedSites[c] : currentOutage.TefLteOnlyAffectedSites[c];
 			    dt.Rows.Add(newRow);
 			}
-			sitesFullNameCheckBox.CheckedChanged += (s, a) => {
-                    var x = currentOutage.VfGsmOnlyAffectedSites;
+			sitesFullNameCheckBox.CheckedChanged += (s, a) =>
+            {
+                var x = currentOutage.VfGsmOnlyAffectedSites;
 			    if (sitesFullNameCheckBox.Checked)
 			    {
 			        dataGridView.DataSource = null;
@@ -552,9 +586,10 @@ namespace appCore.Templates.UI
                     for(int c = 0;c < dataGridView.Columns.Count;c++)
                     {
                         dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
-                        dataGridView.Columns[c].HeaderText += " (0)";
+                        if (dataGridView.Columns[c].HeaderText.IndexOf(" (") == -1)
+                            dataGridView.Columns[c].HeaderText += " (0)";
                     }
-                    }
+                }
 			    else
 			    {
 			        DataTable tempDT = new DataTable(dt.TableName);
@@ -585,7 +620,8 @@ namespace appCore.Templates.UI
                     for (int c = 0; c < dataGridView.Columns.Count; c++)
                     {
                         dataGridView.Columns[c].SortMode = DataGridViewColumnSortMode.NotSortable;
-                        dataGridView.Columns[c].HeaderText += " (0)";
+                        if (dataGridView.Columns[c].HeaderText.IndexOf(" (") == -1)
+                            dataGridView.Columns[c].HeaderText += " (0)";
                     }
                 }
 			};
