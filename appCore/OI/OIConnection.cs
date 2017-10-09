@@ -51,9 +51,14 @@ namespace appCore.OI
 		static string OIPassword = string.Empty;
 		static Uri OiPortalUri = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com/");
 		static bool loggedOn;
-		public static bool LoggedOn {
-			get { return loggedOn; }
-			private set {
+		public static bool LoggedOn
+        {
+			get
+            {
+                return loggedOn;
+            }
+			private set
+            {
 				loggedOn = value;
 				LoggedOnCheckTimeStamp = loggedOn ? DateTime.Now : new DateTime(1, 1, 1);
 				
@@ -62,8 +67,49 @@ namespace appCore.OI
 		static DateTime LoggedOnCheckTimeStamp;
 		static TimeSpan LogonCheckLifeTime = new TimeSpan(0, 30, 0);
 		
-		public static bool Available {
-			get {
+		//public static bool Available {
+		//	get {
+  //              var task = new Task<bool>(() =>
+  //              {
+  //                  if (CheckAvailability() == HttpStatusCode.OK)
+  //                  {
+  //                      AvailableCheckTimeStamp = DateTime.Now;
+  //                      return true;
+  //                  }
+  //                  return false;
+  //              });
+  //              task.Start();
+  //              bool OiAvailability = task.Wait(TimeSpan.FromMilliseconds(7500)) && task.Result;
+  //              if(!OiAvailability)
+  //                  OiAvailability = task.Wait(TimeSpan.FromMilliseconds(7500)) && task.Result;
+
+  //              try
+  //              {
+  //                  task.Dispose();
+  //              }
+  //              catch(Exception e)
+  //              {
+  //                  var t = e.Message;
+  //              }
+				
+		//		AvailableCheckTimeStamp = new DateTime(1, 1, 1);
+
+		//		return OiAvailability;
+		//	}
+		//	private set { }
+		//}
+		static DateTime AvailableCheckTimeStamp;
+		static TimeSpan AvailabilityCheckLifeTime = new TimeSpan(0, 30, 0);
+		
+		public static CookieContainer OICookieContainer {
+			get;
+			private set;
+		}
+
+        public async static Task<bool> Available()
+        {
+            bool OiAvailability = await Task.Run(() =>
+            {
                 var task = new Task<bool>(() =>
                 {
                     if (CheckAvailability() == HttpStatusCode.OK)
@@ -74,32 +120,26 @@ namespace appCore.OI
                     return false;
                 });
                 task.Start();
-                bool OiAvailability = task.Wait(TimeSpan.FromMilliseconds(7500)) && task.Result;
-                if(!OiAvailability)
-                    OiAvailability = task.Wait(TimeSpan.FromMilliseconds(7500)) && task.Result;
+                bool avail = task.Wait(TimeSpan.FromMilliseconds(7500)) && task.Result;
+                if (!avail)
+                        avail = task.Wait(TimeSpan.FromMilliseconds(7500)) && task.Result;
 
                 try
                 {
                     task.Dispose();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     var t = e.Message;
                 }
-				
-				AvailableCheckTimeStamp = new DateTime(1, 1, 1);
 
-				return OiAvailability;
-			}
-			private set { }
-		}
-		static DateTime AvailableCheckTimeStamp;
-		static TimeSpan AvailabilityCheckLifeTime = new TimeSpan(0, 30, 0);
-		
-		public static CookieContainer OICookieContainer {
-			get;
-			private set;
-		}
+                return avail;
+            });
+
+            AvailableCheckTimeStamp = new DateTime(1, 1, 1);
+
+            return OiAvailability;
+        }
 		
 		static void Logon()
 		{
@@ -117,9 +157,9 @@ namespace appCore.OI
 			
 			string restRequest = "/sso/index.php?url=%2F";
 			IRestRequest request = new RestRequest(restRequest, Method.POST);
-			request.AddParameter("username", OIUsername);
-			request.AddParameter("password", OIPassword.DecryptText());
-			request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddParameter("username", OIUsername);
+            request.AddParameter("password", OIPassword.Decrypt());
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 			
 			IRestResponse response = client.Execute(request);
 			
@@ -185,36 +225,64 @@ namespace appCore.OI
 						Settings.SettingsFile.OIPassword = OIPassword;
 				}
 			}
-		}
-		
-		public static bool InitiateOiConnection() {
-			// Instantiate RestSharp client
-			
-			client = new RestClient();
-			
-			// Check server availability
-			bool OiAvailable = (DateTime.Now - AvailableCheckTimeStamp) > AvailabilityCheckLifeTime ?
-				Available :
-				true;
-			
-			if(OiAvailable) {
-				// Check Login state
-				bool loginState = LoggedOn;
-				if(!loginState)
-					Logon();
-				else {
-					if((DateTime.Now - LoggedOnCheckTimeStamp) > LogonCheckLifeTime)
-						RevalidateLoginState(); // If logon check lifetime expired, confirm on server
-				}
-			}
-			return OiAvailable;
-		}
-		
-		/// <summary>
-		/// Requests the export CSV files from OI APIs
-		/// </summary>
-		/// <param name="dataToRequest">"sites", "cells"</param>
-		public static string requestApiOutput(string dataToRequest)
+        }
+
+        public async static Task<bool> InitiateOiConnection()
+        {
+            // Instantiate RestSharp client
+
+            client = new RestClient();
+
+            // Check server availability
+            bool OiAvailable = (DateTime.Now - AvailableCheckTimeStamp) > AvailabilityCheckLifeTime ?
+                await Available() : true;
+
+            if (OiAvailable)
+            {
+                // Check Login state
+                bool loginState = LoggedOn;
+                if (!loginState)
+                    Logon();
+                else
+                {
+                    if ((DateTime.Now - LoggedOnCheckTimeStamp) > LogonCheckLifeTime)
+                        RevalidateLoginState(); // If logon check lifetime expired, confirm on server
+                }
+            }
+            return OiAvailable;
+        }
+
+        public async static Task<bool> InitiateOiConnectionAsync()
+        {
+            // Instantiate RestSharp client
+
+            client = new RestClient();
+
+            // Check server availability
+            bool OiAvailable = (DateTime.Now - AvailableCheckTimeStamp) > AvailabilityCheckLifeTime ?
+                await Available() :
+                true;
+
+            if (OiAvailable)
+            {
+                // Check Login state
+                bool loginState = LoggedOn;
+                if (!loginState)
+                    Logon();
+                else
+                {
+                    if ((DateTime.Now - LoggedOnCheckTimeStamp) > LogonCheckLifeTime)
+                        RevalidateLoginState(); // If logon check lifetime expired, confirm on server
+                }
+            }
+            return OiAvailable;
+        }
+
+        /// <summary>
+        /// Requests the export CSV files from OI APIs
+        /// </summary>
+        /// <param name="dataToRequest">"sites", "cells"</param>
+        public static string requestApiOutput(string dataToRequest)
 		{
 			InitiateOiConnection();
 			if(LoggedOn) {
@@ -293,7 +361,7 @@ namespace appCore.OI
         /// <param name="bearer">Bearer</param>
         public async static Task<string> requestApiOutputAsync(string API, IEnumerable<string> sitesList, int bearer = 4)
         {
-            InitiateOiConnection();
+            await InitiateOiConnection();
             if (LoggedOn)
             {
                 client.BaseUrl = new Uri("http://operationalintelligence.vf-uk.corp.vodafone.com");
