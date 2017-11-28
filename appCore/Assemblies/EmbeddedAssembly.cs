@@ -13,22 +13,19 @@ public static class EmbeddedAssemblies
 	
 	public static void Init()
 	{
-		// http://www.codeproject.com/Articles/528178/Load-DLL-From-Embedded-Resource
-		
-		Load("appCore.Assemblies.RestSharp.dll", "RestSharp.dll");
-		Load("appCore.Assemblies.Outlook.dll", "Outlook.dll");
-		Load("appCore.Assemblies.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
-		Load("appCore.Assemblies.BMC.ARSystem.dll", "BMC.ARSystem.dll");
-		Load("appCore.Assemblies.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
-		Load("appCore.Assemblies.GMap.NET.Core.dll", "GMap.NET.Core.dll");
-		Load("appCore.Assemblies.FileHelpers.dll", "FileHelpers.dll");
-		Load("appCore.Assemblies.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
-        //Load("appCore.Assemblies.System.Data.SQLite.1.0.105.2.EntityFramework.dll", "EntityFramework.dll");
-        Load("appCore.Assemblies.SQLite.EntityFramework.dll", "EntityFramework.dll");
-        Load("appCore.Assemblies.SQLite.EntityFramework.SqlServer.dll", "EntityFramework.SqlServer.dll");
-        Load("appCore.Assemblies.SQLite.System.Data.SQLite.dll", "System.Data.SQLite.dll");
-        Load("appCore.Assemblies.SQLite.System.Data.SQLite.EF6.dll", "System.Data.SQLite.EF6.dll");
-        Load("appCore.Assemblies.SQLite.System.Data.SQLite.Linq.dll", "System.Data.SQLite.Linq.dll");
+        // http://www.codeproject.com/Articles/528178/Load-DLL-From-Embedded-Resource
+
+        //Load("appCore.Assemblies.RestSharp.dll", "RestSharp.dll");
+        //Load("appCore.Assemblies.Outlook.dll", "Outlook.dll");
+        //Load("appCore.Assemblies.ICSharpCode.SharpZipLib.dll", "ICSharpCode.SharpZipLib.dll");
+        Load("appCore.Assemblies.BMC.ARSystem.dll", "BMC.ARSystem.dll");
+        Load("appCore.Assemblies.BMC.arnettoc.dll", "BMC.arnettoc.dll");
+        Load("appCore.Assemblies.BMC.ARSystem.Utilities.Common.dll", "BMC.ARSystem.Utilities.Common.dll");
+        Load("appCore.Assemblies.BMC.Atrium.dll", "BMC.Atrium.dll");
+        //Load("appCore.Assemblies.GMap.NET.WindowsForms.dll", "GMap.NET.WindowsForms.dll");
+        //Load("appCore.Assemblies.GMap.NET.Core.dll", "GMap.NET.Core.dll");
+        //Load("appCore.Assemblies.FileHelpers.dll", "FileHelpers.dll");
+        //Load("appCore.Assemblies.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
         //Load("appCore.Assemblies.GeoUk.dll", "GeoUk.dll");
         //Load("appCore.Assemblies.Svg2.3.0.dll", "Svg2.3.0.dll");
 

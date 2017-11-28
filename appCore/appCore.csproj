@@ -23,6 +23,8 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -49,40 +51,81 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BMC.arnettoc">
+      <HintPath>Assemblies\BMC.arnettoc.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="BMC.ARSystem">
       <HintPath>Assemblies\BMC.ARSystem.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="BMC.ARSystem.Utilities.Common">
+      <HintPath>Assemblies\BMC.ARSystem.Utilities.Common.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="BMC.Atrium">
+      <HintPath>Assemblies\BMC.Atrium.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CircularProgressBar, Version=2.5.6403.13419, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CircularProgressBar.2.5.6403.13419\lib\net35-client\CircularProgressBar.dll</HintPath>
+    </Reference>
+    <Reference Include="Costura, Version=1.6.2.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Costura.Fody.1.6.2\lib\dotnet\Costura.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>Assemblies\SQLite\EntityFramework.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>Assemblies\SQLite\EntityFramework.SqlServer.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="FileHelpers">
-      <HintPath>Assemblies\FileHelpers.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="EPPlus, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.1.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
-    <Reference Include="GeoUk">
-      <HintPath>Assemblies\GeoUk.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <HintPath>..\packages\FileHelpers.3.1.5\lib\net45\FileHelpers.dll</HintPath>
     </Reference>
-    <Reference Include="GMap.NET.Core">
-      <HintPath>Assemblies\GMap.NET.Core.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="GeoUk, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoUK.1.1.0\lib\portable-net45+win+wpa81+wp80\GeoUk.dll</HintPath>
     </Reference>
-    <Reference Include="GMap.NET.WindowsForms">
-      <HintPath>Assemblies\GMap.NET.WindowsForms.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="GMap.NET.Core, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\packages\GMap.NET.Windows.1.8.0\lib\net40\GMap.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>Assemblies\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="GMap.NET.WindowsForms, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\packages\GMap.NET.Windows.1.8.0\lib\net40\GMap.NET.WindowsForms.dll</HintPath>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsPresentation, Version=1.7.6.0, Culture=neutral, PublicKeyToken=b85b9027b614afef, processorArchitecture=MSIL">
+      <HintPath>..\packages\GMap.NET.Windows.1.8.0\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.6.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MetroFramework, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="MetroFramework.Design, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="MetroFramework.Fonts, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Fonts.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.WebServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.WebServices.Auth, Version=15.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Exchange.WebServices.2.2\lib\40\Microsoft.Exchange.WebServices.Auth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml">
       <Private>False</Private>
@@ -91,21 +134,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Assemblies\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Outlook">
       <HintPath>Assemblies\Outlook.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>Assemblies\RestSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Svg2.3.0">
-      <HintPath>Assemblies\Svg2.3.0.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -116,17 +153,14 @@
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.SQLite">
-      <HintPath>Assemblies\SQLite\System.Data.SQLite.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net45\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.EF6">
-      <HintPath>Assemblies\SQLite\System.Data.SQLite.EF6.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.105.2\lib\net45\System.Data.SQLite.EF6.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.Linq">
-      <HintPath>Assemblies\SQLite\System.Data.SQLite.Linq.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.105.2\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.DirectoryServices" />
@@ -143,8 +177,17 @@
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TentacleSoftware.Telnet, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TentacleSoftware.Telnet.1.0.3.0\lib\net45\TentacleSoftware.Telnet.dll</HintPath>
+    </Reference>
+    <Reference Include="Transitions, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\dot-net-transitions.1.2.1.0\lib\net40-full\Transitions.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WinFormAnimation, Version=1.5.6298.3372, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WinFormAnimation.1.5.6298.3372\lib\net35-client\WinFormAnimation.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +196,27 @@
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="DB\SitesDB.cs" />
     <Compile Include="DB\WeatherCollection.cs" />
+    <Compile Include="OSS\Ericsson\AMTConsole.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OSS\Ericsson\Common.cs" />
+    <Compile Include="OSS\Ericsson\OssForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OSS\Ericsson\OssForm.Designer.cs">
+      <DependentUpon>OssForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OSS\Ericsson\Structs.cs" />
+    <Compile Include="OSS\Ericsson\TelnetClient\AnsiColor.cs" />
+    <Compile Include="OSS\Ericsson\TelnetClient\HttpTunnel\Base64Encoder.cs" />
+    <Compile Include="OSS\Ericsson\TelnetClient\HttpTunnel\HttpTunnel.cs" />
+    <Compile Include="OSS\Ericsson\TelnetClient\MinimalisticTelnet.cs" />
+    <Compile Include="TestsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestsForm.Designer.cs">
+      <DependentUpon>TestsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GeoAPIs\GMap.NET\GmapMarkerWithLabel.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\TemperatureObj.cs" />
     <Compile Include="GeoAPIs\OpenWeatherAPI\City.cs" />
@@ -208,6 +272,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Toolbox\CellExtensions.cs" />
+    <Compile Include="Toolbox\ControlsExtensions.cs" />
     <Compile Include="Toolbox\StringCipher.cs" />
     <Compile Include="Toolbox\EnumExtensions.cs" />
     <Compile Include="Toolbox\GraphicsExtension.cs" />
@@ -219,1053 +284,6 @@
     <Compile Include="Toolbox\NumericComparer.cs" />
     <Compile Include="Toolbox\NumericListComparer.cs" />
     <Compile Include="Toolbox\SortAlphabetLength.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\CF Implementation.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingAverageGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingBeginsWith.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingBetween.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingColorScaleGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingContainsBlanks.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingContainsErrors.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingContainsText.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingDataBarGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingDuplicateValues.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingEndsWith.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingExpression.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingFiveIconSet.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingFourIconSet.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingGreaterThan.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingGreaterThanOrEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingIconSetGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingLessThan.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingLessThanOrEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingNotBetween.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingNotContainsBlanks.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingNotContainsErrors.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingNotContainsText.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingNotEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingRule.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingStdDevGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingThreeColorScale.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingThreeIconSet.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingTimePeriodGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingTopBottomGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingTwoColorScale.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingUniqueValues.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithFormula.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithFormula2.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithRank.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithReverse.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithShowValue.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithStdDev.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IExcelConditionalFormattingWithText.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Contracts\IRangeConditionalFormatting.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingColorScaleValue.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingConstants.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingEnums.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingHelper.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingIconDatabarValue.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingOperatorType.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingRuleFactory.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingRuleType.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingTimePeriodType.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\ExcelConditionalFormattingValueObjectType.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\RangeConditionalFormatting.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingAboveAverage.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingAboveOrEqualAverage.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingAboveStdDev.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingAverageGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBeginsWith.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBelowAverage.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBelowOrEqualAverage.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBelowStdDev.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBetween.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBottom.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingBottomPercent.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingContainsBlanks.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingContainsErrors.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingContainsText.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingDataBar.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingDuplicateValues.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingEndsWith.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingExpression.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingFiveIconSet.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingFourIconSet.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingGreaterThan.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingGreaterThanOrEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingLast7Days.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingLastMonth.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingLastWeek.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingLessThan.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingLessThanOrEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNextMonth.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNextWeek.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNotBetween.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNotContainsBlanks.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNotContainsErrors.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNotContainsText.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingNotEqual.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingRule.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingThisMonth.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingThisWeek.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingThreeColorScale.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingThreeIconSet.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingTimePeriodGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingToday.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingTomorrow.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingTop.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingTopPercent.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingTwoColorScale.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingUniqueValues.cs" />
-    <Compile Include="Toolbox\EPPlus\ConditionalFormatting\Rules\ExcelConditionalFormattingYesterday.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidation.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationCustom.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationDateTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationDecimal.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationInt.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationList.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationWithFormula.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationWithFormula2.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Contracts\IExcelDataValidationWithOperator.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidation.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationCustom.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationDateTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationDecimal.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationFactory.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationInt.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationList.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationOperator.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationType.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationWarningStyle.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationWithFormula.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelDataValidationWithFormula2.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\ExcelTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormula.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormulaDateTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormulaDecimal.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormulaInt.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormulaList.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormulaTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\Contracts\IExcelDataValidationFormulaWithValue.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormula.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaCustom.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaDateTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaDecimal.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaInt.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaList.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaTime.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\Formulas\ExcelDataValidationFormulaValue.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\IRangeDataValidation.cs" />
-    <Compile Include="Toolbox\EPPlus\DataValidation\RangeDataValidation.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelBarChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartAxis.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartDataLabel.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartLegend.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartPlotArea.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartSerie.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartSerieDataLabel.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartSeries.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartTitle.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelChartTrendline.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelDoughnutChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelLineChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelLineChartSerie.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelOfPieChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelPieChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelPieChartSerie.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelScatterChart.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Chart\ExcelScatterChartSerie.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelDrawingBase.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelDrawingBorder.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelDrawingFill.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelDrawings.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelPicture.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelShape.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\ExcelView3D.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingBase.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingBaseCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingComment.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingCommentCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingPicture.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingPictureCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Drawing\Vml\ExcelVmlDrawingPosition.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelAddress.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelBackgroundImage.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelCell.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelCellAddress.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelCellBase.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelColumn.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelComment.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelCommentCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelEncryption.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelHeaderFooter.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelHyperLink.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelNamedRange.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelNamedRangeCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelPackage.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelPrinterSettings.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelProtection.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelRange.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelRangeBase.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelRow.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelSheetProtection.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelStyleCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelStyles.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelTextFormat.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelWorkbook.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelWorkbookView.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelWorksheet.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelWorksheets.cs" />
-    <Compile Include="Toolbox\EPPlus\ExcelWorksheetView.cs" />
-    <Compile Include="Toolbox\EPPlus\IRangeID.cs" />
-    <Compile Include="Toolbox\EPPlus\OfficeProperties.cs" />
-    <Compile Include="Toolbox\EPPlus\RangeCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\DxfStyleBase.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfBorder.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfBorderItem.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfColor.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfFill.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfFontBase.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfNumberFormat.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\Dxf\ExcelDxfStyle.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelBorder.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelBorderItem.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelColor.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelFill.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelFont.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelGradientFill.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelNumberFormat.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelParagraph.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelParagraphCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelRichText.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelRichTextCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelStyle.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\ExcelTextFont.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\IStyle.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\StyleBase.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\StyleChangeEventArgs.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelBorderItemXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelBorderXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelColorXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelFillXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelFontXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelGradientFillXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelNamedStyleXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelNumberFormatXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\ExcelXfsXml.cs" />
-    <Compile Include="Toolbox\EPPlus\Style\XmlAccess\StyleXmlHelper.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\ExcelTable.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\ExcelTableCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\ExcelTableColumn.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\ExcelTableColumnCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotCacheDefinition.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTable.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTableCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTableDataField.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTableField.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTableFieldCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTableFieldGroup.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTableFieldItem.cs" />
-    <Compile Include="Toolbox\EPPlus\Table\PivotTable\ExcelPivotTablePageFieldSettings.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\AddressUtility.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\Argument.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\ArgumentExtensions.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\CompoundDocument.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\EncryptedPackageHandler.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\IArgument.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\IExcelCell.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\IValidationResult.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\Require.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\SqRefUtility.cs" />
-    <Compile Include="Toolbox\EPPlus\Utils\ValidationResult.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVbaModule.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVbaModuleAttribute.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVBAModuleCollection.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVBAProject.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVbaProtection.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVBAReference.cs" />
-    <Compile Include="Toolbox\EPPlus\VBA\ExcelVBASignature.cs" />
-    <Compile Include="Toolbox\EPPlus\XmlHelper.cs" />
-    <Compile Include="Toolbox\EPPlus\XmlHelperFactory.cs" />
-    <Compile Include="Toolbox\EWS\Attributes\AttachableAttribute.cs" />
-    <Compile Include="Toolbox\EWS\Attributes\EwsEnumAttribute.cs" />
-    <Compile Include="Toolbox\EWS\Attributes\RequiredServerVersionAttribute.cs" />
-    <Compile Include="Toolbox\EWS\Attributes\SchemaAttribute.cs" />
-    <Compile Include="Toolbox\EWS\Attributes\ServiceObjectDefinitionAttribute.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\AlternateMailbox.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\AlternateMailboxCollection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\AutodiscoverDnsClient.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\AutodiscoverError.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\AutodiscoverResponseCollection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\AutodiscoverService.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ComparisonHelpers.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ConfigurationSettings\ConfigurationSettingsBase.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ConfigurationSettings\Outlook\OutlookAccount.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ConfigurationSettings\Outlook\OutlookConfigurationSettings.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ConfigurationSettings\Outlook\OutlookProtocol.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ConfigurationSettings\Outlook\OutlookUser.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\DirectoryHelper.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\DocumentSharingLocation.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\DocumentSharingLocationCollection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\DomainSettingError.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ProtocolConnection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\ProtocolConnectionCollection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Requests\AutodiscoverRequest.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Requests\GetDomainSettingsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Requests\GetUserSettingsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Responses\AutodiscoverResponse.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Responses\GetDomainSettingsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Responses\GetDomainSettingsResponseCollection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Responses\GetUserSettingsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\Responses\GetUserSettingsResponseCollection.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\UserSettingError.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\WebClientUrl.cs" />
-    <Compile Include="Toolbox\EWS\Autodiscover\WebClientUrlCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AddressEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AddressEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AppointmentOccurrenceId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ApprovalRequestData.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ArchiveTag.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Attachment.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AttachmentCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Attendee.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AttendeeCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AttributedString.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AttributedStringCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Attribution.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\AttributionCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\CalendarEvent.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\CalendarEventDetails.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\Conflict.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\OofSettings.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\Suggestion.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\TimeSuggestion.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\WorkingHours.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Availability\WorkingPeriod.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ByteArrayArray.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ChangeHighlights.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ClientAccessTokenRequest.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ClientApp.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ClientAppMetadata.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ClientExtension.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\CompleteName.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ComplexProperty.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ComplexPropertyCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ContactEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ContactEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ContactPhoneEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ContactPhoneEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ConversationId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ConversationNode.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ConversationNodeCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ConversationRequest.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ConversationResponse.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\CreateRuleOperation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DelegatePermissions.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DelegateUser.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DeletedOccurrenceInfo.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DeletedOccurrenceInfoCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DeleteRuleOperation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DictionaryEntryProperty.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\DictionaryProperty.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailAddress.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailAddressCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailAddressDictionary.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailAddressEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailAddressEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailAddressEntry.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailUserEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EmailUserEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EnhancedLocation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\EntityExtractionResult.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ExtendedProperty.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ExtendedPropertyCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ExtractedEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\FileAttachment.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Flag.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\FolderId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\FolderIdCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\FolderPermission.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\FolderPermissionCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\GenericItemAttachment.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\GroupMember.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\GroupMemberCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\HighlightTerm.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ImAddressDictionary.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ImAddressEntry.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\InternetMessageHeader.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\InternetMessageHeaderCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ItemAttachment.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ItemCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ItemId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ItemIdCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Mailbox.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ManagedFolderInformation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MeetingSuggestion.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MeetingSuggestionCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MeetingTimeZone.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MessageBody.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MimeContent.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MimeContentBase.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\MimeContentUTF8.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\NormalizedBody.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\OccurrenceInfo.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\OccurrenceInfoCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\OnlineMeetingSettings.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\CompanyInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\CompanyInsightValueCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\ComputedInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\ComputedInsightValueProperty.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\ComputedInsightValuePropertyCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\DelveDocument.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\EducationInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\EmailInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\InsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\InsightValueCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\JobInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\JobInsightValueCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\MeetingInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\MultiValueInsightContent.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\OutOfOfficeInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\Person.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\PersonInsight.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\PersonInsightCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\ProfileInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\ProfileInsightValueCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\SingleValueInsightContent.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\SkillInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\SkillInsightValueCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\StringInsightValue.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PeopleInsights\UserProfilePicture.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PersonaEmailAddress.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PersonaEmailAddressCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PersonaId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PersonaPostalAddress.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PhoneEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PhoneEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PhoneNumberDictionary.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PhoneNumberEntry.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PhysicalAddressDictionary.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PhysicalAddressEntry.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\PolicyTag.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\DayOfTheWeekCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.DailyPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.DailyRegenerationPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.IntervalPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.MonthlyPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.MonthlyRegenerationPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.RelativeMonthlyPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.RelativeYearlyPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.WeeklyPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.WeeklyRegenerationPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.YearlyPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Patterns\Recurrence.YearlyRegenerationPattern.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Ranges\EndDateRecurrenceRange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Ranges\NoEndRecurrenceRange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Ranges\NumberedRecurrenceRange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Recurrence\Ranges\RecurrenceRange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RecurringAppointmentMasterId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ReferenceAttachment.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RetentionTagBase.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\Rule.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleActions.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleError.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleErrorCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleOperation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleOperationError.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RuleOperationErrorCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RulePredicateDateRange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RulePredicates.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\RulePredicateSizeRange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\SearchFolderParameters.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\ServiceId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\SetClientExtensionAction.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\SetRuleOperation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\StringList.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TaskSuggestion.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TaskSuggestionCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TextBody.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeChange.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeChangeRecurrence.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\AbsoluteDateTransition.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\AbsoluteDayOfMonthTransition.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\AbsoluteMonthTransition.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\RelativeDayOfMonthTransition.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\TimeZoneDefinition.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\TimeZonePeriod.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\TimeZoneTransition.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\TimeZones\TimeZoneTransitionGroup.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\UniqueBody.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\UrlEntity.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\UrlEntityCollection.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\UserConfigurationDictionary.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\UserId.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\VotingInformation.cs" />
-    <Compile Include="Toolbox\EWS\ComplexProperties\VotingOptionData.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsHttpWebRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsHttpWebRequestFactory.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsHttpWebResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsServiceMultiResponseXmlReader.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsServiceXmlReader.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsServiceXmlWriter.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsUtilities.cs" />
-    <Compile Include="Toolbox\EWS\Core\EwsXmlReader.cs" />
-    <Compile Include="Toolbox\EWS\Core\ExchangeServerInfo.cs" />
-    <Compile Include="Toolbox\EWS\Core\ExchangeService.cs" />
-    <Compile Include="Toolbox\EWS\Core\ExchangeServiceBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\LazyMember.cs" />
-    <Compile Include="Toolbox\EWS\Core\PropertyBag.cs" />
-    <Compile Include="Toolbox\EWS\Core\PropertySet.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\AddDelegateRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ApplyConversationActionRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ArchiveItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\AsyncRequestResult.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ConvertIdRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CopyFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CopyItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateAttachmentRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateItemRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateResponseObjectRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\CreateUserConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DelegateManagementRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DeleteAttachmentRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DeleteFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DeleteItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DeleteRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DeleteUserConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DisableAppRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\DisconnectPhoneCallRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\EmptyFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ExecuteDiagnosticMethodRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ExpandGroupRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\FindConversationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\FindFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\FindItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\FindPeopleRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\FindRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetAppManifestsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetAppMarketplaceUrlRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetAttachmentRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetClientAccessTokenRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetClientExtensionRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetConversationItemsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetDelegateRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetDiscoverySearchConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetEventsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetFolderRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetFolderRequestForLoad.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetHoldOnMailboxesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetInboxRulesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetItemRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetItemRequestForLoad.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetNonIndexableItemDetailsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetNonIndexableItemStatisticsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetOMEConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetPasswordExpirationDateRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetPeopleInsightsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetPhoneCallRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetRoomListsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetRoomsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetSearchableMailboxesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetServerTimeZonesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetStreamingEventsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetUserAvailabilityRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetUserConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetUserOofSettingsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetUserPhotoRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\GetUserRetentionPolicyTagsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\HangingServiceRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\InstallAppRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MarkAllItemsAsReadRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MarkAsJunkRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MoveCopyFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MoveCopyItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MoveCopyRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MoveFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MoveItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\MultiResponseServiceRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\PlayOnPhoneRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\RegisterConsentRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\RemoveDelegateRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ResolveNamesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SearchMailboxesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SendItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\ServiceRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SetClientExtensionRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SetHoldOnMailboxesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SetOMEConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SetTeamMailboxRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SetUserOofSettingsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SimpleServiceRequestBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SubscribeRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SubscribeToPullNotificationsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SubscribeToPushNotificationsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SubscribeToStreamingNotificationsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SyncFolderHierarchyRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\SyncFolderItemsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UninstallAppRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UnpinTeamMailboxRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UnsubscribeRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UpdateDelegateRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UpdateFolderRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UpdateInboxRulesRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UpdateItemRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Requests\UpdateUserConfigurationRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ArchiveItemResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\AttendeeAvailability.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ConvertIdResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\CreateAttachmentResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\CreateFolderResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\CreateItemResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\CreateItemResponseBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\CreateResponseObjectResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\DelegateManagementResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\DelegateUserResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\DeleteAttachmentResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\DisableAppResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ExecuteDiagnosticMethodResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ExpandGroupResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\FindConversationResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\FindFolderResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\FindItemResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\FindPeopleResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetAppManifestsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetAppMarketplaceUrlResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetAttachmentResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetClientAccessTokenResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetClientExtensionResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetConversationItemsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetDelegateResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetDiscoverySearchConfigurationResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetEventsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetFolderResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetHoldOnMailboxesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetInboxRulesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetItemResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetNonIndexableItemDetailsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetNonIndexableItemStatisticsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetOMEConfigurationResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetPasswordExpirationDateResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetPeopleInsightsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetPhoneCallResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetRoomListsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetRoomsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetSearchableMailboxesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetServerTimeZonesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetStreamingEventsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetUserConfigurationResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetUserOofSettingsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetUserPhotoResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\GetUserRetentionPolicyTagsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\InstallAppResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\MarkAsJunkResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\MoveCopyFolderResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\MoveCopyItemResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\PlayOnPhoneResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\RegisterConsentResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ResolveNamesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SearchMailboxesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ServiceResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\ServiceResponseCollection.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SetHoldOnMailboxesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SetOMEConfigurationResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SubscribeResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SuggestionsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SyncFolderHierarchyResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SyncFolderItemsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\SyncResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\UninstallAppResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\UpdateFolderResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\UpdateInboxRulesResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\Responses\UpdateItemResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Folders\CalendarFolder.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Folders\ContactsFolder.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Folders\Folder.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Folders\SearchFolder.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Folders\TasksFolder.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\Appointment.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\Contact.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\ContactGroup.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\Conversation.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\EmailMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\Item.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\MeetingCancellation.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\MeetingMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\MeetingRequest.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\MeetingResponse.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\Persona.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\PostItem.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Items\Task.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\AcceptMeetingInvitationMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\CalendarResponseMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\CalendarResponseMessageBase.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\CancelMeetingMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\DeclineMeetingInvitationMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\PostReply.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\RemoveFromCalendar.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\ResponseMessage.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\ResponseObject.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ResponseObjects\SuppressReadReceipt.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\AppointmentSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\CalendarResponseObjectSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\CancelMeetingMessageSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ContactGroupSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ContactSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ConversationSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\EmailMessageSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\FolderSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ItemSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\MeetingCancellationSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\MeetingMessageSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\MeetingRequestSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\MeetingResponseSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\PersonaSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\PostItemSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\PostReplySchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ResponseMessageSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ResponseObjectSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\SearchFolderSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\ServiceObjectSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\Schemas\TaskSchema.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ServiceObject.cs" />
-    <Compile Include="Toolbox\EWS\Core\ServiceObjects\ServiceObjectInfo.cs" />
-    <Compile Include="Toolbox\EWS\Core\SimplePropertyBag.cs" />
-    <Compile Include="Toolbox\EWS\Core\XmlAttributeNames.cs" />
-    <Compile Include="Toolbox\EWS\Core\XmlElementNames.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\BasicAuthModuleForUTF8.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\ClientCertificateCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\ExchangeCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\OAuthCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\PartnerTokenCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\TokenCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\WebCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\WindowsLiveCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\WSSecurityBasedCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\WSSecurityUtilityIdSignedXml.cs" />
-    <Compile Include="Toolbox\EWS\Credentials\X509CertificateCredentials.cs" />
-    <Compile Include="Toolbox\EWS\Dns\DnsClient.cs" />
-    <Compile Include="Toolbox\EWS\Dns\DnsNativeMethods.cs" />
-    <Compile Include="Toolbox\EWS\Dns\DnsRecord.cs" />
-    <Compile Include="Toolbox\EWS\Dns\DnsRecordHeader.cs" />
-    <Compile Include="Toolbox\EWS\Dns\DnsSrvRecord.cs" />
-    <Compile Include="Toolbox\EWS\Elc\RetentionPolicyTag.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AffectedTaskOccurrence.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AggregateType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AppointmentType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AutodiscoverEndpoints.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AutodiscoverErrorCode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AutodiscoverResponseType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\AvailabilityData.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\BasePropertySet.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\BodyType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ChangeType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ClientAccessTokenType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ClientExtensionProvidedTo.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ComparisonMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConflictResolutionMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConflictType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConnectingIdType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConnectionFailureCause.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConsentState.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ContactSource.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ContainmentMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConversationAction.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConversationFlagStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConversationQueryTraversal.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ConversationSortOrder.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DateTimePrecision.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DayOfTheWeek.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DayOfTheWeekIndex.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DefaultExtendedPropertySet.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DelegateFolderPermissionLevel.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DeleteMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DnsRecordType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\DomainSettingName.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\EffectiveRights.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ElcFolderType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\EmailAddressKey.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\EmailPosition.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\EventType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ExchangeVersion.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ExtensionInstallScope.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ExtensionType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\FileAsMapping.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\FlaggedForAction.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\FolderPermissionLevel.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\FolderPermissionReadAccess.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\FolderTraversal.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\FreeBusyViewType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\GetUserPhotoStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\HoldAction.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\HoldStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\IconIndex.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\IdFormat.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ImAddressKey.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\Importance.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ItemFlagStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ItemTraversal.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\LegacyFreeBusyStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\LocationSource.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\LogicalOperator.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MailboxSearchLocation.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MailboxSearchScopeType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MailboxType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MapiPropertyType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MeetingAttendeeType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MeetingRequestsDeliveryScope.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MeetingRequestType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MemberStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\MessageDisposition.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\Month.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\OffsetBasePoint.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\OofExternalAudience.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\OofState.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\OutlookProtocolType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PeopleQueryContextKeys.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PeopleQuerySource.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PermissionScope.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PhoneCallState.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PhoneNumberKey.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PhysicalAddressIndex.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PhysicalAddressKey.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PreviewItemBaseShape.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PrivilegedLogonType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\PropertyDefinitionFlags.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ResolveNameSearchLocation.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ResponseActions.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ResponseMessageType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ResponseType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\RetentionActionType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\RetentionType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\RuleErrorCode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\RuleProperty.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SearchFolderTraversal.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SearchPageDirection.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SearchResultType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SendCancellationsMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SendInvitationsMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SendInvitationsOrCancellationsMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SendPrompt.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\Sensitivity.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ServiceError.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ServiceErrorHandling.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ServiceObjectType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ServiceResult.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SetClientExtensionActionId.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SortDirection.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\StandardUser.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SuggestionQuality.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\SyncFolderItemsScope.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\TaskDelegationState.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\TaskMode.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\TaskStatus.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\TeamMailboxLifecycleState.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\TraceFlags.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\UnifiedGroupEnumTypes.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\UserConfigurationDictionaryObjectType.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\UserConfigurationProperties.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\UserPhotoSize.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\UserSettingName.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\ViewFilter.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\WellKnownFolderName.cs" />
-    <Compile Include="Toolbox\EWS\Enumerations\XmlNamespace.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\AccountIsLockedException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\AutodiscoverLocalException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\AutodiscoverRemoteException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\AutodiscoverResponseException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\BatchServiceResponseException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\CreateAttachmentException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\DeleteAttachmentException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\DnsException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\PropertyException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServerBusyException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceLocalException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceObjectPropertyException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceRemoteException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceRequestException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceResponseException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceValidationException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceVersionException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceXmlDeserializationException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\ServiceXmlSerializationException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\TimeZoneConversionException.cs" />
-    <Compile Include="Toolbox\EWS\Exceptions\UpdateInboxRulesException.cs" />
-    <Compile Include="Toolbox\EWS\Groups\ComplexProperties\RequestedUnifiedGroupsSet.cs" />
-    <Compile Include="Toolbox\EWS\Groups\ComplexProperties\UnifiedGroup.cs" />
-    <Compile Include="Toolbox\EWS\Groups\ComplexProperties\UnifiedGroupIdentity.cs" />
-    <Compile Include="Toolbox\EWS\Groups\ComplexProperties\UnifiedGroupsSet.cs" />
-    <Compile Include="Toolbox\EWS\Groups\Requests\GetUnifiedGroupUnseenCountRequest.cs" />
-    <Compile Include="Toolbox\EWS\Groups\Requests\GetUserUnifiedGroupsRequest.cs" />
-    <Compile Include="Toolbox\EWS\Groups\Requests\SetUnifiedGroupLastVisitedTimeRequest.cs" />
-    <Compile Include="Toolbox\EWS\Groups\Responses\GetUnifiedGroupUnseenCountResponse.cs" />
-    <Compile Include="Toolbox\EWS\Groups\Responses\GetUserUnifiedGroupsResponse.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\ICalendarActionProvider.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\ICustomXmlUpdateSerializer.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\IEwsHttpWebRequest.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\IEwsHttpWebRequestFactory.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\IEwsHttpWebResponse.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\IFileAttachmentContentHandler.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\IOwnedProperty.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\IPeopleQueryResults.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\ISearchStringProvider.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\ISelfValidate.cs" />
-    <Compile Include="Toolbox\EWS\Interfaces\ITraceListener.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\DiscoverySearchConfiguration.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\ExtendedAttributes.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\FailedSearchMailbox.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\KeywordStatisticsSearchResult.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\MailboxHoldResult.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\MailboxQuery.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\NonIndexableItem.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\NonIndexableItemDetailsResult.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\NonIndexableItemParameters.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\NonIndexableItemStatistic.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\PreviewItemResponseShape.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\SearchableMailbox.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\SearchMailboxesParameters.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\SearchMailboxesResult.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\SearchPreviewItem.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\SetHoldOnMailboxesParameters.cs" />
-    <Compile Include="Toolbox\EWS\MailboxSearch\Versioning.cs" />
-    <Compile Include="Toolbox\EWS\Misc\AbstractFolderIdWrapper.cs" />
-    <Compile Include="Toolbox\EWS\Misc\AbstractItemIdWrapper.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\AttendeeInfo.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\AvailabilityOptions.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\GetUserAvailabilityResults.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\LegacyAvailabilityTimeZone.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\LegacyAvailabilityTimeZoneTime.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\OofReply.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Availability\TimeWindow.cs" />
-    <Compile Include="Toolbox\EWS\Misc\CalendarActionResults.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ConversationAction.cs" />
-    <Compile Include="Toolbox\EWS\Misc\DelegateInformation.cs" />
-    <Compile Include="Toolbox\EWS\Misc\DelegateTypes.cs" />
-    <Compile Include="Toolbox\EWS\Misc\EwsTraceListener.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ExpandGroupResults.cs" />
-    <Compile Include="Toolbox\EWS\Misc\FolderIdWrapper.cs" />
-    <Compile Include="Toolbox\EWS\Misc\FolderIdWrapperList.cs" />
-    <Compile Include="Toolbox\EWS\Misc\FolderWrapper.cs" />
-    <Compile Include="Toolbox\EWS\Misc\HangingTraceStream.cs" />
-    <Compile Include="Toolbox\EWS\Misc\IdConversion\AlternateId.cs" />
-    <Compile Include="Toolbox\EWS\Misc\IdConversion\AlternateIdBase.cs" />
-    <Compile Include="Toolbox\EWS\Misc\IdConversion\AlternatePublicFolderId.cs" />
-    <Compile Include="Toolbox\EWS\Misc\IdConversion\AlternatePublicFolderItemId.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ImpersonatedUserId.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ItemIdWrapper.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ItemIdWrapperList.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ItemWrapper.cs" />
-    <Compile Include="Toolbox\EWS\Misc\ManagementRole.cs" />
-    <Compile Include="Toolbox\EWS\Misc\MapiTypeConverter.cs" />
-    <Compile Include="Toolbox\EWS\Misc\MapiTypeConverterMapEntry.cs" />
-    <Compile Include="Toolbox\EWS\Misc\MobilePhone.cs" />
-    <Compile Include="Toolbox\EWS\Misc\NameResolution.cs" />
-    <Compile Include="Toolbox\EWS\Misc\NameResolutionCollection.cs" />
-    <Compile Include="Toolbox\EWS\Misc\PrivilegedUserId.cs" />
-    <Compile Include="Toolbox\EWS\Misc\SoapFaultDetails.cs" />
-    <Compile Include="Toolbox\EWS\Misc\Time.cs" />
-    <Compile Include="Toolbox\EWS\Misc\UserConfiguration.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\FolderEvent.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\GetEventsResults.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\GetStreamingEventsResults.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\ItemEvent.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\NotificationEvent.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\NotificationEventArgs.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\PullSubscription.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\PushSubscription.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\StreamingSubscription.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\StreamingSubscriptionConnection.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\SubscriptionBase.cs" />
-    <Compile Include="Toolbox\EWS\Notifications\SubscriptionErrorEventArgs.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\AttachmentsPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\BoolPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ByteArrayPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ComplexPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ComplexPropertyDefinitionBase.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ContainedPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\DateTimePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\DoublePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\EffectiveRightsPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ExtendedPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\GenericPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\GroupMemberPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\IndexedPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\IntPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ListValuePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\MeetingTimeZonePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\PermissionCollectionPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\PropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\PropertyDefinitionBase.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\RecurrencePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ResponseObjectsPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ScopedDateTimePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\ServiceObjectPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\StartTimeZonePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\StringPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\TaskDelegationStatePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\TimeSpanPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\TimeZonePropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\PropertyDefinitions\TypedPropertyDefinition.cs" />
-    <Compile Include="Toolbox\EWS\Search\CalendarView.cs" />
-    <Compile Include="Toolbox\EWS\Search\ConversationIndexedItemView.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.ContainsSubstring.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.ExcludesBitmask.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.Exists.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.IsEqualTo.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.IsGreaterThan.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.IsGreaterThanOrEqualTo.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.IsLessThan.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.IsLessThanOrEqualTo.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.IsNotEqualTo.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.Not.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.PropertyBasedFilter.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.RelationalFilter.cs" />
-    <Compile Include="Toolbox\EWS\Search\Filters\SearchFilter.SearchFilterCollection.cs" />
-    <Compile Include="Toolbox\EWS\Search\FindConversationResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\FindFoldersResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\FindItemsResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\FindPeopleResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\FolderView.cs" />
-    <Compile Include="Toolbox\EWS\Search\GetUserPhotoResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\GroupedFindItemsResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\Grouping.cs" />
-    <Compile Include="Toolbox\EWS\Search\ItemGroup.cs" />
-    <Compile Include="Toolbox\EWS\Search\ItemView.cs" />
-    <Compile Include="Toolbox\EWS\Search\OrderByCollection.cs" />
-    <Compile Include="Toolbox\EWS\Search\PagedView.cs" />
-    <Compile Include="Toolbox\EWS\Search\PeopleIndexedItemView.cs" />
-    <Compile Include="Toolbox\EWS\Search\PeopleQueryMode.cs" />
-    <Compile Include="Toolbox\EWS\Search\PeopleQueryResults.cs" />
-    <Compile Include="Toolbox\EWS\Search\SeekToConditionItemView.cs" />
-    <Compile Include="Toolbox\EWS\Search\ViewBase.cs" />
-    <Compile Include="Toolbox\EWS\Security\SafeXmlDocument.cs" />
-    <Compile Include="Toolbox\EWS\Security\SafeXmlFactory.cs" />
-    <Compile Include="Toolbox\EWS\Security\SafeXmlSchema.cs" />
-    <Compile Include="Toolbox\EWS\Security\SecurityTimestamp.cs" />
-    <Compile Include="Toolbox\EWS\Security\XmlDtdException.cs" />
-    <Compile Include="Toolbox\EWS\Strings.cs" />
-    <Compile Include="Toolbox\EWS\Sync\Change.cs" />
-    <Compile Include="Toolbox\EWS\Sync\ChangeCollection.cs" />
-    <Compile Include="Toolbox\EWS\Sync\FolderChange.cs" />
-    <Compile Include="Toolbox\EWS\Sync\ItemChange.cs" />
-    <Compile Include="Toolbox\EWS\UnifiedMessaging\PhoneCall.cs" />
-    <Compile Include="Toolbox\EWS\UnifiedMessaging\PhoneCallId.cs" />
-    <Compile Include="Toolbox\EWS\UnifiedMessaging\UnifiedMessaging.cs" />
     <Compile Include="Logs\ILog.cs" />
     <Compile Include="Logs\LogsCollection.cs" />
     <Compile Include="Logs\UI\LogBrowser.cs">
@@ -1373,27 +391,6 @@
     </Compile>
     <Compile Include="Toolbox\Tools.cs" />
     <Compile Include="Toolbox\Enumerators.cs" />
-    <Compile Include="Toolbox\Transitions\IManagedType.cs" />
-    <Compile Include="Toolbox\Transitions\ITransitionType.cs" />
-    <Compile Include="Toolbox\Transitions\ManagedType_Color.cs" />
-    <Compile Include="Toolbox\Transitions\ManagedType_Double.cs" />
-    <Compile Include="Toolbox\Transitions\ManagedType_Float.cs" />
-    <Compile Include="Toolbox\Transitions\ManagedType_Int.cs" />
-    <Compile Include="Toolbox\Transitions\ManagedType_String.cs" />
-    <Compile Include="Toolbox\Transitions\Transition.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionChain.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionElement.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionManager.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_Acceleration.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_Bounce.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_CriticalDamping.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_Deceleration.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_EaseInEaseOut.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_Flash.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_Linear.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_ThrowAndCatch.cs" />
-    <Compile Include="Toolbox\Transitions\TransitionType_UserDefined.cs" />
-    <Compile Include="Toolbox\Transitions\Utility.cs" />
     <Compile Include="UI\AMTBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1423,9 +420,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\AMTTransparentPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\CircularProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\ErrorProviderFixed.cs">
@@ -1481,69 +475,22 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\trayIcon.cs" />
-    <Compile Include="UI\WinFormAnimation\AnimationFunctions.cs" />
-    <Compile Include="UI\WinFormAnimation\Animator.cs" />
-    <Compile Include="UI\WinFormAnimation\Animator2D.cs" />
-    <Compile Include="UI\WinFormAnimation\Animator3D.cs" />
-    <Compile Include="UI\WinFormAnimation\AnimatorStatus.cs" />
-    <Compile Include="UI\WinFormAnimation\float2D.cs" />
-    <Compile Include="UI\WinFormAnimation\float3D.cs" />
-    <Compile Include="UI\WinFormAnimation\FloatExtensions.cs" />
-    <Compile Include="UI\WinFormAnimation\FPSLimiterKnownValues.cs" />
-    <Compile Include="UI\WinFormAnimation\IAnimator.cs" />
-    <Compile Include="UI\WinFormAnimation\KnownAnimationFunctions.cs" />
-    <Compile Include="UI\WinFormAnimation\Path.cs" />
-    <Compile Include="UI\WinFormAnimation\Path2D.cs" />
-    <Compile Include="UI\WinFormAnimation\Path2DExtensions.cs" />
-    <Compile Include="UI\WinFormAnimation\Path3D.cs" />
-    <Compile Include="UI\WinFormAnimation\Path3DExtensions.cs" />
-    <Compile Include="UI\WinFormAnimation\PathExtensions.cs" />
-    <Compile Include="UI\WinFormAnimation\SafeInvoker.cs" />
-    <Compile Include="UI\WinFormAnimation\SafeInvoker`1.cs" />
-    <Compile Include="UI\WinFormAnimation\Timer.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
-    <Compile Include="Web\HtmlAgilityPack\crc32.cs" />
-    <Compile Include="Web\HtmlAgilityPack\EncodingFoundException.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlAttribute.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlAttributeCollection.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlCmdLine.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlCommentNode.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlConsoleListener.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlDocument.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlDocument.PathMethods.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlDocument.Xpath.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlElementFlag.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlEntity.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlNameTable.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlNode.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlNode.Xpath.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlNodeCollection.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlNodeNavigator.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlNodeType.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlParseError.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlParseErrorCode.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlTextNode.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlWeb.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlWeb.Xpath.cs" />
-    <Compile Include="Web\HtmlAgilityPack\HtmlWebException.cs" />
-    <Compile Include="Web\HtmlAgilityPack\IOLibrary.cs" />
-    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocument.cs" />
-    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
-    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
-    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
-    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
-    <Compile Include="Web\HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
-    <Compile Include="Web\HtmlAgilityPack\NameValuePair.cs" />
-    <Compile Include="Web\HtmlAgilityPack\NameValuePairList.cs" />
-    <Compile Include="Web\HtmlAgilityPack\Trace.cs" />
-    <Compile Include="Web\HtmlAgilityPack\Trace.FullFramework.cs" />
-    <Compile Include="Web\HtmlAgilityPack\Utilities.cs" />
     <Compile Include="Web\ConfluenceConnection.cs" />
+    <Compile Include="Web\TelnetClient\HTTPTUNNEL\Base64Encoder.cs" />
+    <Compile Include="Web\TelnetClient\HTTPTUNNEL\httptunnel.cs" />
+    <Compile Include="Web\TelnetClient\TelnetInterface.cs" />
     <Compile Include="Web\UI\AuthForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Web\UI\AuthForm.Designer.cs">
       <DependentUpon>AuthForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Web\UI\BrowserView2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Web\UI\BrowserView2.Designer.cs">
+      <DependentUpon>BrowserView2.cs</DependentUpon>
     </Compile>
     <Compile Include="Web\UI\BrowserView.cs">
       <SubType>Form</SubType>
@@ -1557,13 +504,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeoAPIs\GMap.NET\Types\LLPoint.cs" />
     <Compile Include="GeoAPIs\GMap.NET\Types\Point.cs" />
+    <Compile Include="Web\UI\pnlLogin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Web\UI\pnlLogin.designer.cs">
+      <DependentUpon>pnlLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Web\UI\pnlSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Web\UI\pnlSlider.designer.cs">
+      <DependentUpon>pnlSlider.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Web\UriItem.cs" />
+    <Compile Include="Web\WebBrowserHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assemblies\SQLite\EntityFramework.dll" />
-    <EmbeddedResource Include="Assemblies\SQLite\EntityFramework.SqlServer.dll" />
-    <EmbeddedResource Include="Assemblies\SQLite\System.Data.SQLite.dll" />
-    <EmbeddedResource Include="Assemblies\SQLite\System.Data.SQLite.EF6.dll" />
-    <EmbeddedResource Include="Assemblies\SQLite\System.Data.SQLite.Linq.dll" />
     <EmbeddedResource Include="Logs\UI\LogBrowser.resx">
       <DependentUpon>LogBrowser.cs</DependentUpon>
     </EmbeddedResource>
@@ -1572,6 +528,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OSS\Ericsson\OssForm.resx">
+      <DependentUpon>OssForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1597,6 +556,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Templates\RAN\UI\TasksForm.resx">
       <DependentUpon>TasksForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestsForm.resx">
+      <DependentUpon>TestsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Toolbox\Notifications\NotificationsForm.resx">
       <DependentUpon>NotificationsForm.cs</DependentUpon>
@@ -1624,8 +586,17 @@
     <EmbeddedResource Include="Web\UI\AuthForm.resx">
       <DependentUpon>AuthForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Web\UI\BrowserView2.resx">
+      <DependentUpon>BrowserView2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Web\UI\BrowserView.resx">
       <DependentUpon>BrowserView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Web\UI\pnlLogin.resx">
+      <DependentUpon>pnlLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Web\UI\pnlSlider.resx">
+      <DependentUpon>pnlSlider.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -1634,28 +605,37 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assemblies\RestSharp.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assemblies\Outlook.dll" />
     <EmbeddedResource Include="Assemblies\BMC.ARSystem.dll" />
-    <EmbeddedResource Include="Assemblies\ICSharpCode.SharpZipLib.dll" />
-    <EmbeddedResource Include="Assemblies\GMap.NET.Core.dll" />
-    <EmbeddedResource Include="Assemblies\GMap.NET.WindowsForms.dll" />
-    <EmbeddedResource Include="Assemblies\FileHelpers.dll" />
-    <EmbeddedResource Include="Assemblies\GeoUk.dll" />
-    <EmbeddedResource Include="Assemblies\Newtonsoft.Json.dll" />
-    <None Include="GeoAPIs\GMap.NET\GMap.Net.README.md" />
-    <None Include="Toolbox\EPPlus\OpenOfficeXml.snk" />
-    <None Include="Toolbox\EWS\Docs\License Terms.rtf" />
-    <None Include="Toolbox\EWS\Docs\README.htm" />
-    <None Include="Toolbox\EWS\Docs\Redist.txt" />
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Templates\CORE\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="UI\WinFormAnimation\Icon.png" />
+    <EmbeddedResource Include="costura64\SQLite.Interop.dll" />
+    <EmbeddedResource Include="costura32\SQLite.Interop.dll" />
+    <None Include="FodyWeavers.xml.bak">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assemblies\BMC.arnettoc.dll" />
+    <EmbeddedResource Include="Assemblies\BMC.ARSystem.Utilities.Common.dll" />
+    <EmbeddedResource Include="Assemblies\BMC.Atrium.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net45\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.105.2\build\net45\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\Costura.Fody.1.6.2\build\dotnet\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.1.6.2\build\dotnet\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.2.2.0\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.2.0\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+  </Target>
+  <Import Project="..\packages\Costura.Fody.1.6.2\build\dotnet\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.1.6.2\build\dotnet\Costura.Fody.targets')" />
+  <Import Project="..\packages\Fody.2.2.0\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.2.2.0\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>
