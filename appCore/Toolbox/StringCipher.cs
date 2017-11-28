@@ -63,6 +63,9 @@ namespace appCore.Toolbox
 
         public static string Decrypt(string cipherText, string passPhrase)
         {
+            if (string.IsNullOrEmpty(cipherText))
+                return string.Empty;
+
             // Get the complete stream of bytes that represent:
             // [32 bytes of Salt] + [32 bytes of IV] + [n bytes of CipherText]
             var cipherTextBytesWithSaltAndIv = Convert.FromBase64String(cipherText);
