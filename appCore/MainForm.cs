@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Created by SharpDevelop.
  * User: goncarj3
  * Date: 13-11-2014
@@ -76,7 +76,7 @@ namespace appCore
             trayIcon = new TrayIcon(tray);
 
             //GlobalProperties.DeployExternalAssemblies();
-            EmbeddedAssemblies.Init();
+            //EmbeddedAssemblies.Init();
 
             // Initialize Properties
 
