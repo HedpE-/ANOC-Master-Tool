@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Created by SharpDevelop.
  * User: goncarj3
  * Date: 20/03/2015
@@ -261,7 +261,8 @@ namespace appCore.Logs.UI
 
 					switch(GlobalLogType) {
 					    case "Templates":
-					        switch ((EnumExtensions.Parse(typeof(TemplateTypes), dataGridView1.SelectedRows[0].Cells["LogType"].Value.ToString()))) {
+                            TemplateTypes templateType = EnumExtensions.Parse(typeof(TemplateTypes), dataGridView1.SelectedRows[0].Cells["LogType"].Value.ToString());
+                            switch (templateType) {
 					            case TemplateTypes.Troubleshoot:
 					                TroubleshootUI = new TroubleshootControls(Logs[dataGridView1.SelectedRows[0].Index].ToTroubleshootTemplate());
 					                TroubleshootUI.Location = new System.Drawing.Point(0, dataGridView1.Bottom + 10);
