@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Created by SharpDevelop.
  * User: goncarj3
  * Date: 18-08-2016
@@ -121,7 +121,7 @@ namespace appCore.DB
 			if (package.File != null) {
 				var allMergedCells = package.Workbook.Worksheets[1].MergedCells;
 				monthRanges = new ArrayList();
-				foreach(string address in allMergedCells.List) {
+				foreach(string address in allMergedCells) {
 					string[] temp = address.Split(':');
 					if(temp[0].RemoveLetters() != "1")
 						continue;
@@ -253,7 +253,7 @@ namespace appCore.DB
                 var t = cell.Style.Fill.BackgroundColor;
                 if (!string.IsNullOrEmpty(cell.Style.Fill.BackgroundColor.Theme))
                 {
-                    if (!(cell.Style.Fill.BackgroundColor.Theme == "1" && cell.Style.Fill.BackgroundColor.Tint == 0 && cell.Style.Fill.BackgroundColor.Index == 10) && cell.Value != null)
+                    if (!(cell.Style.Fill.BackgroundColor.Theme == "1" && cell.Style.Fill.BackgroundColor.Tint == 0 && cell.Style.Fill.BackgroundColor.Indexed == 10) && cell.Value != null)
                         shiftsCount++;
                 }
                 else
