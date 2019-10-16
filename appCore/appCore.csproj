@@ -196,21 +196,6 @@
     <Compile Include="DB\ShiftsFile.cs" />
     <Compile Include="DB\SitesDB.cs" />
     <Compile Include="DB\WeatherCollection.cs" />
-    <Compile Include="OSS\Ericsson\AMTConsole.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="OSS\Ericsson\Common.cs" />
-    <Compile Include="OSS\Ericsson\OssForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OSS\Ericsson\OssForm.Designer.cs">
-      <DependentUpon>OssForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OSS\Ericsson\Structs.cs" />
-    <Compile Include="OSS\Ericsson\TelnetClient\AnsiColor.cs" />
-    <Compile Include="OSS\Ericsson\TelnetClient\HttpTunnel\Base64Encoder.cs" />
-    <Compile Include="OSS\Ericsson\TelnetClient\HttpTunnel\HttpTunnel.cs" />
-    <Compile Include="OSS\Ericsson\TelnetClient\MinimalisticTelnet.cs" />
     <Compile Include="TestsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -477,9 +462,6 @@
     <Compile Include="UI\trayIcon.cs" />
     <Compile Include="Web\CookieContainerExtension.cs" />
     <Compile Include="Web\ConfluenceConnection.cs" />
-    <Compile Include="Web\TelnetClient\HTTPTUNNEL\Base64Encoder.cs" />
-    <Compile Include="Web\TelnetClient\HTTPTUNNEL\httptunnel.cs" />
-    <Compile Include="Web\TelnetClient\TelnetInterface.cs" />
     <Compile Include="Web\UI\AuthForm.cs">
       <SubType>Form</SubType>
     </Compile>
